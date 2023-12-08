@@ -1,0 +1,24 @@
+.cardTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+div {
+  word-wrap: break-word;
+}
+
+.positionButton {
+  display: flex;
+}
+
+.id-line {
+  display: flex;
+  flex-wrap: wrap;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+p {
+  word-wrap: break-word;
+}

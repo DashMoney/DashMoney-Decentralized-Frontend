@@ -92,7 +92,7 @@ class NearbyPage extends React.Component {
                   <Posts
                     selectedCategoryButton={this.props.selectedCategoryButton}
                     mode={this.props.mode}
-                    handleSearchedPost={this.handleSearchedPost}
+                    handleSearchedPost={this.props.handleSearchedPost}
                     OffRentPosts={this.props.OffRentPosts}
                     OffRentNames={this.props.OffRentNames}
                     OffBizPosts={this.props.OffBizPosts}
@@ -115,7 +115,7 @@ class NearbyPage extends React.Component {
                     yourPostsToDisplay={this.props.yourPostsToDisplay}
                     handleYourPost={this.handleYourPost}
                     mode={this.props.mode}
-                    showModal={this.showModal}
+                    showModal={this.props.showModal}
                     isLoadingYourPosts={this.props.isLoadingYourPosts}
                   />
                 </>

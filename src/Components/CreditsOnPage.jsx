@@ -43,7 +43,7 @@ class CreditsOnPage extends React.Component {
             <p>
               <Badge className="paddingBadge" bg="primary" pill>
                 {/* {this.props.identityInfo.balance} Credits */}
-                {this.handleCreditsToTopup()} TopUp Credits
+                {this.handleCreditsToTopup()} TopUps of Credits
               </Badge>
             </p>
           </div>
@@ -70,7 +70,7 @@ class CreditsOnPage extends React.Component {
               <h5>
                 <Badge className="paddingBadge" bg="danger" pill>
                   {/* {this.props.identityInfo.balance} */}
-                  {this.handleCreditsToTopup()} TopUp Credits
+                  {this.handleCreditsToTopup()} TopUps of Credits
                 </Badge>
               </h5>
             </>

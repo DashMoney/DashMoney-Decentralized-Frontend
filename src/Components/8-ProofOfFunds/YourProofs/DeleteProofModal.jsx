@@ -137,7 +137,7 @@ class DeleteProofModal extends React.Component {
       closeButtonColor = <CloseButton onClick={this.handleCloseClick} />;
     } else {
       modalBackdrop = "modal-backdrop-dark";
-      modalBkg = "modal-backcolor-dark";
+      modalBkg = "text-bg-dark";
       closeButtonColor = (
         <CloseButton onClick={this.handleCloseClick} variant="white" />
       );

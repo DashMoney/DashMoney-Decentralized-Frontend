@@ -52,9 +52,18 @@ class FrontEndFeeExplaination extends React.Component {
             </p>
             <h3>Do I have to pay a fee?</h3>
             <p>
-              Nope, you can find the source code <a>here</a>, and run the
-              frontend yourself. Or you can host the frontend yourself so that
-              others can use it, and you can earn Dash!
+              Nope, you can find the source code{" "}
+              <b>
+                <a
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  href="https://github.com/DashMoney/DashMoney-Decentralized-Frontend"
+                >
+                  https://github.com/DashMoney/DashMoney-Decentralized-Frontend
+                </a>
+              </b>
+              , and run the frontend yourself. Or you can host the frontend
+              yourself so that others can use it, and you can earn Dash!
             </p>
             {/* {this.props.isLoginComplete ? (
               <>

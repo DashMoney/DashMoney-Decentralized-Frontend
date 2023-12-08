@@ -118,6 +118,7 @@ class MessagesPage extends React.Component {
           <div className="msgstext">
             <div className="d-grid gap-2">
               <MessagespageForyou
+                isLoginComplete={this.props.isLoginComplete}
                 isLoadingForYou={this.props.isLoadingForYou}
                 ByYouThreads={this.props.ByYouThreads}
                 ByYouThreadsNames={this.props.ByYouThreadsNames}

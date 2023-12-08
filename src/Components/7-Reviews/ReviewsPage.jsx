@@ -34,7 +34,7 @@ class ReviewsPage extends React.Component {
                   <LowCreditsOnPage
                     identityInfo={this.props.identityInfo}
                     uniqueName={this.props.uniqueName}
-                    showModal={this.showModal}
+                    showModal={this.props.showModal}
                   />
 
                   <h3>

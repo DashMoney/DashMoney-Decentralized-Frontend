@@ -97,6 +97,7 @@ class MsgForyou extends React.Component {
       threadsToDisplay = threadDocs.map((thr, index) => {
         return (
           <Threads
+            isLoginComplete={this.props.isLoginComplete}
             key={index}
             mode={this.props.mode}
             index={index}

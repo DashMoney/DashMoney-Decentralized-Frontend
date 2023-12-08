@@ -595,7 +595,481 @@ class App extends React.Component {
     }
   };
 
-  handleLogout = () => {};
+  handleLogout = () => {
+    this.setState(
+      {
+        isLoggedIn: false, //Changed for TopNav constructing
+        mode: "dark",
+
+        //isLoading: true, //For identity and name And not identityInfo that is handle on display component
+        //^^^ IS THIS NOW HANDLED BY THE isLoginComplete render variable??
+
+        //ACCOUNT 'LOGIN' PAGE
+        isLoadingIdentity: true,
+        isLoadingIdInfo: true,
+
+        isLoadingName: true,
+        isLoadingAlias: true,
+
+        isLoadingWallet: true, //For wallet for topup
+
+        identityError: false,
+        idInfoError: false,
+        nameError: false,
+        aliasError: false,
+        //ACCOUNT 'LOGIN' PAGE^^^^^^
+
+        //MESSAGES PAGE
+        // isLoading={this.state.isLoading}
+        whichMessagesTab: "Everyone",
+
+        isLoadingRefresh: false, //-> WHAT IS THIS CONNECTED TO ? -> a single spinner on MessagesPage , can I get rid of this because I think i had it for the manual updating but there is now auto updateing with messages ? =>
+        errorToDisplay: false,
+
+        isLoadingEveryone: true,
+
+        isLoadingForYou: true,
+
+        EveryoneMsgs: [
+          {
+            $ownerId: "4h5j6j",
+            $id: "7ku98rj",
+            msg: "Thanks for trying out the dapps! You can even host the front end yourself and earn Dash.",
+            sh: "out",
+            $createdAt: Date.now() - 1000000,
+          },
+        ],
+        EveryoneNames: [
+          {
+            $ownerId: "4h5j6j",
+            label: "DashMoney",
+          },
+        ],
+
+        Everyone1: false, //2 threads -> msg names and thread names
+        Everyone2: false,
+
+        ForYou1: false, //4 threads -> 2 by 2 path but could have zero on either of the paths?? ->
+        ForYou2: false,
+        ForYou3: false,
+        ForYou4: false,
+
+        ByYouMsgs: [],
+        ByYouNames: [],
+
+        FromTagsMsgs: [],
+        FromTagsNames: [],
+
+        //Below is the new Thread state
+        EveryoneThreads: [
+          {
+            $ownerId: "hw7o5fh4w",
+            $id: "wg7w54b5l9",
+            msg: "Well that sounds interesting. How do I do that?",
+            msgId: "7ku98rj",
+
+            $createdAt: Date.now() - 800000,
+          },
+        ],
+        EveryoneThreadsNames: [
+          {
+            $ownerId: "hw7o5fh4w",
+            label: "Alice",
+          },
+        ],
+
+        ByYouThreads: [],
+        ByYouThreadsNames: [],
+
+        FromTagsThreads: [],
+        FromTagsThreadsNames: [],
+
+        ThreadMessageId: "",
+        //BELOW Most Recent Initial For You
+        InitialMessages1: false,
+        InitialMessages2: false,
+        InitialMessages3: false,
+        InitialMessages4: false,
+
+        InitialByYouMsgs: [],
+        InitialByYouNames: [],
+
+        InitialFromTagsMsgs: [],
+        InitialFromTagsNames: [],
+
+        InitialByYouThreads: [],
+        InitialByYouThreadsNames: [],
+
+        InitialFromTagsThreads: [],
+        InitialFromTagsThreadsNames: [],
+
+        //ABOVE Most Recent Initial For You
+        //BELOW AutoUpdate Arrays
+        NewSO1: false,
+        NewSO2: false,
+
+        NewSONames: [],
+        NewSOMsgs: [],
+
+        NewSOThreadsNames: [],
+        NewSOThreads: [],
+
+        NewDM1: false,
+        NewDM2: false,
+        NewDM3: false,
+
+        //NewDMByYouNames: [], //Not required bc user would make themselves
+        //NewDMByYouMsgs: [],
+
+        NewDMByYouThreadsNames: [],
+        NewDMByYouThreads: [],
+
+        NewDMFromTagsNames: [],
+        NewDMFromTagsMsgs: [],
+
+        NewDMFromTagsThreadsNames: [],
+        NewDMFromTagsThreads: [],
+
+        //Above AutoUpdate Arrays^^^^
+
+        // SubmitMessages1: false, <- NOT USED?
+        // SubmitMessages2: false, <- NOT USED?
+
+        //DocumentSubmissionSeparatation^^^^
+
+        // handleThread={this.handleThread}
+        // pushNewSOtoView={this.pushNewSOtoView}
+        // pushNewDMtoView={this.pushNewDMtoView}
+
+        //MESSAGES PAGE ^^^^^
+
+        //WALLET PAGE
+
+        WALLET_whichTab: "Your Wallet",
+
+        isLoadingButtons_WALLET: true,
+        isLoadingForm_WALLET: false,
+
+        isLoadingRefresh_WALLET: false, // This is not implemented maybe use to consolidate the confirmations, Buttons and Form?? or just add another?? -> So I think that the purpose of the refresh is currently only to keep the msgs viewable while the page reload/finishes the queries ->
+
+        isLoadingMsgs_WALLET: true,
+
+        isLoadingAddresses_WALLET: true,
+
+        dgmDocuments: [], //MOVE TO GENERAL BC USED IN MY STORE <=
+
+        WALLET_sendToName: "",
+        WALLET_sendToAddress: "",
+        WALLET_amountToSend: 0,
+        WALLET_messageToSend: "",
+        WALLET_sendToDGMAddressDoc: "",
+
+        WALLET_sendSuccess: false,
+        WALLET_sendFailure: false,
+
+        WALLET_nameSuccess: "",
+        WALLET_amtSuccess: 0,
+
+        WALLET_sendMsgSuccess: false,
+        WALLET_sendMsgFailure: false,
+
+        //*** *** *** *** ***
+
+        WALLET_Login1: false,
+        WALLET_Login2: false,
+        WALLET_Login3: false,
+        WALLET_Login4: false,
+        WALLET_Login5: false,
+        WALLET_Login6: false,
+        WALLET_Login7: false,
+
+        WALLET_ByYouMsgs: [],
+        WALLET_ByYouNames: [],
+        WALLET_ByYouThreads: [],
+
+        WALLET_ToYouMsgs: [],
+        WALLET_ToYouNames: [],
+        WALLET_ToYouThreads: [],
+
+        //BELOW Most Recent Initial
+        // WALLET_Initial1: false,
+        // WALLET_Initial2: false,
+        // WALLET_Initial3: false,
+        // WALLET_Initial4: false,
+        // WALLET_Initial5: false,
+        // WALLET_Initial6: false,
+
+        // WALLET_InitialDGMAddr: "",
+        // WALLET_InitialIdentityInfo: "",
+        // WALLET_InitialIdentityRaw: "",
+
+        // WALLET_InitialByYouMsgs: [],
+        // WALLET_InitialByYouNames: [],
+        // WALLET_InitialByYouThreads: [],
+
+        // WALLET_InitialToYouMsgs: [],
+        // WALLET_InitialToYouNames: [],
+        // WALLET_InitialToYouThreads: [],
+
+        //ABOVE Most Recent Initial
+
+        //BELOW Refresh
+        WALLET_Refresh1: false,
+        WALLET_Refresh2: false,
+        WALLET_Refresh3: false,
+        WALLET_Refresh4: false,
+        WALLET_Refresh5: false,
+        WALLET_Refresh6: false,
+
+        WALLET_RefreshIdentityInfo: "",
+        WALLET_RefreshIdentityRaw: "",
+
+        WALLET_RefreshByYouMsgs: [],
+        WALLET_RefreshByYouNames: [],
+        WALLET_RefreshByYouThreads: [],
+
+        WALLET_RefreshToYouMsgs: [],
+        WALLET_RefreshToYouNames: [],
+        WALLET_RefreshToYouThreads: [],
+
+        //ABOVE Refresh
+
+        //*** *** *** *** ***
+
+        WALLET_ThreadMessageId: "",
+        WALLET_messageToWhomName: "",
+
+        //WALLET PAGE ^^^^^^
+
+        //NEAR BY PAGE
+
+        whichNearbyTab: "Search",
+        selectedCategoryButton: "offrent",
+
+        isLoadingDSODM: false,
+
+        isLoadingNearbyInitial: true,
+        isLoadingNearbySearch: false,
+        isLoadingNearbyForm: false,
+
+        isLoadingYourPosts: true,
+
+        //##### LOCATION FORM STATE ######
+        whichCountryRegion: "Country",
+
+        cityInput: "",
+        validCity: true,
+        tooLongCityNameError: false,
+
+        countryRegionInput: "",
+        validCountryRegion: true,
+        tooLongCountryRegionNameError: false,
+        //^^^^^ LOCATION FORM STATE ^^^^^
+
+        //#####  POSTS TO DISPLAY ######
+        OffRentPosts: [],
+        OffRentNames: [],
+
+        OffBizPosts: [],
+        OffBizNames: [],
+
+        OffOtherPosts: [],
+        OffOtherNames: [],
+
+        LookRentPosts: [],
+        LookRentNames: [],
+
+        LookOtherPosts: [],
+        LookOtherNames: [],
+        //^^^^^ POSTS TO DISPLAY ^^^^^
+
+        //##### INITIAL POSTS ######
+
+        InitialNearby1: false,
+        InitialNearby2: false,
+        InitialNearby3: false,
+        InitialNearby4: false,
+        InitialNearby5: false,
+
+        InitialOffRentPosts: [],
+        InitialOffRentNames: [],
+
+        InitialOffBizPosts: [],
+        InitialOffBizNames: [],
+
+        InitialOffOtherPosts: [],
+        InitialOffOtherNames: [],
+
+        InitialLookRentPosts: [],
+        InitialLookRentNames: [],
+
+        InitialLookOtherPosts: [],
+        InitialLookOtherNames: [],
+        //^^^^^ INITIAL POSTS ^^^^^
+
+        //##### Search POSTS ######
+
+        SearchNearby1: false,
+        SearchNearby2: false,
+        SearchNearby3: false,
+        SearchNearby4: false,
+        SearchNearby5: false,
+
+        //^^^^^ Search POSTS ^^^^^
+
+        selectedSearchedPost: "",
+        selectedSearchedPostNameDoc: "",
+
+        yourPostsToDisplay: [],
+
+        //NEAR BY PAGE^^^^^^
+
+        //REVIEWS PAGE
+        whichReviewsTab: "Search", //Search and Your Reviews
+
+        isLoadingReviewsSearch: false,
+        isLoadingYourReviews: true,
+
+        nameToSearch: "",
+        nameFormat: false,
+
+        isTooLongNameError: false, //Pass to form and add ->
+
+        YourReviews1: false,
+        YourReviews2: false,
+
+        YourReviews: [],
+        YourReviewNames: [],
+
+        YourReplies: [],
+        //^^ Doesn't need names because they are only your replies.. -> yes
+
+        SearchedNameDoc: {
+          $ownerId: "E98BXqGj6hNENCCnDmvXzCzmTCSgkBzEU3R18tfW1v2x",
+          label: "BurgerJoint",
+        },
+
+        SearchedReviews: [
+          {
+            $ownerId: "4h5j6j",
+            $id: "7ku98rj",
+            review: "Good service, would eat here again!",
+            rating: 5,
+            toId: "fjghtyru",
+            $createdAt: Date.now() - 1000000,
+          },
+        ],
+
+        SearchNearby1: false,
+        SearchNearby2: false,
+
+        SearchedReviewNames: [
+          {
+            $ownerId: "4h5j6j",
+            label: "Alice",
+          },
+        ],
+
+        SearchedReplies: [
+          {
+            $ownerId: "E98BXqGj6hNENCCnDmvXzCzmTCSgkBzEU3R18tfW1v2x",
+            $id: "klsui4312",
+            reply: "Thanks Alice",
+            reviewId: "7ku98rj",
+            $createdAt: Date.now() - 300000,
+          },
+        ],
+
+        reviewToEdit: [], //use a function to find and pass to modal ->
+        reviewToEditIndex: "",
+
+        replyReview: [], //This is for the create reply reviewId
+        replyToEdit: [],
+        replyingToName: "",
+
+        //REVIEWS PAGE^^^^^^
+
+        //PROOFS PAGE
+        whichTab_POD: "Search",
+
+        isLoadingSearch_POD: false,
+
+        isLoadingYourProofs: true,
+
+        nameToSearch_POD: "",
+        nameFormat_POD: false,
+        isTooLongNameError_POD: false, // <- not connected to anything
+
+        SearchedNameDoc_POD: {
+          $ownerId: "4h5j6j",
+          label: "Alice",
+        },
+
+        SearchedProofs: [
+          {
+            $ownerId: "4h5j6j",
+            $id: "7ku98rj",
+
+            address: "yadAMKzCFruDYg7bsvLVFfjXuVsN4rPqzw",
+            message: "Its a me, Mario! I mean Alice lol",
+            signature:
+              "H2KKtQ1vdvAMeGHATxCa8Scj+xwscwzbIfpGKE20Ff1+PQQ+3vYZCKOoynzZ+SP9Wkv7k7es0XjFsgt4eK/7d0g=",
+
+            $updatedAt: Date.now() - 1000000,
+          },
+        ],
+
+        YourProofs: [],
+
+        selectedYourProof: "",
+        selectedYourProofIndex: "",
+
+        //PROOFS PAGE^^^^^^
+
+        selectedDapp: "Login",
+
+        InitialPullNearBy: true,
+        InitialPullReviews: true,
+        InitialPullProofs: true,
+
+        presentModal: "",
+        isModalShowing: false,
+        whichNetwork: "testnet",
+
+        mnemonic: "",
+        identity: "",
+        identityInfo: "",
+        identityRaw: "",
+        uniqueName: "",
+        aliasList: [],
+
+        accountBalance: "",
+        accountHistory: "",
+        accountAddress: "",
+
+        WALLET_addresses: [],
+
+        walletId: "",
+        mostRecentLogin: false,
+        platformLogin: false, //Will this be used? -> check ->
+        LocalForageKeys: [],
+
+        skipSynchronizationBeforeHeight: 905000,
+        mostRecentBlockHeight: 905000,
+
+        DataContractDSO: "3djpLuabDgYeXY7RhT6by5VuvrLtn8wnNQTF3J4wz4fn",
+        DataContractDGM: "4PUQmGdGLLWwTFntgwEDhJWzUKoKqbSKanjVGTi2Fbcj",
+        DataContractDGP: "785cZo4ok3DgyCJKsg4NPwuFmdDdcbp1hZKBW5b4SZ97",
+        DataContractDMIO: "931HGHM5fMrRegVe3998hHcBAft1p8d9sWynfGnKxkw2",
+        DataContractDGR: "5C8ZwmirWwqsMk7EguTf2p2RHa1cD9z3hrR29quE92ug",
+        DataContractPOD: "9umPSgjEukfYiygXCMW7zfUVuHTFJSm7VAzbX6rwJgT9",
+        DataContractDPNS: "GWRSAVFMjXx8HpQFaNJMqBV7MBgMK4br5UESsB4S31Ec",
+
+        expandedTopNav: false,
+      },
+      () => this.componentDidMount()
+    );
+  };
 
   componentDidMount() {
     this.getDSOEveryoneDocs();

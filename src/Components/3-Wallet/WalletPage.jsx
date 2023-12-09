@@ -285,7 +285,7 @@ class WalletPage extends React.Component {
             isLoadingVerify: false,
           });
         } else {
-          this.props.showConfirmModal_Wallet(
+          this.props.showConfirmModal(
             this.state.sendToName,
             this.state.amountToSend,
             docArray[0],
@@ -337,7 +337,7 @@ class WalletPage extends React.Component {
     if (this.state.nameFormat) {
       this.searchName(this.state.sendToName);
     } else if (this.state.addrFormat) {
-      this.props.showAddrConfirmModal_Wallet(
+      this.props.showAddrConfirmModal(
         //Create this function and modal ->
         this.state.sendToAddr,
         this.state.amountToSend

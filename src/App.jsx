@@ -8951,10 +8951,8 @@ class App extends React.Component {
                     identity={this.state.identity}
                     identityInfo={this.state.identityInfo}
                     uniqueName={this.state.uniqueName}
-                    showConfirmModal_WALLET={this.showConfirmModal_WALLET}
-                    showAddrConfirmModal_WALLET={
-                      this.showAddrConfirmModal_WALLET
-                    }
+                    showConfirmModal={this.showConfirmModal_WALLET}
+                    showAddrConfirmModal={this.showAddrConfirmModal_WALLET}
                     handleThread_WALLET={this.handleThread_WALLET}
                     WALLET_ByYouMsgs={this.state.WALLET_ByYouMsgs}
                     WALLET_ByYouNames={this.state.WALLET_ByYouNames}
@@ -9334,6 +9332,12 @@ class App extends React.Component {
         ) : (
           <></>
         )}
+
+        {/* ##      ###    ###
+         *   ###    ####   ##
+         *    ###  ## ## ###
+         *     ## ##  ####
+         *      ###   ### */}
 
         {this.state.isModalShowing &&
         this.state.presentModal === "ConfirmAddrPaymentModal" ? (

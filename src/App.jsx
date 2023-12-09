@@ -9280,13 +9280,13 @@ class App extends React.Component {
           <></>
         )}
 
-{/* /**
-   *     ###     ###
-   *    ## ##    ####
-   *   ###  ##  ##  ##
-   *  ###    ####    ##
-   * ###      ###     ##
-   */ */}
+        {/* /**
+         *     ###     ###
+         *    ## ##    ####
+         *   ###  ##  ##  ##
+         *  ###    ####    ##
+         * ###      ###     ##
+         */}
         {this.state.isModalShowing &&
         this.state.presentModal === "NewSOModal" ? (
           <NewSOModal

@@ -1054,7 +1054,7 @@ class WalletPage extends React.Component {
             sendToName={this.props.WALLET_sendToName}
             amountToSend={this.props.WALLET_amountToSend}
             messageToSend={this.props.WALLET_messageToSend}
-            sendDashtoName={this.props.WALLET_sendDashtoName}
+            sendDashtoName={this.props.sendDashtoName}
             handleClearModalPostPmtConfirm={this.handleClearModalPostPmtConfirm}
             isModalShowing={this.props.isModalShowing}
             hideModal={this.props.hideModal}

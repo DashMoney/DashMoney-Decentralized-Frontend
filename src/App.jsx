@@ -8917,7 +8917,7 @@ class App extends React.Component {
                     handleTab_WALLET={this.handleTab_WALLET}
                     showModal={this.showModal}
                     WALLET_messageToSend={this.state.WALLET_messageToSend}
-                    WALLET_sendDashtoName={this.WALLET_sendDashtoName}
+                    sendDashtoName={this.sendDashtoName_WALLET}
                     isModalShowing={this.state.isModalShowing}
                     presentModal={this.state.presentModal}
                     hideModal={this.hideModal}
@@ -9280,11 +9280,13 @@ class App extends React.Component {
           <></>
         )}
 
-        {/* ##      ###    ###
-         *   ###    ####   ##
-         *    ###  ## ## ###
-         *     ## ##  ####
-         *      ###   ### */}
+{/* /**
+   *     ###     ###
+   *    ## ##    ####
+   *   ###  ##  ##  ##
+   *  ###    ####    ##
+   * ###      ###     ##
+   */ */}
         {this.state.isModalShowing &&
         this.state.presentModal === "NewSOModal" ? (
           <NewSOModal

@@ -9353,7 +9353,7 @@ class App extends React.Component {
         {this.state.isModalShowing &&
         this.state.presentModal === "RegisterDGMModal" ? (
           <RegisterDGMModal
-            RegisterDGMAddress={this.RegisterDGMAddress}
+            RegisterDGMAddress={this.RegisterDGMAddress_WALLET}
             isModalShowing={this.state.isModalShowing}
             hideModal={this.hideModal}
             mode={this.state.mode}

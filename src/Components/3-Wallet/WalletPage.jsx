@@ -1021,7 +1021,7 @@ class WalletPage extends React.Component {
                 <div className="d-grid gap-2" style={{ margin: "1rem" }}>
                   <Button
                     variant="primary"
-                    //size="lg"
+                    size="lg"
                     onClick={() => this.props.showModal("RegisterDGMModal")}
                   >
                     <b>Enable Pay-to-Name</b>

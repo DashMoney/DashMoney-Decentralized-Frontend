@@ -141,6 +141,7 @@ class MessagespageForyou extends React.Component {
     let tuples = sortedForYou.map((tuple, index) => {
       return (
         <MsgForyou
+        isLoginComplete={this.props.isLoginComplete}
           key={index}
           mode={this.props.mode}
           index={index}

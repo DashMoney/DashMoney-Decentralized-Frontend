@@ -8915,6 +8915,7 @@ class App extends React.Component {
                     isLoginComplete={isLoginComplete}
                     WALLET_whichTab={this.state.WALLET_whichTab}
                     handleTab_WALLET={this.handleTab_WALLET}
+                    showModal={this.showModal}
                     WALLET_messageToSend={this.state.WALLET_messageToSend}
                     WALLET_sendDashtoName={this.WALLET_sendDashtoName}
                     isModalShowing={this.state.isModalShowing}

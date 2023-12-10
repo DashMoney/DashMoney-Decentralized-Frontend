@@ -518,6 +518,12 @@ class WalletPage extends React.Component {
                 <></>
               )}
 
+              {/* <LowCreditsOnPage
+                    identityInfo={this.props.identityInfo}
+                    uniqueName={this.props.uniqueName}
+                    showModal={this.props.showModal}
+                  /> */}
+
               {this.props.identityInfo !== "" &&
               this.props.identityInfo.balance <= 450000000 ? (
                 <div

@@ -365,7 +365,7 @@ class CreatePostModal extends React.Component {
         tooLongLinkError: false,
       });
     } else {
-      if (link.length > 300) {
+      if (link.length > 350) {
         this.setState({
           linkInput: link,
           validLink: false,

@@ -83,36 +83,49 @@ class SendFundsModal extends React.Component {
           {this.state.response.unusedAddress}
           </p> */}
             <p></p>
-            <p>
-              Use your <b>Address</b> and send some Dash to your account to be
-              able to use Dash Platform!
-            </p>
+            {this.props.whichNetwork === "testnet" ? (
+              <>
+                {" "}
+                <p>
+                  Use your <b>Address</b> and send some Dash to your account to
+                  be able to use Dash Platform!
+                </p>
+                <h5>Dash Testnet Faucets:</h5>
+                <ul>
+                  <li>
+                    <b>
+                      <a
+                        rel="noopener noreferrer"
+                        target="_blank"
+                        href="https://testnet-faucet.dash.org/"
+                      >
+                        testnet-faucet.dash.org/
+                      </a>
+                    </b>
+                  </li>
+                  <p></p>
 
-            {/* <h5>Testnet Dash Faucets:</h5>
-            <ul>
-              <li>
-                <b>
-                  <a
-                    rel="noopener noreferrer"
-                    target="_blank"
-                    href="https://testnet-faucet.dash.org/"
-                  >
-                    testnet-faucet.dash.org/
-                  </a>
-                </b>
-              </li>
-              <p></p>
-
-              <li>
-                <a
-                  rel="noopener noreferrer"
-                  target="_blank"
-                  href="http://faucet.test.dash.crowdnode.io/"
-                >
-                  <b>faucet.test.dash.crowdnode.io/</b>
-                </a>
-              </li>
-            </ul> */}
+                  <li>
+                    <a
+                      rel="noopener noreferrer"
+                      target="_blank"
+                      href="http://faucet.test.dash.crowdnode.io/"
+                    >
+                      <b>faucet.test.dash.crowdnode.io/</b>
+                    </a>
+                  </li>
+                </ul>
+                {/* <h5>Testnet Block Explorer:</h5>
+        <ul>
+          <li><a rel="noopener noreferrer" target="_blank" href = "https://testnet-insight.dashevo.org/insight/">https://testnet-insight.dashevo.org/insight/</a></li>
+          
+        </ul>
+        <p>Enter your "unused address" (now used address) in the Block Explorer to check that you have received tDash.</p> */}
+                {/* Using the faucet at https://testnet-faucet.dash.org/,   There is a block explorer running at https://testnet-insight.dashevo.org/insight/ which can be used to check confirmations. */}
+              </>
+            ) : (
+              <></>
+            )}
           </Modal.Body>
 
           <Modal.Footer>

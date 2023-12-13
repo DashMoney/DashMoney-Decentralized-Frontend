@@ -1076,22 +1076,24 @@ class App extends React.Component {
     this.getInitialPosts();
     //1) GET WALLETID KEYS For New Wallet Login and Wallet Sync
     //I don't need any of this because the wallet login handles it itself..
-    // LocalForage.config({
-    //   name: "dashevo-wallet-lib",
-    // });
-    // let dashevo = LocalForage.createInstance({
-    //   name: "dashevo-wallet-lib",
-    // });
-    // dashevo.keys()
-    //   .then((keys) => {
-    //     this.setState({
-    //       LocalForageKeys: keys,
-    //     });
-    //     console.log(keys);
-    //   })
-    //   .catch(function (err) {
-    //     console.log(err);
-    //   });
+    // True^^^ - but using to determine if first time loading so can let know that this may take up to a minute for first time logging in.
+    LocalForage.config({
+      name: "dashevo-wallet-lib",
+    });
+    let dashevo = LocalForage.createInstance({
+      name: "dashevo-wallet-lib",
+    });
+    dashevo
+      .keys()
+      .then((keys) => {
+        this.setState({
+          LocalForageKeys: keys,
+        });
+        console.log(keys);
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
     //****************************** */
     //2) GET WALLETID KEYS FOR OBTAINING IDENTITY
     //  WHEN I INTRODUCE THIS FEATURE GET THE DGM VERSION IT IS DOING WHAT I WANT <- !!!!!!!!!!!!!!!!!!!!! ->
@@ -1478,6 +1480,7 @@ class App extends React.Component {
   doTopUpIdentity = (numOfCredits) => {
     this.setState({
       isLoadingIdInfo: true,
+      identityInfo: "",
     });
 
     const clientOpts = {
@@ -1515,6 +1518,7 @@ class App extends React.Component {
         console.error("Something went wrong:\n", e);
         this.setState({
           isLoadingIdInfo: false,
+          //Add error state to handle identityInfo being set to '' or else will be stuck in loading state.. ->
         });
       })
       .finally(() => client.disconnect());
@@ -8823,6 +8827,7 @@ class App extends React.Component {
                     <>
                       <LoginForm
                         handleAccountLogin={this.handleAccountLogin}
+                        LocalForageKeys={this.state.LocalForageKeys}
                         showModal={this.showModal}
                         mode={this.state.mode}
                       />
@@ -9158,6 +9163,7 @@ class App extends React.Component {
         this.state.presentModal === "CreateNewWalletModal" ? (
           <CreateNewWalletModal
             isModalShowing={this.state.isModalShowing}
+            whichNetwork={this.state.whichNetwork}
             hideModal={this.hideModal}
             mode={this.state.mode}
             closeTopNav={this.closeTopNav}
@@ -9171,6 +9177,7 @@ class App extends React.Component {
           <SendFundsModal
             isModalShowing={this.state.isModalShowing}
             accountAddress={this.state.accountAddress}
+            whichNetwork={this.state.whichNetwork}
             hideModal={this.hideModal}
             mode={this.state.mode}
             closeTopNav={this.closeTopNav}

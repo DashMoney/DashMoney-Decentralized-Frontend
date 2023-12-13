@@ -4,12 +4,19 @@ import Button from "react-bootstrap/Button";
 
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 
+import CreditsOnPage from "../CreditsOnPage";
+//import LowCreditsOnPage from "../LowCreditsOnPage";
+
 import { HiOutlineSpeakerphone } from "react-icons/hi";
 import { FaArrowUp } from "react-icons/fa6";
 import { FiMail } from "react-icons/fi";
 import MsgForyou from "./MsgForyouv2";
 
 class MessagespageForyou extends React.Component {
+  handleCreditsToTopup = () => {
+    let topUpAmt = (this.props.identityInfo.balance / 1000000000).toFixed(2);
+    return topUpAmt;
+  };
   // //https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react
   scrollToTop = () => {
     this.messagesEnd.scrollIntoView({
@@ -133,7 +140,7 @@ class MessagespageForyou extends React.Component {
 
     // console.log('Final FORYOU!!', sortedForYou);
 
-    let today = new Date(); 
+    let today = new Date();
     let yesterday = new Date(today);
 
     yesterday.setDate(yesterday.getDate() - 1);
@@ -141,7 +148,7 @@ class MessagespageForyou extends React.Component {
     let tuples = sortedForYou.map((tuple, index) => {
       return (
         <MsgForyou
-        isLoginComplete={this.props.isLoginComplete}
+          isLoginComplete={this.props.isLoginComplete}
           key={index}
           mode={this.props.mode}
           index={index}
@@ -160,32 +167,16 @@ class MessagespageForyou extends React.Component {
 
     return (
       <>
-        {this.props.identityInfo === "" ||
-        this.props.identityInfo.balance >= 450000000 ? (
-          <div className="id-line">
-            <h5>
-              <Badge className="paddingBadge" bg="primary">
-                Your Platform Credits
-              </Badge>
-            </h5>
+        <CreditsOnPage
+          identityInfo={this.props.identityInfo}
+          uniqueName={this.props.uniqueName}
+          showModal={this.props.showModal}
+        />
 
-            {this.props.identityInfo === "" ? (
-              <h5>
-                <Badge className="paddingBadge" bg="primary" pill>
-                  Loading..
-                </Badge>
-              </h5>
-            ) : (
-              <h5>
-                <Badge className="paddingBadge" bg="primary" pill>
-                  {this.props.identityInfo.balance}
-                </Badge>
-              </h5>
-            )}
-          </div>
-        ) : (
-          <></>
-        )}
+        {/* <LowCreditsOnPage
+          identityInfo={this.props.identityInfo}
+          uniqueName={this.props.uniqueName}
+        /> */}
 
         {sortedForYou.length < 1 ? (
           <p>
@@ -230,9 +221,11 @@ class MessagespageForyou extends React.Component {
 
         <div className="bootstrapMenu">
           <ButtonGroup size="lg" className="one-level-nav">
-            <Button  onClick={() => {
-                    this.props.showModal("NewSOModal");
-                  }}>
+            <Button
+              onClick={() => {
+                this.props.showModal("NewSOModal");
+              }}
+            >
               <div className="icon-position">
                 <HiOutlineSpeakerphone size={28} />
               </div>

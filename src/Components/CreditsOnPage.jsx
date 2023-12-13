@@ -7,6 +7,14 @@ import Badge from "react-bootstrap/Badge";
  *
  */
 
+/* 
+<CreditsOnPage
+identityInfo={this.props.identityInfo}
+uniqueName={this.props.uniqueName}
+showModal={this.props.showModal}
+/>
+*/
+
 class CreditsOnPage extends React.Component {
   handleCreditsToTopup = () => {
     let topUpAmt = (this.props.identityInfo.balance / 1000000000).toFixed(2);
@@ -20,7 +28,7 @@ class CreditsOnPage extends React.Component {
           <div className="ms-2 me-auto">
             <div className="id-line">
               <h5>
-                <Badge bg="primary">Identity</Badge>
+                <Badge bg="primary">{this.props.uniqueName}</Badge>
               </h5>
               <p>
                 <Badge className="paddingBadge" bg="primary" pill>

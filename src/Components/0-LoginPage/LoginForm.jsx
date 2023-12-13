@@ -129,6 +129,16 @@ class LoginForm extends React.Component {
               <b>Create New Account</b>
             </Button>
           </div>
+          {this.props.LocalForageKeys.length === 0 ? (
+            <>
+              <p>
+                First time logins may take up to a minute, but all subsequent
+                will be much faster. Thank you for your patience.
+              </p>
+            </>
+          ) : (
+            <></>
+          )}
         </div>
       </>
     );

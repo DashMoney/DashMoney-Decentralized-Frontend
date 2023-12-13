@@ -219,12 +219,29 @@ class AccountLogin extends React.Component {
                     </Button>
 
                     <span>
-                      <Badge className="paddingBadge" bg="primary" pill>
+                      {/* <Badge className="paddingBadge" bg="primary" pill>
                         {this.props.identityInfo.balance} Credits
-                        {/* {this.handleCreditsToTopup()} TopUps of Credits */}
-                      </Badge>
+                        // {this.handleCreditsToTopup()} TopUps of Credits 
+                      </Badge> */}
+
+                      {this.props.identityInfo !== "" &&
+                      this.props.identityInfo.balance > 450000000 ? (
+                        <Badge className="paddingBadge" bg="primary" pill>
+                          {this.handleCreditsToTopup()} TopUps of Credits
+                        </Badge>
+                      ) : (
+                        <></>
+                      )}
+                      {this.props.identityInfo !== "" &&
+                      this.props.identityInfo.balance <= 450000000 ? (
+                        <Badge className="paddingBadge" bg="danger" pill>
+                          {this.handleCreditsToTopup()} TopUps of Credits
+                        </Badge>
+                      ) : (
+                        <></>
+                      )}
                     </span>
-                    {/* </div> */}
+
                     <p></p>
                   </>
                 ) : (

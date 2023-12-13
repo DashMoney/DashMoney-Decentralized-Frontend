@@ -4,6 +4,7 @@ import Spinner from "react-bootstrap/Spinner";
 
 import TabsOnPage from "./TabsOnPage";
 import LowCreditsOnPage from "../LowCreditsOnPage";
+import CreditsOnPage from "../CreditsOnPage";
 import LocationForm from "./LocationForm";
 import ButtonsOnPage from "./ButtonsOnPage";
 import Posts from "./Posts";
@@ -110,6 +111,11 @@ class NearbyPage extends React.Component {
               ) : (
                 <>
                   {/* THIS IS WHERE THE "YOUR POSTS" WILL GO */}
+                  <CreditsOnPage
+                    identityInfo={this.props.identityInfo}
+                    uniqueName={this.props.uniqueName}
+                    showModal={this.props.showModal}
+                  />
 
                   <YourPostsPage
                     yourPostsToDisplay={this.props.yourPostsToDisplay}

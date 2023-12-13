@@ -5,6 +5,7 @@ import Button from "react-bootstrap/Button";
 
 import TabsOnPage from "./TabsOnPage";
 import LowCreditsOnPage from "../LowCreditsOnPage";
+import CreditsOnPage from "../CreditsOnPage";
 import NameSearchForm from "./NameSearchForm";
 import RatingSummary from "./RatingSummary";
 import AddOrEditReviewButton from "./AddOrEditReviewButton";
@@ -111,8 +112,11 @@ class ReviewsPage extends React.Component {
                 <>
                   {/* THIS IS WHERE THE "YOUR Reviews" WILL GO */}
 
-                  {/* <div className="BottomBorder" style={{ paddingTop: "1rem" }}></div>
-            <p></p> */}
+                  <CreditsOnPage
+                    identityInfo={this.props.identityInfo}
+                    uniqueName={this.props.uniqueName}
+                    showModal={this.props.showModal}
+                  />
 
                   <YourReviews
                     YourReviews={this.props.YourReviews}

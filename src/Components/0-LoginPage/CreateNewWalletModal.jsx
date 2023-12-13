@@ -126,7 +126,7 @@ class CreateNewWalletModal extends React.Component {
         When this window closes, all this info with go with it
           
         </Alert> */}
-            <p>
+            {this.props.whichNetwork === "testnet" ? <> <p>
               Use your <b>Address</b> and send some Dash to your account to be
               able to use Dash Platform!
             </p>
@@ -164,7 +164,8 @@ class CreateNewWalletModal extends React.Component {
         </ul>
         <p>Enter your "unused address" (now used address) in the Block Explorer to check that you have received tDash.</p> */}
 
-            {/* Using the faucet at https://testnet-faucet.dash.org/,   There is a block explorer running at https://testnet-insight.dashevo.org/insight/ which can be used to check confirmations. */}
+            {/* Using the faucet at https://testnet-faucet.dash.org/,   There is a block explorer running at https://testnet-insight.dashevo.org/insight/ which can be used to check confirmations. */}</> : <></>}
+           
           </Modal.Body>
 
           <Modal.Footer>

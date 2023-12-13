@@ -10,6 +10,8 @@ import { FiMail } from "react-icons/fi";
 
 import MsgEveryone from "./MsgEveryonev2";
 
+import LowCreditsOnPage from "../LowCreditsOnPage";
+
 class MessagespageEveryone extends React.Component {
   // //https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react
   scrollToTop = () => {
@@ -71,6 +73,11 @@ class MessagespageEveryone extends React.Component {
 
     return (
       <>
+        <LowCreditsOnPage
+          identityInfo={this.props.identityInfo}
+          uniqueName={this.props.uniqueName}
+          showModal={this.props.showModal}
+        />
         {this.props.NewSOMsgs.length !== 0 ||
         this.props.NewSOThreads.length !== 0 ? (
           !this.props.isLoadingEveryone ? (

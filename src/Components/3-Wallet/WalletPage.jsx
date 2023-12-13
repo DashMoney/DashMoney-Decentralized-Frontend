@@ -13,6 +13,8 @@ import PaymentAddrComponent from "./PaymentAddrComponent";
 
 import ConfirmPaymentModal from "./ConfirmPaymentModal";
 
+import CreditsOnPage from "../CreditsOnPage";
+
 import "./ConnectedWalletPage.css";
 
 import Dash from "dash";
@@ -483,72 +485,11 @@ class WalletPage extends React.Component {
           this.props.identityInfo !== "Load Failure" &&
           this.props.accountBalance !== 0 ? (
             <>
-              {this.props.identityInfo === "" ? (
-                <div className="ms-2 me-auto">
-                  <div className="id-line ">
-                    <h5>
-                      <Badge bg="primary">Identity</Badge>
-                    </h5>
-                    <p>
-                      <Badge className="paddingBadge" bg="primary" pill>
-                        Loading..
-                      </Badge>
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <></>
-              )}
-
-              {this.props.identityInfo !== "" &&
-              this.props.identityInfo.balance > 450000000 ? (
-                <div className="ms-2 me-auto">
-                  <div className="id-line ">
-                    <h5>
-                      <Badge bg="primary">{this.props.uniqueName}</Badge>
-                    </h5>
-                    <p>
-                      <Badge className="paddingBadge" bg="primary" pill>
-                        {this.props.identityInfo.balance} Credits
-                      </Badge>
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <></>
-              )}
-
-              {/* <LowCreditsOnPage
-                    identityInfo={this.props.identityInfo}
-                    uniqueName={this.props.uniqueName}
-                    showModal={this.props.showModal}
-                  /> */}
-
-              {this.props.identityInfo !== "" &&
-              this.props.identityInfo.balance <= 450000000 ? (
-                <div
-                  className="id-line"
-                  onClick={() => this.props.showModal("TopUpIdentityModal")}
-                >
-                  <>
-                    <h5>
-                      <Badge className="paddingBadge" bg="danger">
-                        Platform Credits : Low!
-                      </Badge>
-                    </h5>
-                  </>
-                  <>
-                    <p></p>
-                    <h5>
-                      <Badge className="paddingBadge" bg="danger" pill>
-                        {this.props.identityInfo.balance}
-                      </Badge>
-                    </h5>
-                  </>
-                </div>
-              ) : (
-                <></>
-              )}
+              <CreditsOnPage
+                identityInfo={this.props.identityInfo}
+                uniqueName={this.props.uniqueName}
+                showModal={this.props.showModal}
+              />
 
               {this.props.isLoadingRefresh_WALLET ? (
                 <div id="spinner">

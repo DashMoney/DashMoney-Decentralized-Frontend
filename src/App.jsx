@@ -2455,10 +2455,11 @@ class App extends React.Component {
       wallet: {
         mnemonic: this.state.mnemonic,
 
-        //adapter: LocalForage,
+        adapter: LocalForage.createInstance,
         unsafeOptions: {
-          skipSynchronizationBeforeHeight: this.state.mostRecentBlockHeight,
-          // this.state.skipSynchronizationBeforeHeight,
+          skipSynchronizationBeforeHeight:
+            //this.state.mostRecentBlockHeight,
+            this.state.skipSynchronizationBeforeHeight,
         },
       },
       apps: {
@@ -2662,10 +2663,11 @@ class App extends React.Component {
       network: this.state.whichNetwork,
       wallet: {
         mnemonic: this.state.mnemonic,
-        //adapter: LocalForage,
+        adapter: LocalForage.createInstance,
         unsafeOptions: {
-          skipSynchronizationBeforeHeight: this.state.mostRecentBlockHeight,
-          // this.state.skipSynchronizationBeforeHeight,
+          skipSynchronizationBeforeHeight:
+            //this.state.mostRecentBlockHeight,
+            this.state.skipSynchronizationBeforeHeight,
         },
       },
       apps: {

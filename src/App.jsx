@@ -5365,6 +5365,8 @@ class App extends React.Component {
         txId: theTXId,
       };
 
+      //console.log(docProperties);
+
       // Create the note document
       const dgmDocument = await platform.documents.create(
         "DGMContract.dgmmsg",
@@ -5372,7 +5374,7 @@ class App extends React.Component {
         docProperties
       );
 
-      //console.log(dsoDocument.toJSON());
+      console.log(dgmDocument.toJSON());
 
       //############################################################
       //This below disconnects the document sending..***

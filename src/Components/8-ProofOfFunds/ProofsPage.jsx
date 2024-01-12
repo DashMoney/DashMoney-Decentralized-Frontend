@@ -102,6 +102,9 @@ class ProofsPage extends React.Component {
                     handleDeleteYourProof={this.props.handleDeleteYourProof}
                     showModal={this.props.showModal}
                   />
+
+                  <p></p>
+                  <HowToUseComponent mode={this.props.mode} />
                 </>
               )}
             </div>

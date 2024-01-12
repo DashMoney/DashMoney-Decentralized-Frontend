@@ -54,7 +54,7 @@ class ButtonsOnPage extends React.Component {
             variant="primary"
             style={{ textDecoration: "underline", marginRight: ".5rem" }}
           >
-            <b>Business/DGP</b>{" "}
+            <b>Shops/Menus</b>{" "}
             {!this.props.isLoadingNearbySearch &&
             !this.props.isLoadingNearbyInitial ? (
               <b>({offBizNum})</b>
@@ -68,7 +68,7 @@ class ButtonsOnPage extends React.Component {
             style={{ marginRight: ".5rem" }}
             onClick={() => this.props.handleSelectedCategoryButton("offbiz")}
           >
-            <b>Business/DGP</b>{" "}
+            <b>Shops/Menus</b>{" "}
             {!this.props.isLoadingNearbySearch &&
             !this.props.isLoadingNearbyInitial ? (
               <b>({offBizNum})</b>
@@ -83,7 +83,7 @@ class ButtonsOnPage extends React.Component {
             variant="primary"
             style={{ textDecoration: "underline", marginTop: ".2rem" }}
           >
-            <b>Other</b>{" "}
+            <b>Trade</b>{" "}
             {!this.props.isLoadingNearbySearch &&
             !this.props.isLoadingNearbyInitial ? (
               <b>({offOtherNum})</b>
@@ -97,7 +97,7 @@ class ButtonsOnPage extends React.Component {
             style={{ marginTop: ".2rem" }}
             onClick={() => this.props.handleSelectedCategoryButton("offother")}
           >
-            <b>Other</b>{" "}
+            <b>Trade</b>{" "}
             {!this.props.isLoadingNearbySearch &&
             !this.props.isLoadingNearbyInitial ? (
               <b>({offOtherNum})</b>
@@ -142,7 +142,7 @@ class ButtonsOnPage extends React.Component {
 
         {this.props.selectedCategoryButton === "lookother" ? (
           <Button variant="primary" style={{ textDecoration: "underline" }}>
-            <b>Other</b>{" "}
+            <b>Trade</b>{" "}
             {!this.props.isLoadingNearbySearch &&
             !this.props.isLoadingNearbyInitial ? (
               <b>({lookOtherNum})</b>
@@ -155,7 +155,7 @@ class ButtonsOnPage extends React.Component {
             variant="primary"
             onClick={() => this.props.handleSelectedCategoryButton("lookother")}
           >
-            <b>Other</b>{" "}
+            <b>Trade</b>{" "}
             {!this.props.isLoadingNearbySearch &&
             !this.props.isLoadingNearbyInitial ? (
               <b>({lookOtherNum})</b>

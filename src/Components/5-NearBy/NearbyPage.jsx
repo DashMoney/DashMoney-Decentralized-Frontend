@@ -119,7 +119,7 @@ class NearbyPage extends React.Component {
 
                   <YourPostsPage
                     yourPostsToDisplay={this.props.yourPostsToDisplay}
-                    handleYourPost={this.handleYourPost}
+                    handleYourPost={this.props.handleYourPost}
                     mode={this.props.mode}
                     showModal={this.props.showModal}
                     isLoadingYourPosts={this.props.isLoadingYourPosts}

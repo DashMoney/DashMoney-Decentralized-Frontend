@@ -270,10 +270,27 @@ class AccountLogin extends React.Component {
                   <></>
                 )}
 
-                {/* ADD ^^^^ THE TOPUP LOADING STATE HERE 
-              isLoadingIdInfo IS SET TO TRUE DURING TOPUP
-              TEST => 
-              */}
+                {!this.props.isLoadingIdentity &&
+                this.props.isLoadingIdInfo &&
+                this.props.identityInfo === "" &&
+                this.props.isLoginComplete ? (
+                  <>
+                    <p></p>
+                    <Button variant="primary" disabled>
+                      <b>TopUp Identity</b>
+                    </Button>
+
+                    <span>
+                      <Badge className="paddingBadge" bg="primary" pill>
+                        Loading..
+                      </Badge>
+                    </span>
+
+                    <p></p>
+                  </>
+                ) : (
+                  <></>
+                )}
 
                 {!this.props.isLoadingAlias &&
                 !this.props.isLoadingName &&

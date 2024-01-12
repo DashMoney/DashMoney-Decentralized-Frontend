@@ -503,7 +503,8 @@ class WalletPage extends React.Component {
                 <></>
               )}
 
-              {this.props.dgmDocuments.length === 0 ? (
+              {this.props.dgmDocuments.length === 0 &&
+              this.props.WALLET_Login7 ? (
                 <Alert variant="primary" dismissible>
                   <Alert.Heading>Pay to Name NOT Enabled!</Alert.Heading>
                   Please <b>Enable Pay to Name</b> below to receive payments to
@@ -963,7 +964,8 @@ class WalletPage extends React.Component {
 
         {this.props.WALLET_whichTab === "Your Wallet" ? (
           <>
-            {this.props.dgmDocuments.length === 0 ? (
+            {this.props.dgmDocuments.length === 0 &&
+            this.props.WALLET_Login7 ? (
               <>
                 <div className="d-grid gap-2" style={{ margin: "1rem" }}>
                   <Button

@@ -32,7 +32,9 @@ class YourPost extends React.Component {
             <h3 style={{ marginTop: ".5rem", marginBottom: ".1rem" }}>
               <b>Offering</b>
             </h3>
-            <Button>Place to Rent</Button>
+            <Button>
+              <b>Place to Rent</b>
+            </Button>
           </div>
         );
         break;
@@ -43,7 +45,9 @@ class YourPost extends React.Component {
             <h3 style={{ marginTop: ".5rem", marginBottom: ".1rem" }}>
               <b>Offering</b>
             </h3>
-            <Button>Business/DGP</Button>
+            <Button>
+              <b>Shops/Menus</b>
+            </Button>
           </div>
         );
         break;
@@ -54,7 +58,9 @@ class YourPost extends React.Component {
             <h3 style={{ marginTop: ".5rem", marginBottom: ".1rem" }}>
               <b>Offering</b>
             </h3>
-            <Button>Other</Button>
+            <Button>
+              <b>Trade</b>
+            </Button>
           </div>
         );
         break;
@@ -65,7 +71,9 @@ class YourPost extends React.Component {
             <h3 style={{ marginTop: ".5rem", marginBottom: ".1rem" }}>
               <b>Looking For</b>
             </h3>
-            <Button>Place to Rent</Button>
+            <Button>
+              <b>Place to Rent</b>
+            </Button>
           </div>
         );
         break;
@@ -76,7 +84,10 @@ class YourPost extends React.Component {
             <h3 style={{ marginTop: ".5rem", marginBottom: ".1rem" }}>
               <b>Looking For</b>
             </h3>
-            <Button>Other</Button>
+            <p></p>
+            <Button>
+              <b>Trade</b>
+            </Button>
           </div>
         );
         break;
@@ -149,7 +160,7 @@ class YourPost extends React.Component {
                 variant="primary"
                 onClick={() => this.props.handleYourPost(this.props.index)}
               >
-                Edit post
+                <b>Edit Post</b>
               </Button>
             </div>
           </Card.Body>

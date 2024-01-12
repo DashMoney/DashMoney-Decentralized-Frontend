@@ -4,10 +4,12 @@ import Post from "./Post";
 
 class Posts extends React.Component {
   render() {
-    let today = new Date();
-    let yesterday = new Date(today);
+    //let today = new Date();
+    //let yesterday = new Date(today);
+    //yesterday.setDate(yesterday.getDate() - 1);
 
-    yesterday.setDate(yesterday.getDate() - 1);
+    //DONT NEED ^^^ ONLY USING SIMPLIFED DATE FORMAT
+
     //SO THERE WILL BE A SELECTEDCATEGORYBUTTON SO DO I WANT TO PASS ALL THE CATEGORY POSTS HERE OR JUST THE ONE CATEGORY THAT WILL BE DISPLAYED?
     //i THOUGHT TO JUST PASS THE ONE TO BE DISPLAYED BUT THEN i HAVE TO WORRY ABOUT DISPLAYING THAT ONE ON LOAD CHANGES AND SUCH BUT i THINK IT IS JUST EASIER TO JUST SORT IT HERE AND SO LESS TO WORRY ABOUT IN APP.JS <- HMM YEP
     let postArray = [];
@@ -52,8 +54,8 @@ class Posts extends React.Component {
           mode={this.props.mode}
           index={index}
           post={post}
-          today={today}
-          yesterday={yesterday}
+          //today={today}
+          //yesterday={yesterday}
           identity={this.props.identity}
           uniqueName={this.props.uniqueName}
           showModal={this.props.showModal}

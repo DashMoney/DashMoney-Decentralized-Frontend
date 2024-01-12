@@ -230,9 +230,10 @@ class App extends React.Component {
 
       isLoadingMsgs_WALLET: true,
 
-      isLoadingAddresses_WALLET: true,
+      isLoadingAddresses_WALLET: true, //Addresses of others, not mine
 
       dgmDocuments: [], //MOVE TO GENERAL BC USED IN MY STORE <=
+      //WALLET_Login7 <= use this to control the "Enable Pay to Name" so doesn't show up before its been checked.
 
       WALLET_sendToName: "",
       WALLET_sendToAddress: "",
@@ -491,7 +492,7 @@ class App extends React.Component {
           signature:
             "H2KKtQ1vdvAMeGHATxCa8Scj+xwscwzbIfpGKE20Ff1+PQQ+3vYZCKOoynzZ+SP9Wkv7k7es0XjFsgt4eK/7d0g=",
 
-          $updatedAt: Date.now() - 1000000,
+          $createdAt: Date.now() - 1000000,
         },
       ],
 
@@ -2836,54 +2837,7 @@ class App extends React.Component {
     //END OF NAME DOC ADD***
   };
 
-  //check how this is handled
-  // // TOP UP
-  // doTopUpIdentity = (numOfCredits) => {
-  //   this.setState({
-  //     isLoadingWallet: true,
-  //   });
-  //   const clientOpts = {
-  //     network: this.state.whichNetwork,
-  //     wallet: {
-  //       mnemonic: this.state.mnemonic,
-  //       adapter: LocalForage.createInstance,
-  //       unsafeOptions: {
-  //         skipSynchronizationBeforeHeight:
-  //           this.state.skipSynchronizationBeforeHeight,
-  //       },
-  //     },
-  //   };
-  //   const client = new Dash.Client(clientOpts);
-
-  //   const topupIdentity = async () => {
-  //     const identityId = this.state.identity; // Your identity ID
-  //     const topUpAmount = numOfCredits; // Number of duffs ie 1000
-
-  //     await client.platform.identities.topUp(identityId, topUpAmount);
-  //     return client.platform.identities.get(identityId);
-  //   };
-
-  //   topupIdentity()
-  //     .then((d) => {
-  //       console.log("Identity credit balance: ", d.balance);
-  //       this.setState({
-  //         identityInfo: d.toJSON(),
-  //         identityRaw: d,
-  //         isLoadingWallet: false,
-  //         accountBalance: this.state.accountBalance - 1000000,
-  //       });
-  //     })
-  //     .catch((e) => {
-  //       console.error("Something went wrong:\n", e);
-  //       this.setState({
-  //         isLoadingWallet: false,
-  //         topUpError: true, //Add to State and handle ->
-  //       });
-  //     })
-  //     .finally(() => client.disconnect());
-  // };
-
-  //ALSO RECALL THE IDENTITY SO THAT IT WILL UPDATE THE CREDITS
+  //ALSO RECALL THE IDENTITY SO THAT IT WILL UPDATE THE CREDITS <- ? IS THIS FOR THE ABOVE FUNCTIONS? ->
 
   //#######################################################################
   // AUTO-UPDATE QUERIES
@@ -6969,6 +6923,7 @@ class App extends React.Component {
 
   getLookOther = (queryObj, cateIndex) => {
     //console.log("Calling getLookOther");
+
     let queryLookOther = JSON.parse(JSON.stringify(queryObj));
 
     queryLookOther.where[cateIndex].push("lookother");
@@ -8921,6 +8876,7 @@ class App extends React.Component {
               {this.state.selectedDapp === "Wallet" ? (
                 <>
                   <WalletPage
+                    WALLET_Login7={this.state.WALLET_Login7} //This is for the enable pay to name control
                     isLoginComplete={isLoginComplete}
                     WALLET_whichTab={this.state.WALLET_whichTab}
                     handleTab_WALLET={this.handleTab_WALLET}

@@ -62,7 +62,7 @@ class EditReplyModal extends React.Component {
       //reviewId: //DONT NEED TO PASS IT HERE JUST HANDLE AND ADD BACK IN APP.JS
     };
 
-    this.editReply(reply);
+    this.props.editReply(reply);
     this.props.hideModal();
   };
 

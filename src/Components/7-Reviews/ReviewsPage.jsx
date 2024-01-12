@@ -124,7 +124,7 @@ class ReviewsPage extends React.Component {
                     YourReplies={this.props.YourReplies}
                     identity={this.props.identity}
                     uniqueName={this.props.uniqueName}
-                    handleYourReply={this.handleYourReply}
+                    handleYourReply={this.props.handleYourReply}
                     mode={this.props.mode}
                     isLoadingYourReviews={this.props.isLoadingYourReviews}
                   />

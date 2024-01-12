@@ -226,7 +226,7 @@ class CreatePostModal extends React.Component {
   };
 
   cityValidate = (city) => {
-    let regex = /^.{1,32}$/;
+    let regex = /^\S.{1,30}\S$/;
     let valid = regex.test(city);
 
     if (valid) {
@@ -252,7 +252,7 @@ class CreatePostModal extends React.Component {
   };
 
   regionValidate = (region) => {
-    let regex = /^.{1,32}$/;
+    let regex = /^\S.{1,30}\S$/;
     let valid = regex.test(region);
 
     if (valid) {
@@ -278,7 +278,7 @@ class CreatePostModal extends React.Component {
   };
 
   countryValidate = (country) => {
-    let regex = /^.{1,32}$/;
+    let regex = /^\S.{1,30}\S$/;
     let valid = regex.test(country);
 
     if (valid) {

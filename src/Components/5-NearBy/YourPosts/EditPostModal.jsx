@@ -322,7 +322,7 @@ class EditPostModal extends React.Component {
                 variant="primary"
                 style={{ textDecoration: "underline", marginRight: ".5rem" }}
               >
-                <b>Business/DGP</b>
+                <b>Shops/Menus</b>
               </Button>
             ) : (
               <Button
@@ -330,20 +330,20 @@ class EditPostModal extends React.Component {
                 style={{ marginRight: ".5rem" }}
                 onClick={() => this.handleCategoryButtons("offbiz")}
               >
-                <b>Business/DGP</b>
+                <b>Shops/Menus</b>
               </Button>
             )}
 
             {this.state.selectedCategory === "offother" ? (
               <Button variant="primary" style={{ textDecoration: "underline" }}>
-                <b>Other</b>
+                <b>Trade</b>
               </Button>
             ) : (
               <Button
                 variant="primary"
                 onClick={() => this.handleCategoryButtons("offother")}
               >
-                <b>Other</b>
+                <b>Trade</b>
               </Button>
             )}
 
@@ -373,7 +373,7 @@ class EditPostModal extends React.Component {
                 variant="primary"
                 style={{ textDecoration: "underline", marginRight: ".5rem" }}
               >
-                <b>Other</b>
+                <b>Trade</b>
               </Button>
             ) : (
               <Button
@@ -381,7 +381,7 @@ class EditPostModal extends React.Component {
                 style={{ marginRight: ".5rem" }}
                 onClick={() => this.handleCategoryButtons("lookother")}
               >
-                <b>Other</b>
+                <b>Trade</b>
               </Button>
             )}
             <div className="BottomBorder" style={{ paddingTop: ".5rem" }}></div>

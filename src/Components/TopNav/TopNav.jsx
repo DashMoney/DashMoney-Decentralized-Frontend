@@ -265,7 +265,7 @@ class TopNav extends React.Component {
                     <div
                       className="d-grid gap-2"
                       style={{
-                        marginTop: "4rem",
+                        marginTop: "1rem",
                         paddingLeft: "3rem",
                         paddingRight: "3rem",
                       }}

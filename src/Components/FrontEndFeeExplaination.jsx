@@ -2,6 +2,8 @@ import React from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import CloseButton from "react-bootstrap/CloseButton";
+import Spinner from "react-bootstrap/Spinner";
+import CreditsOnPage from "./CreditsOnPage";
 
 class FrontEndFeeExplaination extends React.Component {
   handleCloseClick = () => {
@@ -65,7 +67,13 @@ class FrontEndFeeExplaination extends React.Component {
               , and run the frontend yourself. Or you can host the frontend
               yourself so that others can use it, and you can earn Dash!
             </p>
-            {/* {this.props.isLoginComplete ? (
+            <CreditsOnPage
+              identityInfo={this.props.identityInfo}
+              uniqueName={this.props.uniqueName}
+              showModal={this.props.showModal}
+            />
+            {this.props.isLoginComplete &&
+            !this.props.isLoadingCreditTransfer ? (
               <>
                 <p>
                   If you want to see just click below and sent some credits to
@@ -83,7 +91,32 @@ class FrontEndFeeExplaination extends React.Component {
               </>
             ) : (
               <></>
-            )} */}
+            )}
+
+            {this.props.isLoginComplete &&
+            this.props.isLoadingCreditTransfer ? (
+              <>
+                <p></p>
+                <div id="spinner">
+                  <Spinner animation="border" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </Spinner>
+                </div>
+
+                <p>
+                  If you want to see just click below and sent some credits to
+                  DashMoney!
+                </p>
+                <p></p>
+                <div className="d-grid gap-2" id="button-edge">
+                  <Button variant="primary" disabled>
+                    <b>Identity Credit Transfer</b>
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <></>
+            )}
           </Modal.Body>
 
           <Modal.Footer>

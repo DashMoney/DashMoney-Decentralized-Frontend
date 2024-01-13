@@ -74,8 +74,9 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoggedIn: false, //Changed for TopNav constructing
+      isLoggedIn: false,
       mode: "dark",
+      feeAmountBaseNumber: 10000000 - Math.floor(Math.random() * 5000), //Needs to be determined by env var and needs a random part to vary the input so state transistion already in chain is not triggered.
 
       //isLoading: true, //For identity and name And not identityInfo that is handle on display component
       //^^^ IS THIS NOW HANDLED BY THE isLoginComplete render variable??
@@ -83,6 +84,7 @@ class App extends React.Component {
       //ACCOUNT 'LOGIN' PAGE
       isLoadingIdentity: true,
       isLoadingIdInfo: true,
+      isLoadingCreditTransfer: false,
 
       isLoadingName: true,
       isLoadingAlias: true,
@@ -1508,6 +1510,7 @@ class App extends React.Component {
     topupIdentity()
       .then((d) => {
         console.log("Identity credit balance: ", d.balance);
+        //Just manually add the topup amount
         this.setState({
           identityInfo: d.toJSON(),
           identityRaw: d,
@@ -8677,8 +8680,11 @@ class App extends React.Component {
   // see above ^^^
   sendFrontendFee = () => {
     this.setState({
-      isLoadingIdInfo: true,
+      isLoadingIdInfo: true, //wHAT DOES THIS DO? -> because does not control the identity state that is with identityInfo
+
       isLoadingCreditTransfer: true, // Add to state
+
+      identityInfo: "", //bC THIS IS WHAT CONTROLS THE TOPUP CREDITS AND WILL THAT MESS WITH THE FUNCTION BELOW ?
     });
     console.log(this.state.identityInfo.balance);
     const clientOpts = {
@@ -8695,29 +8701,39 @@ class App extends React.Component {
     const client = new Dash.Client(clientOpts);
 
     const identityCreditTransfer = async () => {
-      const identity = this.state.identityRaw; //YourIdentity
+      //const identity = this.state.identityRaw; //YourIdentity
+
+      let identity = "";
+      if (this.state.identityRaw !== "") {
+        identity = this.state.identityRaw;
+      } else {
+        identity = await platform.identities.get(this.state.identity);
+      } // Your identity ID
+
+      // const identityId = 'identity ID of the sender goes here';
+      //const identity = await client.platform.identities.get(identityId);
+
       const recipientId = import.meta.env.VITE_IDENTITY_TO_RECEIVE_FEE; //.env input
-      const feeAmount = //1,000,000 duffs * 1000 to credits * .01 for %
+
+      //add to state the variable : feeAmountBaseNumber = 10000000 and the subtract 1 from each time..
+      // SUBTRACT IN THE STATE SET AFTER TRANSITION.
+
+      //BUT WILL THE -1 CHANGE THE TRANSFER AMOUNT AFTER THE TOFIXED(0) SO THAT IT IS CHANGED IN THE STATE TRANSITION? I THINK YES..
+
+      const feeAmount = //100,000,000 duffs in a Dash * 1000 duffs to credits * .01 for % // Not .01 for % but .01 for TopUp(fixed amount) // actually, So TopUp and % are included in the calculation
+        // 100,000,000 duffs in a dash * 1000 credits in a duff = 100,000,000,000
+        // .01 topup is amt in dash -> 1,000,000,000
+        // .01 change to % -> 10,000,000
         (
-          10000000 * import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP
-        ).toFixed(0);
+          this.state.feeAmountBaseNumber *
+          import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP
+        ) //1 <=
+          .toFixed(0);
 
       console.log(feeAmount);
 
-      //convert %of topup to credits? or duff? GO With Credits
-      // Also may need to remove decimals so ...
-
-      //Identifier.from(returnedDoc.msgId,"base64").toJSON();
-
-      // let identityBuffer = await client.platform.identities.get(
-      //   this.state.identity
-      // );
-
-      //PULL IDENTITY FIRST THEN PLUG INTO THE CREDIT TRANSFER ->
-
-      //384707370
-      //10000000
-      //
+      // fee amount need to augment just a little.. I think it is using the logic just like the core so need to be different.
+      //So like have a fee amount in state aand subtract 1 from it each time.. <= ****
 
       await client.platform.identities.creditTransfer(
         identity,
@@ -8739,6 +8755,8 @@ class App extends React.Component {
           identityInfo: d.toJSON(),
           identityRaw: d,
           isLoadingIdInfo: false,
+          isLoadingCreditTransfer: false,
+          feeAmountBaseNumber: this.state.feeAmountBaseNumber - 1,
         });
 
         //credit transfer
@@ -8747,7 +8765,10 @@ class App extends React.Component {
       .catch((e) => {
         console.error("Something went wrong:\n", e);
         this.setState({
+          identityInfo: this.state.identityRaw.toJSON(), //Test <-
           isLoadingIdInfo: false,
+          isLoadingCreditTransfer: false,
+          feeAmountBaseNumber: this.state.feeAmountBaseNumber - 20,
         });
       })
       .finally(() => client.disconnect());
@@ -9157,10 +9178,14 @@ class App extends React.Component {
         this.state.presentModal === "FrontEndFeeExplaination" ? (
           <FrontEndFeeExplaination
             isModalShowing={this.state.isModalShowing}
+            isLoadingCreditTransfer={this.state.isLoadingCreditTransfer}
             hideModal={this.hideModal}
             sendFrontendFee={this.sendFrontendFee}
             isLoginComplete={isLoginComplete}
             mode={this.state.mode}
+            identityInfo={this.state.identityInfo}
+            uniqueName={this.state.uniqueName}
+            showModal={this.state.showModal}
           />
         ) : (
           <></>

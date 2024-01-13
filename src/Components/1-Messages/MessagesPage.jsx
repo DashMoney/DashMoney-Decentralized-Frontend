@@ -54,7 +54,11 @@ class MessagesPage extends React.Component {
             {this.props.errorToDisplay ? (
               <>
                 <p></p>
-                <Alert variant="danger" dismissible>
+                <Alert
+                  variant="danger"
+                  onClose={() => this.props.handleMessageFailureAlert()}
+                  dismissible
+                >
                   <Alert.Heading>Message Failed</Alert.Heading>
                   <p>
                     You either have insufficient credits or have run into a

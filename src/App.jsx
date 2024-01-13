@@ -1560,6 +1560,12 @@ class App extends React.Component {
     }
   };
 
+  handleMessageFailureAlert = () => {
+    this.setState({
+      errorToDisplay: false,
+    });
+  };
+
   updateCreditsAfterTopUp = (identInfo) => {
     this.setState({
       identityInfo: identInfo,
@@ -8827,6 +8833,7 @@ class App extends React.Component {
                     isLoadingEveryone={this.state.isLoadingEveryone}
                     isLoadingForYou={this.state.isLoadingForYou}
                     errorToDisplay={this.state.errorToDisplay}
+                    handleMessageFailureAlert={this.handleMessageFailureAlert}
                     identity={this.state.identity}
                     identityInfo={this.state.identityInfo}
                     uniqueName={this.state.uniqueName}

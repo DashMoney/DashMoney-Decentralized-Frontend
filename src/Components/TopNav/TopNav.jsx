@@ -133,11 +133,15 @@ class TopNav extends React.Component {
                 {this.props.isLoggedIn ? (
                   <>
                     {isLoginComplete ? (
-                      <CreditsOnPage
-                        identityInfo={this.props.identityInfo}
-                        uniqueName={this.props.uniqueName}
-                        showModal={this.props.showModal}
-                      />
+                      <div
+                        onClick={() => this.props.handleSelectedDapp("Login")}
+                      >
+                        <CreditsOnPage
+                          identityInfo={this.props.identityInfo}
+                          uniqueName={this.props.uniqueName}
+                          showModal={this.props.showModal}
+                        />
+                      </div>
                     ) : (
                       <div
                         className="d-grid gap-2"
@@ -265,7 +269,7 @@ class TopNav extends React.Component {
                     <div
                       className="d-grid gap-2"
                       style={{
-                        marginTop: "1.5rem",
+                        marginTop: ".5rem",
                         paddingLeft: "3rem",
                         paddingRight: "3rem",
                       }}

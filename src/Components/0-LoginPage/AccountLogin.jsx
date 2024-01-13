@@ -335,7 +335,12 @@ class AccountLogin extends React.Component {
                               </ul>
                             </div>
 
-                            <h6>
+                            <h6
+                              style={{
+                                marginLeft: "1rem",
+                                marginBottom: "1rem",
+                              }}
+                            >
                               <b>Login complete!</b>
                             </h6>
 
@@ -389,6 +394,32 @@ class AccountLogin extends React.Component {
                                 {listofAliases}
                               </ul>
                             </div>
+                            <h6
+                              style={{
+                                marginLeft: "1rem",
+                                marginBottom: "1rem",
+                              }}
+                            >
+                              <b>Login complete!</b>
+                            </h6>
+
+                            <div
+                              className="d-grid gap-2"
+                              style={{
+                                marginBottom: "1rem",
+                              }}
+                            >
+                              <Button
+                                variant="primary"
+                                //size="lg"
+                                onClick={() => this.props.toggleTopNav()}
+                              >
+                                <b>Go to Dapps</b>
+                              </Button>
+                            </div>
+                            <h6 style={{ textAlign: "center" }}>
+                              <b>OR</b>
+                            </h6>
                             <div className="d-grid gap-2" id="button-edge">
                               <Button
                                 variant="primary"
@@ -505,7 +536,7 @@ class AccountLogin extends React.Component {
             <div
               className="d-grid gap-2"
               style={{
-                marginTop: "4rem",
+                marginTop: "3rem",
                 paddingLeft: "3rem",
                 paddingRight: "3rem",
               }}

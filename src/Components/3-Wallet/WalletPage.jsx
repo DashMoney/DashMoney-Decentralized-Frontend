@@ -965,7 +965,8 @@ class WalletPage extends React.Component {
         {this.props.WALLET_whichTab === "Your Wallet" ? (
           <>
             {this.props.dgmDocuments.length === 0 &&
-            this.props.WALLET_Login7 ? (
+            this.props.WALLET_Login7 &&
+            !this.props.isLoadingButtons_WALLET ? (
               <>
                 <div className="d-grid gap-2" style={{ margin: "1rem" }}>
                   <Button
@@ -973,6 +974,20 @@ class WalletPage extends React.Component {
                     size="lg"
                     onClick={() => this.props.showModal("RegisterDGMModal")}
                   >
+                    <b>Enable Pay-to-Name</b>
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <></>
+            )}
+
+            {this.props.dgmDocuments.length === 0 &&
+            this.props.WALLET_Login7 &&
+            this.props.isLoadingButtons_WALLET ? (
+              <>
+                <div className="d-grid gap-2" style={{ margin: "1rem" }}>
+                  <Button variant="primary" size="lg" disabled>
                     <b>Enable Pay-to-Name</b>
                   </Button>
                 </div>

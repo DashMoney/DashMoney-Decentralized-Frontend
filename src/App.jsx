@@ -5096,7 +5096,7 @@ class App extends React.Component {
 
       // Create the note document
       const dgmDocument = await platform.documents.create(
-        "DGMContract.dgmaddress", /// I changed .note TO .dgmaddress***
+        "DGMContract.dgmaddress",
         identity,
         docProperties
       );

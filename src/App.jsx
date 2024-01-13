@@ -4655,13 +4655,13 @@ class App extends React.Component {
       this.setState({
         isLoadingMsgs_WALLET: false,
         isLoadingButtons_WALLET: false,
-        WALLET_Login1: false,
-        WALLET_Login2: false,
-        WALLET_Login3: false,
-        WALLET_Login4: false,
-        // WALLET_Login5: false,
-        // WALLET_Login6: false,
-        WALLET_Login7: false,
+        // WALLET_Login1: false,
+        // WALLET_Login2: false,
+        // WALLET_Login3: false,
+        // WALLET_Login4: false,
+        // // WALLET_Login5: false,
+        // // WALLET_Login6: false,
+        // WALLET_Login7: false,
       });
     }
   };

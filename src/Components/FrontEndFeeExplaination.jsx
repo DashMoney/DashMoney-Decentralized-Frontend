@@ -67,14 +67,15 @@ class FrontEndFeeExplaination extends React.Component {
               , and run the frontend yourself. Or you can host the frontend
               yourself so that others can use it, and you can earn Dash!
             </p>
-            <CreditsOnPage
-              identityInfo={this.props.identityInfo}
-              uniqueName={this.props.uniqueName}
-              showModal={this.props.showModal}
-            />
+
             {this.props.isLoginComplete &&
             !this.props.isLoadingCreditTransfer ? (
               <>
+                <CreditsOnPage
+                  identityInfo={this.props.identityInfo}
+                  uniqueName={this.props.uniqueName}
+                  showModal={this.props.showModal}
+                />
                 <p>
                   If you want to see just click below and sent some credits to
                   DashMoney!
@@ -96,13 +97,18 @@ class FrontEndFeeExplaination extends React.Component {
             {this.props.isLoginComplete &&
             this.props.isLoadingCreditTransfer ? (
               <>
-                <p></p>
+                <CreditsOnPage
+                  identityInfo={this.props.identityInfo}
+                  uniqueName={this.props.uniqueName}
+                  showModal={this.props.showModal}
+                />
+                {/* <p></p>
                 <div id="spinner">
                   <Spinner animation="border" role="status">
                     <span className="visually-hidden">Loading...</span>
                   </Spinner>
                 </div>
-
+                <p></p> */}
                 <p>
                   If you want to see just click below and sent some credits to
                   DashMoney!

@@ -1619,7 +1619,7 @@ class App extends React.Component {
         isLoadingEveryone: false,
         isLoadingRefresh: false,
       });
-      setInterval(() => this.autoUpdateEveryoneHelper(), 30000);
+      setInterval(() => this.autoUpdateEveryoneHelper(), 40000);
     }
   };
 
@@ -1887,7 +1887,7 @@ class App extends React.Component {
         isLoadingRefresh: false,
       });
 
-      setInterval(() => this.autoUpdateForYouHelper(), 30000);
+      setInterval(() => this.autoUpdateForYouHelper(), 40000);
     }
   };
 
@@ -3256,7 +3256,8 @@ class App extends React.Component {
   };
 
   checkByYouDMThreads = () => {
-    let docArray = this.state.ByYouMsgs;
+    //let docArray = this.state.ByYouMsgs;
+    let docArray = [...this.state.ByYouMsgs];
 
     if (docArray.length !== 0) {
       const clientOpts = {

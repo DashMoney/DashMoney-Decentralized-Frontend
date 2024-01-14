@@ -132,7 +132,7 @@ class App extends React.Component {
       ForYou3: false,
       ForYou4: false,
 
-      ByYouMsgs: [],
+      ByYouMsgs: [], //MESSAGES
       ByYouNames: [],
 
       FromTagsMsgs: [],
@@ -3989,10 +3989,10 @@ class App extends React.Component {
   handleRefresh_WALLET = () => {
     this.setState({
       isLoadingWallet: true,
-      isLoadingRefresh_Wallet: true,
-      isLoadingButtons_Wallet: true,
-      Wallet_sendSuccess: false,
-      Wallet_sendFailure: false,
+      isLoadingRefresh_WALLET: true,
+      isLoadingButtons_WALLET: true,
+      WALLET_sendSuccess: false,
+      WALLET_sendFailure: false,
       WALLET_sendMsgSuccess: false,
       WALLET_sendMsgFailure: false,
     });
@@ -4005,35 +4005,35 @@ class App extends React.Component {
 
   checkRefreshRace = () => {
     if (
-      this.state.Refresh1 &&
-      this.state.Refresh2 &&
-      this.state.Refresh3 &&
-      this.state.Refresh4 &&
-      this.state.Refresh5 &&
-      this.state.Refresh6
+      this.state.WALLET_Refresh1 &&
+      this.state.WALLET_Refresh2 &&
+      this.state.WALLET_Refresh3 &&
+      this.state.WALLET_Refresh4 &&
+      this.state.WALLET_Refresh5 &&
+      this.state.WALLET_Refresh6
     ) {
       this.setState({
-        ByYouMsgs: this.state.RefreshByYouMsgs,
-        ByYouNames: this.state.RefreshByYouNames,
-        ByYouThreads: this.state.RefreshByYouThreads,
+        WALLET_ByYouMsgs: this.state.WALLET_RefreshByYouMsgs,
+        WALLET_ByYouNames: this.state.WALLET_RefreshByYouNames,
+        WALLET_ByYouThreads: this.state.WALLET_RefreshByYouThreads,
 
-        ToYouMsgs: this.state.RefreshToYouMsgs,
-        ToYouNames: this.state.RefreshToYouNames,
-        ToYouThreads: this.state.RefreshToYouThreads,
+        WALLET_ToYouMsgs: this.state.WALLET_RefreshToYouMsgs,
+        WALLET_ToYouNames: this.state.WALLET_RefreshToYouNames,
+        WALLET_ToYouThreads: this.state.WALLET_RefreshToYouThreads,
 
-        identityInfo: this.state.RefreshIdentityInfo,
-        identityRaw: this.state.RefreshIdentityRaw,
+        identityInfo: this.state.WALLET_RefreshIdentityInfo,
+        identityRaw: this.state.WALLET_RefreshIdentityRaw,
 
         isLoadingWallet: false,
-        isLoadingRefresh: false,
-        isLoadingButtons: false,
+        isLoadingRefresh_WALLET: false,
+        isLoadingButtons_WALLET: false,
 
-        Refresh1: false,
-        Refresh2: false,
-        Refresh3: false,
-        Refresh4: false,
-        Refresh5: false,
-        Refresh6: false,
+        WALLET_Refresh1: false,
+        WALLET_Refresh2: false,
+        WALLET_Refresh3: false,
+        WALLET_Refresh4: false,
+        WALLET_Refresh5: false,
+        WALLET_Refresh6: false,
       });
     }
   };
@@ -4069,7 +4069,7 @@ class App extends React.Component {
 
         this.setState(
           {
-            Refresh6: true,
+            WALLET_Refresh6: true,
           },
           () => this.checkRefreshRace()
         );
@@ -4097,9 +4097,9 @@ class App extends React.Component {
         let idInfo = d.toJSON();
         this.setState(
           {
-            RefreshIdentityInfo: idInfo,
-            RefreshIdentityRaw: d,
-            Refresh5: true,
+            WALLET_RefreshIdentityInfo: idInfo,
+            WALLET_RefreshIdentityRaw: d,
+            WALLET_Refresh5: true,
           },
           () => this.checkRefreshRace()
         );
@@ -4142,8 +4142,8 @@ class App extends React.Component {
 
           this.setState(
             {
-              Refresh1: true,
-              Refresh2: true,
+              WALLET_Refresh1: true,
+              WALLET_Refresh2: true,
             },
             () => this.checkRefreshRace()
           );
@@ -4215,9 +4215,9 @@ class App extends React.Component {
 
         this.setState(
           {
-            RefreshByYouNames: nameDocArray,
-            RefreshByYouMsgs: docArray,
-            Refresh1: true,
+            WALLET_RefreshByYouNames: nameDocArray,
+            WALLET_RefreshByYouMsgs: docArray,
+            WALLET_Refresh1: true,
           },
           () => this.checkRefreshRace()
         );
@@ -4281,7 +4281,7 @@ class App extends React.Component {
         if (docArray.length === 0) {
           this.setState(
             {
-              Refresh2: true,
+              WALLET_Refresh2: true,
             },
             () => this.checkRefreshRace()
           );
@@ -4289,8 +4289,8 @@ class App extends React.Component {
           //this.getRefreshByYouThreadsNames(docArray); //Name Retrieval
           this.setState(
             {
-              RefreshByYouThreads: docArray,
-              Refresh2: true,
+              WALLET_RefreshByYouThreads: docArray,
+              WALLET_Refresh2: true,
             },
             () => this.checkRefreshRace()
           );
@@ -4299,7 +4299,7 @@ class App extends React.Component {
       .catch((e) => {
         console.error("Something went wrong RefreshByYouThreads:\n", e);
         this.setState({
-          RefreshByYouThreadsError: true, //handle error ->
+          WALLET_RefreshByYouThreadsError: true, //handle error ->
         });
       })
       .finally(() => client.disconnect());
@@ -4335,8 +4335,8 @@ class App extends React.Component {
 
           this.setState(
             {
-              Refresh3: true,
-              Refresh4: true,
+              WALLET_Refresh3: true,
+              WALLET_Refresh4: true,
             },
             () => this.checkRefreshRace()
           );
@@ -4408,9 +4408,9 @@ class App extends React.Component {
 
         this.setState(
           {
-            RefreshToYouNames: nameDocArray,
-            RefreshToYouMsgs: docArray,
-            Refresh3: true,
+            WALLET_RefreshToYouNames: nameDocArray,
+            WALLET_RefreshToYouMsgs: docArray,
+            WALLET_Refresh3: true,
           },
           () => this.checkRefreshRace()
         );
@@ -4474,15 +4474,15 @@ class App extends React.Component {
         if (docArray.length === 0) {
           this.setState(
             {
-              Refresh4: true,
+              WALLET_Refresh4: true,
             },
             () => this.checkRefreshRace()
           );
         } else {
           this.setState(
             {
-              RefreshToYouThreads: docArray,
-              Refresh4: true,
+              WALLET_RefreshToYouThreads: docArray,
+              WALLET_Refresh4: true,
             },
             () => this.checkRefreshRace()
           );
@@ -4491,7 +4491,7 @@ class App extends React.Component {
       .catch((e) => {
         console.error("Something went wrong RefreshToYouThreads:\n", e);
         this.setState({
-          RefreshByYouThreadsError: true, //handle error ->
+          WALLET_RefreshByYouThreadsError: true, //handle error ->
         });
       })
       .finally(() => client.disconnect());

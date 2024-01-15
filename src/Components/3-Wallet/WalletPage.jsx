@@ -443,7 +443,7 @@ class WalletPage extends React.Component {
                     <Button
                       style={{ marginRight: "1rem" }}
                       variant="primary"
-                      // onClick={() => this.props.showModal("WalletTXModal")}
+                      onClick={() => this.props.showModal("WalletTXModal")}
                     >
                       <b>Wallet TXs</b>
                     </Button>

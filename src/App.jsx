@@ -49,6 +49,7 @@ import NewThreadModal from "./Components/1-Messages/NewThreadModal";
 import ConfirmAddrPaymentModal from "./Components/3-Wallet/ConfirmAddrPaymentModal";
 import RegisterDGMModal from "./Components/RegisterDGMModal";
 import ThreadModal_WALLET from "./Components/3-Wallet/ThreadModal_WALLET";
+import WalletTXModal from "./Components/WalletTXModal";
 
 import PostModal from "./Components/5-NearBy/PostModal";
 import CreatePostModal from "./Components/5-NearBy/YourPosts/CreatePostModal";
@@ -527,6 +528,7 @@ class App extends React.Component {
       accountAddress: "",
 
       WALLET_addresses: [],
+      WALLET_addressesNames: [],
 
       walletId: "",
       mostRecentLogin: false,
@@ -1051,6 +1053,7 @@ class App extends React.Component {
         accountAddress: "",
 
         WALLET_addresses: [],
+        WALLET_addressesNames: [],
 
         walletId: "",
         mostRecentLogin: false,
@@ -3991,6 +3994,7 @@ class App extends React.Component {
       isLoadingWallet: true,
       isLoadingRefresh_WALLET: true,
       isLoadingButtons_WALLET: true,
+      isLoadingMsgs_WALLET: true,
       WALLET_sendSuccess: false,
       WALLET_sendFailure: false,
       WALLET_sendMsgSuccess: false,
@@ -4027,6 +4031,7 @@ class App extends React.Component {
         isLoadingWallet: false,
         isLoadingRefresh_WALLET: false,
         isLoadingButtons_WALLET: false,
+        isLoadingMsgs_WALLET: false,
 
         WALLET_Refresh1: false,
         WALLET_Refresh2: false,
@@ -4665,6 +4670,7 @@ class App extends React.Component {
       this.setState({
         isLoadingMsgs_WALLET: false,
         isLoadingButtons_WALLET: false,
+        isLoadingMsgs_WALLET: false,
         // WALLET_Login1: false,
         // WALLET_Login2: false,
         // WALLET_Login3: false,
@@ -9393,6 +9399,7 @@ class App extends React.Component {
             accountHistory={this.state.accountHistory}
             accountBalance={this.state.accountBalance}
             WALLET_addresses={this.state.WALLET_addresses}
+            WALLET_addressesNames={this.state.WALLET_addressesNames}
             ByYouMsgs={this.state.WALLET_ByYouMsgs}
             ByYouNames={this.state.WALLET_ByYouNames}
             ToYouMsgs={this.state.WALLET_ToYouMsgs}
@@ -9402,8 +9409,7 @@ class App extends React.Component {
             // DGPOrdersNames={this.state.DGPOrdersNames}
             isLoadingAddresses_WALLET={this.state.isLoadingAddresses_WALLET}
             isLoadingMsgs={this.state.isLoadingMsgs_WALLET}
-            sortedTuples={sortedTuples} // <= WHAT !!!!!!!
-
+            //sortedTuples={sortedTuples} // <= this is made in the WalletTXModal -> yes
             // So this should only be gotten too after wallet and msgs are loaded.. ->
           />
         ) : (

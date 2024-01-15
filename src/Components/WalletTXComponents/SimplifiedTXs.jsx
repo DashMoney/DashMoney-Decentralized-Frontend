@@ -61,9 +61,12 @@ class SimplifiedTXs extends React.Component {
         if (tx.type === "sent") {
           //get the address from the TX ->
 
-          for (addr in tx.to) {
-            //change this to find because i am only sending to one address =>DONE
-            if (addr.addressType === "otherAccount") {
+          for (const addr of tx.to) {
+            //ALSO USE const, must define as a variable !!!
+            //NOT in
+            //change this to find because i am only sending to one address =>DONE is it?? ->
+            if (addr.addressType === "unknown") {
+              // NOT "otherAccount"
               pmtAddress = addr.address;
               break;
             }
@@ -95,6 +98,22 @@ class SimplifiedTXs extends React.Component {
 
     //detailed -> Name  amt  date
     //    -> msg or order (display??) or button to
+    //
+    // let balance = this.props.accountBalance;
+    // let balanceArr = [balance];
+
+    // for (let tx of this.props.accountHistory) {
+    //   // if(tx.type === "received"){
+    //   balance -= tx.satoshisBalanceImpact;
+    //   balanceArr.push(balance);
+    //   // } else{
+    //   //   balance += tx.satoshisBalanceImpact;
+    //   //   balanceArr.push(balance);
+    //   // }
+    // }
+    // balanceArr.pop();
+
+    //  ^^^^ THIS WOULD HAVE TO CALCULATE FOR EVERY TX... WHICH IS SLOW JUST NEED TO PASS IN THE SPECIFIC.
     return (
       <>
         <Row
@@ -118,9 +137,10 @@ class SimplifiedTXs extends React.Component {
           </Col>
           <Col>
             {this.props.tx.type === "received" ? (
-              <b>{this.handleSatsToDash(balanceArr[index])}</b>
+              //<b>{this.handleSatsToDash(balanceArr[this.props.index])}</b>
+              <b>{this.handleSatsToDash(this.props.balance)}</b>
             ) : (
-              <span>{this.handleSatsToDash(balanceArr[index])}</span>
+              <span>{this.handleSatsToDash(this.props.balance)}</span>
             )}
           </Col>
           <Col>{this.handleTimeToDate(this.props.tx.time, this.props.d)}</Col>

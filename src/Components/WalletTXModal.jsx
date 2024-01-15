@@ -9,6 +9,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
 import SimplifiedTXs from "./WalletTXComponents/SimplifiedTXs";
+import DetailedTXs from "./WalletTXComponents/DetailedTXs";
 
 import "./WalletTXModal.css";
 
@@ -27,11 +28,11 @@ class WalletTXModal extends React.Component {
   handleTab = (eventKey) => {
     if (eventKey === "Detailed")
       this.setState({
-        whichMessagesTab: "Detailed",
+        whichTab: "Detailed",
       });
     else {
       this.setState({
-        whichMessagesTab: "Activity",
+        whichTab: "Activity",
       });
     }
   };
@@ -147,7 +148,10 @@ class WalletTXModal extends React.Component {
 
     // @@@@@   @@@@@   @@@@@   @@@@@   @@@@@   @@@@@   @@@@@
 
+    let theSortedTuples;
+
     if (!this.props.isLoadingMsgs_WALLET) {
+      console.log(this.props.accountHistory);
       //THIS MAY NOT BE THE BEST WAY TO ACHIEVE THIS.. <= ***
       let tupleByYouArray = [];
 
@@ -224,10 +228,10 @@ class WalletTXModal extends React.Component {
 
       // console.log('CombineandUnique Tuples!!', tupleArray);
 
-      let sortedTuples = tupleArray.sort(function (a, b) {
+      theSortedTuples = tupleArray.sort(function (a, b) {
         return b[1].$createdAt - a[1].$createdAt;
       });
-    }
+    } // ISSUE IS THAT THIS VARIABLE IS LOCKED IN HERE..!!!!!!!1
 
     // @@@@@   @@@@@   @@@@@   @@@@@   @@@@@   @@@@@   @@@@@
 
@@ -264,25 +268,27 @@ class WalletTXModal extends React.Component {
         <SimplifiedTXs
           tx={tx}
           index={index}
+          key={index}
           d={date}
-          sortedTuples={sortedTuples}
+          sortedTuples={theSortedTuples}
           addressTuples={addressTuples}
+          balance={balanceArr[index]}
         />
       );
     });
 
-    let DetailedTransactions = this.props.accountHistory.map((tx, index) => {
-      return (
-        <DetailedTXs
-          tx={tx}
-          index={index}
-          d={date}
-          sortedTuples={sortedTuples}
-          addressTuples={addressTuples}
-          //Function to push to sending msg ->
-        />
-      );
-    });
+    // let DetailedTransactions = this.props.accountHistory.map((tx, index) => {
+    //   return (
+    //     <DetailedTXs
+    //       tx={tx}
+    //       index={index}
+    //       d={date}
+    //       sortedTuples={sortedTuples}
+    //       addressTuples={addressTuples}
+    //       //Function to push to sending msg ->
+    //     />
+    //   );
+    // });
 
     return (
       <>
@@ -302,7 +308,7 @@ class WalletTXModal extends React.Component {
               fill
               variant="pills"
               defaultActiveKey={this.state.whichTab}
-              onSelect={(eventKey) => this.props.handleTab(eventKey)}
+              onSelect={(eventKey) => this.handleTab(eventKey)}
             >
               <Nav.Item>
                 <Nav.Link eventKey="Activity">
@@ -315,6 +321,7 @@ class WalletTXModal extends React.Component {
                 </Nav.Link>
               </Nav.Item>
             </Nav>
+
             {this.state.whichTab === "Activity" ? (
               <>
                 <Container className="g-0">
@@ -336,19 +343,35 @@ class WalletTXModal extends React.Component {
                 </Container>
               </>
             ) : (
-              <>This will be cards with buttons on for resends!</>
+              <></>
             )}
-            {/* <table className="txHistory">
-              <thead>
-                <tr>
-                  <th>From/To</th>
-                  <th>Amount</th>
-                  <th>Balance</th>
-                  <th id="rowWider">Date</th>
-                </tr>
-              </thead>
-              <tbody>{transactions}</tbody>
-            </table> */}
+
+            {this.state.whichTab === "Detailed" ? (
+              <>
+                <h4 style={{ marginLeft: "2rem", marginTop: "2rem" }}>
+                  Under Construction
+                </h4>
+                {/* <Container className="g-0">
+                  <Row className="justify-content-md-center">
+                    <Col>
+                      <b>From/To</b>
+                    </Col>
+                    <Col>
+                      <b>Amount</b>
+                    </Col>
+                    <Col>
+                      <b>Balance</b>
+                    </Col>
+                    <Col>
+                      <b>Date</b>
+                    </Col>
+                  </Row>
+                   {DetailedTransactions} 
+                </Container> */}
+              </>
+            ) : (
+              <></>
+            )}
           </Modal.Body>
 
           <Modal.Footer>

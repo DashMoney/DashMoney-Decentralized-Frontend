@@ -1,6 +1,7 @@
 import React from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
+
 class DetailedTXs extends React.Component {
   render() {
     //Card - What does it look like? ->

@@ -116,21 +116,24 @@ class SimplifiedTXs extends React.Component {
     //  ^^^^ THIS WOULD HAVE TO CALCULATE FOR EVERY TX... WHICH IS SLOW JUST NEED TO PASS IN THE SPECIFIC.
     return (
       <>
-        <Row
-          key={this.props.index}
-          //className="justify-content-md-center"
-        >
-          <Col>
+        <Row key={this.props.index} className="justify-content-md-center">
+          <Col xs={4}>
             <b>{this.handleTxOrderName(this.props.tx)}</b>
           </Col>
           <Col>
             {this.props.tx.type === "received" ? (
-              <b className="satBalImpactreceived">
+              <b
+                className="satBalImpactreceived"
+                style={{ textAlign: "center" }}
+              >
                 {" "}
                 {this.handleSatsToDash(this.props.tx.satoshisBalanceImpact)}
               </b>
             ) : (
-              <span className="satBalImpactsent">
+              <span
+                className="satBalImpactsent"
+                style={{ textAlign: "center" }}
+              >
                 {this.handleSatsToDash(this.props.tx.satoshisBalanceImpact)}
               </span>
             )}
@@ -138,9 +141,13 @@ class SimplifiedTXs extends React.Component {
           <Col>
             {this.props.tx.type === "received" ? (
               //<b>{this.handleSatsToDash(balanceArr[this.props.index])}</b>
-              <b>{this.handleSatsToDash(this.props.balance)}</b>
+              <b style={{ textAlign: "end" }}>
+                {this.handleSatsToDash(this.props.balance)}
+              </b>
             ) : (
-              <span>{this.handleSatsToDash(this.props.balance)}</span>
+              <span style={{ textAlign: "end" }}>
+                {this.handleSatsToDash(this.props.balance)}
+              </span>
             )}
           </Col>
           <Col>{this.handleTimeToDate(this.props.tx.time, this.props.d)}</Col>

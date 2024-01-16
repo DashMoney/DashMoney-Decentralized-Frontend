@@ -665,7 +665,7 @@ class PostModal extends React.Component {
           {this.props.selectedSearchedPost.category === "offbiz" ? (
             <>
               <h5>
-                <b>DashGetPaid Items</b>
+                <b>Shop/Menu Items</b>
               </h5>
 
               {/* CURRENTLY NOT USING THE STORE DOC AT ALL => ? => 
@@ -713,21 +713,21 @@ class PostModal extends React.Component {
           {this.state.whichDSODGR === "DSO" ? (
             <ButtonGroup className="me-2" aria-label="First group">
               <Button variant="primary" style={{ textDecoration: "underline" }}>
-                <b>DashShoutOut</b>
+                <b>Message(DM)</b>
               </Button>
 
               <Button variant="primary" onClick={this.triggerDGRButton}>
-                <b>DashGetReviews</b>
+                <b>Reviews</b>
               </Button>
             </ButtonGroup>
           ) : (
             <ButtonGroup className="me-2" aria-label="First group">
               <Button variant="primary" onClick={this.triggerDSOButton}>
-                <b>DashShoutOut</b>
+                <b>Message(DM)</b>
               </Button>
 
               <Button variant="primary" style={{ textDecoration: "underline" }}>
-                <b>DashGetReviews</b>
+                <b>Reviews</b>
               </Button>
             </ButtonGroup>
           )}
@@ -740,8 +740,8 @@ class PostModal extends React.Component {
                   {/* <p>Put the DSO dm but no tag just handle behind the scene. I think maybe have a different component probably form from DSO DM modal YEAH </p> */}
 
                   <p className="bodytext">
-                    You will be able to send a <b>DashShoutOut DM</b> to the
-                    post owner, once completed!
+                    You will be able to send a <b>Message(DM)</b> to the post
+                    owner, once completed!
                   </p>
 
                   {/* HOW WILL THE USER KNOW THAT THE MSG HAS BEEN SENT AND WHERE IS LOADING STATE DISPLAYED?
@@ -765,7 +765,7 @@ ALRIGHT SO IT WILL KEEP TRACK FOR THE SESSION BUT LOSES IT AFTER <= YEAH
                 <>
                   <p className="bodytext">
                     When logged in, you will be able to send a{" "}
-                    <b>DashShoutOut DM</b> to the post owner.
+                    <b>Message(DM)</b> to the post owner.
                   </p>
                 </>
               )}

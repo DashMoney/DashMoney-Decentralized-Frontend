@@ -97,7 +97,7 @@ class Threads extends React.Component {
       //   <Card.Body>
       <div key={this.props.index}>
         <div
-          className="BottomBorder"
+          className="ThreadBorder"
           style={{ paddingTop: ".5rem", marginBottom: ".5rem" }}
         ></div>
         <Card.Title className="cardTitle">

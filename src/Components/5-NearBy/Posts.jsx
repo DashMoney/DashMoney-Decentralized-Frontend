@@ -46,7 +46,11 @@ class Posts extends React.Component {
         postNameArray = [];
     }
 
-    let posts = postArray.map((post, index) => {
+    let postFilteredArray = postArray.filter((post) => {
+      return post.active;
+    });
+
+    let posts = postFilteredArray.map((post, index) => {
       //console.log(post);
       return (
         <Post

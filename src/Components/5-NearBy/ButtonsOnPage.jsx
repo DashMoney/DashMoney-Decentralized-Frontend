@@ -4,15 +4,36 @@ import Button from "react-bootstrap/Button";
 class ButtonsOnPage extends React.Component {
   render() {
     // CALC THE POST NUMBERS FOR DISPLAY ->
-    let offRentNum = this.props.OffRentPosts.length;
 
-    let offBizNum = this.props.OffBizPosts.length;
+    let offRentNumFiltered = this.props.OffRentPosts.filter((post) => {
+      return post.active;
+    });
+    let offRentNum = offRentNumFiltered.length;
 
-    let offOtherNum = this.props.OffOtherPosts.length;
+    let offBizNumFiltered = this.props.OffBizPosts.filter((post) => {
+      return post.active;
+    });
+    let offBizNum = offBizNumFiltered.length;
 
-    let lookRentNum = this.props.LookRentPosts.length;
+    //let offBizNum = this.props.OffBizPosts.length;
 
-    let lookOtherNum = this.props.LookOtherPosts.length;
+    let offOtherNumFiltered = this.props.OffOtherPosts.filter((post) => {
+      return post.active;
+    });
+    let offOtherNum = offOtherNumFiltered.length;
+
+    let lookRentNumFiltered = this.props.LookRentPosts.filter((post) => {
+      return post.active;
+    });
+    let lookRentNum = lookRentNumFiltered.length;
+
+    //let lookRentNum = this.props.LookRentPosts.length;
+
+    let lookOtherNumFiltered = this.props.LookOtherPosts.filter((post) => {
+      return post.active;
+    });
+
+    let lookOtherNum = lookOtherNumFiltered.length;
 
     return (
       <>

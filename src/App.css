@@ -60,7 +60,11 @@ html {
 }
 
 .BottomBorder {
-  border-bottom: 0.05rem solid rgba(255, 255, 255, 0.4);
+  border-bottom: 0.05rem solid white;
+}
+
+.ThreadBorder {
+  border-bottom: 0.1rem solid rgba(255, 255, 255, 0.4);
 }
 
 .navbar-nav {

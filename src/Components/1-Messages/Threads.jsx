@@ -81,41 +81,45 @@ class Threads extends React.Component {
   }
 
   render() {
-    let cardBkg;
-    let cardText;
+    // let cardBkg;
+    // let cardText;
 
-    if (this.props.mode === "primary") {
-      cardBkg = "white";
-      cardText = "dark";
-    } else {
-      cardBkg = "dark";
-      cardText = "white";
-    }
+    // if (this.props.mode === "primary") {
+    //   cardBkg = "white";
+    //   cardText = "dark";
+    // } else {
+    //   cardBkg = "dark";
+    //   cardText = "white";
+    // }
 
     return (
-      <Card id="thread" key={this.props.index} bg={cardBkg} text={cardText}>
-        <Card.Body>
-          <Card.Title className="cardTitle">
-            {this.handleName(this.props.thr)}
+      // <Card id="thread" key={this.props.index} bg={cardBkg} text={cardText}>
+      //   <Card.Body>
+      <div key={this.props.index}>
+        <div
+          className="BottomBorder"
+          style={{ paddingTop: ".5rem", marginBottom: ".5rem" }}
+        ></div>
+        <Card.Title className="cardTitle">
+          {this.handleName(this.props.thr)}
 
-            {/* <span onClick={() => this.handleNameClick()}>
+          {/* <span onClick={() => this.handleNameClick()}>
                 {this.props.tuple[0]}
               </span> */}
-            <span>{this.state.copiedName ? <span>✅</span> : <></>}</span>
+          <span>{this.state.copiedName ? <span>✅</span> : <></>}</span>
 
-            <span className="textsmaller">
-              {this.formatDate(
-                this.props.thr.$createdAt,
-                this.props.today,
-                this.props.yesterday
-              )}
-            </span>
-          </Card.Title>
-          <Card.Text onClick={() => this.handleReplyClick()}>
-            {this.props.thr.msg}
-          </Card.Text>
-        </Card.Body>
-      </Card>
+          <span className="textsmaller">
+            {this.formatDate(
+              this.props.thr.$createdAt,
+              this.props.today,
+              this.props.yesterday
+            )}
+          </span>
+        </Card.Title>
+        <Card.Text onClick={() => this.handleReplyClick()}>
+          {this.props.thr.msg}
+        </Card.Text>
+      </div>
     );
   }
 }

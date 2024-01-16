@@ -335,8 +335,8 @@ class WalletTXModal extends React.Component {
                     <Col>
                       <b style={{ textAlign: "start" }}>Amount</b>
                     </Col>
-                    <Col>
-                      <b style={{ textAlign: "start" }}>Balance</b>
+                    <Col style={{ textAlign: "start" }}>
+                      <b>Balance</b>
                     </Col>
                     <Col>
                       <b>Date</b>

@@ -19,7 +19,7 @@ class SimplifiedTXs extends React.Component {
   // };
 
   handleTimeToDate = (timeObject, timeNow) => {
-    //TEST Far Future Bug->
+    //TEST Far Future Bug-> Sat.
     let date = new Date(timeObject);
 
     //let longFormDate= setTime(date);

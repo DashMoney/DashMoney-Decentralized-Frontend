@@ -539,6 +539,7 @@ class App extends React.Component {
       mostRecentBlockHeight: 905000,
 
       DataContractDSO: "3djpLuabDgYeXY7RhT6by5VuvrLtn8wnNQTF3J4wz4fn",
+      DataContractDGT: "",
       DataContractDGM: "4PUQmGdGLLWwTFntgwEDhJWzUKoKqbSKanjVGTi2Fbcj",
       DataContractDGP: "785cZo4ok3DgyCJKsg4NPwuFmdDdcbp1hZKBW5b4SZ97",
       DataContractDMIO: "931HGHM5fMrRegVe3998hHcBAft1p8d9sWynfGnKxkw2",
@@ -3792,7 +3793,7 @@ class App extends React.Component {
    *      #############
    */
   //GROUP FUNCTIONS
-  ///In betweeen
+
   //GROUP FUNCTIONS^^^^
   /**
    *                             #############

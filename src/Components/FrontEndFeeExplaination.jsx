@@ -81,7 +81,7 @@ class FrontEndFeeExplaination extends React.Component {
                   DashMoney!
                 </p>
                 <p></p>
-                <div className="d-grid gap-2" id="button-edge">
+                <div className="d-grid gap-2">
                   <Button
                     variant="primary"
                     onClick={() => this.props.sendFrontendFee()}
@@ -114,7 +114,7 @@ class FrontEndFeeExplaination extends React.Component {
                   DashMoney!
                 </p>
                 <p></p>
-                <div className="d-grid gap-2" id="button-edge">
+                <div className="d-grid gap-2">
                   <Button variant="primary" disabled>
                     <b>Identity Credit Transfer</b>
                   </Button>

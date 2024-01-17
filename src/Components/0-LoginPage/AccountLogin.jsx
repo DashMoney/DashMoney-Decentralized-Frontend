@@ -154,7 +154,7 @@ class AccountLogin extends React.Component {
                 <>
                   <p>There are insufficient funds in your wallet.</p>
 
-                  <div className="d-grid gap-2" id="button-edge">
+                  <div className="d-grid gap-2">
                     <Button
                       size="lg"
                       variant="primary"
@@ -174,7 +174,7 @@ class AccountLogin extends React.Component {
               this.props.identity === "no identity" &&
               this.props.accountBalance !== 0 ? (
                 <>
-                  <div className="d-grid gap-2" id="button-edge">
+                  <div className="d-grid gap-2">
                     <Button
                       size="lg"
                       variant="primary"
@@ -303,7 +303,7 @@ class AccountLogin extends React.Component {
                             <b>Your Dash Name</b>
                           </h4>
                         </div>
-                        <div className="d-grid gap-2" id="button-edge">
+                        <div className="d-grid gap-2">
                           <Button
                             variant="primary"
                             onClick={() =>
@@ -367,7 +367,6 @@ class AccountLogin extends React.Component {
                               style={{
                                 marginTop: "1rem",
                               }}
-                              id="button-edge"
                             >
                               <Button
                                 variant="primary"
@@ -420,7 +419,7 @@ class AccountLogin extends React.Component {
                             <h6 style={{ textAlign: "center" }}>
                               <b>OR</b>
                             </h6>
-                            <div className="d-grid gap-2" id="button-edge">
+                            <div className="d-grid gap-2">
                               <Button
                                 variant="primary"
                                 onClick={() =>

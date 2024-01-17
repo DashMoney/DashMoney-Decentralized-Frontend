@@ -78,10 +78,17 @@ class MessagespageEveryone extends React.Component {
           uniqueName={this.props.uniqueName}
           showModal={this.props.showModal}
         />
+        {this.props.isLoginComplete ? (
+          <></>
+        ) : (
+          <h5 style={{ margin: "0rem", padding: "0rem" }}>
+            <b>Login for more!</b>
+          </h5>
+        )}
         {this.props.NewSOMsgs.length !== 0 ||
         this.props.NewSOThreads.length !== 0 ? (
           !this.props.isLoadingEveryone ? (
-            <div className="d-grid gap-2" id="button-edge">
+            <div className="d-grid gap-2">
               <Button
                 variant="primary"
                 onClick={() => {
@@ -97,26 +104,21 @@ class MessagespageEveryone extends React.Component {
         ) : (
           <></>
         )}
-        {this.props.isLoginComplete ? (
-          <></>
-        ) : (
-          <>
-            <h5>
-              <b>Login for more!</b>
-            </h5>
-          </>
-        )}
+
         {/* https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react */}
         <div
-          style={{ float: "left", clear: "both" }}
+          style={{
+            float: "left",
+            clear: "both",
+            margin: "0rem",
+            padding: "0rem",
+          }}
           ref={(el) => {
             this.messagesEnd = el;
           }}
         ></div>
 
-        <div id="cardtext" className="footer">
-          {tuples}
-        </div>
+        <div className="footer">{tuples}</div>
 
         <div className="bootstrapMenu">
           <ButtonGroup size="lg" className="one-level-nav">

@@ -64,7 +64,7 @@ html {
 }
 
 .ThreadBorder {
-  border-bottom: 0.1rem solid rgba(255, 255, 255, 0.4);
+  border-bottom: 0rem solid rgba(255, 255, 255, 0.4);
 }
 
 .navbar-nav {
@@ -172,9 +172,9 @@ div {
   justify-content: flex-end;
 }
 
-#card {
+/* #card {
   margin-top: 0.4rem;
-}
+} */
 
 .bootstrapMenu {
   /* margin-right: auto;

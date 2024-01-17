@@ -128,9 +128,7 @@ class PaymentsTab extends React.Component {
           <></>
         )}
 
-        <div id="cardtext" className="footer">
-          {tuples}
-        </div>
+        <div className="footer">{tuples}</div>
       </>
     );
   }

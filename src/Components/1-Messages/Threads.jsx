@@ -95,10 +95,11 @@ class Threads extends React.Component {
     return (
       // <Card id="thread" key={this.props.index} bg={cardBkg} text={cardText}>
       //   <Card.Body>
-      <div key={this.props.index}>
+      //<Card.Body key={this.props.index}>
+      <>
         <div
           className="ThreadBorder"
-          style={{ paddingTop: ".5rem", marginBottom: ".5rem" }}
+          style={{ paddingTop: ".2rem", marginBottom: ".3rem" }}
         ></div>
         <Card.Title className="cardTitle">
           {this.handleName(this.props.thr)}
@@ -119,7 +120,7 @@ class Threads extends React.Component {
         <Card.Text onClick={() => this.handleReplyClick()}>
           {this.props.thr.msg}
         </Card.Text>
-      </div>
+      </>
     );
   }
 }

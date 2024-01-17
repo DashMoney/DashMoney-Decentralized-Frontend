@@ -25,7 +25,7 @@ class AddOrEditReviewButton extends React.Component {
             {reviewToPass === undefined ? (
               <>
                 <p></p>
-                <div className="d-grid gap-2" id="button-edge">
+                <div className="d-grid gap-2">
                   <Button
                     variant="primary"
                     onClick={() => this.props.showModal("CreateReviewModal")}
@@ -38,7 +38,7 @@ class AddOrEditReviewButton extends React.Component {
             ) : (
               <>
                 <p></p>
-                <div className="d-grid gap-2" id="button-edge">
+                <div className="d-grid gap-2">
                   <Button
                     variant="primary"
                     onClick={() =>

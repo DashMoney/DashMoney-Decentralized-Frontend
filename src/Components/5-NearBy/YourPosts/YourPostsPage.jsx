@@ -45,7 +45,7 @@ class YourPostsPage extends React.Component {
              : 
               <>
 
-               <div className="d-grid gap-2" id="button-edge">
+               <div className="d-grid gap-2" >
             <Button
               variant="primary"
               onClick={() => 

@@ -191,7 +191,7 @@ class MessagespageForyou extends React.Component {
         this.props.NewDMFromTagsMsgs.length !== 0 ||
         this.props.NewDMFromTagsThreads.length !== 0 ? (
           !this.props.isLoadingForYou ? (
-            <div className="d-grid gap-2" id="button-edge">
+            <div className="d-grid gap-2">
               <Button
                 variant="primary"
                 onClick={() => {
@@ -215,9 +215,7 @@ class MessagespageForyou extends React.Component {
           }}
         ></div>
 
-        <div id="cardtext" className="footer">
-          {tuples}
-        </div>
+        <div className="footer">{tuples}</div>
 
         <div className="bootstrapMenu">
           <ButtonGroup size="lg" className="one-level-nav">

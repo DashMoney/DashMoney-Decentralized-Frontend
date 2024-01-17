@@ -104,8 +104,34 @@ p {
   margin-left: 0.5rem;
 }
 
+.paddingReqBadge {
+  margin-left: 0.5rem;
+  padding-bottom: 0.1rem;
+}
+
 .indentStuff {
   margin-left: 1rem;
+}
+
+.indent {
+  margin-left: 0.5rem;
+}
+
+.indentMembers {
+  margin-left: 1rem;
+}
+
+.requestbtn {
+  padding-top: 0.2rem;
+  padding-right: 0.4rem;
+  padding-left: 0.6rem;
+  padding-bottom: 0.1rem;
+  font-size: large;
+}
+
+.sendReqTrial {
+  display: flex;
+  align-items: center;
 }
 
 div {
@@ -116,10 +142,6 @@ div {
   display: flex;
   margin-top: 3rem;
 }
-
-/* .id-line {
-  display: flex;
-} */
 
 .modal-backcolor-primary {
   background-color: rgb(250, 250, 250);

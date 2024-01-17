@@ -25,7 +25,7 @@ class Threads extends React.Component {
 
   handleName = (msgDoc) => {
     if (msgDoc.$ownerId === this.props.identity) {
-      return <span style={{ color: "#008de4" }}>{this.props.uniqueName}</span>;
+      return <b style={{ color: "#008de4" }}>{this.props.uniqueName}</b>;
     }
 
     let nameDoc = this.props.ThreadsNames.find((doc) => {
@@ -36,12 +36,12 @@ class Threads extends React.Component {
       return "Not Found";
     }
     return (
-      <span
+      <b
         style={{ color: "#008de4" }}
         onClick={() => this.handleThreadNameClick(nameDoc.label)}
       >
         {nameDoc.label}
-      </span>
+      </b>
     );
   };
 

@@ -151,7 +151,7 @@ class WalletTXModal extends React.Component {
     let theSortedTuples;
 
     if (!this.props.isLoadingMsgs_WALLET) {
-      console.log(this.props.accountHistory);
+      //console.log(this.props.accountHistory);
       //THIS MAY NOT BE THE BEST WAY TO ACHIEVE THIS.. <= ***
       let tupleByYouArray = [];
 

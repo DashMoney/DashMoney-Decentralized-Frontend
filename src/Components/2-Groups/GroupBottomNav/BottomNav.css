@@ -1,0 +1,16 @@
+.one-level-nav{
+  display: flex;
+  
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  
+  margin-left: auto;
+  margin-right: auto;
+  
+}
+
+.bottomNavFake{
+  border-top: .1rem solid grey;
+    opacity: 0;
+}

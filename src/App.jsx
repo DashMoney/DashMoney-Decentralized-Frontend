@@ -4529,7 +4529,7 @@ class App extends React.Component {
     const client = new Dash.Client(clientOpts);
 
     const getDocuments = async () => {
-      console.log("Called Query DGM Addresses.");
+      console.log("Called getAddresses.");
 
       //CREATE A FUNCTION THAT GETS ALL THE ADDRESS FROM WALLET HISTORY ->
       //2 sides -> send to AND received from

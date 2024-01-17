@@ -122,15 +122,15 @@ class MsgForyou extends React.Component {
         <Card.Body>
           <Card.Title className="cardTitle">
             {this.props.uniqueName === this.props.tuple[0] ? (
-              <span style={{ color: "#008de4" }}>{this.props.tuple[0]}</span>
+              <b style={{ color: "#008de4" }}>{this.props.tuple[0]}</b>
             ) : (
               <>
-                <span
+                <b
                   style={{ color: "#008de4" }}
                   onClick={() => this.handleNameClick()}
                 >
                   {this.props.tuple[0]}
-                </span>
+                </b>
                 <span>{this.state.copiedName ? <span>✅</span> : <></>}</span>
               </>
             )}

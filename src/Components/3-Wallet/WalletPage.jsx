@@ -491,7 +491,8 @@ class WalletPage extends React.Component {
                 showModal={this.props.showModal}
               />
 
-              {this.props.isLoadingRefresh_WALLET ? (
+              {this.props.isLoadingRefresh_WALLET &&
+              !this.props.isLoadingWallet ? (
                 <div id="spinner">
                   <p></p>
                   <Spinner animation="border" role="status">

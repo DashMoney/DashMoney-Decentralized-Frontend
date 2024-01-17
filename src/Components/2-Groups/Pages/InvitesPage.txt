@@ -61,7 +61,7 @@ class InvitesPage extends React.Component {
       <>
         <p></p>
         <div className="id-line">
-          <h5>
+          {/* <h5>
             {this.props.identityInfo === "" ||
             this.props.identityInfo.balance >= 450000000 ? (
               <Badge className="paddingBadge" bg="primary">
@@ -95,9 +95,9 @@ class InvitesPage extends React.Component {
                 </h5>
               )}
             </>
-          )}
+          )} */}
 
-          <h5>
+          {/* <h5>
             {this.props.identityInfo === "" ||
             this.props.identityInfo.balance >= 450000000 ? (
               <></>
@@ -106,8 +106,7 @@ class InvitesPage extends React.Component {
                 Please visit DGN or DGM to TopUp your credits.
               </Badge>
             )}
-          </h5>
-          
+          </h5> */}
         </div>
         <div id="bodytext">
           {this.props.isLoading ? (

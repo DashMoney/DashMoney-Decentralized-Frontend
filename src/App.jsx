@@ -22,6 +22,8 @@ import AccountLogin from "./Components/0-LoginPage/AccountLogin";
 
 import MessagesPage from "./Components/1-Messages/MessagesPage";
 
+import GroupsPage from "./Components/2-Groups/GroupsPage";
+
 import WalletPage from "./Components/3-Wallet/WalletPage";
 
 import NearbyPage from "./Components/5-NearBy/NearbyPage";
@@ -221,6 +223,28 @@ class App extends React.Component {
       // pushNewDMtoView={this.pushNewDMtoView}
 
       //MESSAGES PAGE ^^^^^
+
+      //GROUPS PAGE
+
+      //isLoadingRecentTab: false,
+      isLoadingOthersInvites: true, //Do I need this..
+      isLoadingMyGroups: true,
+      isLoadingGroup: false,
+
+      dgtRawInvites: [], //Gets selfinvites && ToYouinvites/ used in deletegroups
+      //dO THE MAP AND FILTERING ON THE ACTUAL DISPLAY COMPONENT
+
+      dgtAcceptedInvites: [], // Just selfinvites //used to getgroupnames and prevent second invite to self and used on InvitesPage to display
+
+      //dgtFromYouInvites: [], //Not Currently doing anything, need to implement
+      //tuplesRecentToDisplay: [], //This if for the RecentTab to Display
+
+      othersInvitesToDisplay: [],
+
+      selectedGroup: "",
+      isGroupShowing: false,
+
+      //GROUPS PAGE ^^^^^
 
       //WALLET PAGE
 
@@ -3793,6 +3817,482 @@ class App extends React.Component {
    *      #############
    */
   //GROUP FUNCTIONS
+  handleSelectedJoinGroup = (groupName) => {
+    this.setState(
+      {
+        selectedGroup: groupName,
+      },
+      () => this.showModal("JoinGroupModal")
+    );
+  };
+
+  hideGroupPage = () => {
+    this.setState({
+      isGroupShowing: false,
+    });
+  };
+
+  showGroupPage = (groupName) => {
+    this.setState({
+      isLoadingGroup: true, //IS THIS DOING ANYTHING?? ->
+      selectedGroup: groupName,
+      isGroupShowing: true,
+    });
+  };
+
+  // this.getDGTInviteDocs(this.state.identity) <= TRIGGER
+
+  getDGTInviteDocs = (theIdentity) => {
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      apps: {
+        DGTContract: {
+          contractId: this.state.DataContractDGT, // Your contract ID
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    //DGTInvite Query
+    const getDocuments = async () => {
+      return client.platform.documents.get("DGTContract.dgtinvite", {
+        where: [["toId", "==", Buffer.from(Identifier.from(theIdentity))]],
+      });
+    };
+
+    getDocuments()
+      .then((d) => {
+        let rawArray = [];
+        let docArray = [];
+        for (const n of d) {
+          //console.log("Invite Documents:\n", n.toJSON());
+          rawArray = [...rawArray, n]; // <- REFACTOR THIS
+          docArray = [...docArray, n.toJSON()];
+        }
+        //this.sortOutInvites(docArray);
+
+        this.setState(
+          {
+            dgtRawInvites: rawArray,
+          },
+          () => this.sortOutInvites(docArray)
+        );
+      })
+      .catch((e) => console.error("Something went wrong:\n", e))
+      //need to setState to handle Error and set isLoadingEveryone to false
+      .finally(() => client.disconnect());
+  };
+
+  // helperToGetRecentTabMsgs = (othersInvites) => {
+  //   this.getNamesforDGTinvites(othersInvites); //BC need names
+
+  //   // this.getDGTRecentTabDocs(); //DOESN'T EXIST YET!!! ->
+  // };
+
+  // getDGTRecentTabDocs = () => {
+  //   console.log(`Calling Recent Tab Msgs`);
+
+  //   const clientOpts = {
+  //     network: this.props.whichNetwork,
+  //     apps: {
+  //       DGTContract: {
+  //         contractId: this.state.DataContractDGT, // Your contract ID
+  //       },
+  //     },
+  //   };
+  //   const client = new Dash.Client(clientOpts);
+
+  //   //################################################################
+  //   // I have to rewrite DC and include a query for this... but i think the query is what I want..
+  //   //DGTMessages Query ->
+  //   const getMessages = async () => {
+  //     return client.platform.documents.get("DGTContract.dgtmsg", {
+  //       limit: 60,
+  //       where: [
+  //         ["timeStamp", ">=", 2546075019551 - Date.now()],
+  //         ["group", "in", this.props.acceptedInvites], //IDK if accepted invites is an array of groupNames so need to check that. -> yeah I dont think It is in the right format -> fix ->
+  //       ],
+  //       orderBy: [
+  //         //is this allowed?? need to check the rules
+  //         ["timeStamp", "asc"],
+  //       ],
+  //     });
+  //   };
+
+  //   getMessages()
+  //     .then((d) => {
+  //       if (d.length === 0) {
+  //         this.setState({
+  //           tuplesRecentToDisplay: "No Messages",
+  //           isLoadingRecentTab: false,
+  //         });
+  //       } else {
+  //         let docArray = [];
+  //         for (const n of d) {
+  //           console.log("Document:\n", n.toJSON());
+  //           docArray = [...docArray, n.toJSON()];
+  //         }
+
+  //         this.getNamesRecentTabMsgs(docArray);
+  //       }
+  //     })
+  //     .catch((e) => console.error("Something went wrong:\n", e))
+  //     //need to setState to handle Error and set isLoadingEveryone to false
+  //     .finally(() => client.disconnect());
+  // };
+  // getNamesRecentTabMsgs = (msgArr) => {
+  //   let ownerarrayOfOwnerIds = msgArr.map((doc) => {
+  //     return doc.$ownerId;
+  //   });
+
+  //   let setOfOwnerIds = [...new Set(ownerarrayOfOwnerIds)];
+
+  //   let arrayOfOwnerIds = [...setOfOwnerIds];
+
+  //   arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+  //     Buffer.from(Identifier.from(item))
+  //   );
+
+  //   console.log("Calling getNamesRecentTabMsgs");
+
+  //   const clientOpts = {
+  //     network: this.props.whichNetwork,
+  //     apps: {
+  //       DPNS: {
+  //         contractId: this.state.DataContractDPNS,
+  //       },
+  //     },
+  //   };
+  //   const client = new Dash.Client(clientOpts);
+
+  //   const getNameDocuments = async () => {
+  //     return client.platform.documents.get("DPNS.domain", {
+  //       where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
+  //       orderBy: [["records.dashUniqueIdentityId", "asc"]],
+  //     });
+  //   };
+
+  //   getNameDocuments()
+  //     .then((d) => {
+  //       //WHAT IF THERE ARE NO NAMES?
+  //       if (d.length === 0) {
+  //         console.log("No DPNS domain documents retrieved.");
+  //       }
+
+  //       let nameDocArray = [];
+
+  //       for (const n of d) {
+  //         console.log("NameDoc:\n", n.toJSON());
+
+  //         nameDocArray = [n.toJSON(), ...nameDocArray];
+  //       }
+  //       console.log(nameDocArray);
+
+  //       let tupleArray = []; //<- Final array
+
+  //       // My 2 arrays are: nameDocArray and msgArr
+  //       //There may not be very many name docs because same author for lots of msgs..
+
+  //       tupleArray = msgArr.map((msg) => {
+  //         let tuple = "";
+
+  //         for (let nameDoc of nameDocArray) {
+  //           if (nameDoc.$ownerId === msg.$ownerId) {
+  //             tuple = [nameDoc.label, msg];
+  //             break;
+  //           }
+  //         }
+  //         if (tuple !== "") {
+  //           return tuple;
+  //         }
+
+  //         return ["No Name Avail..", msg];
+  //       });
+  //       //HAVE TO SORT THE MSGS AND NAMES TOGETHER BC THEY DON'T COME TOGETHER WELL.
+
+  //       console.log("Tuple!");
+  //       console.log(tupleArray);
+
+  //       this.setState({
+  //         tuplesRecentToDisplay: tupleArray,
+  //         isLoadingRecentTab: false,
+  //       });
+  //     })
+  //     .catch((e) => {
+  //       console.error("Something went wrong:\n", e);
+
+  //       this.setState({
+  //         Loading: false,
+  //       });
+  //     })
+  //     .finally(() => client.disconnect());
+  // };
+  // //LINKED FUNCTIONS -  END
+
+  getNamesforDGTinvites = (msgArr) => {
+    if (msgArr.length === 0) {
+      console.log("No Others Invites");
+      this.setState({
+        isLoading: false,
+        isLoadingOthersInvites: false,
+        isLoadingRefresh: false,
+      });
+    } else {
+      console.log("Others Invites:");
+      console.log(msgArr);
+
+      let ownerarrayOfOwnerIds = msgArr.map((doc) => {
+        return doc.$ownerId;
+      });
+
+      let setOfOwnerIds = [...new Set(ownerarrayOfOwnerIds)];
+
+      let arrayOfOwnerIds = [...setOfOwnerIds];
+
+      arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+        Buffer.from(Identifier.from(item))
+      );
+
+      console.log("Calling getNamesforDGTInvites");
+
+      const clientOpts = {
+        network: this.state.whichNetwork,
+        apps: {
+          DPNS: {
+            contractId: this.state.DataContractDPNS,
+          },
+        },
+      };
+      const client = new Dash.Client(clientOpts);
+
+      const getNameDocuments = async () => {
+        return client.platform.documents.get("DPNS.domain", {
+          where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
+          orderBy: [["records.dashUniqueIdentityId", "asc"]],
+        });
+      };
+
+      getNameDocuments()
+        .then((d) => {
+          if (d.length === 0) {
+            console.log("No DPNS domain documents retrieved.");
+          }
+
+          let nameDocArray = [];
+
+          for (const n of d) {
+            //console.log("NameDoc:\n", n.toJSON());
+
+            nameDocArray = [n.toJSON(), ...nameDocArray];
+          }
+          console.log(nameDocArray);
+
+          let tupleArray = []; //<- Final array
+
+          tupleArray = msgArr.map((msg) => {
+            let tuple = "";
+
+            for (let nameDoc of nameDocArray) {
+              if (nameDoc.$ownerId === msg.$ownerId) {
+                tuple = [nameDoc.label, msg];
+                break;
+              }
+            }
+            if (tuple !== "") {
+              return tuple;
+            }
+
+            return ["No Name Avail..", msg];
+          });
+          console.log("Tuple for Display");
+          console.log(tupleArray);
+
+          this.setState({
+            othersInvitesToDisplay: tupleArray,
+            isLoading: false,
+            isLoadingOthersInvites: false,
+            isLoadingRefresh: false,
+          });
+        })
+        .catch((e) => {
+          console.error("Something went wrong:\n", e);
+
+          this.setState({
+            isLoading: false,
+
+            isLoadingOthersInvites: false,
+            isLoadingRefresh: false,
+          });
+        })
+        .finally(() => client.disconnect());
+    } //this is to close the else statement
+  };
+
+  //What is suppose to call this because nothing here calls it?
+  submitCreateGroup = (newGroup) => {
+    //Its just a name.
+    this.setState({
+      isLoadingMyGroups: true,
+    });
+
+    let namesOfGroups = this.state.dgtAcceptedInvites.map((invite) => {
+      return invite.group;
+    });
+    //this stuff makes sure I dont send 2nd invite to myself
+    if (namesOfGroups.includes(newGroup)) {
+      this.setState({
+        isLoadingMyGroups: false,
+      });
+    } else {
+      //ADD INVITE TO DISPLAY AND CONTINUE TO DISPLAY UNTIL RETURNED
+
+      const clientOpts = {
+        network: this.state.whichNetwork,
+        wallet: {
+          mnemonic: this.state.mnemonic,
+          //aDD THE ADAPTER ->
+          unsafeOptions: {
+            skipSynchronizationBeforeHeight:
+              this.state.skipSynchronizationBeforeHeight,
+            //change to what the actual block height
+          },
+        },
+        apps: {
+          DGTContract: {
+            contractId: this.state.DataContractDGT,
+          },
+        },
+      };
+      const client = new Dash.Client(clientOpts);
+
+      const submitInvite = async () => {
+        const { platform } = client;
+
+        //const identity = await platform.identities.get(this.state.identity); // Your identity ID
+        const identity = this.state.identityRaw;
+        //aDD THE TERNARY ->
+
+        const docProperties = {
+          group: newGroup,
+          //toId: Buffer.from(Identifier.from(this.state.identity)),
+          // handle on return or what? did i change it right?
+          toId: this.state.identity,
+          dgt: "self",
+        };
+
+        // Create the note document
+        const dgtDocument = await platform.documents.create(
+          "DGTContract.dgtinvite",
+          identity,
+          docProperties
+        );
+
+        const documentBatch = {
+          create: [dgtDocument], // Document(s) to create
+          replace: [], // Document(s) to update
+          delete: [], // Document(s) to delete
+        };
+        // Sign and submit the document(s)
+        return platform.documents.broadcast(documentBatch, identity);
+        //HAVE TO CHANGE THE SUBMITING ^^^
+      };
+
+      submitInvite()
+        .then((d) => {
+          //let submittedDoc = d.toJSON();
+          this.setState({
+            //dgtAcceptedInvites: is this where I should add the doc?
+            isLoadingMyGroups: false,
+          });
+        })
+        .catch((e) => {
+          console.error("Something went wrong:\n", e);
+          this.setState({
+            isLoadingMyGroups: false,
+            errorToDisplay: true, //Needs to be more specific
+          });
+        })
+        .finally(() => client.disconnect());
+    } // This is the close of the else statment
+  };
+
+  deleteGroup = (groupRemove) => {
+    //Just a name
+    this.hideGroupPage();
+
+    this.setState({
+      isLoadingMyGroups: true,
+    });
+
+    //create a group to remove array for before display ->
+    //Find the groupName of the doc and return the docId -> DONE
+
+    let document = this.state.dgtRawInvites.find((invite) => {
+      return (
+        groupRemove === invite.toJSON().group &&
+        invite.toJSON().$ownerId === this.state.identity
+      );
+    });
+    console.log(document);
+
+    //let documentId = document.$id;
+
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+      apps: {
+        DGTContract: {
+          contractId: this.state.DataContractDGT,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const deleteDocument = async () => {
+      const { platform } = client;
+      const identity = this.state.identityRaw;
+
+      // Sign and submit the document delete transition
+      return platform.documents.broadcast({ delete: [document] }, identity);
+    };
+
+    let namesOfGroups = this.state.dgtAcceptedInvites.map((invite) => {
+      return invite.group;
+    });
+
+    if (namesOfGroups.includes(groupRemove)) {
+      let groupIndex = namesOfGroups.indexOf(groupRemove);
+
+      let mutableArray = this.state.dgtAcceptedInvites;
+      mutableArray.splice(groupIndex, 1);
+
+      this.setState({
+        dgtAcceptedInvites: mutableArray,
+        isLoadingMyGroups: false,
+      });
+    }
+
+    deleteDocument()
+      .then((d) => {
+        console.log("Document deleted:\n", d.toJSON());
+        this.setState({
+          isLoadingMyGroups: false,
+        });
+      })
+      .catch((e) => {
+        console.error("Something went wrong:\n", e);
+        this.setState({
+          isLoadingMyGroups: false,
+        });
+      })
+      .finally(() => client.disconnect());
+  };
 
   //GROUP FUNCTIONS^^^^
   /**
@@ -8852,6 +9352,7 @@ class App extends React.Component {
               ) : (
                 <></>
               )}
+
               {this.state.selectedDapp === "Messages" ? (
                 <>
                   {/* DONT HANDLE THE LOGIN SEPARATED PARTS HERE DO THAT IN THE COMPONENT AND PASS THE **ISLOGINCOMPLETE** THROUGH PROPS */}
@@ -8895,6 +9396,26 @@ class App extends React.Component {
               ) : (
                 <></>
               )}
+              {/* {this.state.selectedDapp === "Groups" ? (
+                <>
+                  <GroupsPage
+                    isLoginComplete={isLoginComplete}
+                    //InitialPullReviews={this.state.InitialPullReviews}
+                    //pullInitialTriggerREVIEWS={this.pullInitialTriggerREVIEWS}
+                    whichReviewsTab={this.state.whichReviewsTab}
+                    //handleReviewsTab={this.handleReviewsTab}
+                    identityInfo={this.state.identityInfo}
+                    uniqueName={this.state.uniqueName}
+                    showModal={this.showModal}
+                    mode={this.state.mode}
+                    //isLoadingReviewsSearch={this.state.isLoadingReviewsSearch}
+                    identity={this.state.identity}
+                    //isLoadingYourReviews={this.state.isLoadingYourReviews}
+                  />
+                </>
+              ) : (
+                <></>
+              )} */}
 
               {this.state.selectedDapp === "Groups" ? (
                 <>

@@ -154,7 +154,11 @@ class SimplifiedTXs extends React.Component {
               </span>
             )}
           </Col>
-          <Col>{this.handleTimeToDate(this.props.tx.time, this.props.d)}</Col>
+          <Col>
+            <span style={{ margin: "0rem", padding: "0rem" }}>
+              {this.handleTimeToDate(this.props.tx.time, this.props.d)}
+            </span>
+          </Col>
         </Row>
         {/* <tr key={index}>
           <td>

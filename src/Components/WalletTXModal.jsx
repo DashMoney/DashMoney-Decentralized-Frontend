@@ -303,7 +303,7 @@ class WalletTXModal extends React.Component {
             </Modal.Title>
             {closeButtonColor}
           </Modal.Header>
-          <Modal.Body>
+          <Modal.Body style={{ margin: "0rem", padding: "0rem" }}>
             <Nav
               fill
               variant="pills"
@@ -327,7 +327,12 @@ class WalletTXModal extends React.Component {
                 <Container className="g-0">
                   <Row
                     className="justify-content-md-center"
-                    style={{ marginTop: ".5rem", marginBottom: "1rem" }}
+                    style={{
+                      marginTop: ".5rem",
+                      marginBottom: "1rem",
+                      marginLeft: "0.2rem",
+                      marginRight: "0.2rem",
+                    }}
                   >
                     <Col xs={4}>
                       <b>From/To</b>

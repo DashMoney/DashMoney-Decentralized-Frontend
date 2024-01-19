@@ -3,6 +3,7 @@ import Badge from "react-bootstrap/Badge";
 import Spinner from "react-bootstrap/Spinner";
 import Button from "react-bootstrap/Button";
 
+import CreditsOnPage from "../CreditsOnPage";
 //import "./InvitesPage.css";
 
 //STarts with the invite page and then shifts to the group
@@ -13,9 +14,7 @@ class GroupsPage extends React.Component {
     return date.toLocaleDateString();
   };
 
-  handleJoinGroup = (groupName) => {
-    this.props.handleSelectedJoinGroup(groupName);
-  };
+  //Below for sortOutInvites -> Pass dgtRawInvites -> AND Don't need a function this should just be handled in render ->
 
   // sortOutInvites = (inviteArray) => {
   //   //Invites sorted but if $ownerId === toId create a separate array for and set both to state
@@ -131,7 +130,9 @@ class GroupsPage extends React.Component {
           <Button
             key={index}
             variant="primary"
-            onClick={() => this.handleJoinGroup(othersInvite[1].group)}
+            onClick={() =>
+              this.props.handleSelectedJoinGroup(othersInvite[1].group)
+            }
           >
             {othersInvite[1].group}
             <Badge className="createwalletbtn" bg="light" text="dark" pill>
@@ -145,8 +146,12 @@ class GroupsPage extends React.Component {
     return (
       <>
         <p></p>
-        <div className="id-line">{/* ADD CREDITS ON PAGE && LOWCREDITS */}</div>
         <div id="bodytext">
+          <CreditsOnPage
+            identityInfo={this.props.identityInfo}
+            uniqueName={this.props.uniqueName}
+            showModal={this.props.showModal}
+          />
           {/* BELOW IS FOR USER LOADING, IDONT THINK I NEED ANYMORE */}
           {/* {this.props.isLoading ? ( //isLoadingGroups?? *****
             <>

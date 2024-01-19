@@ -226,20 +226,17 @@ class App extends React.Component {
 
       //GROUPS PAGE
 
-      //isLoadingRecentTab: false,
-      isLoadingOthersInvites: true, //Do I need this..
-      isLoadingMyGroups: true,
-      isLoadingGroup: false,
+      isLoadingGroups: true, //Invite Pull, Active(Msgs) Pull, creating Group, sending invite, deleting group, accepting invite
+      isLoadingGroup: false, // Msgs Pull, Members pull, sending msg,
 
-      dgtRawInvites: [], //Gets selfinvites && ToYouinvites/ used in deletegroups
+      isLoadingGroupsActive: true, //Separate spinner for Active so not lumped in with Groups.
+
+      isLoadingGroupInvite: false, //Control and alert in Groups and on GroupPage because that is the only way you will know if an invite was sent.
+
+      dgtInvites: [], //Gets selfinvites && ToYouinvites
       //dO THE MAP AND FILTERING ON THE ACTUAL DISPLAY COMPONENT
 
-      dgtAcceptedInvites: [], // Just selfinvites //used to getgroupnames and prevent second invite to self and used on InvitesPage to display
-
-      //dgtFromYouInvites: [], //Not Currently doing anything, need to implement
-      //tuplesRecentToDisplay: [], //This if for the RecentTab to Display
-
-      othersInvitesToDisplay: [],
+      dgtInvitesNames: [],
 
       selectedGroup: "",
       isGroupShowing: false,
@@ -3817,6 +3814,7 @@ class App extends React.Component {
    *      #############
    */
   //GROUP FUNCTIONS
+
   handleSelectedJoinGroup = (groupName) => {
     this.setState(
       {
@@ -3840,9 +3838,9 @@ class App extends React.Component {
     });
   };
 
-  // this.getDGTInviteDocs(this.state.identity) <= TRIGGER
+  // this.getDGTInvites(this.state.identity) <= TRIGGER
 
-  getDGTInviteDocs = (theIdentity) => {
+  getDGTInvites = (theIdentity) => {
     const clientOpts = {
       network: this.state.whichNetwork,
       apps: {
@@ -3862,180 +3860,57 @@ class App extends React.Component {
 
     getDocuments()
       .then((d) => {
-        let rawArray = [];
+        /**
+         * if (d.length === 0) {
+          //console.log("There are no ForyouByyouMsgs");
+
+          this.setState(
+            {
+              ForYou1: true,
+              ForYou2: true,
+            },
+            () => this.checkForYouRace()
+          );
+        } else {
+          let docArray = [];
+
+          for (const n of d) {
+            //console.log("ByYouMsgs:\n", n.toJSON());
+            docArray = [...docArray, n.toJSON()];
+          }
+          this.getByYouThreads(docArray);
+          this.getForyouByyouNames(docArray);
+        }
+         */
+
         let docArray = [];
+
         for (const n of d) {
           //console.log("Invite Documents:\n", n.toJSON());
-          rawArray = [...rawArray, n]; // <- REFACTOR THIS
+
           docArray = [...docArray, n.toJSON()];
         }
-        //this.sortOutInvites(docArray);
 
         this.setState(
           {
-            dgtRawInvites: rawArray,
+            dgtInvites: rawArray,
           },
-          () => this.sortOutInvites(docArray)
+          () => this.getDGTinvitesNames(docArray)
         );
+        //^^^^ CHANGE THIS WHOLE THING TO NORMAL PULL SEQUENCE
       })
       .catch((e) => console.error("Something went wrong:\n", e))
       //need to setState to handle Error and set isLoadingEveryone to false
       .finally(() => client.disconnect());
   };
 
-  // helperToGetRecentTabMsgs = (othersInvites) => {
-  //   this.getNamesforDGTinvites(othersInvites); //BC need names
+  getDGTinvitesNames = (msgArr) => {
+    //CHANGE ALL THIS -> SHOULD QUERY RIGHT AFTER RAWiNVITES AND SET INVITES IN HERE AS WELL.
 
-  //   // this.getDGTRecentTabDocs(); //DOESN'T EXIST YET!!! ->
-  // };
-
-  // getDGTRecentTabDocs = () => {
-  //   console.log(`Calling Recent Tab Msgs`);
-
-  //   const clientOpts = {
-  //     network: this.props.whichNetwork,
-  //     apps: {
-  //       DGTContract: {
-  //         contractId: this.state.DataContractDGT, // Your contract ID
-  //       },
-  //     },
-  //   };
-  //   const client = new Dash.Client(clientOpts);
-
-  //   //################################################################
-  //   // I have to rewrite DC and include a query for this... but i think the query is what I want..
-  //   //DGTMessages Query ->
-  //   const getMessages = async () => {
-  //     return client.platform.documents.get("DGTContract.dgtmsg", {
-  //       limit: 60,
-  //       where: [
-  //         ["timeStamp", ">=", 2546075019551 - Date.now()],
-  //         ["group", "in", this.props.acceptedInvites], //IDK if accepted invites is an array of groupNames so need to check that. -> yeah I dont think It is in the right format -> fix ->
-  //       ],
-  //       orderBy: [
-  //         //is this allowed?? need to check the rules
-  //         ["timeStamp", "asc"],
-  //       ],
-  //     });
-  //   };
-
-  //   getMessages()
-  //     .then((d) => {
-  //       if (d.length === 0) {
-  //         this.setState({
-  //           tuplesRecentToDisplay: "No Messages",
-  //           isLoadingRecentTab: false,
-  //         });
-  //       } else {
-  //         let docArray = [];
-  //         for (const n of d) {
-  //           console.log("Document:\n", n.toJSON());
-  //           docArray = [...docArray, n.toJSON()];
-  //         }
-
-  //         this.getNamesRecentTabMsgs(docArray);
-  //       }
-  //     })
-  //     .catch((e) => console.error("Something went wrong:\n", e))
-  //     //need to setState to handle Error and set isLoadingEveryone to false
-  //     .finally(() => client.disconnect());
-  // };
-  // getNamesRecentTabMsgs = (msgArr) => {
-  //   let ownerarrayOfOwnerIds = msgArr.map((doc) => {
-  //     return doc.$ownerId;
-  //   });
-
-  //   let setOfOwnerIds = [...new Set(ownerarrayOfOwnerIds)];
-
-  //   let arrayOfOwnerIds = [...setOfOwnerIds];
-
-  //   arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-  //     Buffer.from(Identifier.from(item))
-  //   );
-
-  //   console.log("Calling getNamesRecentTabMsgs");
-
-  //   const clientOpts = {
-  //     network: this.props.whichNetwork,
-  //     apps: {
-  //       DPNS: {
-  //         contractId: this.state.DataContractDPNS,
-  //       },
-  //     },
-  //   };
-  //   const client = new Dash.Client(clientOpts);
-
-  //   const getNameDocuments = async () => {
-  //     return client.platform.documents.get("DPNS.domain", {
-  //       where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-  //       orderBy: [["records.dashUniqueIdentityId", "asc"]],
-  //     });
-  //   };
-
-  //   getNameDocuments()
-  //     .then((d) => {
-  //       //WHAT IF THERE ARE NO NAMES?
-  //       if (d.length === 0) {
-  //         console.log("No DPNS domain documents retrieved.");
-  //       }
-
-  //       let nameDocArray = [];
-
-  //       for (const n of d) {
-  //         console.log("NameDoc:\n", n.toJSON());
-
-  //         nameDocArray = [n.toJSON(), ...nameDocArray];
-  //       }
-  //       console.log(nameDocArray);
-
-  //       let tupleArray = []; //<- Final array
-
-  //       // My 2 arrays are: nameDocArray and msgArr
-  //       //There may not be very many name docs because same author for lots of msgs..
-
-  //       tupleArray = msgArr.map((msg) => {
-  //         let tuple = "";
-
-  //         for (let nameDoc of nameDocArray) {
-  //           if (nameDoc.$ownerId === msg.$ownerId) {
-  //             tuple = [nameDoc.label, msg];
-  //             break;
-  //           }
-  //         }
-  //         if (tuple !== "") {
-  //           return tuple;
-  //         }
-
-  //         return ["No Name Avail..", msg];
-  //       });
-  //       //HAVE TO SORT THE MSGS AND NAMES TOGETHER BC THEY DON'T COME TOGETHER WELL.
-
-  //       console.log("Tuple!");
-  //       console.log(tupleArray);
-
-  //       this.setState({
-  //         tuplesRecentToDisplay: tupleArray,
-  //         isLoadingRecentTab: false,
-  //       });
-  //     })
-  //     .catch((e) => {
-  //       console.error("Something went wrong:\n", e);
-
-  //       this.setState({
-  //         Loading: false,
-  //       });
-  //     })
-  //     .finally(() => client.disconnect());
-  // };
-  // //LINKED FUNCTIONS -  END
-
-  getNamesforDGTinvites = (msgArr) => {
     if (msgArr.length === 0) {
       console.log("No Others Invites");
       this.setState({
-        isLoading: false,
-        isLoadingOthersInvites: false,
-        isLoadingRefresh: false,
+        isLoadingGroups: false,
       });
     } else {
       console.log("Others Invites:");
@@ -4065,6 +3940,25 @@ class App extends React.Component {
       };
       const client = new Dash.Client(clientOpts);
 
+      /*
+       let arrayOfOwnerIds = docArray.map((doc) => {
+      return doc.$ownerId;
+    });
+
+    let setOfOwnerIds = [...new Set(arrayOfOwnerIds)];
+
+    arrayOfOwnerIds = [...setOfOwnerIds];
+
+    //console.log("Called Get ByYou Threads Names");
+
+    const getNameDocuments = async () => {
+      return client.platform.documents.get("DPNS.domain", {
+        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
+        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      });
+    };
+      */
+
       const getNameDocuments = async () => {
         return client.platform.documents.get("DPNS.domain", {
           where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
@@ -4074,6 +3968,30 @@ class App extends React.Component {
 
       getNameDocuments()
         .then((d) => {
+          /*
+           if (d.length === 0) {
+          console.log("No DPNS domain documents retrieved.");
+        }
+
+        let nameDocArray = [];
+        for (const n of d) {
+          //console.log("NameDoc:\n", n.toJSON());
+
+          nameDocArray = [n.toJSON(), ...nameDocArray];
+        }
+
+        this.setState(
+          {
+            NewDMByYouThreadsNames: [
+              ...nameDocArray,
+              ...this.state.NewDMByYouThreadsNames,
+            ],
+            NewDMByYouThreads: [...docArray, ...this.state.NewDMByYouThreads],
+            NewDM1: true,
+          },
+          () => this.checkNewDMRace()
+        );
+          */
           if (d.length === 0) {
             console.log("No DPNS domain documents retrieved.");
           }
@@ -4085,33 +4003,35 @@ class App extends React.Component {
 
             nameDocArray = [n.toJSON(), ...nameDocArray];
           }
-          console.log(nameDocArray);
+          //tUPLE SORT -> REMOVED
+          // console.log(nameDocArray);
 
-          let tupleArray = []; //<- Final array
+          // let tupleArray = []; //<- Final array
 
-          tupleArray = msgArr.map((msg) => {
-            let tuple = "";
+          // tupleArray = msgArr.map((msg) => {
+          //   let tuple = "";
 
-            for (let nameDoc of nameDocArray) {
-              if (nameDoc.$ownerId === msg.$ownerId) {
-                tuple = [nameDoc.label, msg];
-                break;
-              }
-            }
-            if (tuple !== "") {
-              return tuple;
-            }
+          //   for (let nameDoc of nameDocArray) {
+          //     if (nameDoc.$ownerId === msg.$ownerId) {
+          //       tuple = [nameDoc.label, msg];
+          //       break;
+          //     }
+          //   }
+          //   if (tuple !== "") {
+          //     return tuple;
+          //   }
 
-            return ["No Name Avail..", msg];
-          });
-          console.log("Tuple for Display");
-          console.log(tupleArray);
+          //   return ["No Name Avail..", msg];
+          // });
+          // console.log("Tuple for Display");
+          // console.log(tupleArray);
 
           this.setState({
-            othersInvitesToDisplay: tupleArray,
-            isLoading: false,
+            //othersInvitesToDisplay: tupleArray,
+            dgtInvitesNames: nameDocArray,
+            dgtInvites: rawArray,
+
             isLoadingOthersInvites: false,
-            isLoadingRefresh: false,
           });
         })
         .catch((e) => {
@@ -4128,20 +4048,30 @@ class App extends React.Component {
     } //this is to close the else statement
   };
 
-  //What is suppose to call this because nothing here calls it?
+  getActiveGroups = () => {
+    //This is actually messages
+    //isLoadingActiveGroups -> use this
+  };
+
+  //Dont need to, the names are in the messages..! And just use the createdAt for the time =>
+
   submitCreateGroup = (newGroup) => {
     //Its just a name.
     this.setState({
-      isLoadingMyGroups: true,
+      isLoadingGroups: true,
     });
 
-    let namesOfGroups = this.state.dgtAcceptedInvites.map((invite) => {
-      return invite.group;
+    //Makes sure I dont send 2nd invite to myself
+
+    let document = this.state.dgtInvites.find((invite) => {
+      return (
+        newGroup === invite.group && invite.$ownerId === this.state.identity
+      );
     });
-    //this stuff makes sure I dont send 2nd invite to myself
-    if (namesOfGroups.includes(newGroup)) {
+
+    if (document !== undefined) {
       this.setState({
-        isLoadingMyGroups: false,
+        isLoadingGroups: false,
       });
     } else {
       //ADD INVITE TO DISPLAY AND CONTINUE TO DISPLAY UNTIL RETURNED
@@ -4150,7 +4080,7 @@ class App extends React.Component {
         network: this.state.whichNetwork,
         wallet: {
           mnemonic: this.state.mnemonic,
-          //aDD THE ADAPTER ->
+          adapter: LocalForage.createInstance,
           unsafeOptions: {
             skipSynchronizationBeforeHeight:
               this.state.skipSynchronizationBeforeHeight,
@@ -4169,7 +4099,13 @@ class App extends React.Component {
         const { platform } = client;
 
         //const identity = await platform.identities.get(this.state.identity); // Your identity ID
-        const identity = this.state.identityRaw;
+        //const identity = this.state.identityRaw;
+        let identity = "";
+        if (this.state.identityRaw !== "") {
+          identity = this.state.identityRaw;
+        } else {
+          identity = await platform.identities.get(this.state.identity);
+        } // Your identity ID
         //aDD THE TERNARY ->
 
         const docProperties = {
@@ -4199,17 +4135,18 @@ class App extends React.Component {
 
       submitInvite()
         .then((d) => {
-          //let submittedDoc = d.toJSON();
+          let submittedDoc = d.toJSON();
+
           this.setState({
-            //dgtAcceptedInvites: is this where I should add the doc?
-            isLoadingMyGroups: false,
+            dgtInvites: [submittedDoc, ...this.state.dgtInvites],
+            isLoadingGroups: false,
           });
         })
         .catch((e) => {
           console.error("Something went wrong:\n", e);
           this.setState({
-            isLoadingMyGroups: false,
-            errorToDisplay: true, //Needs to be more specific
+            isLoadingGroups: false,
+            errorGroupsAdd: true, //Needs to be more specific
           });
         })
         .finally(() => client.disconnect());
@@ -4227,10 +4164,9 @@ class App extends React.Component {
     //create a group to remove array for before display ->
     //Find the groupName of the doc and return the docId -> DONE
 
-    let document = this.state.dgtRawInvites.find((invite) => {
+    let document = this.state.dgtInvites.find((invite) => {
       return (
-        groupRemove === invite.toJSON().group &&
-        invite.toJSON().$ownerId === this.state.identity
+        groupRemove === invite.group && invite.$ownerId === this.state.identity
       );
     });
     console.log(document);
@@ -4241,6 +4177,7 @@ class App extends React.Component {
       network: this.state.whichNetwork,
       wallet: {
         mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
         unsafeOptions: {
           skipSynchronizationBeforeHeight:
             this.state.skipSynchronizationBeforeHeight,
@@ -4262,25 +4199,24 @@ class App extends React.Component {
       return platform.documents.broadcast({ delete: [document] }, identity);
     };
 
-    let namesOfGroups = this.state.dgtAcceptedInvites.map((invite) => {
-      return invite.group;
-    });
-
-    if (namesOfGroups.includes(groupRemove)) {
-      let groupIndex = namesOfGroups.indexOf(groupRemove);
-
-      let mutableArray = this.state.dgtAcceptedInvites;
-      mutableArray.splice(groupIndex, 1);
-
-      this.setState({
-        dgtAcceptedInvites: mutableArray,
-        isLoadingMyGroups: false,
-      });
-    }
-
     deleteDocument()
       .then((d) => {
         console.log("Document deleted:\n", d.toJSON());
+        // let namesOfGroups = this.state.dgtInvites.map((invite) => {
+        //   return invite.group;
+        // });
+
+        // if (namesOfGroups.includes(groupRemove)) {
+        //   let groupIndex = namesOfGroups.indexOf(groupRemove);
+
+        //   let mutableArray = this.state.dgtAcceptedInvites;
+        //   mutableArray.splice(groupIndex, 1);
+
+        //   this.setState({
+        //     dgtInvites: mutableArray,
+        //     isLoadingGroups: false,
+        //   });
+        // }
         this.setState({
           isLoadingMyGroups: false,
         });
@@ -4289,6 +4225,160 @@ class App extends React.Component {
         console.error("Something went wrong:\n", e);
         this.setState({
           isLoadingMyGroups: false,
+        });
+      })
+      .finally(() => client.disconnect());
+  };
+
+  // BELOW - Moved here from Group.jsx
+  // Must also move the **state** here as well ->
+  //Just go through the functions and pass the state that is there to app.js ->
+
+  submitDGTmessage = (groupName, msgText) => {
+    this.setState({
+      isLoadingGroup: true,
+    });
+
+    const clientOpts = {
+      network: "testnet",
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+      apps: {
+        DGTContract: {
+          contractId: this.state.DataContractDGT,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    let docProperties = {
+      group: groupName,
+      message: msgText,
+    };
+
+    const submitMsgDocument = async () => {
+      const { platform } = client;
+      //const identity = this.state.identityRaw; // Your identity ID
+      let identity = "";
+      if (this.state.identityRaw !== "") {
+        identity = this.state.identityRaw;
+      } else {
+        identity = await platform.identities.get(this.state.identity);
+      } // Your identity ID
+
+      // Create the note document
+      const dgtDocument = await platform.documents.create(
+        "DGTContract.dgtmsg", // <- CHECK THIS
+        identity,
+        docProperties
+      );
+
+      const documentBatch = {
+        create: [dgtDocument], // Document(s) to create
+        replace: [], // Document(s) to update
+        delete: [], // Document(s) to delete
+      };
+      // Sign and submit the document(s)
+      return platform.documents.broadcast(documentBatch, identity);
+    };
+
+    submitMsgDocument()
+      .then((d) => {
+        console.log(d.toJSON());
+
+        this.setState({
+          LoadingMsg: false,
+          stageMsgsToAdd: this.state.stageMsgsToAdd.slice(0, -1), //This is for the Group Page Fake it til you make it
+        });
+      })
+      .catch((e) => {
+        console.error("Something went wrong:\n", e);
+        this.setState({
+          LoadingMsg: false,
+          sentMsgError: true,
+        });
+      })
+      .finally(() => client.disconnect());
+  };
+
+  submitDGTinvite = (dpnsDoc) => {
+    //have to get the id of the name like DGM
+
+    //Invite Sent alert ??? also add loading
+
+    this.setState({
+      LoadingInvite: true,
+    });
+
+    const clientOpts = {
+      network: "testnet",
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+      apps: {
+        DGTContract: {
+          contractId: this.state.DataContractDGT,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const submitInviteDocument = async () => {
+      const { platform } = client;
+      const identity = this.state.identityRaw; // Your identity ID
+
+      const docProperties = {
+        toId: Buffer.from(Identifier.from(dpnsDoc.$ownerId)), //this is a selfinvite
+        group: this.state.selectedGroup,
+      };
+
+      // Create the note document
+      const dgtDocument = await platform.documents.create(
+        "DGTContract.dgtinvite", // <- CHECK THIS
+        identity,
+        docProperties
+      );
+
+      const documentBatch = {
+        create: [dgtDocument], // Document(s) to create
+        replace: [], // Document(s) to update
+        delete: [], // Document(s) to delete
+      };
+      // Sign and submit the document(s)
+      return platform.documents.broadcast(documentBatch, identity);
+    };
+
+    // this.setState({
+    //   LoadingInvite:false,
+    //   sentInviteSuccess: true,
+    // sendToName: dpnsDoc.label,
+    // });
+
+    submitInviteDocument()
+      .then((d) => {
+        console.log(d.toJSON());
+        this.setState({
+          LoadingInvite: false,
+          sentInviteSuccess: true,
+          sendToName: dpnsDoc.label,
+        });
+      })
+      .catch((e) => {
+        console.error("Something went wrong:\n", e);
+        this.setState({
+          LoadingInvite: false,
+          sentInviteError: true,
         });
       })
       .finally(() => client.disconnect());
@@ -9400,6 +9490,10 @@ class App extends React.Component {
                 <>
                   <GroupsPage
                     isLoginComplete={isLoginComplete}
+                    identityInfo={this.state.identityInfo}
+                    uniqueName={this.state.uniqueName}
+                    showModal={this.showModal}
+                    identity={this.state.identity}
                     //InitialPullReviews={this.state.InitialPullReviews}
                     //pullInitialTriggerREVIEWS={this.pullInitialTriggerREVIEWS}
                     whichReviewsTab={this.state.whichReviewsTab}

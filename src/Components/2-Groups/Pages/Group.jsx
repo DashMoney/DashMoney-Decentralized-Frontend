@@ -27,22 +27,22 @@ class Group extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      Loading: true,
-      LoadingMsg: false,
-      LoadingInvite: false,
+      LoadingMsgs: false,
+      //LoadingInvite: false, //isLoadingGroupInvite for send invite <- move to App.js
       LoadingMembers: true,
 
-      groupMembers: [],
+      groupMembers: [], //add the app.js
 
-      msgsToDisplay: [],
-      stageMsgsToAdd: [],
+      msgsToDisplay: [], //add the app.js
+      stageMsgsToAdd: [], //remove?
 
-      isModalShowing: false,
+      isModalShowing: false, //Why are the modals here? just put in app.js?
       presentModal: "",
-      sentMsgError: false,
-      sentInviteError: false,
-      sentInviteSuccess: false,
-      sendToName: "",
+
+      sentMsgError: false, //add the app.js
+      sentInviteError: false, //add the app.js
+      sentInviteSuccess: false, //add the app.js
+      sendToName: "", //For invite   //add the app.js
     };
   }
   // //https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react
@@ -75,199 +75,14 @@ class Group extends React.Component {
   //   return date.toLocaleDateString();
   // };
 
-  //BELOW MOVE TO APP JS ->
-
-  submitDGTmessage = (groupName, msgText) => {
-    this.setState({
-      LoadingMsg: true,
-    });
-
-    const clientOpts = {
-      network: "testnet",
-      wallet: {
-        mnemonic: this.props.mnemonic,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight: this.props.mostRecentBlockHeight,
-        },
-      },
-      apps: {
-        DGTContract: {
-          contractId: this.props.DataContractDGT,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
-
-    let docProperties = {
-      group: groupName,
-      timeStamp: 2546075019551 - Date.now(),
-      message: msgText,
-    };
-
-    const submitMsgDocument = async () => {
-      const { platform } = client;
-      const identity = this.props.identityRaw; // Your identity ID
-
-      // Create the note document
-      const dgtDocument = await platform.documents.create(
-        "DGTContract.dgtmsg", // <- CHECK THIS
-        identity,
-        docProperties
-      );
-      //Staged BEGIN
-      let d = Date.now();
-
-      let fakeDocProperties = {
-        group: groupName,
-        timeStamp: 2546075019551 - d,
-        message: msgText,
-        $createdAt: d,
-      };
-
-      console.log(fakeDocProperties);
-
-      this.addSentMessage(fakeDocProperties);
-      //Staged END
-
-      const documentBatch = {
-        create: [dgtDocument], // Document(s) to create
-        replace: [], // Document(s) to update
-        delete: [], // Document(s) to delete
-      };
-      // Sign and submit the document(s)
-      return platform.documents.broadcast(documentBatch, identity);
-    };
-
-    submitMsgDocument()
-      .then((d) => {
-        console.log(d.toJSON());
-        this.props.handleRemoveStagedMsgs(); //This is for Group Page Reload
-        this.setState({
-          LoadingMsg: false,
-          stageMsgsToAdd: this.state.stageMsgsToAdd.slice(0, -1), //This is for the Group Page Fake it til you make it
-        });
-      })
-      .catch((e) => {
-        console.error("Something went wrong:\n", e);
-        this.props.handleRemoveStagedMsgs();
-        this.setState({
-          stageMsgsToAdd: this.state.stageMsgsToAdd.slice(0, -1),
-          msgsToDisplay: this.state.msgsToDisplay.slice(1),
-          LoadingMsg: false,
-          sentMsgError: true,
-        });
-      })
-      .finally(() => client.disconnect());
-  };
-
-  //BELOW DELETE THIS FUNCTIONALITY (MUST FOLLOW THROUGH THE THREAD) JUST WAIT FOR RETURN
-
-  addSentMessage = (msgToAdd) => {
-    let tupleToAdd = [this.props.uniqueName, msgToAdd];
-    console.log("Tuple to Add", tupleToAdd);
-
-    this.props.handleStagedMsgs(tupleToAdd);
-
-    this.setState(
-      {
-        stageMsgsToAdd: [tupleToAdd, ...this.state.stageMsgsToAdd],
-        msgsToDisplay: [tupleToAdd, ...this.state.msgsToDisplay],
-      },
-      () => this.scrollToBottom()
-    );
-  };
-
-  //BELOW MOVE TO APP JS ->
-
-  submitDGTinvite = (dpnsDoc) => {
-    //have to get the id of the name like DGM
-
-    //Invite Sent alert ??? also add loading
-
-    this.setState({
-      LoadingInvite: true,
-    });
-
-    const clientOpts = {
-      network: "testnet",
-      wallet: {
-        mnemonic: this.props.mnemonic,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight: this.props.mostRecentBlockHeight,
-        },
-      },
-      apps: {
-        DGTContract: {
-          contractId: this.props.DataContractDGT,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
-
-    const submitInviteDocument = async () => {
-      const { platform } = client;
-      const identity = this.props.identityRaw; // Your identity ID
-
-      const docProperties = {
-        toId: Buffer.from(Identifier.from(dpnsDoc.$ownerId)), //this is a selfinvite
-        group: this.props.selectedGroup,
-      };
-
-      // Create the note document
-      const dgtDocument = await platform.documents.create(
-        "DGTContract.dgtinvite", // <- CHECK THIS
-        identity,
-        docProperties
-      );
-
-      const documentBatch = {
-        create: [dgtDocument], // Document(s) to create
-        replace: [], // Document(s) to update
-        delete: [], // Document(s) to delete
-      };
-      // Sign and submit the document(s)
-      return platform.documents.broadcast(documentBatch, identity);
-    };
-
-    // this.setState({
-    //   LoadingInvite:false,
-    //   sentInviteSuccess: true,
-    // sendToName: dpnsDoc.label,
-    // });
-
-    submitInviteDocument()
-      .then((d) => {
-        console.log(d.toJSON());
-        this.setState({
-          LoadingInvite: false,
-          sentInviteSuccess: true,
-          sendToName: dpnsDoc.label,
-        });
-      })
-      .catch((e) => {
-        console.error("Something went wrong:\n", e);
-        this.setState({
-          LoadingInvite: false,
-          sentInviteError: true,
-        });
-      })
-      .finally(() => client.disconnect());
-  };
-
   //I THINK I CAN STILL DO THE BELOW STUFF HERE.. FOR NOW
+  //This is just read from platform
 
-  getDGTMessagesDocs = () => {
+  getDGTMessages = () => {
     console.log(`Calling get messages for ${this.props.selectedGroup}`);
 
     const clientOpts = {
       network: this.props.whichNetwork,
-      wallet: {
-        //I DON'T NEED THE WALLET FOR THIS, RIGHT?
-        mnemonic: this.props.mnemonic,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight: this.props.mostRecentBlockHeight,
-        },
-      },
       apps: {
         DGTContract: {
           //changed tutorialContract TO DashGetTogetherContract
@@ -277,7 +92,7 @@ class Group extends React.Component {
     };
     const client = new Dash.Client(clientOpts);
 
-    //DGTMessages Query ->
+    //DGTMessages Query -> CHANGE !! / UPDate->
     const getMessages = async () => {
       return client.platform.documents.get("DGTContract.dgtmsg", {
         limit: 60,
@@ -293,7 +108,7 @@ class Group extends React.Component {
       .then((d) => {
         if (d.length === 0) {
           this.setState({
-            Loading: false,
+            LoadingMsgs: false,
           });
         } else {
           let docArray = [];
@@ -302,23 +117,23 @@ class Group extends React.Component {
             docArray = [...docArray, n.toJSON()];
           }
 
-          this.getNamesforDSOmsgs(docArray);
+          this.getDGTMsgsNames(docArray);
         }
 
         // this.setState(
         //   {
         //     dgtGroupMessages: docArray,
-        //     //isLoadingGroup: false,
+        //     //LoadingMsgs: false,
         //   }
-        //   ,() =>  this.getNamesforDSOmsgs(docArray)
+        //   ,() =>  this.getDGTMsgsNames(docArray)
         // );
       })
       .catch((e) => console.error("Something went wrong:\n", e))
-      //need to setState to handle Error and set isLoadingEveryone to false
+
       .finally(() => client.disconnect());
   };
 
-  getNamesforDSOmsgs = (msgArr) => {
+  getDGTMsgsNames = (msgArr) => {
     let ownerarrayOfOwnerIds = msgArr.map((doc) => {
       return doc.$ownerId;
     });
@@ -331,7 +146,7 @@ class Group extends React.Component {
       Buffer.from(Identifier.from(item))
     );
 
-    console.log("Calling getNamesfordDGTmsgs");
+    console.log("Calling getDGTMsgsNames");
 
     const clientOpts = {
       network: this.props.whichNetwork,
@@ -339,7 +154,8 @@ class Group extends React.Component {
         mnemonic: this.props.mnemonic,
 
         unsafeOptions: {
-          skipSynchronizationBeforeHeight: this.props.mostRecentBlockHeight,
+          skipSynchronizationBeforeHeight:
+            this.props.skipSynchronizationBeforeHeight,
           //change to what the actual block height
         },
       },
@@ -419,7 +235,7 @@ class Group extends React.Component {
         this.setState(
           {
             msgsToDisplay: tupleArray,
-            Loading: false,
+            LoadingMsgs: false,
           },
           () => this.scrollToBottom()
         );
@@ -428,13 +244,13 @@ class Group extends React.Component {
         console.error("Something went wrong:\n", e);
 
         this.setState({
-          Loading: false,
+          LoadingMsgs: false,
         });
       })
       .finally(() => client.disconnect());
   };
 
-  getDGTInvitesDocs = () => {
+  getDGTInvites = () => {
     console.log(`Calling get invites for ${this.props.selectedGroup}`);
 
     const clientOpts = {
@@ -443,7 +259,8 @@ class Group extends React.Component {
         //I DON'T NEED THE WALLET FOR THIS, RIGHT?
         mnemonic: this.props.mnemonic,
         unsafeOptions: {
-          skipSynchronizationBeforeHeight: this.props.mostRecentBlockHeight,
+          skipSynchronizationBeforeHeight:
+            this.props.skipSynchronizationBeforeHeight,
         },
       },
       apps: {
@@ -484,7 +301,6 @@ class Group extends React.Component {
         }
       })
       .catch((e) => console.error("Something went wrong:\n", e))
-      //need to setState to handle Error and set isLoadingEveryone to false
       .finally(() => client.disconnect());
   };
 
@@ -586,8 +402,8 @@ class Group extends React.Component {
   };
 
   componentDidMount() {
-    this.getDGTMessagesDocs();
-    this.getDGTInvitesDocs();
+    this.getDGTMessages();
+    this.getDGTInvites();
   }
 
   render() {
@@ -651,7 +467,7 @@ class Group extends React.Component {
             groupMembers={this.state.groupMembers}
             isModalShowing={this.state.isModalShowing}
             hideModal={this.hideModal}
-            mode={this.state.mode}
+            mode={this.state.mode} //mode shouldnt be
           />
         ) : (
           <></>
@@ -685,7 +501,7 @@ class Group extends React.Component {
         <p> </p>
 
         <div id="bodytext">
-          {this.state.msgsToDisplay.length === 0 && !this.state.Loading ? (
+          {this.state.msgsToDisplay.length === 0 && !this.state.LoadingMsgs ? (
             <p>There are no messages available for this group.</p>
           ) : (
             <></>
@@ -717,7 +533,7 @@ class Group extends React.Component {
             </div>
           </Collapse> */}
 
-          {this.state.Loading ? (
+          {this.state.LoadingMsgs ? (
             <div id="shoutOutSpinner">
               <p></p>
               <Spinner animation="border">
@@ -757,7 +573,7 @@ class Group extends React.Component {
 
               {/* DIFFERENT ISLOADING STATE PASSED DOWN, CHANGE BELOW */}
 
-              {this.state.LoadingMsg ? (
+              {this.state.LoadingMsgs ? (
                 <div id="shoutOutSpinner">
                   <p></p>
                   <Spinner animation="border">
@@ -821,7 +637,8 @@ class Group extends React.Component {
           mode={this.props.mode}
           showModal={this.showModal}
           showDeleteModal={this.props.showDeleteModal}
-          Loading={this.state.Loading}
+          LoadingMsgs={this.state.LoadingMsgs}
+          LoadingInvites={this.state.LoadingMembers}
         />
       </>
     );

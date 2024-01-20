@@ -570,7 +570,7 @@ class App extends React.Component {
       mostRecentBlockHeight: 905000,
 
       DataContractDSO: "3djpLuabDgYeXY7RhT6by5VuvrLtn8wnNQTF3J4wz4fn",
-      DataContractDGT: "",
+      DataContractDGT: "6QYmp57F2HabntpDmufjL3yxRwiGLusASN1LdSHFjSF8",
       DataContractDGM: "4PUQmGdGLLWwTFntgwEDhJWzUKoKqbSKanjVGTi2Fbcj",
       DataContractDGP: "785cZo4ok3DgyCJKsg4NPwuFmdDdcbp1hZKBW5b4SZ97",
       DataContractDMIO: "931HGHM5fMrRegVe3998hHcBAft1p8d9sWynfGnKxkw2",
@@ -2549,14 +2549,14 @@ class App extends React.Component {
 
       // Create the note document
       const dsoDocument = await platform.documents.create(
-        "DSOContract.dsomsg", /// I changed .note TO .dsomessage***
+        "DSOContract.dsomsg",
         identity,
         docProperties
       );
 
-      console.log(dsoDocument.toJSON());
+      //console.log(dsoDocument.toJSON());
 
-      console.log("OwnerIdArray of Tags: ", ownerIdArray);
+      //console.log("OwnerIdArray of Tags: ", ownerIdArray);
 
       if (ownerIdArray.length !== 0) {
         let dsotags = await Promise.all(
@@ -2601,11 +2601,11 @@ class App extends React.Component {
         create: [dsoDocument], // Document(s) to create
       };
 
-      const tagBatch = {
-        create: dsoTags, // Document(s) to create
-      };
-
       await platform.documents.broadcast(msgBatch, identity);
+
+      // const tagBatch = { //Moved below for individual submission
+      //   create: dsoTags, // Document(s) to create
+      // };
 
       if (ownerIdArray.length !== 0) {
         //Does this handle multiple tags -> No need to use a for statement
@@ -2614,10 +2614,14 @@ class App extends React.Component {
         //await platform.documents.broadcast(tagBatch, identity);
 
         await Promise.all(
-          tagBatch.map(async (tagDoc) => {
+          dsoTags.map(async (tagDoc) => {
             //https://stackoverflow.com/questions/40140149/use-async-await-with-array-map
 
-            await platform.documents.broadcast(tagDoc, identity);
+            const tagBatch = {
+              create: [tagDoc], // Document(s) to create
+            };
+
+            await platform.documents.broadcast(tagBatch, identity);
 
             //return tagDoc;
           })
@@ -2632,6 +2636,8 @@ class App extends React.Component {
         //Returns array!!! ->
         // let returnedDoc = d.toJSON();
         // console.log("MSG Documents JSON:\n", returnedDoc);
+
+        //SIMPLIFY JUST RECEIVE MSG BACK ->
 
         let docArray = [];
         for (const n of d) {

@@ -6,7 +6,6 @@ import Button from "react-bootstrap/Button";
 import CreditsOnPage from "../CreditsOnPage";
 //import "./InvitesPage.css";
 
-//STarts with the invite page and then shifts to the group
 class GroupsPage extends React.Component {
   handleTimeToDate = (timeObject) => {
     let date = new Date(timeObject);
@@ -14,129 +13,96 @@ class GroupsPage extends React.Component {
     return date.toLocaleDateString();
   };
 
-  //Below for sortOutInvites -> Pass dgtRawInvites -> AND Don't need a function this should just be handled in render ->
-
-  // sortOutInvites = (inviteArray) => {
-  //   //Invites sorted but if $ownerId === toId create a separate array for and set both to state
-  //   //Go through array one at a time and push to two new separate arrays
-  //   let acceptedInvites = [];
-  //   let othersInvites = [];
-
-  //   inviteArray.forEach((invite) => {
-  //     if (invite.dgt === "self") {
-  //       acceptedInvites.push(invite);
-  //     } else {
-  //       if (invite.toId !== invite.$ownerId) {
-  //         othersInvites.push(invite);
-  //       }
-  //     }
-  //   });
-
-  //   let groupNamesOfAccepted = acceptedInvites.map((invite) => {
-  //     return invite.group;
-  //   });
-
-  //   //BELOW removes deleted groups , if Deleted Groups
-  //   if (this.state.stagedRemovedInvitesNames.length !== 0) {
-  //     let mutableArray = acceptedInvites;
-
-  //     this.state.stagedRemovedInvitesNames.forEach((name) => {
-  //       if (groupNamesOfAccepted.includes(name)) {
-  //         let groupIndex = groupNamesOfAccepted.indexOf(name);
-  //         // console.log('groupIndex', groupIndex);
-
-  //         mutableArray.splice(groupIndex, 1);
-  //       }
-  //     });
-
-  //     acceptedInvites = mutableArray;
-  //   }
-
-  //   //Below Remove from othersInvites, if Added Group
-  //   let othersInvitesUnique = [];
-
-  //   othersInvites.forEach((invite) => {
-  //     if (!groupNamesOfAccepted.includes(invite.group)) {
-  //       othersInvitesUnique.push(invite);
-  //     }
-  //   });
-
-  //   this.setState(
-  //     {
-  //       dgtAcceptedInvites: acceptedInvites,
-  //       //isLoadingRecentTab: true, //Only bc free setState and will be calling -> Not implementing RecentTab ->
-  //     },
-  //     () => this.getNamesforDGTinvites(othersInvitesUnique)
-  //   );
-  // };
-
   render() {
-    // addGroup = (groupName) => {
-    //   //just a name
+    let acceptedInvites = [];
+    let extraInvites = [];
+    let othersInvites = [];
 
-    //   // To handle if you joined a group to remove from Your invites
-    //   let namesOfGroups = this.state.othersInvitesToDisplay.map((invite) => {
-    //     return invite[1].group;
-    //   });
+    this.props.dgtInvites.forEach((invite) => {
+      if (invite.dgt === "self") {
+        acceptedInvites.push(invite);
+      } else {
+        // if (invite.toId !== invite.$ownerId) {
+        extraInvites.push(invite);
+        //  }
+      }
+    });
 
-    //   if (namesOfGroups.includes(groupName)) {
-    //     let groupIndex = namesOfGroups.indexOf(groupName);
-    //     console.log("groupIndex", groupIndex);
-
-    //     let mutableArray = this.state.othersInvitesToDisplay;
-    //     mutableArray.splice(groupIndex, 1);
-
-    //     this.setState({
-    //       othersInvitesToDisplay: mutableArray,
-    //     });
-    //   }
-
-    //   // ^^^ To handle if you joined a group to remove from Your invites
-
-    //   let group = {
-    //     group: groupName,
-    //     $createdAt: Date.now(),
-    //   };
-
-    //   this.setState({
-    //     dgtAcceptedInvites: [group, ...this.state.dgtAcceptedInvites],
-    //   });
-
-    // };
+    for (invite of extraInvites) {
+      let selfInvite = acceptedInvites.find((inv) => {
+        return inv.group === invite.group;
+      });
+      if (selfInvite === undefined) {
+        othersInvites.push(invite);
+      }
+    }
 
     let acceptedInvitesButtons = <></>;
     let othersInvitesButtons = <></>;
 
-    acceptedInvitesButtons = this.props.dgtAcceptedInvites.map(
-      (acceptedGroup, index) => {
-        return (
-          <Button
-            key={index}
-            variant="primary"
-            onClick={() => this.props.showGroupPage(acceptedGroup.group)}
-          >
-            {acceptedGroup.group}
-            <Badge className="createwalletbtn" bg="light" text="dark" pill>
-              {this.handleTimeToDate(acceptedGroup.$createdAt)}
-            </Badge>
-          </Button>
-        );
-      }
-    );
+    acceptedInvitesButtons = acceptedInvites.map((acceptedGroup, index) => {
+      return (
+        <Button
+          key={index}
+          variant="primary"
+          onClick={() => this.props.showGroupPage(acceptedGroup.group)}
+        >
+          {acceptedGroup.group}
+          <Badge className="createwalletbtn" bg="light" text="dark" pill>
+            {this.handleTimeToDate(acceptedGroup.$createdAt)}
+          </Badge>
+        </Button>
+      );
+    });
 
-    othersInvitesButtons = this.props.othersInvitesToDisplay.map(
-      (othersInvite, index) => {
+    let tupleArray = [];
+
+    tupleArray = othersInvites.map((invite) => {
+      let tuple = "";
+
+      for (let nameDoc of this.props.dgtInvitesNames) {
+        if (nameDoc.$ownerId === invite.$ownerId) {
+          tuple = [nameDoc.label, invite];
+          break;
+        }
+      }
+      if (tuple !== "") {
+        return tuple;
+      }
+
+      return ["No Name Avail..", invite];
+    });
+
+    othersInvitesButtons = tupleArray.map((othersInvite, index) => {
+      return (
+        <Button
+          key={index}
+          variant="primary"
+          onClick={() =>
+            this.props.handleSelectedJoinGroup(tupleArray[1].group)
+          }
+        >
+          {tupleArray[1].group}
+          <Badge className="createwalletbtn" bg="light" text="dark" pill>
+            {tupleArray[0]}
+          </Badge>
+        </Button>
+      );
+    });
+
+    recentGroupsButtons = this.props.dgtActiveGroups.map(
+      (recentGroup, index) => {
         return (
           <Button
             key={index}
             variant="primary"
             onClick={() =>
-              this.props.handleSelectedJoinGroup(othersInvite[1].group)
+              this.props.handleSelectedJoinGroup(recentGroup.group)
             }
           >
-            {othersInvite[1].group}
+            {recentGroup.group}
             <Badge className="createwalletbtn" bg="light" text="dark" pill>
-              {othersInvite[0]}
+              {handleTimeToDate(recentGroup.$createdAt)}
             </Badge>
           </Button>
         );
@@ -152,8 +118,7 @@ class GroupsPage extends React.Component {
             uniqueName={this.props.uniqueName}
             showModal={this.props.showModal}
           />
-          {/* BELOW IS FOR USER LOADING, IDONT THINK I NEED ANYMORE */}
-          {/* {this.props.isLoading ? ( //isLoadingGroups?? *****
+          {this.props.isLoadingGroupInvite ? (
             <>
               <p></p>
               <div id="spinner">
@@ -164,13 +129,14 @@ class GroupsPage extends React.Component {
             </>
           ) : (
             <></>
-          )} */}
+          )}
+          {/* PUT THE ALERT HERE!! */}
 
           {/* Copy how other pages are done. */}
 
           <h3>Your Groups</h3>
 
-          {/* {!this.props.isLoading && this.props.isLoadingRefresh ? (
+          {this.props.isLoadingGroups ? (
             <>
               <p></p>
               <div id="spinner">
@@ -181,33 +147,28 @@ class GroupsPage extends React.Component {
             </>
           ) : (
             <></>
-          )} */}
+          )}
 
-          {!this.props.isLoading && // //isLoadingGroups?? *****
-          this.props.dgtAcceptedInvites.length === 0 ? (
-            <>Groups, you have joined or created will appear here!</>
+          {/* isLoadingGroups: true, //Invite Pull, Active(Msgs) Pull, creating Group, sending invite, deleting group, accepting invite
+      isLoadingGroup: false, // Msgs Pull, Members pull, sending msg,
+
+      isLoadingGroupsActive: true, //Separate spinner for Active so not lumped in with Groups.
+
+      isLoadingGroupInvite: false, //Control and alert in Groups and on GroupPage because that is the only way you will know if an invite was sent. */}
+
+          {/* ADD AN ALERT FOR INVITE SUBMITTING ->  */}
+
+          {!this.props.isLoadingGroups && acceptedInvites.length === 0 ? (
+            <>Groups, you have joined or create will appear here!</>
           ) : (
             <></>
           )}
 
-          {!this.props.isLoading ? ( //isLoadingGroups?? *****
+          {!this.props.isLoadingGroups ? (
             <>
               <div className="d-grid gap-2">{acceptedInvitesButtons}</div>
               <p></p>
               <h3>Your Invites</h3>
-
-              {!this.props.isLoading && this.props.isLoadingOthersInvites ? (
-                <>
-                  <p></p>
-                  <div id="spinner">
-                    <Spinner animation="border" role="status">
-                      <span className="visually-hidden">Loading...</span>
-                    </Spinner>
-                  </div>
-                </>
-              ) : (
-                <></>
-              )}
 
               <div className="d-grid gap-2">{othersInvitesButtons}</div>
             </>
@@ -215,9 +176,28 @@ class GroupsPage extends React.Component {
             <></>
           )}
 
-          {!this.props.isLoading && //this.props.isLoadingOthersInvites
-          this.props.othersInvitesToDisplay.length === 0 ? (
+          {!this.props.isLoadingGroups &&
+          this.props.othersInvites.length === 0 ? (
             <>Invites sent to you will appear here!</>
+          ) : (
+            <></>
+          )}
+
+          {!this.props.isLoadingGroupsActive && !this.props.isLoadingGroups ? (
+            <>
+              <p></p>
+              <h3>Active Groups</h3>
+
+              <div className="d-grid gap-2">{recentGroupsButtons}</div>
+            </>
+          ) : (
+            <></>
+          )}
+
+          {!this.props.isLoadingGroupsActive &&
+          !this.props.isLoadingGroups &&
+          this.props.dgtActiveGroups.length === 0 ? (
+            <>Groups with recent activity appear here!</>
           ) : (
             <></>
           )}

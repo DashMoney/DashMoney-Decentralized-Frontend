@@ -226,20 +226,30 @@ class App extends React.Component {
 
       //GROUPS PAGE
 
-      isLoadingGroups: true, //Invite Pull, Active(Msgs) Pull, creating Group, sending invite, deleting group, accepting invite
+      isLoadingGroups: true, //Invite Pull, Active(Msgs) Pull, creating Group, deleting group, accepting invite
       isLoadingGroup: false, // Msgs Pull, Members pull, sending msg,
+      //But that is done in Group -> !!???
 
       isLoadingGroupsActive: true, //Separate spinner for Active so not lumped in with Groups.
 
-      isLoadingGroupInvite: false, //Control and alert in Groups and on GroupPage because that is the only way you will know if an invite was sent.
+      isLoadingGroupInvite: false, //Control and alert in Groups and on GroupPage because that is the only way you will know if an invite was sent. sending invite,
 
       dgtInvites: [], //Gets selfinvites && ToYouinvites
       //dO THE MAP AND FILTERING ON THE ACTUAL DISPLAY COMPONENT
 
       dgtInvitesNames: [],
 
+      dgtActiveGroups: [],
+
       selectedGroup: "",
       isGroupShowing: false,
+
+      GroupsMsgsToAdd: [], //handle in Group so not too difficult, just add together and use set for unique docId ->
+
+      sentGroupMsgError: false, //Thread to Group, all the below
+      sentGroupInviteError: false,
+      sentGroupInviteSuccess: false,
+      sendToNameInvite: "", //For invite
 
       //GROUPS PAGE ^^^^^
 
@@ -2598,7 +2608,20 @@ class App extends React.Component {
       await platform.documents.broadcast(msgBatch, identity);
 
       if (ownerIdArray.length !== 0) {
-        await platform.documents.broadcast(tagBatch, identity);
+        //Does this handle multiple tags -> No need to use a for statement
+        //CHECK OUT THE ABOVE THE ISSUE IS THAT i USE THE AWAIT FOR THE DOCUMENT CREATE BUT NEED TO USE FOR THE BROADCAST
+        //
+        //await platform.documents.broadcast(tagBatch, identity);
+
+        await Promise.all(
+          tagBatch.map(async (tagDoc) => {
+            //https://stackoverflow.com/questions/40140149/use-async-await-with-array-map
+
+            await platform.documents.broadcast(tagDoc, identity);
+
+            //return tagDoc;
+          })
+        );
       }
 
       return [dsoDocument];
@@ -3832,13 +3855,14 @@ class App extends React.Component {
 
   showGroupPage = (groupName) => {
     this.setState({
-      isLoadingGroup: true, //IS THIS DOING ANYTHING?? ->
+      isLoadingGroup: true, //IS THIS DOING ANYTHING?? -> msg submission and invite sending ->
       selectedGroup: groupName,
       isGroupShowing: true,
     });
   };
 
   // this.getDGTInvites(this.state.identity) <= TRIGGER
+  // this.getActiveGroups()    <= TRIGGER
 
   getDGTInvites = (theIdentity) => {
     const clientOpts = {
@@ -3854,94 +3878,59 @@ class App extends React.Component {
     //DGTInvite Query
     const getDocuments = async () => {
       return client.platform.documents.get("DGTContract.dgtinvite", {
-        where: [["toId", "==", Buffer.from(Identifier.from(theIdentity))]],
+        where: [["toId", "==", theIdentity]],
       });
     };
 
     getDocuments()
       .then((d) => {
-        /**
-         * if (d.length === 0) {
-          //console.log("There are no ForyouByyouMsgs");
-
-          this.setState(
-            {
-              ForYou1: true,
-              ForYou2: true,
-            },
-            () => this.checkForYouRace()
-          );
+        if (d.length === 0) {
+          //console.log("There are no DGTInvites");
+          this.setState({
+            isLoadingGroups: false,
+          });
         } else {
           let docArray = [];
 
+          // for (const n of d) {
+          //   let returnedDoc = n.toJSON();
+          //   //console.log("Thr:\n", returnedDoc);
+          //   returnedDoc.msgId = Identifier.from(
+          //     returnedDoc.msgId,
+          //     "base64"
+          //   ).toJSON();
+          //   //console.log("newThr:\n", returnedDoc);
+          //   docArray = [...docArray, returnedDoc];
+          // }
+
           for (const n of d) {
-            //console.log("ByYouMsgs:\n", n.toJSON());
+            //console.log("Invite Documents:\n", n.toJSON());
             docArray = [...docArray, n.toJSON()];
+            //DOES ANY PART OF DOCUMENT NEED CONVERTING? LIKE THE TOID? ->
           }
-          this.getByYouThreads(docArray);
-          this.getForyouByyouNames(docArray);
+
+          this.getDGTInvitesNames(docArray);
         }
-         */
-
-        let docArray = [];
-
-        for (const n of d) {
-          //console.log("Invite Documents:\n", n.toJSON());
-
-          docArray = [...docArray, n.toJSON()];
-        }
-
-        this.setState(
-          {
-            dgtInvites: rawArray,
-          },
-          () => this.getDGTinvitesNames(docArray)
-        );
-        //^^^^ CHANGE THIS WHOLE THING TO NORMAL PULL SEQUENCE
       })
       .catch((e) => console.error("Something went wrong:\n", e))
-      //need to setState to handle Error and set isLoadingEveryone to false
+
       .finally(() => client.disconnect());
   };
 
-  getDGTinvitesNames = (msgArr) => {
-    //CHANGE ALL THIS -> SHOULD QUERY RIGHT AFTER RAWiNVITES AND SET INVITES IN HERE AS WELL.
+  getDGTInvitesNames = (docArray) => {
+    //console.log("Calling getNamesforDGTInvites");
 
-    if (msgArr.length === 0) {
-      console.log("No Others Invites");
-      this.setState({
-        isLoadingGroups: false,
-      });
-    } else {
-      console.log("Others Invites:");
-      console.log(msgArr);
-
-      let ownerarrayOfOwnerIds = msgArr.map((doc) => {
-        return doc.$ownerId;
-      });
-
-      let setOfOwnerIds = [...new Set(ownerarrayOfOwnerIds)];
-
-      let arrayOfOwnerIds = [...setOfOwnerIds];
-
-      arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-        Buffer.from(Identifier.from(item))
-      );
-
-      console.log("Calling getNamesforDGTInvites");
-
-      const clientOpts = {
-        network: this.state.whichNetwork,
-        apps: {
-          DPNS: {
-            contractId: this.state.DataContractDPNS,
-          },
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      apps: {
+        DPNS: {
+          contractId: this.state.DataContractDPNS,
         },
-      };
-      const client = new Dash.Client(clientOpts);
+      },
+    };
+    const client = new Dash.Client(clientOpts);
 
-      /*
-       let arrayOfOwnerIds = docArray.map((doc) => {
+    let arrayOfOwnerIds = docArray.map((doc) => {
       return doc.$ownerId;
     });
 
@@ -3949,108 +3938,98 @@ class App extends React.Component {
 
     arrayOfOwnerIds = [...setOfOwnerIds];
 
-    //console.log("Called Get ByYou Threads Names");
-
     const getNameDocuments = async () => {
       return client.platform.documents.get("DPNS.domain", {
         where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
         orderBy: [["records.dashUniqueIdentityId", "asc"]],
       });
     };
-      */
 
-      const getNameDocuments = async () => {
-        return client.platform.documents.get("DPNS.domain", {
-          where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-          orderBy: [["records.dashUniqueIdentityId", "asc"]],
-        });
-      };
-
-      getNameDocuments()
-        .then((d) => {
-          /*
-           if (d.length === 0) {
+    getNameDocuments()
+      .then((d) => {
+        if (d.length === 0) {
           console.log("No DPNS domain documents retrieved.");
         }
 
         let nameDocArray = [];
+
         for (const n of d) {
           //console.log("NameDoc:\n", n.toJSON());
 
           nameDocArray = [n.toJSON(), ...nameDocArray];
         }
 
-        this.setState(
-          {
-            NewDMByYouThreadsNames: [
-              ...nameDocArray,
-              ...this.state.NewDMByYouThreadsNames,
-            ],
-            NewDMByYouThreads: [...docArray, ...this.state.NewDMByYouThreads],
-            NewDM1: true,
-          },
-          () => this.checkNewDMRace()
-        );
-          */
-          if (d.length === 0) {
-            console.log("No DPNS domain documents retrieved.");
-          }
-
-          let nameDocArray = [];
-
-          for (const n of d) {
-            //console.log("NameDoc:\n", n.toJSON());
-
-            nameDocArray = [n.toJSON(), ...nameDocArray];
-          }
-          //tUPLE SORT -> REMOVED
-          // console.log(nameDocArray);
-
-          // let tupleArray = []; //<- Final array
-
-          // tupleArray = msgArr.map((msg) => {
-          //   let tuple = "";
-
-          //   for (let nameDoc of nameDocArray) {
-          //     if (nameDoc.$ownerId === msg.$ownerId) {
-          //       tuple = [nameDoc.label, msg];
-          //       break;
-          //     }
-          //   }
-          //   if (tuple !== "") {
-          //     return tuple;
-          //   }
-
-          //   return ["No Name Avail..", msg];
-          // });
-          // console.log("Tuple for Display");
-          // console.log(tupleArray);
-
-          this.setState({
-            //othersInvitesToDisplay: tupleArray,
-            dgtInvitesNames: nameDocArray,
-            dgtInvites: rawArray,
-
-            isLoadingOthersInvites: false,
-          });
-        })
-        .catch((e) => {
-          console.error("Something went wrong:\n", e);
-
-          this.setState({
-            isLoading: false,
-
-            isLoadingOthersInvites: false,
-            isLoadingRefresh: false,
-          });
-        })
-        .finally(() => client.disconnect());
-    } //this is to close the else statement
+        this.setState({
+          dgtInvitesNames: nameDocArray,
+          dgtInvites: docArray,
+          isLoadingGroups: false,
+        });
+      })
+      .catch((e) => {
+        console.error("Something went wrong:\n", e);
+        this.setState({
+          isLoadingGroups: false,
+        });
+      })
+      .finally(() => client.disconnect());
   };
 
   getActiveGroups = () => {
-    //This is actually messages
-    //isLoadingActiveGroups -> use this
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      apps: {
+        DGTContract: {
+          contractId: this.state.DataContractDGT, // Your contract ID
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    //DGTInvite Query
+    const getDocuments = async () => {
+      return client.platform.documents.get("DGTContract.dgtinvite", {
+        limit: 30,
+        where: [["$createdAt", "<=", Date.now()]],
+        orderBy: [["$createdAt", "desc"]],
+      });
+    };
+
+    getDocuments()
+      .then((d) => {
+        if (d.length === 0) {
+          //console.log("There are no DGTInvites");
+          this.setState({
+            isLoadingActiveGroups: false,
+          });
+        } else {
+          let docArray = [];
+
+          // for (const n of d) {
+          //   let returnedDoc = n.toJSON();
+          //   //console.log("Doc:\n", returnedDoc);
+          //   returnedDoc.msgId = Identifier.from(
+          //     returnedDoc.msgId,
+          //     "base64"
+          //   ).toJSON();
+          //   //console.log("newDoc:\n", returnedDoc);
+          //   docArray = [...docArray, returnedDoc];
+          // }
+
+          for (const n of d) {
+            //console.log("Invite Documents:\n", n.toJSON());
+            docArray = [...docArray, n.toJSON()];
+            //DOES ANY PART OF DOCUMENT NEED CONVERTING? LIKE THE TOID? ->
+          }
+
+          this.setState({
+            dgtActiveGroups: docArray,
+            isLoadingActiveGroups: false,
+          });
+        }
+      })
+      .catch((e) => console.error("Something went wrong:\n", e))
+
+      .finally(() => client.disconnect());
   };
 
   //Dont need to, the names are in the messages..! And just use the createdAt for the time =>
@@ -4060,6 +4039,8 @@ class App extends React.Component {
     this.setState({
       isLoadingGroups: true,
     });
+
+    //isLoadingGroups
 
     //Makes sure I dont send 2nd invite to myself
 
@@ -4125,12 +4106,10 @@ class App extends React.Component {
 
         const documentBatch = {
           create: [dgtDocument], // Document(s) to create
-          replace: [], // Document(s) to update
-          delete: [], // Document(s) to delete
         };
         // Sign and submit the document(s)
-        return platform.documents.broadcast(documentBatch, identity);
-        //HAVE TO CHANGE THE SUBMITING ^^^
+        await platform.documents.broadcast(documentBatch, identity);
+        return dgtDocument;
       };
 
       submitInvite()
@@ -4230,6 +4209,85 @@ class App extends React.Component {
       .finally(() => client.disconnect());
   };
 
+  joinGroup = (groupName) => {
+    //HAHAH
+    // IS THIS THE SAME AS SUBMITCREATEGROUP ABOVE???
+    this.setState({
+      isLoadingGroups: true,
+    });
+
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+          //change to what the actual block height
+        },
+      },
+      apps: {
+        DGTContract: {
+          contractId: this.state.DataContractDGT,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const submitInvite = async () => {
+      const { platform } = client;
+
+      //const identity = await platform.identities.get(this.state.identity); // Your identity ID
+      let identity = "";
+      if (this.state.identityRaw !== "") {
+        identity = this.state.identityRaw;
+      } else {
+        identity = await platform.identities.get(this.state.identity);
+      } // Your identity ID
+
+      const docProperties = {
+        group: groupName,
+        //toId: Buffer.from(Identifier.from(this.state.identity)),
+        // handle on return or what? did i change it right?
+        toId: this.state.identity,
+        dgt: "self",
+      };
+
+      // Create the note document
+      const dgtDocument = await platform.documents.create(
+        "DGTContract.dgtinvite",
+        identity,
+        docProperties
+      );
+
+      const documentBatch = {
+        create: [dgtDocument], // Document(s) to create
+      };
+      // Sign and submit the document(s)
+      await platform.documents.broadcast(documentBatch, identity);
+      return dgtDocument;
+    };
+
+    submitInvite()
+      .then((d) => {
+        let submittedDoc = d.toJSON();
+
+        this.setState({
+          dgtInvites: [submittedDoc, ...this.state.dgtInvites],
+          isLoadingGroups: false,
+        });
+      })
+      .catch((e) => {
+        console.error("Something went wrong:\n", e);
+        this.setState({
+          isLoadingGroups: false,
+          errorGroupsAdd: true, //Needs to be more specific
+        });
+      })
+      .finally(() => client.disconnect());
+  };
+
   // BELOW - Moved here from Group.jsx
   // Must also move the **state** here as well ->
   //Just go through the functions and pass the state that is there to app.js ->
@@ -4285,23 +4343,24 @@ class App extends React.Component {
         delete: [], // Document(s) to delete
       };
       // Sign and submit the document(s)
-      return platform.documents.broadcast(documentBatch, identity);
+      await platform.documents.broadcast(documentBatch, identity);
+      return dgtDocument;
     };
 
     submitMsgDocument()
       .then((d) => {
-        console.log(d.toJSON());
+        //console.log(d.toJSON());
 
         this.setState({
-          LoadingMsg: false,
-          stageMsgsToAdd: this.state.stageMsgsToAdd.slice(0, -1), //This is for the Group Page Fake it til you make it
+          isLoadingGroup: false,
+          GroupsMsgsToAdd: [d.toJSON()],
         });
       })
       .catch((e) => {
         console.error("Something went wrong:\n", e);
         this.setState({
-          LoadingMsg: false,
-          sentMsgError: true,
+          isLoadingGroup: false,
+          sentGroupMsgError: true,
         });
       })
       .finally(() => client.disconnect());
@@ -4313,7 +4372,7 @@ class App extends React.Component {
     //Invite Sent alert ??? also add loading
 
     this.setState({
-      LoadingInvite: true,
+      isLoadingGroupInvite: true,
     });
 
     const clientOpts = {
@@ -4359,26 +4418,20 @@ class App extends React.Component {
       return platform.documents.broadcast(documentBatch, identity);
     };
 
-    // this.setState({
-    //   LoadingInvite:false,
-    //   sentInviteSuccess: true,
-    // sendToName: dpnsDoc.label,
-    // });
-
     submitInviteDocument()
       .then((d) => {
         console.log(d.toJSON());
         this.setState({
-          LoadingInvite: false,
-          sentInviteSuccess: true,
-          sendToName: dpnsDoc.label,
+          isLoadingGroupInvite: false,
+          sentGroupInviteSuccess: true,
+          sendToNameInvite: dpnsDoc.label,
         });
       })
       .catch((e) => {
         console.error("Something went wrong:\n", e);
         this.setState({
-          LoadingInvite: false,
-          sentInviteError: true,
+          isLoadingGroupInvite: false,
+          sentGroupInviteError: true,
         });
       })
       .finally(() => client.disconnect());

@@ -28,21 +28,16 @@ class Group extends React.Component {
     super(props);
     this.state = {
       LoadingMsgs: false,
-      //LoadingInvite: false, //isLoadingGroupInvite for send invite <- move to App.js
       LoadingMembers: true,
 
-      groupMembers: [], //add the app.js
+      groupMembers: [], //add the app.js -> why?
+      groupMembersNames: [],
 
-      msgsToDisplay: [], //add the app.js
-      stageMsgsToAdd: [], //remove?
+      groupMsgs: [],
+      groupMsgsNames: [],
 
-      isModalShowing: false, //Why are the modals here? just put in app.js?
+      isModalShowing: false, //Why are the modals here? just put in app.js? why?
       presentModal: "",
-
-      sentMsgError: false, //add the app.js
-      sentInviteError: false, //add the app.js
-      sentInviteSuccess: false, //add the app.js
-      sendToName: "", //For invite   //add the app.js
     };
   }
   // //https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react
@@ -79,7 +74,7 @@ class Group extends React.Component {
   //This is just read from platform
 
   getDGTMessages = () => {
-    console.log(`Calling get messages for ${this.props.selectedGroup}`);
+    // console.log(`Calling get messages for ${this.props.selectedGroup}`);
 
     const clientOpts = {
       network: this.props.whichNetwork,
@@ -92,15 +87,14 @@ class Group extends React.Component {
     };
     const client = new Dash.Client(clientOpts);
 
-    //DGTMessages Query -> CHANGE !! / UPDate->
     const getMessages = async () => {
       return client.platform.documents.get("DGTContract.dgtmsg", {
-        limit: 60,
+        limit: 90,
         where: [
           ["group", "==", this.props.selectedGroup],
-          ["timeStamp", ">=", 2546075019551 - Date.now()],
+          ["$createdAt", "<=", Date.now()],
         ],
-        orderBy: [["timeStamp", "asc"]],
+        orderBy: [["$createdAt", "desc"]],
       });
     };
 
@@ -113,20 +107,12 @@ class Group extends React.Component {
         } else {
           let docArray = [];
           for (const n of d) {
-            console.log("Document:\n", n.toJSON());
-            docArray = [...docArray, n.toJSON()];
+            //console.log("Document:\n", n.toJSON());
+            docArray = [n.toJSON(), ...docArray];
           }
 
           this.getDGTMsgsNames(docArray);
         }
-
-        // this.setState(
-        //   {
-        //     dgtGroupMessages: docArray,
-        //     //LoadingMsgs: false,
-        //   }
-        //   ,() =>  this.getDGTMsgsNames(docArray)
-        // );
       })
       .catch((e) => console.error("Something went wrong:\n", e))
 
@@ -134,31 +120,10 @@ class Group extends React.Component {
   };
 
   getDGTMsgsNames = (msgArr) => {
-    let ownerarrayOfOwnerIds = msgArr.map((doc) => {
-      return doc.$ownerId;
-    });
-
-    let setOfOwnerIds = [...new Set(ownerarrayOfOwnerIds)];
-
-    let arrayOfOwnerIds = [...setOfOwnerIds];
-
-    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
-
-    console.log("Calling getDGTMsgsNames");
+    //console.log("Calling getDGTMsgsNames");
 
     const clientOpts = {
       network: this.props.whichNetwork,
-      wallet: {
-        mnemonic: this.props.mnemonic,
-
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.props.skipSynchronizationBeforeHeight,
-          //change to what the actual block height
-        },
-      },
       apps: {
         DPNS: {
           contractId: this.props.DataContractDPNS,
@@ -166,6 +131,18 @@ class Group extends React.Component {
       },
     };
     const client = new Dash.Client(clientOpts);
+
+    //START OF NAME RETRIEVAL
+
+    let ownerarrayOfOwnerIds = docArray.map((doc) => {
+      return doc.$ownerId;
+    });
+
+    let setOfOwnerIds = [...new Set(ownerarrayOfOwnerIds)];
+
+    let arrayOfOwnerIds = [...setOfOwnerIds];
+
+    //arrayOfOwnerIds = arrayOfOwnerIds.map((item) => Buffer.from(Identifier.from(item)));
 
     const getNameDocuments = async () => {
       return client.platform.documents.get("DPNS.domain", {
@@ -176,65 +153,23 @@ class Group extends React.Component {
 
     getNameDocuments()
       .then((d) => {
-        //WHAT IF THERE ARE NO NAMES?
         if (d.length === 0) {
-          console.log("No DPNS domain documents retrieved.");
+          //console.log("No DPNS domain documents retrieved.");
         }
 
         let nameDocArray = [];
 
         for (const n of d) {
-          console.log("NameDoc:\n", n.toJSON());
+          //console.log("NameDoc:\n", n.toJSON());
 
           nameDocArray = [n.toJSON(), ...nameDocArray];
         }
-        console.log(nameDocArray);
-
-        let tupleArray = []; //<- Final array
-
-        // My 2 arrays are: nameDocArray and msgArr
-        //There may not be very many name docs because same author for lots of msgs..
-
-        tupleArray = msgArr.map((msg) => {
-          let tuple = "";
-
-          //CHANGE FROM TUPLE TO NAMEDOC?? WHY I DON'T THINK ITS NEEDED. <=
-
-          for (let nameDoc of nameDocArray) {
-            if (nameDoc.$ownerId === msg.$ownerId) {
-              tuple = [nameDoc.label, msg];
-              break;
-            }
-          }
-          if (tuple !== "") {
-            return tuple;
-          }
-
-          return ["No Name Avail..", msg];
-        });
-
-        //console.log(tupleArray);
-
-        //This is for group page persistance <- this might not matter
-        if (this.state.stageMsgsToAdd.length !== 0) {
-          tupleArray = [...this.state.stageMsgsToAdd, ...tupleArray];
-        }
-
-        //This is for group page reload persistance <- this does matter
-
-        if (this.props.stagedGroupMsgs.length !== 0) {
-          let tuplesForGroup = [];
-          this.props.stagedGroupMsgs.forEach((tuple) => {
-            if (tuple[1].group === this.props.selectedGroup) {
-              tuplesForGroup.push(tuple);
-            }
-          });
-          tupleArray = [...tuplesForGroup, ...tupleArray];
-        }
+        //console.log(`DPNS Name Docs: ${nameDocArray}`);
 
         this.setState(
           {
-            msgsToDisplay: tupleArray,
+            groupMsgs: msgArr,
+            groupMsgsNames: nameDocArray,
             LoadingMsgs: false,
           },
           () => this.scrollToBottom()
@@ -255,14 +190,6 @@ class Group extends React.Component {
 
     const clientOpts = {
       network: this.props.whichNetwork,
-      wallet: {
-        //I DON'T NEED THE WALLET FOR THIS, RIGHT?
-        mnemonic: this.props.mnemonic,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.props.skipSynchronizationBeforeHeight,
-        },
-      },
       apps: {
         DGTContract: {
           //changed tutorialContract TO DashGetTogetherContract
@@ -409,22 +336,20 @@ class Group extends React.Component {
   render() {
     let messages = [];
 
-    if (this.state.msgsToDisplay.length !== 0) {
-      // WILL NEED TO SEPARATE OUT FOR INDIVIDUAL MSG TO ADD STATE AND ALLOW EDIT AND TAG NAME AND TIPPING!!
-      //let d = Date.now();
-
+    if (this.state.groupMsgs.length !== 0) {
       let today = new Date(); //Date.now(); <= Wrong
       let yesterday = new Date(today);
 
       yesterday.setDate(yesterday.getDate() - 1);
 
-      messages = this.state.msgsToDisplay.map((msg, index) => {
+      messages = this.state.groupMsgs.map((msg, index) => {
         return (
           <GroupMsg
             key={index}
             mode={this.props.mode}
             index={index}
             msg={msg}
+            names={this.state.groupMsgsNames}
             //date={d}
             today={today}
             yesterday={yesterday}
@@ -501,7 +426,7 @@ class Group extends React.Component {
         <p> </p>
 
         <div id="bodytext">
-          {this.state.msgsToDisplay.length === 0 && !this.state.LoadingMsgs ? (
+          {this.state.groupMsgs.length === 0 && !this.state.LoadingMsgs ? (
             <p>There are no messages available for this group.</p>
           ) : (
             <></>

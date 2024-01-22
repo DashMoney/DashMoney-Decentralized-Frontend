@@ -2,9 +2,9 @@ import React from "react";
 import Badge from "react-bootstrap/Badge";
 import Spinner from "react-bootstrap/Spinner";
 import Button from "react-bootstrap/Button";
+import Alert from "react-bootstrap/Alert";
 
 import CreditsOnPage from "../CreditsOnPage";
-//import "./InvitesPage.css";
 
 class GroupsPage extends React.Component {
   handleTimeToDate = (timeObject) => {
@@ -39,6 +39,7 @@ class GroupsPage extends React.Component {
 
     let acceptedInvitesButtons = <></>;
     let othersInvitesButtons = <></>;
+    let recentGroupsButtons = <></>;
 
     acceptedInvitesButtons = acceptedInvites.map((acceptedGroup, index) => {
       return (
@@ -111,8 +112,7 @@ class GroupsPage extends React.Component {
 
     return (
       <>
-        <p></p>
-        <div id="bodytext">
+        <div className="bodytext">
           <CreditsOnPage
             identityInfo={this.props.identityInfo}
             uniqueName={this.props.uniqueName}
@@ -132,9 +132,69 @@ class GroupsPage extends React.Component {
           )}
           {/* PUT THE ALERT HERE!! */}
 
-          {/* Copy how other pages are done. */}
+          {/*  {this.props.WALLET_sendSuccess ? (
+                    <>
+                      <p></p>
+                      <Alert
+                        variant="success"
+                        onClose={() => this.props.handleSuccessAlert_WALLET()}
+                        dismissible
+                      >
+                        <Alert.Heading>Payment Successful!</Alert.Heading>
+                        You have successfully sent{" "}
+                        <b>
+                          {this.handleDenomDisplayNoStyle(
+                            this.props.WALLET_amountToSend
+                          )}
+                        </b>{" "}
+                        to{" "}
+                        <b>
+                          {this.props.WALLET_sendToName !== ""
+                            ? this.props.WALLET_sendToName
+                            : this.props.WALLET_sendToAddress}
+                          !
+                        </b>
+                      </Alert>
+                    </>
+                  ) : (
+                    <></>
+                  )}
 
-          <h3>Your Groups</h3>
+                  {this.props.WALLET_sendFailure ? (
+                    <>
+                      <p></p>
+                      <Alert
+                        variant="danger"
+                        onClose={() => this.props.handleFailureAlert_WALLET()}
+                        dismissible
+                      >
+                        <Alert.Heading>Payment Failed</Alert.Heading>
+                        <p>
+                          You have run into a platform error or a repeated
+                          transaction error. If everything seems correct, please
+                          retry <b>Verify Payment</b> to try again.
+                        </p>
+                      </Alert>
+                    </>
+                  ) : (
+                    <></>
+                  )} */}
+
+          <div className="cardTitle">
+            <h3>
+              <b>Your Groups</b>
+            </h3>
+
+            <Button
+              style={{ marginRight: "1rem", marginBottom: ".5rem" }}
+              variant="primary"
+              onClick={() => this.props.showModal("CreateGroupModal")}
+            >
+              <b>Create</b>
+            </Button>
+          </div>
+
+          {/* <h3>Your Groups</h3> */}
 
           {this.props.isLoadingGroups ? (
             <>
@@ -176,8 +236,7 @@ class GroupsPage extends React.Component {
             <></>
           )}
 
-          {!this.props.isLoadingGroups &&
-          this.props.othersInvites.length === 0 ? (
+          {!this.props.isLoadingGroups && othersInvites.length === 0 ? (
             <>Invites sent to you will appear here!</>
           ) : (
             <></>

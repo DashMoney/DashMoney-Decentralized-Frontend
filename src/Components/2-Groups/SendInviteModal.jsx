@@ -6,7 +6,7 @@ import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 import CloseButton from "react-bootstrap/CloseButton";
 
-const Dash = require("dash");
+import Dash from "dash";
 
 class SendInviteModal extends React.Component {
   constructor(props) {
@@ -21,7 +21,6 @@ class SendInviteModal extends React.Component {
       validityCheck: false,
     };
   }
-
 
   handleCloseClick = () => {
     this.props.hideModal();
@@ -93,7 +92,6 @@ class SendInviteModal extends React.Component {
       .finally(() => client.disconnect());
   };
 
-
   handleSubmitClick = (event) => {
     event.preventDefault();
     //call the SearchName
@@ -137,12 +135,15 @@ class SendInviteModal extends React.Component {
   render() {
     let modalBkg = "";
     let closeButtonColor;
+    let modalBackdrop;
 
     if (this.props.mode === "primary") {
+      modalBackdrop = "modal-backdrop-nochange";
       modalBkg = "modal-backcolor-primary";
       closeButtonColor = <CloseButton onClick={this.handleCloseClick} />;
     } else {
-      modalBkg = "modal-backcolor-dark";
+      modalBackdrop = "modal-backdrop-dark";
+      modalBkg = "text-bg-dark";
       closeButtonColor = (
         <CloseButton onClick={this.handleCloseClick} variant="white" />
       );
@@ -152,7 +153,9 @@ class SendInviteModal extends React.Component {
       <>
         <Modal contentClassName={modalBkg} show={this.props.isModalShowing}>
           <Modal.Header>
-            <Modal.Title><b>Send Invite</b></Modal.Title>
+            <Modal.Title>
+              <b>Send Invite</b>
+            </Modal.Title>
             {closeButtonColor}
           </Modal.Header>
           <Modal.Body>
@@ -241,19 +244,15 @@ class SendInviteModal extends React.Component {
                   <li>No spaces are allowed.</li>
                   <li>Length must be between 3 to 63 characters</li>
                 </ul>
-                
               </Form.Group>
             </Form>
-            
           </Modal.Body>
           <Modal.Footer>
             {/* <Button variant="primary" onClick={this.handleCloseClick}>
               Close
             </Button> */}
             <p></p>
-            <>
-              
-            </>
+            <></>
           </Modal.Footer>
         </Modal>
       </>

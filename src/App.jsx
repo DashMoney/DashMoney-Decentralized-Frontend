@@ -23,6 +23,7 @@ import AccountLogin from "./Components/0-LoginPage/AccountLogin";
 import MessagesPage from "./Components/1-Messages/MessagesPage";
 
 import GroupsPage from "./Components/2-Groups/GroupsPage";
+import Group from "./Components/2-Groups/Group";
 
 import WalletPage from "./Components/3-Wallet/WalletPage";
 
@@ -47,6 +48,10 @@ import LogoutModal from "./Components/0-LoginPage/LogoutModal";
 import NewSOModal from "./Components/1-Messages/NewSOModal";
 import NewDMModal from "./Components/1-Messages/NewDMModal";
 import NewThreadModal from "./Components/1-Messages/NewThreadModal";
+
+import CreateGroupModal from "./Components/2-Groups/CreateGroupModal";
+import JoinGroupModal from "./Components/2-Groups/JoinGroupModal";
+import DeleteGroupModal from "./Components/2-Groups/DeleteGroupModal";
 
 import ConfirmAddrPaymentModal from "./Components/3-Wallet/ConfirmAddrPaymentModal";
 import RegisterDGMModal from "./Components/RegisterDGMModal";
@@ -1391,10 +1396,13 @@ class App extends React.Component {
     //After(Identity/Name) -> trigger added to 2 Functions ABOVE
     // ForYou(Messages)
     this.startMessagesQuerySeq(theIdentity);
+    this.getDGTInvites(theIdentity);
 
     // DGM msgs(to&from) && //DGM AddressesFromWallet!
     this.handleLoginQueries_WALLET(theIdentity);
     this.getAddresses_WALLET();
+
+    this.getActiveGroups();
 
     // Orders(Shopping),
     //Buyers side ->
@@ -3867,8 +3875,8 @@ class App extends React.Component {
     });
   };
 
-  // this.getDGTInvites(this.state.identity) <= TRIGGER
-  // this.getActiveGroups()    <= TRIGGER
+  // this.getDGTInvites(theIdentity) <= TRIGGER (on Login)
+  // this.getActiveGroups()    <= TRIGGER ON first selection.. ?
 
   getDGTInvites = (theIdentity) => {
     const clientOpts = {
@@ -3891,28 +3899,22 @@ class App extends React.Component {
     getDocuments()
       .then((d) => {
         if (d.length === 0) {
-          //console.log("There are no DGTInvites");
+          console.log("There are no DGTInvites");
           this.setState({
             isLoadingGroups: false,
           });
         } else {
           let docArray = [];
 
-          // for (const n of d) {
-          //   let returnedDoc = n.toJSON();
-          //   //console.log("Thr:\n", returnedDoc);
-          //   returnedDoc.msgId = Identifier.from(
-          //     returnedDoc.msgId,
-          //     "base64"
-          //   ).toJSON();
-          //   //console.log("newThr:\n", returnedDoc);
-          //   docArray = [...docArray, returnedDoc];
-          // }
-
           for (const n of d) {
-            //console.log("Invite Documents:\n", n.toJSON());
-            docArray = [...docArray, n.toJSON()];
-            //DOES ANY PART OF DOCUMENT NEED CONVERTING? LIKE THE TOID? ->
+            let returnedDoc = n.toJSON();
+            //console.log("Invite:\n", returnedDoc);
+            returnedDoc.toId = Identifier.from(
+              returnedDoc.toId,
+              "base64"
+            ).toJSON();
+            //console.log("newInvite:\n", returnedDoc);
+            docArray = [...docArray, returnedDoc];
           }
 
           this.getDGTInvitesNames(docArray);
@@ -3993,7 +3995,7 @@ class App extends React.Component {
 
     //DGTInvite Query
     const getDocuments = async () => {
-      return client.platform.documents.get("DGTContract.dgtinvite", {
+      return client.platform.documents.get("DGTContract.dgtmsg", {
         limit: 30,
         where: [["$createdAt", "<=", Date.now()]],
         orderBy: [["$createdAt", "desc"]],
@@ -4046,8 +4048,6 @@ class App extends React.Component {
       isLoadingGroups: true,
     });
 
-    //isLoadingGroups
-
     //Makes sure I dont send 2nd invite to myself
 
     let document = this.state.dgtInvites.find((invite) => {
@@ -4093,7 +4093,6 @@ class App extends React.Component {
         } else {
           identity = await platform.identities.get(this.state.identity);
         } // Your identity ID
-        //aDD THE TERNARY ->
 
         const docProperties = {
           group: newGroup,
@@ -4131,7 +4130,7 @@ class App extends React.Component {
           console.error("Something went wrong:\n", e);
           this.setState({
             isLoadingGroups: false,
-            errorGroupsAdd: true, //Needs to be more specific
+            errorGroupsAdd: true, //Needs to add to state and handle
           });
         })
         .finally(() => client.disconnect());
@@ -4143,18 +4142,18 @@ class App extends React.Component {
     this.hideGroupPage();
 
     this.setState({
-      isLoadingMyGroups: true,
+      isLoadingGroups: true,
     });
 
     //create a group to remove array for before display ->
     //Find the groupName of the doc and return the docId -> DONE
 
-    let document = this.state.dgtInvites.find((invite) => {
+    let documentJSON = this.state.dgtInvites.find((invite) => {
       return (
         groupRemove === invite.group && invite.$ownerId === this.state.identity
       );
     });
-    console.log(document);
+    console.log(documentJSON);
 
     //let documentId = document.$id;
 
@@ -4180,36 +4179,37 @@ class App extends React.Component {
       const { platform } = client;
       const identity = this.state.identityRaw;
 
+      const [document] = await client.platform.documents.get(
+        "DGTContract.dgtinvite",
+        { where: [["$id", "==", documentJSON.$id]] }
+      );
+
       // Sign and submit the document delete transition
-      return platform.documents.broadcast({ delete: [document] }, identity);
+      await platform.documents.broadcast({ delete: [document] }, identity);
+      return document;
     };
 
     deleteDocument()
       .then((d) => {
         console.log("Document deleted:\n", d.toJSON());
-        // let namesOfGroups = this.state.dgtInvites.map((invite) => {
-        //   return invite.group;
-        // });
 
-        // if (namesOfGroups.includes(groupRemove)) {
-        //   let groupIndex = namesOfGroups.indexOf(groupRemove);
+        let indexToDelete = this.state.dgtInvites.findIndex((invite) => {
+          return invite.$id === d.toJSON().$id;
+        });
 
-        //   let mutableArray = this.state.dgtAcceptedInvites;
-        //   mutableArray.splice(groupIndex, 1);
+        let mutableArray = this.state.dgtAcceptedInvites;
+        mutableArray.splice(indexToDelete, 1);
 
-        //   this.setState({
-        //     dgtInvites: mutableArray,
-        //     isLoadingGroups: false,
-        //   });
-        // }
         this.setState({
-          isLoadingMyGroups: false,
+          dgtInvites: mutableArray,
+          isLoadingGroups: false,
         });
       })
       .catch((e) => {
         console.error("Something went wrong:\n", e);
         this.setState({
-          isLoadingMyGroups: false,
+          isLoadingGroups: false,
+          //Add Error alert ->
         });
       })
       .finally(() => client.disconnect());
@@ -4345,8 +4345,6 @@ class App extends React.Component {
 
       const documentBatch = {
         create: [dgtDocument], // Document(s) to create
-        replace: [], // Document(s) to update
-        delete: [], // Document(s) to delete
       };
       // Sign and submit the document(s)
       await platform.documents.broadcast(documentBatch, identity);
@@ -4359,7 +4357,7 @@ class App extends React.Component {
 
         this.setState({
           isLoadingGroup: false,
-          GroupsMsgsToAdd: [d.toJSON()],
+          GroupsMsgsToAdd: [d.toJSON()], //Implement ->
         });
       })
       .catch((e) => {
@@ -9546,25 +9544,59 @@ class App extends React.Component {
                 <></>
               )}
               {/* {this.state.selectedDapp === "Groups" ? (
+                //SO THIS WILL BE A 2 PAGE SETUP INSTEAD OF ONE AND ITS NOT A BAD IDEA i SUPPOSE SO THAT WHEN YOU CLICK OFF ITS NOT LOST... ->
                 <>
-                  <GroupsPage
-                    isLoginComplete={isLoginComplete}
-                    identityInfo={this.state.identityInfo}
-                    uniqueName={this.state.uniqueName}
-                    showModal={this.showModal}
-                    identity={this.state.identity}
-                    //InitialPullReviews={this.state.InitialPullReviews}
-                    //pullInitialTriggerREVIEWS={this.pullInitialTriggerREVIEWS}
-                    whichReviewsTab={this.state.whichReviewsTab}
-                    //handleReviewsTab={this.handleReviewsTab}
-                    identityInfo={this.state.identityInfo}
-                    uniqueName={this.state.uniqueName}
-                    showModal={this.showModal}
-                    mode={this.state.mode}
-                    //isLoadingReviewsSearch={this.state.isLoadingReviewsSearch}
-                    identity={this.state.identity}
-                    //isLoadingYourReviews={this.state.isLoadingYourReviews}
-                  />
+                  {this.state.isGroupShowing ? (
+                    <>
+                      <Group
+                        //isGroupShowing: true,
+                        uniqueName={this.state.uniqueName}
+                        identityRaw={this.state.identityRaw}
+                        isLoadingGroup={this.state.isLoadingGroup}
+                        //IS THIS DOING ANYTHING?? -> msg submission and invite sending ->
+                        submitDGTmessage={this.submitDGTmessage}
+                        submitDGTinvite={this.submitDGTinvite}
+                        showModal={this.showModal}
+                        selectedGroup={this.state.selectedGroup}
+                        whichNetwork={this.state.whichNetwork}
+                        mode={this.state.mode}
+                        hideGroupPage={this.hideGroupPage}
+                        sentGroupInviteError={this.state.sentGroupInviteError}
+                        sentGroupInviteSuccess={
+                          this.state.sentGroupInviteSuccess
+                        }
+                        sendToNameInvite={this.state.sendToNameInvite}
+                        DataContractDGT={this.state.DataContractDGT}
+                        DataContractDPNS={this.state.DataContractDPNS}
+                      />
+                    </>
+                  ) : (
+                    <GroupsPage
+                      isLoginComplete={isLoginComplete}
+                      identityInfo={this.state.identityInfo}
+                      uniqueName={this.state.uniqueName}
+                      showModal={this.showModal}
+                      identity={this.state.identity}
+                      showGroupPage={this.showGroupPage}
+                      //InitialPullReviews={this.state.InitialPullReviews}
+                      //pullInitialTriggerREVIEWS={this.pullInitialTriggerREVIEWS}
+                      mode={this.state.mode}
+                      isLoadingGroups={this.state.isLoadingGroups}
+                      isLoadingGroup={this.state.isLoadingGroup}
+                      isLoadingGroupsActive={this.state.isLoadingGroupsActive}
+                      isLoadingGroupInvite={this.state.isLoadingGroupInvite}
+                      dgtInvites={this.state.dgtInvites}
+                      dgtInvitesNames={this.state.dgtInvitesNames}
+                      dgtActiveGroups={this.state.dgtActiveGroups}
+                      selectedGroup={this.state.selectedGroup} //Do these go here AND where is the modal that displays this?
+                      isGroupShowing={this.state.isGroupShowing}
+                      GroupsMsgsToAdd={this.state.GroupsMsgsToAdd} //handle in Group so not too difficult, just add together and use set for unique docId ->
+                      sentGroupMsgError={this.state.sentGroupMsgError} //Thread to Group, all the below
+                      sentGroupInviteError={this.state.sentGroupInviteError}
+                      sentGroupInviteSuccess={this.state.sentGroupInviteSuccess}
+                      sendToNameInvite={this.state.sendToNameInvite} //For invite
+                    />
+                  )}
                 </>
               ) : (
                 <></>
@@ -10011,6 +10043,52 @@ class App extends React.Component {
             hideModal={this.hideModal}
             mode={this.state.mode}
             closeExpandedNavs={this.closeExpandedNavs}
+          />
+        ) : (
+          <></>
+        )}
+        {/* 
+
+*      #############
+*     ####        ###
+*     ###
+*     ###     ########
+*     #####      ####
+*      ############# */}
+
+        {this.state.isModalShowing &&
+        this.state.presentModal === "CreateGroupModal" ? (
+          <CreateGroupModal
+            submitCreateGroup={this.submitCreateGroup}
+            isModalShowing={this.state.isModalShowing}
+            hideModal={this.hideModal}
+            mode={this.state.mode}
+          />
+        ) : (
+          <></>
+        )}
+
+        {this.state.isModalShowing &&
+        this.state.presentModal === "DeleteGroupModal" ? (
+          <DeleteGroupModal
+            selectedGroup={this.state.selectedGroup}
+            deleteGroup={this.deleteGroup}
+            isModalShowing={this.state.isModalShowing}
+            hideModal={this.hideModal}
+            mode={this.state.mode}
+          />
+        ) : (
+          <></>
+        )}
+
+        {this.state.isModalShowing &&
+        this.state.presentModal === "JoinGroupModal" ? (
+          <JoinGroupModal
+            submitCreateGroup={this.submitCreateGroup}
+            selectedGroup={this.state.selectedGroup}
+            isModalShowing={this.state.isModalShowing}
+            hideModal={this.hideModal}
+            mode={this.state.mode}
           />
         ) : (
           <></>

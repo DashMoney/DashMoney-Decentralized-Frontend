@@ -3,20 +3,30 @@ import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 //import Card from "react-bootstrap/Card";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
 
 import Navbar from "react-bootstrap/Navbar";
 
-import ViewMembersModal from "../GroupBottomNav/GroupBottomNavModals/ViewMembersModal";
-import NewMessageModal from "../GroupBottomNav/GroupBottomNavModals/NewMessageModal";
-import SendInviteModal from "../GroupBottomNav/GroupBottomNavModals/SendInviteModal";
+import Container from "react-bootstrap/Container";
+
+import ViewMembersModal from "./ViewMembersModal";
+import NewMessageModal from "./NewMessageModal";
+import SendInviteModal from "./SendInviteModal";
+
+import { HiOutlineSpeakerphone } from "react-icons/hi";
+//import { FaArrowUp } from "react-icons/fa6";
+import { FiMail } from "react-icons/fi";
+import { IoMdArrowRoundBack } from "react-icons/io";
+
+//import { CgUserAdd } from "react-icons/cg";
+import { MdRefresh } from "react-icons/md";
 
 import GroupMsg from "./GroupMsg";
 
-import GroupBottomNav from "../GroupBottomNav/GroupBottomNav";
+// import GroupBottomNav from "../GroupBottomNav/GroupBottomNav";
+import "../../App.css";
 
-import "./GroupPage.css";
-
-const Dash = require("dash");
+import Dash from "dash";
 
 const {
   Essentials: { Buffer },
@@ -70,11 +80,13 @@ class Group extends React.Component {
   //   return date.toLocaleDateString();
   // };
 
+  //Bring in the full one
+
   //I THINK I CAN STILL DO THE BELOW STUFF HERE.. FOR NOW
   //This is just read from platform
 
   getDGTMessages = () => {
-    // console.log(`Calling get messages for ${this.props.selectedGroup}`);
+    console.log(`Calling get messages for ${this.props.selectedGroup}`);
 
     const clientOpts = {
       network: this.props.whichNetwork,
@@ -361,102 +373,99 @@ class Group extends React.Component {
 
     return (
       <>
-        {this.state.isModalShowing &&
-        this.state.presentModal === "NewMessageModal" ? (
-          <NewMessageModal
-            submitDGTmessage={this.submitDGTmessage}
-            selectedGroup={this.props.selectedGroup}
-            isModalShowing={this.state.isModalShowing}
-            hideModal={this.hideModal}
-            mode={this.state.mode}
-          />
-        ) : (
-          <></>
-        )}
-        {this.state.isModalShowing &&
-        this.state.presentModal === "SendInviteModal" ? (
-          <SendInviteModal
-            submitDGTinvite={this.submitDGTinvite}
-            isModalShowing={this.state.isModalShowing}
-            hideModal={this.hideModal}
-            mode={this.state.mode}
-          />
-        ) : (
-          <></>
-        )}
-
-        {this.state.isModalShowing &&
-        this.state.presentModal === "ViewMembersModal" ? (
-          <ViewMembersModal
-            LoadingMembers={this.state.LoadingMembers}
-            groupMembers={this.state.groupMembers}
-            isModalShowing={this.state.isModalShowing}
-            hideModal={this.hideModal}
-            mode={this.state.mode} //mode shouldnt be
-          />
-        ) : (
-          <></>
-        )}
-
         <Navbar
           sticky="top"
-          className="cardTitle"
-          style={{ paddingLeft: "2%", paddingRight: "2%" }}
+          //style={{ paddingLeft: "2%", paddingRight: "2%" }}
           bg={this.props.mode}
           variant={this.props.mode}
         >
-          {/* <Nav  className="one-level-nav">
-            </Nav> */}
+          <Container>
+            <Button
+              variant="primary"
+              onClick={() => this.props.hideGroupPage()}
+            >
+              <IoMdArrowRoundBack size={28} />
+            </Button>
 
-          {/* <span  onClick={() => this.props.hideGroupPage()}>🔙</span> */}
-          <Button variant="primary" onClick={() => this.props.hideGroupPage()}>
-            Back
-          </Button>
+            <h3>
+              <b>{this.props.selectedGroup}</b>
+            </h3>
 
-          <h3>{this.props.selectedGroup}</h3>
-
-          <Button
-            variant="primary"
-            onClick={() => this.showModal("ViewMembersModal")}
-          >
-            Members
-          </Button>
+            <Button
+              variant="primary"
+              onClick={() => this.showModal("ViewMembersModal")}
+            >
+              <b>Members</b>
+            </Button>
+          </Container>
         </Navbar>
 
         <p> </p>
 
-        <div id="bodytext">
+        <div className="bodytext">
           {this.state.groupMsgs.length === 0 && !this.state.LoadingMsgs ? (
             <p>There are no messages available for this group.</p>
           ) : (
             <></>
           )}
 
-          {/* <Dropdown>
-                <Dropdown.Toggle
-                  variant="primary"
-                  id="dropdown-basic"
-                  onClick={() => {
-                    this.handledisplayGroupMembers();
-                  }}
-                >
-                  <b>{this.props.selectedGroupChat.name}</b>
-                  <Badge className="paddingBadge" bg="light" text="dark" pill>
-                    {this.props.selectedGroupChat.owner}
-                  </Badge>
-                </Dropdown.Toggle>
-              </Dropdown> */}
+          {/* <div className="footer">{tuples}</div> */}
 
-          {/* <Collapse in={this.state.displayGroupMembers}>
-            <div id="example-collapse-text" className="indentMembers">
-              <h4>{this.props.selectedGroupChat.name} Members</h4>
-              <ul>
-                {this.props.selectedGroupChat.members.map((member, index) => (
-                  <li key={index}>{member}</li>
-                ))}
-              </ul>
-            </div>
-          </Collapse> */}
+          <div className="bootstrapMenu">
+            <ButtonGroup size="lg" className="one-level-nav">
+              {this.props.isLoadingGroup ? (
+                <>
+                  <Button
+                    onClick={() => {
+                      this.showModal("NewMessageModal");
+                    }}
+                  >
+                    <div className="icon-position">
+                      <HiOutlineSpeakerphone size={28} />
+                    </div>
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button disabled>
+                    <div className="icon-position">
+                      <HiOutlineSpeakerphone size={28} />
+                    </div>
+                  </Button>
+                </>
+              )}
+              <Button //onClick={() => this.scrollToTop()}
+              >
+                {" "}
+                <div className="icon-position">
+                  <MdRefresh size={28} />
+                </div>
+              </Button>
+              {this.props.isLoadingGroup ? (
+                <>
+                  <Button
+                    onClick={() => {
+                      this.showModal("SendInviteModal");
+                    }}
+                  >
+                    {" "}
+                    <div className="icon-position">
+                      <FiMail size={28} />
+                    </div>
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button disabled>
+                    {" "}
+                    <div className="icon-position">
+                      <FiMail size={28} />
+                    </div>
+                  </Button>
+                </>
+              )}
+            </ButtonGroup>
+          </div>
 
           {this.state.LoadingMsgs ? (
             <div id="shoutOutSpinner">
@@ -555,7 +564,8 @@ class Group extends React.Component {
             </>
           )}
         </div>
-        <GroupBottomNav
+
+        {/* <GroupBottomNav
           submitDGTinvite={this.submitDGTinvite}
           selectedGroup={this.props.selectedGroup}
           deleteGroup={this.props.deleteGroup}
@@ -564,7 +574,46 @@ class Group extends React.Component {
           showDeleteModal={this.props.showDeleteModal}
           LoadingMsgs={this.state.LoadingMsgs}
           LoadingInvites={this.state.LoadingMembers}
-        />
+        /> */}
+
+        {this.state.isModalShowing &&
+        this.state.presentModal === "NewMessageModal" ? (
+          <NewMessageModal
+            submitDGTmessage={this.props.submitDGTmessage}
+            selectedGroup={this.props.selectedGroup}
+            isModalShowing={this.state.isModalShowing}
+            hideModal={this.hideModal}
+            mode={this.props.mode}
+          />
+        ) : (
+          <></>
+        )}
+
+        {this.state.isModalShowing &&
+        this.state.presentModal === "SendInviteModal" ? (
+          <SendInviteModal
+            submitDGTinvite={this.props.submitDGTinvite}
+            isModalShowing={this.state.isModalShowing}
+            hideModal={this.hideModal}
+            mode={this.props.mode}
+          />
+        ) : (
+          <></>
+        )}
+
+        {this.state.isModalShowing &&
+        this.state.presentModal === "ViewMembersModal" ? (
+          <ViewMembersModal
+            LoadingMembers={this.state.LoadingMembers}
+            showDeleteModal={this.props.showModal}
+            groupMembers={this.state.groupMembers}
+            isModalShowing={this.state.isModalShowing}
+            hideModal={this.hideModal}
+            mode={this.props.mode}
+          />
+        ) : (
+          <></>
+        )}
       </>
     );
   }

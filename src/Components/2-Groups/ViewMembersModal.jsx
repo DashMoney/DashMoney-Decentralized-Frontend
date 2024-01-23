@@ -15,6 +15,11 @@ class ViewMembersModal extends React.Component {
     this.props.hideModal();
   };
 
+  handleDeleteGroupClick = () => {
+    this.props.showDeleteModal("DeleteGroupModal");
+    this.props.hideModal();
+  };
+
   handleNameClick = (nameToPass) => {
     navigator.clipboard.writeText(nameToPass);
     this.setState({
@@ -76,7 +81,7 @@ class ViewMembersModal extends React.Component {
               <Button
                 variant="primary"
                 onClick={() => {
-                  this.props.showDeleteModal("DeleteGroupModal");
+                  this.handleDeleteGroupClick();
                 }}
               >
                 <b>Leave Group</b>

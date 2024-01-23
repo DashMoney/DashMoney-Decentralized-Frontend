@@ -42,6 +42,8 @@ class JoinGroupModal extends React.Component {
           </Modal.Header>
           <Modal.Body>Join {this.props.selectedGroup}?</Modal.Body>
 
+          {/* Show Members?? */}
+
           <Modal.Footer>
             <Button variant="primary" onClick={() => this.handleGroupJoining()}>
               Join Group

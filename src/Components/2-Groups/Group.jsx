@@ -37,14 +37,14 @@ class Group extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      LoadingMsgs: false,
+      LoadingMsgs: true,
       LoadingMembers: true,
 
-      groupMembers: [], //add the app.js -> why?
-      groupMembersNames: [],
+      groupMembers: [],
+      // groupMembersNames: [], //Uses tuples instead
 
       groupMsgs: [],
-      groupMsgsNames: [],
+      //groupMsgsNames: [],
 
       isModalShowing: false, //Why are the modals here? just put in app.js? why?
       presentModal: "",
@@ -80,10 +80,7 @@ class Group extends React.Component {
   //   return date.toLocaleDateString();
   // };
 
-  //Bring in the full one
-
-  //I THINK I CAN STILL DO THE BELOW STUFF HERE.. FOR NOW
-  //This is just read from platform
+  //Bring in the full one ? -> no date thing is needed here
 
   getDGTMessages = () => {
     console.log(`Calling get messages for ${this.props.selectedGroup}`);
@@ -134,6 +131,18 @@ class Group extends React.Component {
   getDGTMsgsNames = (msgArr) => {
     //console.log("Calling getDGTMsgsNames");
 
+    let ownerarrayOfOwnerIds = msgArr.map((doc) => {
+      return doc.$ownerId;
+    });
+
+    let setOfOwnerIds = [...new Set(ownerarrayOfOwnerIds)];
+
+    let arrayOfOwnerIds = [...setOfOwnerIds];
+
+    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+      Buffer.from(Identifier.from(item))
+    );
+
     const clientOpts = {
       network: this.props.whichNetwork,
       apps: {
@@ -144,18 +153,6 @@ class Group extends React.Component {
     };
     const client = new Dash.Client(clientOpts);
 
-    //START OF NAME RETRIEVAL
-
-    let ownerarrayOfOwnerIds = docArray.map((doc) => {
-      return doc.$ownerId;
-    });
-
-    let setOfOwnerIds = [...new Set(ownerarrayOfOwnerIds)];
-
-    let arrayOfOwnerIds = [...setOfOwnerIds];
-
-    //arrayOfOwnerIds = arrayOfOwnerIds.map((item) => Buffer.from(Identifier.from(item)));
-
     const getNameDocuments = async () => {
       return client.platform.documents.get("DPNS.domain", {
         where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
@@ -165,28 +162,53 @@ class Group extends React.Component {
 
     getNameDocuments()
       .then((d) => {
+        //WHAT IF THERE ARE NO NAMES?
         if (d.length === 0) {
-          //console.log("No DPNS domain documents retrieved.");
+          console.log("No DPNS domain documents retrieved.");
         }
 
         let nameDocArray = [];
 
         for (const n of d) {
-          //console.log("NameDoc:\n", n.toJSON());
+          console.log("NameDoc:\n", n.toJSON());
 
           nameDocArray = [n.toJSON(), ...nameDocArray];
         }
-        //console.log(`DPNS Name Docs: ${nameDocArray}`);
+        console.log(nameDocArray);
 
+        let tupleArray = []; //<- Final array
+
+        // My 2 arrays are: nameDocArray and msgArr
+        //There may not be very many name docs because same author for lots of msgs..
+
+        tupleArray = msgArr.map((msg) => {
+          let tuple = "";
+
+          for (let nameDoc of nameDocArray) {
+            if (nameDoc.$ownerId === msg.$ownerId) {
+              tuple = [nameDoc.label, msg];
+              break;
+            }
+          }
+          if (tuple !== "") {
+            return tuple;
+          }
+
+          return ["No Name Avail..", msg];
+        });
+        //HAVE TO SORT THE MSGS AND NAMES TOGETHER BC THEY DON'T COME TOGETHER WELL.
+
+        //console.log("Tuple!");
+        //console.log(tupleArray);
         this.setState(
           {
-            groupMsgs: msgArr,
-            groupMsgsNames: nameDocArray,
+            groupMsgs: tupleArray,
             LoadingMsgs: false,
           },
           () => this.scrollToBottom()
         );
       })
+
       .catch((e) => {
         console.error("Something went wrong:\n", e);
 
@@ -214,7 +236,7 @@ class Group extends React.Component {
     //DGTInvites Query ->
     const getInvites = async () => {
       return client.platform.documents.get("DGTContract.dgtinvite", {
-        limit: 60,
+        limit: 80,
         where: [
           ["group", "==", this.props.selectedGroup],
           ["dgt", "==", "self"],
@@ -260,15 +282,6 @@ class Group extends React.Component {
 
     const clientOpts = {
       network: this.props.whichNetwork,
-      // wallet: {
-      //   mnemonic:
-      //     this.props.mnemonic,
-
-      //   unsafeOptions: {
-      //     skipSynchronizationBeforeHeight: this.props.skipSynchronizationBeforeHeight,
-      //     //change to what the actual block height
-      //   },
-      // },
       apps: {
         DPNS: {
           contractId: this.props.DataContractDPNS,
@@ -347,28 +360,69 @@ class Group extends React.Component {
 
   render() {
     let messages = [];
+    let msgsToAdd = [];
 
-    if (this.state.groupMsgs.length !== 0) {
-      let today = new Date(); //Date.now(); <= Wrong
-      let yesterday = new Date(today);
+    //Change to Loading?? <-
+    let today = new Date();
+    let yesterday = new Date(today);
 
-      yesterday.setDate(yesterday.getDate() - 1);
+    yesterday.setDate(yesterday.getDate() - 1);
 
-      messages = this.state.groupMsgs.map((msg, index) => {
-        return (
-          <GroupMsg
-            key={index}
-            mode={this.props.mode}
-            index={index}
-            msg={msg}
-            names={this.state.groupMsgsNames}
-            //date={d}
-            today={today}
-            yesterday={yesterday}
-            uniqueName={this.props.uniqueName}
-          />
-        );
-      });
+    messages = this.state.groupMsgs.map((msg, index) => {
+      return (
+        <GroupMsg
+          key={index}
+          mode={this.props.mode}
+          index={index}
+          tuple={msg} //This will be a tuple
+          //date={d}
+          today={today}
+          yesterday={yesterday}
+          uniqueName={this.props.uniqueName}
+        />
+      );
+    });
+
+    if (!this.state.LoadingMsgs) {
+      if (this.state.groupMsgs.length !== 0) {
+        msgsToAdd = this.props.GroupsMsgsToAdd.map((msg, index) => {
+          if (
+            msg.group === this.props.selectedGroup &&
+            msg.$createdAt >
+              this.state.groupMsgs[this.state.groupMsgs.length - 1][1]
+                .$createdAt //Because this is a Tuple.. in an array
+          ) {
+            return (
+              <GroupMsg
+                key={index}
+                mode={this.props.mode}
+                index={index}
+                tuple={[this.props.uniqueName, msg]} //This will be a tuple
+                //date={d}
+                today={today}
+                yesterday={yesterday}
+                uniqueName={this.props.uniqueName}
+              />
+            );
+          } //check that its the right group and it is later than latest $createdAt
+        });
+      } else {
+        msgsToAdd = this.props.GroupsMsgsToAdd.map((msg, index) => {
+          if (msg.group === this.props.selectedGroup) {
+            return (
+              <GroupMsg
+                key={index}
+                mode={this.props.mode}
+                index={index}
+                tuple={[this.props.uniqueName, msg]} //This will be a tuple
+                today={today}
+                yesterday={yesterday}
+                uniqueName={this.props.uniqueName}
+              />
+            );
+          }
+        });
+      }
     }
 
     return (
@@ -388,9 +442,12 @@ class Group extends React.Component {
             </Button>
 
             <h3>
-              <b>{this.props.selectedGroup}</b>
+              {this.props.mode === "primary" ? (
+                <b className="lightMode">{this.props.selectedGroup}</b>
+              ) : (
+                <b>{this.props.selectedGroup}</b>
+              )}
             </h3>
-
             <Button
               variant="primary"
               onClick={() => this.showModal("ViewMembersModal")}
@@ -399,12 +456,11 @@ class Group extends React.Component {
             </Button>
           </Container>
         </Navbar>
-
-        <p> </p>
-
-        <div className="bodytext">
+        <div>
           {this.state.groupMsgs.length === 0 && !this.state.LoadingMsgs ? (
-            <p>There are no messages available for this group.</p>
+            <div className="bodytext">
+              <p>There are no messages available for this group.</p>
+            </div>
           ) : (
             <></>
           )}
@@ -413,7 +469,7 @@ class Group extends React.Component {
 
           <div className="bootstrapMenu">
             <ButtonGroup size="lg" className="one-level-nav">
-              {this.props.isLoadingGroup ? (
+              {!this.props.isLoadingGroup && !this.state.LoadingMsgs ? (
                 <>
                   <Button
                     onClick={() => {
@@ -441,7 +497,7 @@ class Group extends React.Component {
                   <MdRefresh size={28} />
                 </div>
               </Button>
-              {this.props.isLoadingGroup ? (
+              {!this.props.isLoadingGroup ? (
                 <>
                   <Button
                     onClick={() => {
@@ -467,7 +523,25 @@ class Group extends React.Component {
             </ButtonGroup>
           </div>
 
-          {this.state.LoadingMsgs ? (
+          <div>
+            {messages}
+            {msgsToAdd}
+          </div>
+
+          <p></p>
+          {/* https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react */}
+          <div
+            style={{ float: "left", clear: "both" }}
+            ref={(el) => {
+              this.messagesEnd = el;
+            }}
+          ></div>
+          <p></p>
+
+          {this.state.LoadingMsgs ||
+          this.props.isLoadingGroup ||
+          this.state.LoadingMembers ||
+          this.props.isLoadingGroupInvite ? (
             <div id="shoutOutSpinner">
               <p></p>
               <Spinner animation="border">
@@ -476,92 +550,50 @@ class Group extends React.Component {
               <p></p>
             </div>
           ) : (
+            <></>
+          )}
+
+          {/* DIFFERENT SUCCESS STATE PASSED DOWN, CHANGE BELOW */}
+
+          {this.props.sentGroupInviteSuccess ? (
             <>
-              <div className="d-grid gap-2" id="cardtext">
-                {messages.reverse()}
-              </div>
-
               <p></p>
-              {/* https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react */}
-              <div
-                style={{ float: "left", clear: "both" }}
-                ref={(el) => {
-                  this.messagesEnd = el;
-                }}
-              ></div>
-              <p></p>
-
-              {/* DIFFERENT ISLOADING STATE PASSED DOWN, CHANGE BELOW */}
-
-              {this.state.LoadingInvite ? (
-                <div id="shoutOutSpinner">
-                  <p></p>
-                  <Spinner animation="border">
-                    <span className="visually-hidden">Loading...</span>
-                  </Spinner>
-                  <p></p>
-                </div>
-              ) : (
-                <></>
-              )}
-
-              {/* DIFFERENT ISLOADING STATE PASSED DOWN, CHANGE BELOW */}
-
-              {this.state.LoadingMsgs ? (
-                <div id="shoutOutSpinner">
-                  <p></p>
-                  <Spinner animation="border">
-                    <span className="visually-hidden">Loading...</span>
-                  </Spinner>
-                  <p></p>
-                </div>
-              ) : (
-                <></>
-              )}
-
-              {/* DIFFERENT SUCCESS STATE PASSED DOWN, CHANGE BELOW */}
-
-              {this.state.sentInviteSuccess ? (
-                <>
-                  <p></p>
-                  <Alert variant="success" dismissible>
-                    <Alert.Heading>Invite Sent!</Alert.Heading>
-                    You have successfully invited{" "}
-                    <b>{this.state.sendToName}!</b>
-                  </Alert>
-                </>
-              ) : (
-                <></>
-              )}
-
-              {/* DIFFERENT FAILURE STATE PASSED DOWN, CHANGE BELOW */}
-              {this.state.sentInviteError ? (
-                <>
-                  <p></p>
-                  <Alert variant="danger" dismissible>
-                    <Alert.Heading>Invite Error</Alert.Heading>
-                    Invite failed to send. You may have insufficient credits or
-                    there may have been a platform error.
-                  </Alert>
-                </>
-              ) : (
-                <></>
-              )}
-
-              {/* DIFFERENT FAILURE STATE PASSED DOWN, CHANGE BELOW */}
-              {this.state.sentMsgError ? (
-                <>
-                  <p></p>
-                  <Alert variant="danger" dismissible>
-                    <Alert.Heading>Message Error</Alert.Heading>
-                    Message failed to send. You may have insufficient credits or
-                    there may have been a platform error.
-                  </Alert>
-                </>
-              ) : (
-                <></>
-              )}
+              <Alert variant="success" dismissible>
+                <Alert.Heading>Invite Sent!</Alert.Heading>
+                You have successfully invited{" "}
+                <b>{this.props.sendToNameInvite}!</b>
+              </Alert>
             </>
+          ) : (
+            <></>
+          )}
+
+          {/* DIFFERENT FAILURE STATE PASSED DOWN, CHANGE BELOW */}
+          {this.props.sentGroupInviteError ? (
+            <>
+              <p></p>
+              <Alert variant="danger" dismissible>
+                <Alert.Heading>Invite Error</Alert.Heading>
+                Invite failed to send. You may have insufficient credits or
+                there may have been a platform error.
+              </Alert>
+            </>
+          ) : (
+            <></>
+          )}
+
+          {/* DIFFERENT FAILURE STATE PASSED DOWN, CHANGE BELOW */}
+          {this.state.sentMsgError ? (
+            <>
+              <p></p>
+              <Alert variant="danger" dismissible>
+                <Alert.Heading>Message Error</Alert.Heading>
+                Message failed to send. You may have insufficient credits or
+                there may have been a platform error.
+              </Alert>
+            </>
+          ) : (
+            <></>
           )}
         </div>
 

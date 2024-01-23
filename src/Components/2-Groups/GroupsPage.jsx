@@ -28,7 +28,8 @@ class GroupsPage extends React.Component {
       }
     });
 
-    for (invite of extraInvites) {
+    for (let invite of extraInvites) {
+      //its a variable so define it.. let
       let selfInvite = acceptedInvites.find((inv) => {
         return inv.group === invite.group;
       });
@@ -80,12 +81,12 @@ class GroupsPage extends React.Component {
           key={index}
           variant="primary"
           onClick={() =>
-            this.props.handleSelectedJoinGroup(tupleArray[1].group)
+            this.props.handleSelectedJoinGroup(othersInvite[1].group)
           }
         >
-          {tupleArray[1].group}
+          {othersInvite[1].group}
           <Badge className="createwalletbtn" bg="light" text="dark" pill>
-            {tupleArray[0]}
+            {othersInvite[0]}
           </Badge>
         </Button>
       );
@@ -103,7 +104,7 @@ class GroupsPage extends React.Component {
           >
             {recentGroup.group}
             <Badge className="createwalletbtn" bg="light" text="dark" pill>
-              {handleTimeToDate(recentGroup.$createdAt)}
+              {this.handleTimeToDate(recentGroup.$createdAt)}
             </Badge>
           </Button>
         );
@@ -212,7 +213,7 @@ class GroupsPage extends React.Component {
           {/* isLoadingGroups: true, //Invite Pull, Active(Msgs) Pull, creating Group, sending invite, deleting group, accepting invite
       isLoadingGroup: false, // Msgs Pull, Members pull, sending msg,
 
-      isLoadingGroupsActive: true, //Separate spinner for Active so not lumped in with Groups.
+      isLoadingActiveGroups: true, //Separate spinner for Active so not lumped in with Groups.
 
       isLoadingGroupInvite: false, //Control and alert in Groups and on GroupPage because that is the only way you will know if an invite was sent. */}
 
@@ -242,7 +243,7 @@ class GroupsPage extends React.Component {
             <></>
           )}
 
-          {!this.props.isLoadingGroupsActive && !this.props.isLoadingGroups ? (
+          {!this.props.isLoadingActiveGroups && !this.props.isLoadingGroups ? (
             <>
               <p></p>
               <h3>Active Groups</h3>
@@ -253,7 +254,7 @@ class GroupsPage extends React.Component {
             <></>
           )}
 
-          {!this.props.isLoadingGroupsActive &&
+          {!this.props.isLoadingActiveGroups &&
           !this.props.isLoadingGroups &&
           this.props.dgtActiveGroups.length === 0 ? (
             <>Groups with recent activity appear here!</>

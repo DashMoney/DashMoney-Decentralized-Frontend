@@ -235,7 +235,7 @@ class App extends React.Component {
       isLoadingGroup: false, // Msgs Pull, Members pull, sending msg,
       //But that is done in Group -> !!???
 
-      isLoadingGroupsActive: true, //Separate spinner for Active so not lumped in with Groups.
+      isLoadingActiveGroups: true, //Separate spinner for Active so not lumped in with Groups.
 
       isLoadingGroupInvite: false, //Control and alert in Groups and on GroupPage because that is the only way you will know if an invite was sent. sending invite,
 
@@ -3869,7 +3869,6 @@ class App extends React.Component {
 
   showGroupPage = (groupName) => {
     this.setState({
-      isLoadingGroup: true, //IS THIS DOING ANYTHING?? -> msg submission and invite sending ->
       selectedGroup: groupName,
       isGroupShowing: true,
     });
@@ -3996,7 +3995,7 @@ class App extends React.Component {
     //DGTInvite Query
     const getDocuments = async () => {
       return client.platform.documents.get("DGTContract.dgtmsg", {
-        limit: 30,
+        limit: 60,
         where: [["$createdAt", "<=", Date.now()]],
         orderBy: [["$createdAt", "desc"]],
       });
@@ -4029,8 +4028,20 @@ class App extends React.Component {
             //DOES ANY PART OF DOCUMENT NEED CONVERTING? LIKE THE TOID? ->
           }
 
+          let arrayOfGroups = docArray.map((doc) => {
+            return doc.group;
+          });
+
+          let setOfGroups = [...new Set(arrayOfGroups)];
+
+          let arrayOfUniqueGroups = [...setOfGroups];
+
+          let uniqueActiveGroups = arrayOfUniqueGroups.map((grpName) => {
+            return docArray.find((doc) => doc.group === grpName);
+          });
+
           this.setState({
-            dgtActiveGroups: docArray,
+            dgtActiveGroups: uniqueActiveGroups,
             isLoadingActiveGroups: false,
           });
         }
@@ -4138,11 +4149,11 @@ class App extends React.Component {
   };
 
   deleteGroup = (groupRemove) => {
-    //Just a name
-    this.hideGroupPage();
+    
 
     this.setState({
       isLoadingGroups: true,
+      isGroupShowing: false,
     });
 
     //create a group to remove array for before display ->
@@ -4357,7 +4368,7 @@ class App extends React.Component {
 
         this.setState({
           isLoadingGroup: false,
-          GroupsMsgsToAdd: [d.toJSON()], //Implement ->
+          GroupsMsgsToAdd: [d.toJSON(), ...this.state.GroupsMsgsToAdd],
         });
       })
       .catch((e) => {
@@ -4377,6 +4388,7 @@ class App extends React.Component {
 
     this.setState({
       isLoadingGroupInvite: true,
+      // isLoadingGroup: true,
     });
 
     const clientOpts = {
@@ -4399,11 +4411,18 @@ class App extends React.Component {
 
     const submitInviteDocument = async () => {
       const { platform } = client;
-      const identity = this.state.identityRaw; // Your identity ID
+
+      let identity = "";
+      if (this.state.identityRaw !== "") {
+        identity = this.state.identityRaw;
+      } else {
+        identity = await platform.identities.get(this.state.identity);
+      } // Your identity ID
 
       const docProperties = {
-        toId: Buffer.from(Identifier.from(dpnsDoc.$ownerId)), //this is a selfinvite
+        toId: dpnsDoc.$ownerId,
         group: this.state.selectedGroup,
+        dgt: "inv",
       };
 
       // Create the note document
@@ -4415,11 +4434,10 @@ class App extends React.Component {
 
       const documentBatch = {
         create: [dgtDocument], // Document(s) to create
-        replace: [], // Document(s) to update
-        delete: [], // Document(s) to delete
       };
       // Sign and submit the document(s)
-      return platform.documents.broadcast(documentBatch, identity);
+      await platform.documents.broadcast(documentBatch, identity);
+      return dgtDocument;
     };
 
     submitInviteDocument()
@@ -9543,7 +9561,7 @@ class App extends React.Component {
               ) : (
                 <></>
               )}
-              {/* {this.state.selectedDapp === "Groups" ? (
+              {this.state.selectedDapp === "Groups" ? (
                 //SO THIS WILL BE A 2 PAGE SETUP INSTEAD OF ONE AND ITS NOT A BAD IDEA i SUPPOSE SO THAT WHEN YOU CLICK OFF ITS NOT LOST... ->
                 <>
                   {this.state.isGroupShowing ? (
@@ -9554,7 +9572,10 @@ class App extends React.Component {
                         identityRaw={this.state.identityRaw}
                         isLoadingGroup={this.state.isLoadingGroup}
                         //IS THIS DOING ANYTHING?? -> msg submission and invite sending ->
+                        isLoadingGroupInvite={this.state.isLoadingGroupInvite}
+                        
                         submitDGTmessage={this.submitDGTmessage}
+                        GroupsMsgsToAdd={this.state.GroupsMsgsToAdd}
                         submitDGTinvite={this.submitDGTinvite}
                         showModal={this.showModal}
                         selectedGroup={this.state.selectedGroup}
@@ -9578,12 +9599,13 @@ class App extends React.Component {
                       showModal={this.showModal}
                       identity={this.state.identity}
                       showGroupPage={this.showGroupPage}
+                      handleSelectedJoinGroup={this.handleSelectedJoinGroup}
                       //InitialPullReviews={this.state.InitialPullReviews}
                       //pullInitialTriggerREVIEWS={this.pullInitialTriggerREVIEWS}
                       mode={this.state.mode}
                       isLoadingGroups={this.state.isLoadingGroups}
                       isLoadingGroup={this.state.isLoadingGroup}
-                      isLoadingGroupsActive={this.state.isLoadingGroupsActive}
+                      isLoadingActiveGroups={this.state.isLoadingActiveGroups}
                       isLoadingGroupInvite={this.state.isLoadingGroupInvite}
                       dgtInvites={this.state.dgtInvites}
                       dgtInvitesNames={this.state.dgtInvitesNames}
@@ -9600,9 +9622,9 @@ class App extends React.Component {
                 </>
               ) : (
                 <></>
-              )} */}
+              )}
 
-              {this.state.selectedDapp === "Groups" ? (
+              {/* {this.state.selectedDapp === "Groups" ? (
                 <>
                   <div className="bodytext">
                     <p>
@@ -9613,7 +9635,7 @@ class App extends React.Component {
                 </>
               ) : (
                 <></>
-              )}
+              )} */}
 
               {this.state.selectedDapp === "Wallet" ? (
                 <>

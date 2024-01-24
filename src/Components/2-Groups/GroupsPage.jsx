@@ -49,7 +49,7 @@ class GroupsPage extends React.Component {
           variant="primary"
           onClick={() => this.props.showGroupPage(acceptedGroup.group)}
         >
-          {acceptedGroup.group}
+          <b>{acceptedGroup.group}</b>
           <Badge className="createwalletbtn" bg="light" text="dark" pill>
             {this.handleTimeToDate(acceptedGroup.$createdAt)}
           </Badge>
@@ -84,7 +84,7 @@ class GroupsPage extends React.Component {
             this.props.handleSelectedJoinGroup(othersInvite[1].group)
           }
         >
-          {othersInvite[1].group}
+          <b>{othersInvite[1].group}</b>
           <Badge className="createwalletbtn" bg="light" text="dark" pill>
             {othersInvite[0]}
           </Badge>
@@ -102,7 +102,7 @@ class GroupsPage extends React.Component {
               this.props.handleSelectedJoinGroup(recentGroup.group)
             }
           >
-            {recentGroup.group}
+            <b>{recentGroup.group}</b>
             <Badge className="createwalletbtn" bg="light" text="dark" pill>
               {this.handleTimeToDate(recentGroup.$createdAt)}
             </Badge>

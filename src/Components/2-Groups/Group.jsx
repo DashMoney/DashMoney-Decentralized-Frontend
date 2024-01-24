@@ -72,6 +72,15 @@ class Group extends React.Component {
     });
   };
 
+  refreshGroup = () => {
+    this.setState({
+      LoadingMsgs: true,
+      LoadingMembers: true,
+    });
+    this.getDGTMessages();
+    this.getDGTInvites();
+  };
+
   // handleTimeToDate = (timeObject) => {
   //   let date = new Date(timeObject);
 
@@ -490,13 +499,25 @@ class Group extends React.Component {
                   </Button>
                 </>
               )}
-              <Button //onClick={() => this.scrollToTop()}
-              >
-                {" "}
-                <div className="icon-position">
-                  <MdRefresh size={28} />
-                </div>
-              </Button>
+              {!this.props.isLoadingGroup && !this.state.LoadingMsgs ? (
+                <>
+                  <Button onClick={() => this.refreshGroup()}>
+                    {" "}
+                    <div className="icon-position">
+                      <MdRefresh size={28} />
+                    </div>
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button disabled>
+                    <div className="icon-position">
+                      <MdRefresh size={28} />
+                    </div>
+                  </Button>
+                </>
+              )}
+
               {!this.props.isLoadingGroup ? (
                 <>
                   <Button
@@ -596,17 +617,6 @@ class Group extends React.Component {
             <></>
           )}
         </div>
-
-        {/* <GroupBottomNav
-          submitDGTinvite={this.submitDGTinvite}
-          selectedGroup={this.props.selectedGroup}
-          deleteGroup={this.props.deleteGroup}
-          mode={this.props.mode}
-          showModal={this.showModal}
-          showDeleteModal={this.props.showDeleteModal}
-          LoadingMsgs={this.state.LoadingMsgs}
-          LoadingInvites={this.state.LoadingMembers}
-        /> */}
 
         {this.state.isModalShowing &&
         this.state.presentModal === "NewMessageModal" ? (

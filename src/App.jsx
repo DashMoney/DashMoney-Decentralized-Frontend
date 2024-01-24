@@ -4149,8 +4149,6 @@ class App extends React.Component {
   };
 
   deleteGroup = (groupRemove) => {
-    
-
     this.setState({
       isLoadingGroups: true,
       isGroupShowing: false,
@@ -9573,7 +9571,6 @@ class App extends React.Component {
                         isLoadingGroup={this.state.isLoadingGroup}
                         //IS THIS DOING ANYTHING?? -> msg submission and invite sending ->
                         isLoadingGroupInvite={this.state.isLoadingGroupInvite}
-                        
                         submitDGTmessage={this.submitDGTmessage}
                         GroupsMsgsToAdd={this.state.GroupsMsgsToAdd}
                         submitDGTinvite={this.submitDGTinvite}
@@ -10107,6 +10104,9 @@ class App extends React.Component {
         this.state.presentModal === "JoinGroupModal" ? (
           <JoinGroupModal
             submitCreateGroup={this.submitCreateGroup}
+            whichNetwork={this.state.whichNetwork}
+            DataContractDGT={this.state.DataContractDGT}
+            DataContractDPNS={this.state.DataContractDPNS}
             selectedGroup={this.state.selectedGroup}
             isModalShowing={this.state.isModalShowing}
             hideModal={this.hideModal}

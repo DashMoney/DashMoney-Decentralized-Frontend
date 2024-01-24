@@ -4,13 +4,15 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import CloseButton from "react-bootstrap/CloseButton";
 
+import MemberComponent from "./MemberComponent";
+
 class ViewMembersModal extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      copiedName: false,
-    };
-  }
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     copiedName: false,
+  //   };
+  // }
   handleCloseClick = () => {
     this.props.hideModal();
   };
@@ -20,12 +22,12 @@ class ViewMembersModal extends React.Component {
     this.props.hideModal();
   };
 
-  handleNameClick = (nameToPass) => {
-    navigator.clipboard.writeText(nameToPass);
-    this.setState({
-      copiedName: true,
-    });
-  };
+  // handleNameClick = (nameToPass) => {
+  //   navigator.clipboard.writeText(nameToPass);
+  //   this.setState({
+  //     copiedName: true,
+  //   });
+  // };
 
   render() {
     let modalBkg = "";
@@ -44,18 +46,8 @@ class ViewMembersModal extends React.Component {
       );
     }
 
-    let members = this.props.groupMembers.map((member, index) => {
-      return (
-        <div key={index}>
-          <b
-            style={{ color: "#008de4", margin: ".2rem" }}
-            onClick={() => this.handleNameClick(member[0])}
-          >
-            {member[0]}
-          </b>
-          <span>{this.state.copiedName ? <span>✅</span> : <></>}</span>
-        </div>
-      );
+    let members = this.props.groupMembers.map((tuple, index) => {
+      return <MemberComponent index={index} key={index} member={tuple} />;
     });
 
     return (
@@ -74,9 +66,12 @@ class ViewMembersModal extends React.Component {
                 <p></p>
               </div>
             ) : (
-              <>{members}</>
+              <>
+                {members}
+                <p></p>
+              </>
             )}
-            <p></p>
+            <div style={{ margin: "1rem" }}></div>
             <div className="d-grid gap-2">
               <Button
                 variant="primary"

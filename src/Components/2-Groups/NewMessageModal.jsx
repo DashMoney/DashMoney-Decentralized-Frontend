@@ -96,7 +96,11 @@ class NewMessageModal extends React.Component {
 
     return (
       <>
-        <Modal show={this.props.isModalShowing} contentClassName={modalBkg}>
+        <Modal
+          backdrop={true}
+          show={this.props.isModalShowing}
+          contentClassName={modalBkg}
+        >
           <Modal.Header>
             <Modal.Title>
               <h3>

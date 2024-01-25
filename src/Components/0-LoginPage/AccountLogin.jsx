@@ -531,7 +531,7 @@ class AccountLogin extends React.Component {
             <></>
           )}
 
-          {this.props.isLoginComplete ? (
+          {this.props.mnemonic !== "" ? (
             <div
               className="d-grid gap-2"
               style={{

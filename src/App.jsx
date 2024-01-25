@@ -10895,6 +10895,7 @@ class App extends React.Component {
                     <>
                       <AccountLogin
                         isLoginComplete={isLoginComplete}
+                        mnemonic={this.state.mnemonic}
                         handleAccountRetry={this.handleAccountRetry}
                         showModal={this.showModal}
                         toggleTopNav={this.toggleTopNav}

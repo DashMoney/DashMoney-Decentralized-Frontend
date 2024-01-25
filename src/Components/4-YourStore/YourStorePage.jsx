@@ -65,8 +65,8 @@ class YourStorePage extends React.Component {
                   <MyStore
                     identityInfo={this.props.identityInfo}
                     uniqueName={this.props.uniqueName}
-                    LoadingStore={this.props.LoadingStore}
-                    LoadingItems={this.props.LoadingItems}
+                    LoadingStore={this.props.isLoadingStoreYOURSTORE}
+                    LoadingItems={this.props.isLoadingItemsYOURSTORE}
                     DGPStore={this.props.DGPStore}
                     DGMAddress={this.props.DGMAddress}
                     DGPItems={this.props.DGPItems}

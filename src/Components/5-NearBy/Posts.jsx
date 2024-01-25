@@ -73,7 +73,7 @@ class Posts extends React.Component {
       <>
         {!this.props.isLoadingNearbyInitial &&
         !this.props.isLoadingNearbySearch ? (
-          <>
+          <div className="footer">
             {postArray.length !== 0 ? (
               <>{posts}</>
             ) : (
@@ -81,7 +81,7 @@ class Posts extends React.Component {
                 Sorry, there are not any posts for this category yet!
               </div>
             )}
-          </>
+          </div>
         ) : (
           <></>
         )}

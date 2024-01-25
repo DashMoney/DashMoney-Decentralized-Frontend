@@ -179,11 +179,11 @@ class Group extends React.Component {
         let nameDocArray = [];
 
         for (const n of d) {
-          console.log("NameDoc:\n", n.toJSON());
+          //console.log("NameDoc:\n", n.toJSON());
 
           nameDocArray = [n.toJSON(), ...nameDocArray];
         }
-        console.log(nameDocArray);
+        //console.log(nameDocArray);
 
         let tupleArray = []; //<- Final array
 
@@ -263,7 +263,7 @@ class Group extends React.Component {
         } else {
           let docArray = [];
           for (const n of d) {
-            console.log("Document:\n", n.toJSON());
+            // console.log("Document:\n", n.toJSON());
             docArray = [...docArray, n.toJSON()];
           }
 
@@ -287,7 +287,7 @@ class Group extends React.Component {
       Buffer.from(Identifier.from(item))
     );
 
-    console.log("Calling getNamesforDGTInvites");
+    // console.log("Calling getNamesforDGTInvites");
 
     const clientOpts = {
       network: this.props.whichNetwork,
@@ -316,11 +316,11 @@ class Group extends React.Component {
         let nameDocArray = [];
 
         for (const n of d) {
-          console.log("NameDoc:\n", n.toJSON());
+          // console.log("NameDoc:\n", n.toJSON());
 
           nameDocArray = [n.toJSON(), ...nameDocArray];
         }
-        console.log(nameDocArray);
+        // console.log(nameDocArray);
 
         let tupleArray = []; //<- Final array
 
@@ -344,8 +344,8 @@ class Group extends React.Component {
         });
         //HAVE TO SORT THE MSGS AND NAMES TOGETHER BC THEY DON'T COME TOGETHER WELL.
 
-        console.log("Tuple!");
-        console.log(tupleArray);
+        // console.log("Tuple!");
+        // console.log(tupleArray);
 
         this.setState({
           groupMembers: tupleArray,

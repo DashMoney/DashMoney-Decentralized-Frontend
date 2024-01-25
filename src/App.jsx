@@ -27,6 +27,8 @@ import Group from "./Components/2-Groups/Group";
 
 import WalletPage from "./Components/3-Wallet/WalletPage";
 
+import YourStorePage from "./Components/4-YourStore/YourStorePage";
+
 import NearbyPage from "./Components/5-NearBy/NearbyPage";
 
 import ReviewsPage from "./Components/7-Reviews/ReviewsPage";
@@ -57,6 +59,14 @@ import ConfirmAddrPaymentModal from "./Components/3-Wallet/ConfirmAddrPaymentMod
 import RegisterDGMModal from "./Components/RegisterDGMModal";
 import ThreadModal_WALLET from "./Components/3-Wallet/ThreadModal_WALLET";
 import WalletTXModal from "./Components/WalletTXModal";
+
+import CreateStoreModal from "./Components/4-YourStore/MerchantModals/CreateStoreModal";
+import StoreStatusModal from "./Components/4-YourStore/MerchantModals/StoreStatusModal";
+import EditStoreModal from "./Components/4-YourStore/MerchantModals/EditStoreModal";
+
+import CreateItemModal from "./Components/4-YourStore/MerchantModals/CreateItemModal";
+import EditItemModal from "./Components/4-YourStore/MerchantModals/EditItemModal";
+import MerchantOrderMsgModal from "./Components/4-YourStore/MerchantModals/MerchantOrderMsgModal";
 
 import PostModal from "./Components/5-NearBy/PostModal";
 import CreatePostModal from "./Components/5-NearBy/YourPosts/CreatePostModal";
@@ -357,6 +367,43 @@ class App extends React.Component {
 
       //WALLET PAGE ^^^^^^
 
+      //YOUR STORE PAGE
+
+      whichTabYOURSTORE: "Orders",
+
+      isLoadingOrdersYOURSTORE: true, // LoadingOrders
+      isLoadingStoreYOURSTORE: true, // LoadingStore
+      isLoadingItemsYOURSTORE: true, //LoadingItems
+
+      //DGMAddress: [], // CHANGE TO THE ONE ALREADY HERE ->
+      //dgmDocuments
+
+      DGPStore: [],
+      DGPItems: [],
+      selectedItem: {},
+      selectedItemIndex: 0,
+
+      store1: false, //This is for Your Store as Merchant -> it is never reset
+      store2: false,
+
+      DGPOrders: [],
+      DGPOrdersNames: [],
+      DGPOrdersMsgs: [],
+
+      order1: false, // This if for orders placed to you -> it is reset
+      order2: false,
+
+      messageOrderId: "",
+      messageStoreOwnerName: "",
+
+      newOrderAvail: false,
+
+      orderMsgError: false,
+      storeError: false,
+      itemError: false,
+
+      //YOUR STORE PAGE ^^^^
+
       //NEAR BY PAGE
 
       whichNearbyTab: "Search",
@@ -476,9 +523,6 @@ class App extends React.Component {
         },
       ],
 
-      SearchNearby1: false,
-      SearchNearby2: false,
-
       SearchedReviewNames: [
         {
           $ownerId: "4h5j6j",
@@ -562,6 +606,8 @@ class App extends React.Component {
       accountBalance: "",
       accountHistory: "",
       accountAddress: "",
+
+      //BELOW IS OTHERS ADDRESSES
 
       WALLET_addresses: [],
       WALLET_addressesNames: [],
@@ -799,6 +845,7 @@ class App extends React.Component {
         isLoadingAddresses_WALLET: true,
 
         dgmDocuments: [], //MOVE TO GENERAL BC USED IN MY STORE <=
+        //^^^ these are my dgm addresses
 
         WALLET_sendToName: "",
         WALLET_sendToAddress: "",
@@ -882,6 +929,43 @@ class App extends React.Component {
         WALLET_messageToWhomName: "",
 
         //WALLET PAGE ^^^^^^
+
+        //YOUR STORE PAGE
+
+        whichTabYOURSTORE: "Orders",
+
+        isLoadingOrdersYOURSTORE: true, // LoadingOrders
+        isLoadingStoreYOURSTORE: true, // LoadingStore
+        isLoadingItemsYOURSTORE: true, //LoadingItems
+
+        //DGMAddress: [], // CHANGE TO THE ONE ALREADY HERE ->
+        //dgmDocuments
+
+        DGPStore: [],
+        DGPItems: [],
+        selectedItem: {},
+        selectedItemIndex: 0,
+
+        store1: false, //This is for Your Store as Merchant -> it is never reset
+        store2: false,
+
+        DGPOrders: [],
+        DGPOrdersNames: [],
+        DGPOrdersMsgs: [],
+
+        order1: false, // This if for orders placed to you -> it is reset
+        order2: false,
+
+        messageOrderId: "",
+        messageStoreOwnerName: "",
+
+        newOrderAvail: false,
+
+        orderMsgError: false,
+        storeError: false,
+        itemError: false,
+
+        //YOUR STORE PAGE ^^^^
 
         //NEAR BY PAGE
 
@@ -1001,9 +1085,6 @@ class App extends React.Component {
             $createdAt: Date.now() - 1000000,
           },
         ],
-
-        SearchNearby1: false,
-        SearchNearby2: false,
 
         SearchedReviewNames: [
           {
@@ -1402,13 +1483,15 @@ class App extends React.Component {
     this.handleLoginQueries_WALLET(theIdentity);
     this.getAddresses_WALLET();
 
-    this.getActiveGroups();
+    this.getActiveGroups(); //<-Change to onDapp selection ->
+    //Maybe also DGTInvites -> change to onDapp selection but save My groups to LocalForage ->
 
     // Orders(Shopping),
     //Buyers side ->
 
     // AND MyStore or Your Store?? for the TX component
     //Merchant side ->
+    this.getMerchantDocs();
   };
 
   getAliasfromIdentity = (theIdentity) => {
@@ -1580,9 +1663,10 @@ class App extends React.Component {
    *   ###  ##  ##  ##
    *  ###    ####    ##
    * ###      ###     ##
+   *
+   * MESSAGES FUNCTIONS^^^^^
    */
 
-  //MESSAGES FUNCTIONS^^^^^
   handleMessagesTab = (eventKey) => {
     if (eventKey === "For you")
       this.setState({
@@ -3834,10 +3918,8 @@ class App extends React.Component {
   };
   // AUTO-UPDATE QUERIES ^^^
 
-  //MESSAGES FUNCTIONS^^^^
-
-  /**
-
+  /*
+   * MESSAGES FUNCTIONS^^^^
    *                                 ###     ###
    *                                ## ##    ####
    *                               ###  ##  ##  ##
@@ -4457,8 +4539,8 @@ class App extends React.Component {
       .finally(() => client.disconnect());
   };
 
-  //GROUP FUNCTIONS^^^^
-  /**
+  /*
+  *GROUP FUNCTIONS^^^^
    *                             #############
    *                            ####        ###
    *                            ###
@@ -4635,7 +4717,7 @@ class App extends React.Component {
       .then((d) => {
         let docArray = [];
         for (const n of d) {
-          console.log("address:\n", n.toJSON());
+          // console.log("address:\n", n.toJSON());
           docArray = [...docArray, n.toJSON()];
         }
 
@@ -5244,7 +5326,7 @@ class App extends React.Component {
           //console.log("Getting Addresses_WALLET");
           for (const n of d) {
             let returnedDoc = n.toJSON();
-            console.log("Addr Doc:\n", returnedDoc);
+            // console.log("Addr Doc:\n", returnedDoc);
 
             docArray = [...docArray, returnedDoc];
           }
@@ -5334,7 +5416,6 @@ class App extends React.Component {
       this.setState({
         isLoadingMsgs_WALLET: false,
         isLoadingButtons_WALLET: false,
-        isLoadingMsgs_WALLET: false,
         // WALLET_Login1: false,
         // WALLET_Login2: false,
         // WALLET_Login3: false,
@@ -6191,8 +6272,8 @@ class App extends React.Component {
       .finally(() => client.disconnect());
   };
 
-  //WALLET FUNCTIONS^^^^
-  /**
+  /*
+   *WALLET FUNCTIONS^^^^
    *                            ##       ###    ###
    *                             ###    ####   ##
    *                              ###  ## ## ###
@@ -6208,8 +6289,1332 @@ class App extends React.Component {
    */
   //YOUR STORE FUNCTIONS
 
-  //YOUR STORE FUNCTIONS^^^^
-  /**
+  handleTabYOURSTORE = (eventKey) => {
+    if (eventKey === "Your Store")
+      this.setState({
+        whichTabYOURSTORE: "Your Store",
+      });
+    else {
+      this.setState({
+        whichTabYOURSTORE: "Orders",
+      });
+    }
+  };
+
+  handleSelectedItem = (index) => {
+    this.setState(
+      {
+        selectedItem: this.state.DGPItems[index],
+        selectedItemIndex: index,
+      },
+      () => this.showModal("EditItemModal")
+    );
+  };
+
+  handleMerchantOrderMsgModalShow = (theOrderId, ownerName) => {
+    //probably set state and show modal
+    this.setState(
+      {
+        messageOrderId: theOrderId,
+        messageStoreOwnerName: ownerName,
+      },
+      () => this.showModal("MerchantOrderMsgModal")
+    );
+  };
+
+  handleMerchantOrderMsgSubmit = (orderMsgComment) => {
+    //Submit doc and add to state
+    console.log("Called Buyer Order Message: ", orderMsgComment);
+
+    this.setState({
+      isLoadingOrdersYOURSTORE: true,
+    });
+
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+      apps: {
+        DGPContract: {
+          contractId: this.state.DataContractDGP,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const submitMsgDoc = async () => {
+      const { platform } = client;
+
+      let identity = "";
+      if (this.state.identityRaw !== "") {
+        identity = this.state.identityRaw;
+      } else {
+        identity = await platform.identities.get(this.state.identity);
+      }
+
+      const msgProperties = {
+        msg: orderMsgComment,
+        orderId: this.state.messageOrderId,
+      };
+
+      // Create the note document
+      const dgpDocument = await platform.documents.create(
+        "DGPContract.dgpmsg",
+        identity,
+        msgProperties
+      );
+
+      //############################################################
+      //This below disconnects the document sending..***
+
+      //return dgpDocument;
+
+      //This is to disconnect the Document Creation***
+      //############################################################
+
+      const documentBatch = {
+        create: [dgpDocument], // Document(s) to create
+      };
+
+      await platform.documents.broadcast(documentBatch, identity);
+      return dgpDocument;
+    };
+
+    submitMsgDoc()
+      .then((d) => {
+        let returnedDoc = d.toJSON();
+        console.log("Buyer Order Message:\n", returnedDoc);
+
+        let orderMsg = {
+          $ownerId: this.state.identity,
+          $id: returnedDoc.$id,
+
+          msg: orderMsgComment,
+          orderId: this.state.messageOrderId,
+        };
+
+        this.setState({
+          DGPOrdersMsgs: [orderMsg, ...this.state.DGPOrdersMsgs],
+          isLoadingOrdersYOURSTORE: false,
+        });
+      })
+      .catch((e) => {
+        console.error("Something went wrong with Buyer Order Message:\n", e);
+        this.setState({
+          ordersMessageError: true, //I should like make that a thing ->
+          isLoadingOrdersYOURSTORE: false,
+        });
+      })
+      .finally(() => client.disconnect());
+  };
+
+  //PULL THESE ON INITIAL LOAD AND HANDLE IT ALL HERE..
+  // Assume Identity is passed down through props. <- OLD DGP
+  getMerchantDocs = () => {
+    this.getDGPStoreMerchant(); //Store -> call getDGMAddress because if I have a store then I dont need the Address but I guess its nice to check
+    //And If I don't have a store then i need to check that there is a DGMAddress so I can create it if I need to.
+
+    this.getDGPItemsMerchant(); //Will have to have store but if I have a store it speeds up the getting the items..
+
+    this.getMerchantOrders();
+    this.getDGMAddress();
+  };
+
+  checkDGPStoreRace = () => {
+    if (this.state.store1 && this.state.store2) {
+      this.setState({
+        isLoadingStoreYOURSTORE: false,
+        isLoadingOrdersYOURSTORE: false,
+      });
+    }
+  };
+
+  getDGPStoreMerchant = () => {
+    //WHat if I just put all the clients in one and pass the client to the function??? ->
+
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      apps: {
+        DGPContract: {
+          contractId: this.state.DataContractDGP,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const getDocuments = async () => {
+      console.log("Called Get DGP Store");
+
+      return client.platform.documents.get("DGPContract.dgpstore", {
+        where: [["$ownerId", "==", this.state.identity]],
+      });
+    };
+
+    getDocuments()
+      .then((d) => {
+        let docArray = [];
+
+        if (d.length === 0) {
+          //console.log("No Store");
+
+          this.setState(
+            {
+              DGPStore: "No Store",
+              store1: true,
+            },
+            () => this.checkDGPStoreRace()
+          );
+        } else {
+          for (const n of d) {
+            // console.log("Store:\n", n.toJSON());
+            docArray = [...docArray, n.toJSON()];
+          }
+
+          this.setState(
+            {
+              DGPStore: docArray,
+              store1: true,
+            },
+            () => this.checkDGPStoreRace()
+          );
+        } //Ends the else
+      })
+      .catch((e) => {
+        console.error("Something went wrong:\n", e);
+        this.setState({
+          DGPStore: "Store Document Error",
+          storeError: true,
+          isLoadingStoreYOURSTORE: false,
+          isLoadingOrdersYOURSTORE: false,
+        });
+      })
+      .finally(() => client.disconnect()); //Should I remove this??
+  };
+
+  //Must COMBINE THIS ONE WITH THE WALLET -> AND i CAN KEEP THE OTHER 'NO ADDRESS WILL NOT BE AN ISSUE -> BUT IT WILL BE A LITTLE CLUNKY ->
+  getDGMAddress = () => {
+    //Needs adjustments for DGP from DGM ->
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      apps: {
+        DGMContract: {
+          contractId: this.state.DataContractDGM,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const getDocuments = async () => {
+      console.log("Called Query DGM Documents.");
+
+      return client.platform.documents.get("DGMContract.dgmaddress", {
+        where: [["$ownerId", "==", this.state.identity]],
+      });
+    };
+
+    getDocuments()
+      .then((d) => {
+        let docArray = [];
+
+        if (d.length === 0) {
+          this.setState(
+            {
+              DGMAddress: "No Address",
+              store2: true,
+            },
+            () => this.checkDGPStoreRace()
+          );
+        } else {
+          for (const n of d) {
+            // console.log("DGM Address:\n", n.toJSON());
+            docArray = [...docArray, n.toJSON()];
+          }
+
+          this.setState(
+            {
+              DGMAddress: docArray,
+              store2: true,
+            },
+            () => this.checkDGPStoreRace()
+          );
+        } //Ends the else
+      })
+      .catch((e) => {
+        console.error("Something went wrong:\n", e);
+        this.setState({
+          //DGMAddress: "Document Error",
+          storeError: true,
+          isLoadingStoreYOURSTORE: false,
+        });
+      })
+      .finally(() => client.disconnect());
+  };
+
+  getDGPItemsMerchant = () => {
+    if (!this.state.isLoadingItemsYOURSTORE) {
+      this.setState({
+        isLoadingItemsYOURSTORE: true,
+      });
+    }
+
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      apps: {
+        DGPContract: {
+          contractId: this.state.DataContractDGP,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const getDocuments = async () => {
+      console.log("Called Get DGP Items");
+
+      return client.platform.documents.get("DGPContract.dgpitem", {
+        where: [["$ownerId", "==", this.state.identity]],
+      });
+    };
+
+    getDocuments()
+      .then((d) => {
+        let docArray = [];
+        //What if there are zero? -> handled where?
+        // if zero then I need to call get dgmaddress and continue the loading
+
+        // if (d.length === 0) {
+        //   this.setState(
+        //     {
+        //       DGPItems: "No Items",
+        //       isLoadingItemsYOURSTORE: false,
+        //     }
+        //   );
+        // } else {
+        for (const n of d) {
+          //console.log("Items:\n", n.toJSON());
+          docArray = [...docArray, n.toJSON()];
+        }
+        this.setState(
+          {
+            DGPItems: docArray,
+            isLoadingItemsYOURSTORE: false,
+          },
+          () => this.sortDGPItemsMerchant()
+        );
+        // } //Ends the else
+      })
+      .catch((e) => {
+        console.error("Something went wrong:\n", e);
+        this.setState({
+          DGPItems: "Items Document Error",
+          itemError: true,
+          isLoadingItemsYOURSTORE: false,
+        });
+      })
+      .finally(() => client.disconnect()); //Should I remove this??
+  };
+
+  sortDGPItemsMerchant = () => {
+    //This needs to handle the what
+    // I think I decided that if you change the price it just becomes unverified// so this needs to handle if the DGP item UPDATEDAT is earlieer then when the order was passed then it will not be verified.
+  };
+
+  //THIS NEEDS WALLET SO DELAYED AND ALSO PART OF INTERVAL UPDATE..
+  // So need wallet to verify but can get orders and names and items because i need all that to compare to the wallet TXs
+  getMerchantOrders = () => {
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      apps: {
+        DGPContract: {
+          contractId: this.state.DataContractDGP,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const getDocuments = async () => {
+      console.log("Called Get DGP Merchant Orders");
+
+      /**
+       *  //This is MERCHANT QUERY
+          name: 'toIdandcreatedAt',
+          properties: [{ toId: 'asc' }, {$createdAt: 'asc' }],
+          unique: false,
+        }
+       */
+
+      return client.platform.documents.get("DGPContract.dgporder", {
+        where: [["toId", "==", this.state.identity]],
+        orderBy: [["$createdAt", "desc"]],
+      });
+    };
+
+    getDocuments()
+      .then((d) => {
+        let docArray = [];
+        //What if there are zero? -> handled where?
+        // if zero then I need to call get dgmaddress and continue the loading
+        if (d.length === 0) {
+          this.setState({
+            DGPOrders: "No Orders",
+            isLoadingOrdersYOURSTORE: false,
+          });
+        } else {
+          for (const n of d) {
+            let returnedDoc = n.toJSON();
+            //console.log("Msg:\n", returnedDoc);
+            returnedDoc.toId = Identifier.from(
+              returnedDoc.toId,
+              "base64"
+            ).toJSON();
+            returnedDoc.cart = JSON.parse(returnedDoc.cart);
+            //console.log("newMsg:\n", returnedDoc);
+            docArray = [...docArray, returnedDoc];
+          }
+          this.setState(
+            {
+              DGPOrders: docArray,
+            },
+            () => this.helperForMerchantOrders(docArray)
+          );
+        } //Ends the else
+      })
+      .catch((e) => {
+        console.error("Something went wrong:\n", e);
+        this.setState({
+          DGPOrders: "Order Document Error",
+          ordersError: true,
+          isLoadingOrdersYOURSTORE: false,
+        });
+      })
+      .finally(() => client.disconnect());
+  };
+
+  helperForMerchantOrders = (theDocArray) => {
+    this.getNamesForMerchantOrders(theDocArray);
+    this.getMsgsMerchantOrders(theDocArray);
+  };
+
+  //###  ####  #####  ####  ###  ##
+  checkOrdersRace = () => {
+    if (this.state.order1 && this.state.order2) {
+      this.setState({
+        isLoadingOrdersYOURSTORE: false,
+      });
+    }
+  };
+
+  getNamesForMerchantOrders = (docArray) => {
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      apps: {
+        DataContractDPNS: {
+          contractId: this.state.DataContractDPNS,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    //START OF NAME RETRIEVAL
+
+    let ownerarrayOfOwnerIds = docArray.map((doc) => {
+      return doc.$ownerId;
+    });
+
+    let setOfOwnerIds = [...new Set(ownerarrayOfOwnerIds)];
+
+    let arrayOfOwnerIds = [...setOfOwnerIds];
+
+    // arrayOfOwnerIds = arrayOfOwnerIds.map((item) => //Old way
+    //   Buffer.from(Identifier.from(item))
+    // );
+
+    //  console.log("Called Get Names for DGP Orders");
+
+    const getNameDocuments = async () => {
+      return client.platform.documents.get("DataContractDPNS.domain", {
+        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
+        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      });
+    };
+
+    getNameDocuments()
+      .then((d) => {
+        //WHAT IF THERE ARE NO NAMES?
+        if (d.length === 0) {
+          console.log("No DPNS domain documents retrieved.");
+        }
+
+        let nameDocArray = [];
+
+        for (const n of d) {
+          //console.log("NameDoc:\n", n.toJSON());
+
+          nameDocArray = [n.toJSON(), ...nameDocArray];
+        }
+        //  console.log(`DPNS Name Docs: ${nameDocArray}`);
+
+        this.setState(
+          {
+            DGPOrdersNames: nameDocArray,
+            order1: true,
+          },
+          () => this.checkOrdersRace()
+        );
+      })
+      .catch((e) => {
+        console.error("Something went wrong:\n", e);
+      })
+      .finally(() => client.disconnect());
+  };
+
+  getMsgsMerchantOrders = (docArray) => {
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      apps: {
+        DGPContract: {
+          contractId: this.state.DataContractDGP,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    // This Below is to get unique set of order doc ids
+    let arrayOfOrderIds = docArray.map((doc) => {
+      return doc.$id;
+    });
+
+    //console.log("Array of order ids", arrayOfOrderIds);
+
+    let setOfOrderIds = [...new Set(arrayOfOrderIds)];
+
+    arrayOfOrderIds = [...setOfOrderIds];
+
+    // arrayOfOrderIds = arrayOfOrderIds.map((item) =>
+    //   Identifier.from(item)
+    // );
+
+    //console.log("Array of order ids", arrayOfOrderIds);
+
+    const getDocuments = async () => {
+      console.log("Called Get Merchant Orders Msgs");
+
+      return client.platform.documents.get("DGPContract.dgpmsg", {
+        where: [["orderId", "in", arrayOfOrderIds]],
+        orderBy: [["orderId", "asc"]], //IDK why it works with this and not $createdAt -> unless I added the $createdAt after the registering -> hmmmm -> idk it doesn't matter at least for awhile ->
+      });
+    };
+
+    getDocuments()
+      .then((d) => {
+        let docArray = [];
+
+        if (d.length === 0) {
+          //console.log('No Messages for orders');
+          this.setState(
+            {
+              order2: true,
+            },
+            () => this.checkOrdersRace()
+          );
+        } else {
+          for (const n of d) {
+            let returnedDoc = n.toJSON();
+            //console.log("Msg:\n", returnedDoc);
+            returnedDoc.orderId = Identifier.from(
+              returnedDoc.orderId,
+              "base64"
+            ).toJSON();
+            //console.log("newMsg:\n", returnedDoc);
+            docArray = [...docArray, returnedDoc];
+          }
+
+          this.setState(
+            {
+              DGPOrdersMsgs: docArray,
+              order2: true,
+            },
+            () => this.checkOrdersRace()
+          );
+        } //This closes the if statement
+      })
+      .catch((e) => {
+        console.error("Something went wrong:\n", e);
+        this.setState({
+          ordersMessagesError: true, //ADD to state ->
+          isLoadingOrdersYOURSTORE: false,
+        });
+      })
+      .finally(() => client.disconnect());
+  };
+
+  //DOCUMENT CREATION BELOW ********************************************
+
+  createDGPStore = (storeObject) => {
+    console.log("Called Create DGP Store");
+
+    this.setState({
+      isLoadingOrdersYOURSTORE: true,
+      isLoadingStoreYOURSTORE: true,
+    });
+
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+      apps: {
+        DGMContract: {
+          contractId: this.state.DataContractDGM,
+        },
+        DGPContract: {
+          contractId: this.state.DataContractDGP,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    //let docsToCreate = []; // MOVE OUT SO CAN USE IN RETURN LOGIC
+
+    let DGPStoreDoc = [];
+
+    let DGMAddrDoc = [];
+
+    const submitStoreDocs = async () => {
+      const { platform } = client;
+      // const identity = await platform.identities.get(this.state.identity); // Your identity ID
+
+      let identity = "";
+      if (this.state.identityRaw !== "") {
+        identity = this.state.identityRaw;
+      } else {
+        identity = await platform.identities.get(this.state.identity);
+      } // Your identity ID
+
+      const storeDocProperties = {
+        description: storeObject.description,
+        public: storeObject.public,
+        open: storeObject.open,
+
+        //NEW PROPERTIES - STILL NEED TO BE IMPLEMENTED
+        payLater: false,
+        acceptCredits: false,
+        acceptDash: true,
+      };
+
+      const dgpDocument = await platform.documents.create(
+        "DGPContract.dgpstore",
+        identity,
+        storeDocProperties
+      );
+
+      DGPStoreDoc.push(dgpDocument);
+
+      if (this.state.DGMAddress === "No Address") {
+        const docProperties = {
+          address: this.state.accountAddress,
+        };
+        // Create the address document
+        const dgmDocument = await platform.documents.create(
+          "DGMContract.dgmaddress",
+          identity,
+          docProperties
+        );
+
+        DGMAddrDoc.push(dgmDocument);
+      }
+
+      //############################################################
+      //This below disconnects the document sending..***
+
+      // return docsToCreate;
+
+      //This is to disconnect the Document Creation***
+      //############################################################
+
+      //CAN I SUBMIT DOCS TO 2 DIFFERENT DATA CONTRACTS? -> TEST ->
+      let addrBatch;
+
+      const storeBatch = {
+        create: DGPStoreDoc, // Document(s) to create
+      };
+
+      if (DGMAddrDoc.length !== 0) {
+        addrBatch = {
+          create: DGMAddrDoc, // Document(s) to create
+        };
+      }
+
+      await platform.documents.broadcast(storeBatch, identity);
+
+      if (DGMAddrDoc.length !== 0) {
+        await platform.documents.broadcast(addrBatch, identity);
+      }
+
+      if (DGMAddrDoc.length !== 0) {
+        return [...DGPStoreDoc, ...DGMAddrDoc];
+      } else {
+        return DGPStoreDoc;
+      }
+    };
+
+    submitStoreDocs()
+      .then((d) => {
+        //handle if nothing returned?? ->
+        //INTERESTING -> IF ONLY ONE ITEM THEN IT DOESN'T RETURN AN ARRAY!! -> NO IT IS NEVER ANY ARRAY -> THE DOCUMENT SIMPLY HAS TRANSITIONS AND THAT THIS THE ARRAY!!!!! <-
+
+        // let returnedDoc = d.toJSON();
+        // console.log("Store Documents JSON:\n", returnedDoc);
+
+        let docArray = [];
+        for (const n of d) {
+          console.log("Submitted Doc:\n", n.toJSON());
+          docArray = [...docArray, n.toJSON()];
+        }
+
+        let store;
+        let address;
+
+        //Single Document will be the Store
+        if (docArray.length === 1) {
+          store = {
+            $ownerId: docArray[0].$ownerId,
+            $id: docArray[0].$id,
+            description: storeObject.description,
+            public: storeObject.public,
+            open: storeObject.open,
+          };
+
+          this.setState({
+            DGPStore: [store],
+            isLoadingOrdersYOURSTORE: false,
+            isLoadingStoreYOURSTORE: false,
+          });
+        } else {
+          //Have to handle that may come back in any order.
+          //Still may do some assuming
+
+          address = {
+            $ownerId: docArray[0].$ownerId,
+            $id: docArray[0].$id,
+            address: this.state.accountAddress,
+          };
+
+          store = {
+            $ownerId: docArray[1].$ownerId,
+            $id: docArray[1].$id,
+            description: storeObject.description,
+            public: storeObject.public,
+            open: storeObject.open,
+          };
+
+          //   if(returnedDoc.transitions[1].$type === 'dgmaddress'){
+          //     address ={
+          //      $ownerId: returnedDoc.ownerId,
+          //      $id: returnedDoc.transitions[1].$id,
+          //      address: this.state.accountAddress,
+          //    }
+          //  } else {
+          //    store = {
+          //      $ownerId: returnedDoc.ownerId,
+          //      $id: returnedDoc.transitions[1].$id,
+          //      description: storeObject.description,
+          //      public: storeObject.public,
+          //      open: storeObject.open,
+          //    }
+          //  }
+
+          this.setState({
+            DGMAddress: [address],
+            DGPStore: [store],
+            isLoadingOrdersYOURSTORE: false,
+            isLoadingStoreYOURSTORE: false,
+          });
+        }
+      })
+      .catch((e) => {
+        console.error("Something went wrong during store creation:\n", e);
+        this.setState({
+          storeError: true,
+          isLoadingOrdersYOURSTORE: false,
+          isLoadingStoreYOURSTORE: false,
+        });
+      })
+      .finally(() => client.disconnect());
+  };
+
+  //******************************************************* */
+
+  editDGPStore = (storeObject) => {
+    //For open/close and change description
+    console.log("Called Edit DGP Store");
+
+    this.setState({
+      isLoadingStoreYOURSTORE: true,
+    });
+
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+      apps: {
+        DGPContract: {
+          contractId: this.state.DataContractDGP,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const editStoreDocs = async () => {
+      const { platform } = client;
+      // const identity = await platform.identities.get(this.state.identity); // Your identity ID
+
+      let identity = "";
+      if (this.state.identityRaw !== "") {
+        identity = this.state.identityRaw;
+      } else {
+        identity = await platform.identities.get(this.state.identity);
+      } // Your identity ID
+
+      /************************************** */
+      //LEFTOVER FROM ORIGINAL CREATED IMPLEMENTATION
+      // const storeDocProperties = {
+      //   description: storeObject.description,
+      //   open: storeObject.open,
+      // };
+
+      // const dgpDocument = await platform.documents.create(
+      //   "DGPContract.dgpstore",
+      //   identity,
+      //   storeDocProperties
+      // );
+      //************************************************** */
+
+      //https://dashplatform.readme.io/docs/tutorial-update-documents
+
+      //Retrieve the existing document
+
+      const [document] = await client.platform.documents.get(
+        "DGPContract.dgpstore",
+        { where: [["$id", "==", this.state.DGPStore[0].$id]] }
+      );
+
+      // Update document
+      if (this.state.DGPStore[0].description !== storeObject.description) {
+        document.set("description", storeObject.description);
+      }
+
+      if (this.state.DGPStore[0].public !== storeObject.public) {
+        document.set("public", storeObject.public);
+      }
+      //CAN I ONLY UPDATE ONE DOCUMENT AT A TIME??
+
+      if (this.state.DGPStore[0].open !== storeObject.open) {
+        document.set("open", storeObject.open);
+      }
+
+      await platform.documents.broadcast({ replace: [document] }, identity);
+      return document;
+
+      //############################################################
+      //This below disconnects the document sending..***
+
+      //return dgpDocument;
+
+      //This is to disconnect the Document Creation***
+      //############################################################
+    };
+
+    editStoreDocs()
+      .then((d) => {
+        //I don't think I want the returned doc. bc they are the real doc and I will just post the supplied docs above. <- DONE  -> TEST ->
+        let returnedDoc = d.toJSON();
+        console.log("Store Documents:\n", d.toJSON());
+
+        //NEED TO MAKE CUSTOM DOCS LIKE INSTEAD OF JUST PLUGGING IN THE RETURNED DOC BECAUSE THE RETURNED DOC IS A DOC WITH TRANSITIONS -> AWESOME LOOK ABOVE I JUST NEED TO GET THE $ID CORRECT BECAUSE THE EDIT PULLS THE ACTUAL DOC AND JUST NEED TO BE ABLE TO GET IT!! ->
+
+        let store = {
+          $ownerId: returnedDoc.$ownerId,
+          $id: returnedDoc.$id,
+          description: storeObject.description,
+          public: storeObject.public,
+          open: storeObject.open,
+        };
+
+        this.setState({
+          DGPStore: [store],
+          isLoadingStoreYOURSTORE: false,
+        });
+      })
+      .catch((e) => {
+        console.error("Something went wrong during store edit:\n", e);
+        this.setState({
+          storeError: true,
+          isLoadingStoreYOURSTORE: false,
+        });
+      })
+      .finally(() => client.disconnect());
+  };
+
+  RegisterDGMAddress = () => {
+    //This by itself just in case I need to fix it...
+    console.log("Called Register DGM Address");
+    this.setState({
+      isLoadingConfirmation: true,
+      isLoadingButtons: true,
+    });
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+      apps: {
+        DGMContract: {
+          contractId: this.state.DataContractDGM,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const submitNoteDocument = async () => {
+      const { platform } = client;
+      const identity = await platform.identities.get(this.state.identity); // Your identity ID
+
+      const docProperties = {
+        address: this.state.accountAddress,
+      };
+
+      // Create the note document
+      const dgmDocument = await platform.documents.create(
+        "DGMContract.dgmaddress", /// I changed .note TO .dgmaddress***
+        identity,
+        docProperties
+      );
+
+      const documentBatch = {
+        create: [dgmDocument], // Document(s) to create
+        replace: [], // Document(s) to update
+        delete: [], // Document(s) to delete
+      };
+      // Sign and submit the document(s)
+      return platform.documents.broadcast(documentBatch, identity);
+    };
+
+    submitNoteDocument()
+      .then((d) => {
+        let returnedDoc = d.toJSON();
+        console.log("Document:\n", returnedDoc);
+
+        this.setState({
+          dgmDocuments: [returnedDoc],
+          isLoadingConfirmation: false,
+          isLoadingButtons: false,
+        });
+      })
+      .catch((e) => {
+        console.error("Something went wrong:\n", e);
+        this.setState({
+          dgmDocuments: "Document Error",
+          isLoadingConfirmation: false,
+          isLoadingButtons: false,
+        });
+      })
+      .finally(() => client.disconnect());
+  };
+
+  createDGPItem = (itemObject) => {
+    console.log("Called Create DGP Item");
+
+    this.setState({
+      isLoadingItemsYOURSTORE: true,
+    });
+
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+      apps: {
+        DGPContract: {
+          contractId: this.state.DataContractDGP,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    //Do the docs creations below. mimic dso msg and tags
+
+    const submitItemDoc = async () => {
+      const { platform } = client;
+
+      let identity = "";
+      if (this.state.identityRaw !== "") {
+        identity = this.state.identityRaw;
+      } else {
+        identity = await platform.identities.get(this.state.identity);
+      }
+
+      const itemProperties = {
+        name: itemObject.name,
+        price: itemObject.price,
+        description: itemObject.description,
+        category: itemObject.category,
+        avail: itemObject.avail,
+      };
+      //console.log('Item to Create: ', itemProperties);
+
+      // Create the note document
+      const dgpDocument = await platform.documents.create(
+        "DGPContract.dgpitem",
+        identity,
+        itemProperties
+      );
+
+      //############################################################
+      //This below disconnects the document sending..***
+
+      // return dgpDocument;
+
+      //This is to disconnect the Document Creation***
+      //############################################################
+
+      const documentBatch = {
+        create: [dgpDocument], // Document(s) to create
+      };
+
+      //console.log(documentBatch);
+
+      await platform.documents.broadcast(documentBatch, identity);
+      return dgpDocument;
+    };
+
+    submitItemDoc()
+      .then((d) => {
+        let returnedDoc = d.toJSON();
+        console.log("Document:\n", returnedDoc);
+
+        let item = {
+          $ownerId: returnedDoc.$ownerId,
+          $id: returnedDoc.$id,
+          name: itemObject.name,
+          price: itemObject.price,
+          category: itemObject.category,
+          description: itemObject.description,
+          avail: itemObject.avail,
+        };
+
+        this.setState({
+          DGPItems: [item, ...this.state.DGPItems],
+          isLoadingItemsYOURSTORE: false,
+        });
+      })
+      .catch((e) => {
+        console.error("Something went wrong with Item creation:\n", e);
+        this.setState({
+          itemError: true,
+          isLoadingItemsYOURSTORE: false,
+        });
+      })
+      .finally(() => client.disconnect());
+  };
+
+  editDGPItem = (itemObject) => {
+    console.log("Called Edit DGP Item");
+
+    this.setState({
+      isLoadingItemsYOURSTORE: true,
+    });
+
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+      apps: {
+        DGPContract: {
+          contractId: this.state.DataContractDGP,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    //Do the docs creations below. mimic dso msg and tags
+
+    const submitItemDoc = async () => {
+      const { platform } = client;
+
+      let identity = "";
+      if (this.state.identityRaw !== "") {
+        identity = this.state.identityRaw;
+      } else {
+        identity = await platform.identities.get(this.state.identity);
+      }
+
+      // const itemProps = {
+      //     name: itemObject.name,
+      //     price:   itemObject.price,
+      //     description: itemObject.description,
+      //     avail: itemObject.avail
+      // };
+      // console.log('Item to Edit: ', itemProps);
+
+      const [document] = await client.platform.documents.get(
+        "DGPContract.dgpitem",
+        {
+          where: [
+            [
+              "$id",
+              "==",
+              this.state.DGPItems[this.state.selectedItemIndex].$id,
+            ],
+          ],
+        }
+      );
+
+      if (
+        this.state.DGPItems[this.state.selectedItemIndex].name !==
+        itemObject.name
+      ) {
+        document.set("name", itemObject.name);
+      }
+
+      if (
+        this.state.DGPItems[this.state.selectedItemIndex].category !==
+        itemObject.category
+      ) {
+        document.set("category", itemObject.category);
+      }
+
+      if (
+        this.state.DGPItems[this.state.selectedItemIndex].price !==
+        itemObject.price
+      ) {
+        document.set("price", itemObject.price);
+      }
+
+      if (
+        this.state.DGPItems[this.state.selectedItemIndex].description !==
+        itemObject.description
+      ) {
+        document.set("description", itemObject.description);
+      }
+
+      if (
+        this.state.DGPItems[this.state.selectedItemIndex].avail !==
+        itemObject.avail
+      ) {
+        document.set("avail", itemObject.avail);
+      }
+
+      await platform.documents.broadcast({ replace: [document] }, identity);
+      return document;
+
+      //############################################################
+      //This below disconnects the document editing..***
+
+      //return document;
+
+      //This is to disconnect the Document editing***
+      //############################################################
+    };
+
+    submitItemDoc()
+      .then((d) => {
+        let returnedDoc = d.toJSON();
+        console.log("Edited Item Doc:\n", returnedDoc);
+
+        //I don't think I want the returned doc. bc they are the real doc and I will just post the supplied docs above. -> TEST
+
+        let item = {
+          $ownerId: returnedDoc.$ownerId,
+          $id: returnedDoc.$id,
+          $createdAt: returnedDoc.$createdAt,
+
+          name: itemObject.name,
+          price: itemObject.price,
+          category: itemObject.category,
+          description: itemObject.description,
+          avail: itemObject.avail,
+        };
+
+        let editedItems = this.state.DGPItems; //[itemObject];
+
+        editedItems.splice(this.state.selectedItemIndex, 1, item);
+
+        this.setState(
+          {
+            DGPItems: editedItems,
+            isLoadingItemsYOURSTORE: false,
+          },
+          () => console.log(this.state.DGPItems)
+        );
+      })
+      .catch((e) => {
+        console.error("Something went wrong with Item creation:\n", e);
+        this.setState({
+          itemError: true,
+          isLoadingItemsYOURSTORE: false,
+        });
+      })
+      .finally(() => client.disconnect());
+  };
+
+  //##################
+
+  checkForNewOrders = () => {
+    if (
+      this.state.DGPStore !== "No Store" &&
+      !this.state.isLoadingWallet &&
+      !this.state.isLoadingOrdersYOURSTORE
+    ) {
+      const clientOpts = {
+        network: this.state.whichNetwork,
+        apps: {
+          DGPContract: {
+            contractId: this.state.DataContractDGP,
+          },
+        },
+      };
+      const client = new Dash.Client(clientOpts);
+
+      const getDocuments = async () => {
+        console.log("Called Check For New Orders");
+
+        return client.platform.documents.get("DGPContract.dgporder", {
+          where: [["toId", "==", this.state.identity]],
+          orderBy: [["$createdAt", "desc"]],
+        });
+      };
+
+      getDocuments()
+        .then((d) => {
+          let docArray = [];
+
+          for (const n of d) {
+            // console.log("New Orders:\n", n.toJSON());
+            docArray = [...docArray, n.toJSON()];
+          }
+
+          if (this.state.DGPOrders === "No Orders") {
+            if (docArray.length !== 0) {
+              this.setState({
+                newOrders: docArray,
+                newOrderAvail: true,
+              });
+            }
+          } else if (docArray.length !== this.state.DGPOrders.length) {
+            this.setState({
+              newOrders: docArray,
+              newOrderAvail: true,
+            });
+          }
+        })
+        .catch((e) => {
+          console.error("Something went wrong:\n", e);
+          this.setState({
+            newOrdersError: true, // ADD to State and handle
+          });
+        })
+        .finally(() => client.disconnect());
+    } //closes opening if statement
+  };
+
+  handleLoadNewOrder = () => {
+    this.setState(
+      {
+        DGPOrders: this.state.newOrders,
+        newOrderAvail: false,
+        isLoadingOrdersYOURSTORE: true,
+        order1: false,
+        order2: false,
+      },
+      () => this.helperForMerchantOrders(this.state.newOrders)
+    );
+
+    this.getWalletForNewOrder();
+  };
+
+  //ADDED BELOW FOR THE FUNC ABOVE ^^
+  getWalletForNewOrder = () => {
+    //For Merchant to Load New Orders. But also Buyer for wallet reload after purchase
+
+    this.setState({
+      isLoadingWallet: true,
+    });
+
+    const client = new Dash.Client({
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+    });
+
+    const retrieveIdentityIds = async () => {
+      const account = await client.getWalletAccount();
+
+      this.setState({
+        accountBalance: account.getTotalBalance(),
+        accountHistory: account.getTransactionHistory(),
+      });
+
+      return true;
+    };
+
+    retrieveIdentityIds()
+      .then((d) => {
+        console.log("Wallet Reloaded:\n", d);
+        this.setState({
+          isLoadingWallet: false,
+        });
+      })
+      .catch((e) => {
+        console.error("Something went wrong reloading Wallet:\n", e);
+        this.setState({
+          isLoadingWallet: false,
+          walletReloadError: true, //Add this to state and handle ->
+        });
+      })
+      .finally(() => client.disconnect());
+  };
+
+  /*
+   *YOUR STORE FUNCTIONS^^^^
    *                              ###       ###
    *                               ###     ###
    *                                 #######
@@ -8001,8 +9406,8 @@ class App extends React.Component {
       .finally(() => client.disconnect());
   };
 
-  //NEAR BY FUNCTIONS^^^^
-  /**
+  /*
+   *NEAR BY FUNCTIONS^^^^
    *                                               ###   ###
    *                                              ####   ##
    *                                             ## ## ###
@@ -8017,8 +9422,8 @@ class App extends React.Component {
    */
   //SHOPPING FUNCTIONS
 
-  //SHOPPING FUNCTIONS^^^^
-  /**
+  /*
+   *SHOPPING FUNCTIONS^^^^
    *                             #############
    *                            ###
    *                             #############
@@ -8941,9 +10346,8 @@ class App extends React.Component {
       .finally(() => client.disconnect());
   };
 
-  //REVIEWS FUNCTIONS^^^^
-
-  /**
+  /*
+  * REVIEWS FUNCTIONS^^^^
    *                                         ################
    *                                         ###          ####
    *                                         ################
@@ -9342,10 +10746,8 @@ class App extends React.Component {
    *                                         ################
    *                                         ###          
    *                                         ###           
-   *
+   * PROOF OF FUNDS FUNCTIONS^^^^
    */
-
-  //PROOF OF FUNDS FUNCTIONS^^^^
 
   //https://github.com/dashpay/platform/blob/v1.0-dev/packages/js-dash-sdk/src/SDK/Client/Platform/methods/identities/creditTransfer.ts
   // see above ^^^
@@ -9597,8 +10999,6 @@ class App extends React.Component {
                       identity={this.state.identity}
                       showGroupPage={this.showGroupPage}
                       handleSelectedJoinGroup={this.handleSelectedJoinGroup}
-                      //InitialPullReviews={this.state.InitialPullReviews}
-                      //pullInitialTriggerREVIEWS={this.pullInitialTriggerREVIEWS}
                       mode={this.state.mode}
                       isLoadingGroups={this.state.isLoadingGroups}
                       isLoadingGroup={this.state.isLoadingGroup}
@@ -9620,19 +11020,6 @@ class App extends React.Component {
               ) : (
                 <></>
               )}
-
-              {/* {this.state.selectedDapp === "Groups" ? (
-                <>
-                  <div className="bodytext">
-                    <p>
-                      This will be a <b>Group Messenger</b> dapp, so you can
-                      create and join groups and chat together.
-                    </p>
-                  </div>
-                </>
-              ) : (
-                <></>
-              )} */}
 
               {this.state.selectedDapp === "Wallet" ? (
                 <>
@@ -9698,6 +11085,49 @@ class App extends React.Component {
 
               {this.state.selectedDapp === "My Store" ? (
                 <>
+                  <YourStorePage
+                    isLoginComplete={isLoginComplete}
+                    identity={this.state.identity}
+                    identityInfo={this.state.identityInfo}
+                    uniqueName={this.state.uniqueName}
+                    showModal={this.showModal}
+                    mode={this.state.mode}
+                    whichTabYOURSTORE={this.state.whichTabYOURSTORE}
+                    handleTabYOURSTORE={this.handleTabYOURSTORE}
+                    //handleRefresh_WALLET={this.handleRefresh_WALLET}
+                    // //USE THIS ^^ ONE INSTEAD OF THE OTHER ONE?
+
+                    isLoadingStoreYOURSTORE={this.state.isLoadingStoreYOURSTORE}
+                    isLoadingItemsYOURSTORE={this.state.isLoadingItemsYOURSTORE}
+                    DGPStore={this.state.DGPStore}
+                    DGMAddress={this.state.DGMAddress}
+                    //IS THIS SINGLE OR ARRAY??
+
+                    DGPItems={this.state.DGPItems}
+                    handleSelectedItem={this.handleSelectedItem}
+                    //ORDERS tab BELOW -> CHANGE ALL ->
+                    isLoadingWallet={this.state.isLoadingWallet}
+                    isLoadingOrdersYOURSTORE={
+                      this.state.isLoadingOrdersYOURSTORE
+                    }
+                    accountBalance={this.state.accountBalance}
+                    accountHistory={this.state.accountHistory}
+                    DGPOrders={this.state.DGPOrders}
+                    DGPOrdersNames={this.state.DGPOrdersNames}
+                    DGPOrdersMsgs={this.state.DGPOrdersMsgs}
+                    newOrderAvail={this.state.newOrderAvail}
+                    handleLoadNewOrder={this.handleLoadNewOrder}
+                    handleMerchantOrderMsgModalShow={
+                      this.handleMerchantOrderMsgModalShow
+                    }
+                  />
+                </>
+              ) : (
+                <></>
+              )}
+
+              {/* {this.state.selectedDapp === "My Store" ? (
+                <>
                   <div className="bodytext">
                     <p>
                       Visit{" "}
@@ -9717,7 +11147,7 @@ class App extends React.Component {
                 </>
               ) : (
                 <></>
-              )}
+              )} */}
 
               {this.state.selectedDapp === "Near By" ? (
                 <>
@@ -10165,6 +11595,23 @@ class App extends React.Component {
           <></>
         )}
 
+        {/* {this.state.isModalShowing &&
+        this.state.presentModal === "WalletTXModal" ? (
+          <WalletTXModal
+            isModalShowing={this.state.isModalShowing}
+            hideModal={this.hideModal}
+            mode={this.state.mode}
+            accountHistory={this.props.accountHistory}
+            accountBalance={this.props.accountBalance}
+            LoadingOrders={this.state.LoadingOrders}
+            DGPOrders={this.state.DGPOrders}
+            DGPOrdersNames={this.state.DGPOrdersNames}
+          />
+        ) : (
+          <></>
+        )} */}
+        {/* THIS ^^^^ WAS THE MY STORE ONE */}
+
         {this.state.isModalShowing &&
         this.state.presentModal === "WalletTXModal" ? (
           <WalletTXModal
@@ -10180,6 +11627,7 @@ class App extends React.Component {
             ToYouMsgs={this.state.WALLET_ToYouMsgs}
             ToYouNames={this.state.WALLET_ToYouNames}
             // LoadingOrders={this.state.LoadingOrders}
+            //isLoadingOrdersYOURSTORE? ^^ or Shopping LoadingOrders?
             // DGPOrders={this.state.DGPOrders}
             // DGPOrdersNames={this.state.DGPOrdersNames}
             isLoadingAddresses_WALLET={this.state.isLoadingAddresses_WALLET}
@@ -10190,12 +11638,94 @@ class App extends React.Component {
         ) : (
           <></>
         )}
+
         {/*  ###       ###
          *    ###     ###
          *      #######
          *        ###
          *        ###
          *        ### */}
+
+        {this.state.isModalShowing &&
+        this.state.presentModal === "CreateStoreModal" ? (
+          <CreateStoreModal
+            isModalShowing={this.state.isModalShowing}
+            DGMAddress={this.state.DGMAddress}
+            isLoadingWallet={this.state.isLoadingWallet}
+            isLoadingStoreYOURSTORE={this.state.isLoadingStoreYOURSTORE}
+            hideModal={this.hideModal}
+            mode={this.state.mode}
+            createDGPStore={this.createDGPStore}
+          />
+        ) : (
+          <></>
+        )}
+
+        {this.state.isModalShowing &&
+        this.state.presentModal === "EditStoreModal" ? (
+          <EditStoreModal
+            isModalShowing={this.state.isModalShowing}
+            DGPStore={this.state.DGPStore}
+            hideModal={this.hideModal}
+            mode={this.state.mode}
+            editDGPStore={this.editDGPStore}
+          />
+        ) : (
+          <></>
+        )}
+
+        {this.state.isModalShowing &&
+        this.state.presentModal === "StoreStatusModal" ? (
+          <StoreStatusModal
+            isModalShowing={this.state.isModalShowing}
+            showModal={this.showModal}
+            DGPStore={this.state.DGPStore}
+            hideModal={this.hideModal}
+            mode={this.state.mode}
+            editDGPStore={this.editDGPStore}
+          />
+        ) : (
+          <></>
+        )}
+
+        {this.state.isModalShowing &&
+        this.state.presentModal === "CreateItemModal" ? (
+          <CreateItemModal
+            isModalShowing={this.state.isModalShowing}
+            hideModal={this.hideModal}
+            mode={this.state.mode}
+            createDGPItem={this.createDGPItem}
+          />
+        ) : (
+          <></>
+        )}
+
+        {this.state.isModalShowing &&
+        this.state.presentModal === "EditItemModal" ? (
+          <EditItemModal
+            isModalShowing={this.state.isModalShowing}
+            hideModal={this.hideModal}
+            mode={this.state.mode}
+            selectedItem={this.state.selectedItem}
+            editDGPItem={this.editDGPItem}
+          />
+        ) : (
+          <></>
+        )}
+
+        {this.state.isModalShowing &&
+        this.state.presentModal === "MerchantOrderMsgModal" ? (
+          <MerchantOrderMsgModal
+            isModalShowing={this.state.isModalShowing}
+            hideModal={this.hideModal}
+            mode={this.state.mode}
+            messageStoreOwnerName={this.state.messageStoreOwnerName}
+            handleMerchantOrderMsgSubmit={this.handleMerchantOrderMsgSubmit}
+            closeTopNav={this.closeTopNav}
+          />
+        ) : (
+          <></>
+        )}
 
         {/*   #############
          *  ###

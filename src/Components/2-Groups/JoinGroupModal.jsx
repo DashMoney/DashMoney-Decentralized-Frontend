@@ -66,7 +66,7 @@ class JoinGroupModal extends React.Component {
         } else {
           let docArray = [];
           for (const n of d) {
-            console.log("Document:\n", n.toJSON());
+            // console.log("Document:\n", n.toJSON());
             docArray = [...docArray, n.toJSON()];
           }
 
@@ -119,11 +119,11 @@ class JoinGroupModal extends React.Component {
         let nameDocArray = [];
 
         for (const n of d) {
-          console.log("NameDoc:\n", n.toJSON());
+          //   console.log("NameDoc:\n", n.toJSON());
 
           nameDocArray = [n.toJSON(), ...nameDocArray];
         }
-        console.log(nameDocArray);
+        // console.log(nameDocArray);
 
         let tupleArray = []; //<- Final array
 

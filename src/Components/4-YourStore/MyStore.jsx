@@ -108,7 +108,7 @@ class MyStore extends React.Component {
                       this.props.showModal('CreateStoreModal');
                     }}
           >
-            <b>Create New Store/Menu</b>
+            <b>Create Store/Menu</b>
           </Button>
         </div>
         :
@@ -123,7 +123,7 @@ class MyStore extends React.Component {
                 this.props.showModal("CreateStoreModal");
               }}
             >
-              <b>Create New Store/Menu</b>
+              <b>Create Store/Menu</b>
             </Button>
           </div>
         ) : (
@@ -134,14 +134,20 @@ class MyStore extends React.Component {
 
         {this.props.DGPStore !== "No Store" && !this.props.LoadingStore ? (
           <>
-            <div id="bodytext">
+            <div className="bodytextnobottom">
               <div className="cardTitle">
                 <h2>{this.props.uniqueName}</h2>
                 <span>
                   {this.props.DGPStore[0].public ? (
-                    <b>Public</b>
+                    <Badge variant="primary">
+                      {" "}
+                      <b>Public</b>
+                    </Badge>
                   ) : (
-                    <b>Private</b>
+                    <Badge variant="primary">
+                      {" "}
+                      <b>Private</b>
+                    </Badge>
                   )}
                 </span>
                 <Button
@@ -153,8 +159,10 @@ class MyStore extends React.Component {
 
                 <span></span>
               </div>
-              <p></p>
-              <p>{this.props.DGPStore[0].description}</p>
+
+              <h5 className="bodytext">
+                <b>{this.props.DGPStore[0].description}</b>
+              </h5>
               {/* <Card id="card" bg={cardBkg} text={cardText}>
               <Card.Body>
                 <Card.Title className="cardTitle">
@@ -168,7 +176,7 @@ class MyStore extends React.Component {
                 <Button>Edit Store</Button>
               </Card.Body>
             </Card> */}
-              <p></p>
+
               <div className="cardTitle">
                 <h3>Store/Menu Items</h3>
                 <Button
@@ -178,30 +186,30 @@ class MyStore extends React.Component {
                   <b>Add Item</b>
                 </Button>
               </div>
+            </div>
 
-              {/* <div className="d-grid gap-2"></div> */}
-              {this.props.LoadingItems ? (
-                <>
-                  <p></p>
-                  <div id="spinner">
-                    <Spinner animation="border" role="status">
-                      <span className="visually-hidden">Loading...</span>
-                    </Spinner>
-                  </div>
-                </>
-              ) : (
-                <></>
-              )}
+            {this.props.LoadingItems ? (
+              <>
+                <p></p>
+                <div id="spinner">
+                  <Spinner animation="border" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </Spinner>
+                </div>
+              </>
+            ) : (
+              <></>
+            )}
 
-              {this.props.DGPItems.length === 0 ? (
-                <>
-                  <p></p>(This is where your items will appear)
-                </>
-              ) : (
-                <></>
-              )}
-              <p></p>
-              <div id="cardtext">
+            {this.props.DGPItems.length === 0 ? (
+              <>
+                <p>This is where your items will display.</p>
+              </>
+            ) : (
+              <></>
+            )}
+            {categoryButtons.length !== 0 ? (
+              <>
                 {this.state.selectedCategory === "" ? (
                   <div className="d-grid gap-2" id="button-edge">
                     {categoryButtons}
@@ -222,10 +230,12 @@ class MyStore extends React.Component {
                     </h3>
                   </div>
                 )}
+              </>
+            ) : (
+              <></>
+            )}
 
-                {items}
-              </div>
-            </div>
+            {items}
           </>
         ) : (
           <></>

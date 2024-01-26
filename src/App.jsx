@@ -6430,7 +6430,7 @@ class App extends React.Component {
     if (this.state.store1 && this.state.store2) {
       this.setState({
         isLoadingStoreYOURSTORE: false,
-        isLoadingOrdersYOURSTORE: false,
+        // isLoadingOrdersYOURSTORE: false, //<= DO NOT SET HERE, HAS OWN RACE.
       });
     }
   };

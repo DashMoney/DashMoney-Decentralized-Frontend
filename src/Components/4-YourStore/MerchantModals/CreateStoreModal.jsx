@@ -222,7 +222,7 @@ class CreateStoreModal extends React.Component {
                       <b>Create Store/Menu</b>
                     </Button>
                   ) : (
-                    <Button variant="primary">Create Store/Menu</Button>
+                    <Button variant="primary"><b>Create Store/Menu</b></Button>
                   )}
                 </>
               )}

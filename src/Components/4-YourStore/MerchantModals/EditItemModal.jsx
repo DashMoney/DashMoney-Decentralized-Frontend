@@ -415,11 +415,11 @@ class EditItemModal extends React.Component {
               this.state.validPrice &&
               this.state.validDescription ? (
                 <Button variant="primary" type="submit">
-                  Edit Item
+                  <b>Edit Item</b>
                 </Button>
               ) : (
                 <Button variant="primary" disabled>
-                  Edit Item
+                  <b>Edit Item</b>
                 </Button>
               )}
             </Form>

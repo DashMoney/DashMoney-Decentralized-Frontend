@@ -62,7 +62,7 @@ class StoreStatusModal extends React.Component {
               variant="primary"
               onClick={() => this.props.showModal("EditStoreModal")}
             >
-              Edit store/menu
+              <b>Edit Store/Menu</b>
             </Button>
           </Modal.Body>
 

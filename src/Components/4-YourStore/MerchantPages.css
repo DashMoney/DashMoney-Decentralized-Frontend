@@ -1,49 +1,43 @@
 .paddingBadge {
-  margin-right: .5rem;
-  margin-left: .5rem;
- }
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
+}
 
- #button-edge{
+#button-edge {
   margin-top: 2rem;
   margin-left: 1rem;
   margin-right: 1rem;
   margin-bottom: 1.5rem;
 }
 
- .paddingReqBadge{
-  margin-left: .5rem;
-  padding-bottom: .1rem;
- }
+.paddingReqBadge {
+  margin-left: 0.5rem;
+  padding-bottom: 0.1rem;
+}
 
- 
- .indent{
-   margin-left: .5rem;
- }
+.indent {
+  margin-left: 0.5rem;
+}
 
- .indentMembers{
+.indentMembers {
   margin-left: 1rem;
 }
 
-#card{
-  margin: .3rem;
-
+#card {
+  margin: 0.3rem;
 }
 
-#cardtext{
-  
-}
-
-.addSpaceRight{
+.addSpaceRight {
   margin-right: 1rem;
 }
 
- .cardTitle{
+.cardTitle {
   display: flex;
   justify-content: space-between;
   align-items: center;
- }
+}
 
- /* .requestbtn{
+/* .requestbtn{
   padding-top:.2rem;
   padding-right:.4rem;
   padding-left: .6rem;
@@ -51,50 +45,46 @@
   font-size: large;
  } */
 
- .textsmaller{
+.textsmaller {
   font-size: medium;
   text-align: right;
- }
+}
 
- .sendReqTrial{
-  display:flex;
-  align-items: center;
- }
- 
- 
- div {
-   word-wrap: break-word;
- }
- 
- 
- .positionButton {
-   display: flex;
-   margin-top: 3rem;
- }
-
- .Underline{
+.sendReqTrial {
   display: flex;
-  justify-content:flex-end;
+  align-items: center;
+}
+
+div {
+  word-wrap: break-word;
+}
+
+.positionButton {
+  display: flex;
+  margin-top: 3rem;
+}
+
+.Underline {
+  display: flex;
+  justify-content: flex-end;
   align-items: center;
   margin-right: 1rem;
   padding-top: 0.6rem;
   border-top: 0.1rem solid white;
- }
+}
 
- .JustUnderline{
-
+.JustUnderline {
   border-bottom: 0.1rem solid white;
- }
- 
- .id-line{
+}
+
+.id-line {
   margin-top: 0.5rem;
-   display:flex;
-   flex-wrap: wrap;
-   word-wrap: break-word;
-   word-break: break-all;
- }
- 
- p {
-   word-wrap: break-word;
- }
- 
+  display: flex;
+  flex-wrap: wrap;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+p {
+  word-wrap: break-word;
+}

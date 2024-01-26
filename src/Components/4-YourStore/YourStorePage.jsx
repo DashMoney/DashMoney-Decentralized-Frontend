@@ -32,7 +32,7 @@ class YourStorePage extends React.Component {
             </Nav.Item>
             <Nav.Item>
               <Nav.Link eventKey="Your Store">
-                <b>Your Store/Menu</b>
+                <b>My Store/Menu</b>
               </Nav.Link>
             </Nav.Item>
           </Nav>

@@ -1,5 +1,5 @@
 import React from "react";
-import Button from 'react-bootstrap/Button';
+import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 
 class MyStoreItem extends React.Component {
@@ -11,22 +11,28 @@ class MyStoreItem extends React.Component {
   }
 
   handleDenomDisplay = (duffs) => {
-    if(duffs >= 1000000){
-      return <span style={{ color: "#008de4" }}>{(duffs/100000000).toFixed(3)} Dash</span>
+    if (duffs >= 1000000) {
+      return (
+        <span style={{ color: "#008de4" }}>
+          {(duffs / 100000000).toFixed(3)} Dash
+        </span>
+      );
     } else {
-      return <span style={{ color: "#008de4" }}>{(duffs/100000).toFixed(2)} mDash</span>
+      return (
+        <span style={{ color: "#008de4" }}>
+          {(duffs / 100000).toFixed(2)} mDash
+        </span>
+      );
     }
-  }
+  };
 
   handleAvail = () => {
-    if(this.props.item.avail){
-      return this.handleDenomDisplay(this.props.item.price)
+    if (this.props.item.avail) {
+      return this.handleDenomDisplay(this.props.item.price);
     } else {
-      return <span style={{ color: "#008de4" }}>Unavailable</span>
+      return <span style={{ color: "#008de4" }}>Unavailable</span>;
     }
-  }
-
-
+  };
 
   render() {
     let cardBkg;
@@ -35,7 +41,6 @@ class MyStoreItem extends React.Component {
     if (this.props.mode === "primary") {
       cardBkg = "white";
       cardText = "dark";
-
     } else {
       cardBkg = "dark";
       cardText = "white";
@@ -45,7 +50,7 @@ class MyStoreItem extends React.Component {
       <Card id="card" key={this.props.index} bg={cardBkg} text={cardText}>
         <Card.Body>
           <Card.Title className="cardTitle">
-            <span>{this.props.item.name}</span>
+            <b>{this.props.item.name}</b>
             {this.handleAvail()}
 
             {/* <span className="textsmaller text-muted">
@@ -54,9 +59,11 @@ class MyStoreItem extends React.Component {
           </Card.Title>
 
           <Card.Text>{this.props.item.description}</Card.Text>
-          <Button variant="primary"
-            onClick={()=> this.props.handleSelectedItem(this.props.index)}
-          >Edit item
+          <Button
+            variant="primary"
+            onClick={() => this.props.handleSelectedItem(this.props.index)}
+          >
+            <b>Edit Item</b>
           </Button>
         </Card.Body>
       </Card>

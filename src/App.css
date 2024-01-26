@@ -44,6 +44,10 @@ html {
   padding: 1rem;
   padding-top: 0rem;
 }
+.bodytextnobottom {
+  padding: 1rem;
+  padding-bottom: 0rem;
+}
 
 .ButtonRight {
   margin-right: 1rem;
@@ -197,6 +201,10 @@ div {
 /* #card {
   margin-top: 0.4rem;
 } */
+
+#MyStoreTitle {
+  padding: 0.4rem;
+}
 
 .bootstrapMenu {
   /* margin-right: auto;

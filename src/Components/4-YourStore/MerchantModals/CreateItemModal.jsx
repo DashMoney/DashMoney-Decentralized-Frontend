@@ -96,24 +96,34 @@ class CreateItemModal extends React.Component {
   onChange = (event) => {
     // console.log(event.target.value);
 
-    event.preventDefault();
-    event.stopPropagation();
+    if (event.target.id === "custom-switch") {
+      event.stopPropagation();
+      this.handleAvail();
+    }
 
     //console.log(`id = ${event.target.id}`);
 
     if (event.target.id === "formItemName") {
+      event.preventDefault();
+      event.stopPropagation();
       this.itemNameValidate(event.target.value);
     }
 
     if (event.target.id === "formItemCategory") {
+      event.preventDefault();
+      event.stopPropagation();
       this.itemCategoryValidate(event.target.value);
     }
 
     if (event.target.id === "formItemPrice") {
+      event.preventDefault();
+      event.stopPropagation();
       this.itemPriceValidate(event.target.value);
     }
 
     if (event.target.id === "formItemDescription") {
+      event.preventDefault();
+      event.stopPropagation();
       this.itemDescriptionValidate(event.target.value);
     }
   };
@@ -351,7 +361,7 @@ class CreateItemModal extends React.Component {
                   label={
                     this.state.itemAvail ? <b>Available</b> : <b>Unavailable</b>
                   }
-                  onChange={() => this.handleAvail()}
+                  //  onChange={() => this.handleAvail()}
                 />
                 <p></p>
                 <p>
@@ -395,11 +405,11 @@ class CreateItemModal extends React.Component {
               this.state.validPrice &&
               this.state.validDescription ? (
                 <Button variant="primary" type="submit">
-                  Create Item
+                  <b>Create Item</b>
                 </Button>
               ) : (
                 <Button variant="primary" disabled>
-                  Create Item
+                  <b>Create Item</b>
                 </Button>
               )}
             </Form>

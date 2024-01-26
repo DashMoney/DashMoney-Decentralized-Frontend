@@ -345,6 +345,8 @@ class Orders extends React.Component {
       });
     } //This closes the if statement
 
+    ordersForDisplay.reverse();
+
     return (
       <>
         {this.props.isLoadingWallet ? (
@@ -375,7 +377,7 @@ class Orders extends React.Component {
                   variant="primary"
                   onClick={() => this.props.showModal("WalletTXModal")}
                 >
-                  Wallet Transactions
+                  Wallet TXs
                 </Button>
               </div>
             </div>
@@ -392,7 +394,7 @@ class Orders extends React.Component {
                 this.props.showModal("CreateStoreModal");
               }}
             >
-              <b>Create New Store/Menu</b>
+              <b>Create Store/Menu</b>
             </Button>
           </div>
         ) : (
@@ -403,8 +405,7 @@ class Orders extends React.Component {
         !this.props.LoadingStore &&
         !this.props.LoadingOrders ? (
           <>
-            <p></p>
-            <div id="card">
+            <div id="MyStoreTitle">
               <h2>{this.props.uniqueName}'s Orders</h2>
             </div>
           </>

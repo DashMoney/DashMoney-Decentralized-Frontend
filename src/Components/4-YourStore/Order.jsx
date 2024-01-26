@@ -208,7 +208,12 @@ class Order extends React.Component {
 
     const order = this.props.order;
     const orderItemsAndQty = this.props.orderItemsAndQty;
-    const orderNameDoc = this.props.orderNameDoc;
+    let orderName;
+    if (this.props.orderNameDoc.label === undefined) {
+      orderName = "Loading..";
+    } else {
+      orderName = this.props.orderNameDoc.label;
+    }
     const orderItems = this.props.orderItems;
     const msgsToDisplay = this.props.msgsToDisplay;
 
@@ -219,9 +224,9 @@ class Order extends React.Component {
             <div className="cardTitle">
               <h5
                 style={{ color: "#008de4" }}
-                onClick={() => this.handleNameClick(orderNameDoc.label)}
+                onClick={() => this.handleNameClick(orderName)}
               >
-                <b>{orderNameDoc.label}</b>
+                <b>{orderName}</b>
               </h5>
               <span>{this.state.copiedName ? <span>✅</span> : <></>}</span>
 
@@ -269,7 +274,7 @@ class Order extends React.Component {
                 <Card id="comment" bg={cardBkg} text={cardText}>
                   <Card.Body>
                     <Card.Title className="cardTitle">
-                      <b style={{ color: "#008de4" }}>{orderNameDoc.label}</b>
+                      <b style={{ color: "#008de4" }}>{orderName}</b>
                       <span className="textsmaller">
                         {this.formatDate(
                           this.props.order.$createdAt,
@@ -294,7 +299,7 @@ class Order extends React.Component {
                 onClick={() =>
                   this.props.handleMerchantOrderMsgModalShow(
                     order.$id,
-                    orderNameDoc.label
+                    orderName
                   )
                 }
               >

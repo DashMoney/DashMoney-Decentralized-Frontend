@@ -33,6 +33,8 @@ class SimplifiedTXs extends React.Component {
   handleTxOrderName = (tx) => {
     //SO THIS NEEDS TO BE MODIFIED TO HANDLE THE sortedTuples OF NAME THEN DOC INSTEAD OF 2 SEPARATE ARRAYS
 
+    //Add the sortedTuples length and the orders and mystoreorders together
+
     if (
       tx.txId === undefined ||
       //this.props.DGPOrders === "No Orders"
@@ -51,9 +53,21 @@ class SimplifiedTXs extends React.Component {
         return msg[1].txId === tx.txId;
       });
 
-      // PUT THE SHOPPING ORDERS HERE
+      // PUT THE MY STORE ORDERS HERE
 
-      // PUT THE YOUR STORE ORDERS HERE
+      //ADD TO THE pmtTuple array with the this.props.sortedMyStoreTuples -> right ? -> Yes because this is using the TXs BELOW IS USING THE ADDRESS -> !!!!
+      if (pmtTuple === undefined) {
+        pmtTuple = this.props.myStoreTuples.find((order) => {
+          return order[1].txId === tx.txId;
+        });
+      }
+
+      // PUT THE SHOPPING ORDERS HERE
+      // if (pmtTuple === undefined) {
+      //   pmtTuple = this.props.shoppingTuples.find((order) => {
+      //     return order[1].txId === tx.txId;
+      //   });
+      // }
 
       //Put the address Names here?
       if (pmtTuple === undefined) {

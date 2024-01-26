@@ -377,7 +377,7 @@ class Orders extends React.Component {
                   variant="primary"
                   onClick={() => this.props.showModal("WalletTXModal")}
                 >
-                  Wallet TXs
+                  <b>Wallet TXs</b>
                 </Button>
               </div>
             </div>
@@ -451,8 +451,9 @@ class Orders extends React.Component {
         this.props.DGMAddress !== "No Address" &&
         this.props.DGPOrders === "No Orders" ? (
           <>
-            <p></p>
-            <p>This is where orders from your customers will appear.</p>
+            <p className="bodytext">
+              This is where orders from your customers will appear.
+            </p>
           </>
         ) : (
           <></>

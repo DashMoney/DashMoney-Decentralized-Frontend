@@ -194,11 +194,15 @@ class WalletTXModal extends React.Component {
 
       let tupleArray = [...tupleByYouArray, ...tupleToYouArray];
 
+      //ALL BELOW IS FOR BELOW I THINK
+
       //WHY AN I GETTING RID OF MSGS => wHY IS THIS DOING THIS? ****
+      // -> ENSUREING UNIQUE
 
       //COULD YOU HAVE THE SAME MSG FROM BYYOU AND TOYOU?? HOW?
       //IS THIS TO HANDLE THE SHORT TERM STAGING VS REFRESH ?
 
+      //ENSURE UNIQUE
       // Ensure Unique msgs*** START   ->WHY??!!!
 
       let arrayOfMsgIds = tupleArray.map((tuple) => {
@@ -235,15 +239,43 @@ class WalletTXModal extends React.Component {
 
     // @@@@@   @@@@@   @@@@@   @@@@@   @@@@@   @@@@@   @@@@@
 
+    //handleTxsendbyMeBut without documents..
+
+    //Make Tuples ????? use full doc and not nameDoc.label!!
+
+    //LoadingOrders={this.state.isLoadingOrdersYOURSTORE}
+    //DGPOrders={this.state.DGPOrders}
+    // DGPOrdersNames={this.state.DGPOrdersNames}
+
+    let myStoreTuples = [];
+
+    if (!this.props.LoadingOrders && this.props.DGPOrders !== "No Orders") {
+      //MYSTORETUPLES MUST BE PROTECTED WITH THE LOADING BECUASE IT IS POSSIBLE FOR 'No Orders to be set and that would mess it up.
+
+      myStoreTuples = this.props.DGPOrders.map((orderDoc) => {
+        let tuple = "";
+
+        for (let nameDoc of this.props.DGPOrdersNames) {
+          if (nameDoc.$ownerId === orderDoc.$ownerId) {
+            tuple = [nameDoc, orderDoc]; //THIS IS WHAT EACH TUPLE IS.
+            break; //Does with break out of the loop OR should I switch to find?
+            // CAREFUL ^^ THIS WORKS LIKE A FIND BUT ONLY IF INSIDE A MAP!
+          }
+        }
+        if (tuple !== "") {
+          return tuple;
+        }
+
+        return [{ label: "No Name Avail..", $ownerId: msg.$ownerId }, orderDoc];
+      });
+    }
     //this.props.WALLET_addresses
     //this.props.WALLET_addressesNames
     //this.props.isLoadingAddresses_WALLET
 
-    //handleTxsendbyMeBut without documents..
-
-    //Make Tuples ????? use full doc and not nameDoc.label!!
     if (!this.props.isLoadingAddresses_WALLET) {
-    }
+    } //THIS IS NOT BEING USED -> DELETE ?
+
     let addressTuples = [];
 
     addressTuples = this.props.WALLET_addresses.map((addrDoc) => {
@@ -272,6 +304,8 @@ class WalletTXModal extends React.Component {
           d={date}
           sortedTuples={theSortedTuples}
           addressTuples={addressTuples}
+          myStoreTuples={myStoreTuples}
+          //shoppingTuples={shoppingTuples}
           balance={balanceArr[index]}
         />
       );

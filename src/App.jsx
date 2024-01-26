@@ -11627,10 +11627,11 @@ class App extends React.Component {
             ByYouNames={this.state.WALLET_ByYouNames}
             ToYouMsgs={this.state.WALLET_ToYouMsgs}
             ToYouNames={this.state.WALLET_ToYouNames}
-            // LoadingOrders={this.state.LoadingOrders}
-            //isLoadingOrdersYOURSTORE? ^^ or Shopping LoadingOrders?
-            // DGPOrders={this.state.DGPOrders}
-            // DGPOrdersNames={this.state.DGPOrdersNames}
+            //My Store
+            LoadingOrders={this.state.isLoadingOrdersYOURSTORE}
+            DGPOrders={this.state.DGPOrders}
+            DGPOrdersNames={this.state.DGPOrdersNames}
+            //My Store^^
             isLoadingAddresses_WALLET={this.state.isLoadingAddresses_WALLET}
             isLoadingMsgs={this.state.isLoadingMsgs_WALLET}
             //sortedTuples={sortedTuples} // <= this is made in the WalletTXModal -> yes

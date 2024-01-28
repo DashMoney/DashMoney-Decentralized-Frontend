@@ -167,49 +167,51 @@ class MessagespageForyou extends React.Component {
 
     return (
       <>
-        <CreditsOnPage
-          identityInfo={this.props.identityInfo}
-          uniqueName={this.props.uniqueName}
-          showModal={this.props.showModal}
-        />
+        <div className="bodytexttighternobottom">
+          <CreditsOnPage
+            identityInfo={this.props.identityInfo}
+            uniqueName={this.props.uniqueName}
+            showModal={this.props.showModal}
+          />
 
-        {/* <LowCreditsOnPage
-          identityInfo={this.props.identityInfo}
-          uniqueName={this.props.uniqueName}
-        /> */}
-
-        {sortedForYou.length < 1 ? (
-          <p>
-            Greetings, once you send a message or someone tags you in a message,
-            it will show up here.
-          </p>
-        ) : (
-          <></>
-        )}
-
-        {this.props.NewDMByYouThreads.length !== 0 ||
-        this.props.NewDMFromTagsMsgs.length !== 0 ||
-        this.props.NewDMFromTagsThreads.length !== 0 ? (
-          !this.props.isLoadingForYou ? (
-            <div className="d-grid gap-2">
-              <Button
-                variant="primary"
-                onClick={() => {
-                  this.props.pushNewDMtoView();
-                }}
-              >
-                <b>New Messages</b>
-              </Button>
-            </div>
+          {sortedForYou.length < 1 ? (
+            <p>
+              Once you send a message or someone tags you in a message, it will
+              show up here.
+            </p>
           ) : (
             <></>
-          )
-        ) : (
-          <></>
-        )}
+          )}
+
+          {this.props.NewDMByYouThreads.length !== 0 ||
+          this.props.NewDMFromTagsMsgs.length !== 0 ||
+          this.props.NewDMFromTagsThreads.length !== 0 ? (
+            !this.props.isLoadingForYou ? (
+              <div className="d-grid gap-2">
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    this.props.pushNewDMtoView();
+                  }}
+                >
+                  <b>New Messages</b>
+                </Button>
+              </div>
+            ) : (
+              <></>
+            )
+          ) : (
+            <></>
+          )}
+        </div>
         {/* https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react */}
         <div
-          style={{ float: "left", clear: "both" }}
+          style={{
+            float: "left",
+            clear: "both",
+            margin: "0rem",
+            padding: "0rem",
+          }}
           ref={(el) => {
             this.messagesEnd = el;
           }}

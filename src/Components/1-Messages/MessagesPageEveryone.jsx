@@ -73,38 +73,39 @@ class MessagespageEveryone extends React.Component {
 
     return (
       <>
-        <LowCreditsOnPage
-          identityInfo={this.props.identityInfo}
-          uniqueName={this.props.uniqueName}
-          showModal={this.props.showModal}
-        />
-        {this.props.isLoginComplete ? (
-          <></>
-        ) : (
-          <h5 style={{ margin: "0rem", padding: "0rem" }}>
-            <b>Login for more!</b>
-          </h5>
-        )}
-        {this.props.NewSOMsgs.length !== 0 ||
-        this.props.NewSOThreads.length !== 0 ? (
-          !this.props.isLoadingEveryone ? (
-            <div className="d-grid gap-2">
-              <Button
-                variant="primary"
-                onClick={() => {
-                  this.props.pushNewSOtoView();
-                }}
-              >
-                <b>New Messages</b>
-              </Button>
-            </div>
+        <div className="bodytexttighter">
+          <LowCreditsOnPage
+            identityInfo={this.props.identityInfo}
+            uniqueName={this.props.uniqueName}
+            showModal={this.props.showModal}
+          />
+          {this.props.isLoginComplete ? (
+            <></>
+          ) : (
+            <h5 style={{ margin: "0rem", padding: "0rem" }}>
+              <b>Login for more!</b>
+            </h5>
+          )}
+          {this.props.NewSOMsgs.length !== 0 ||
+          this.props.NewSOThreads.length !== 0 ? (
+            !this.props.isLoadingEveryone ? (
+              <div className="d-grid gap-2">
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    this.props.pushNewSOtoView();
+                  }}
+                >
+                  <b>New Messages</b>
+                </Button>
+              </div>
+            ) : (
+              <></>
+            )
           ) : (
             <></>
-          )
-        ) : (
-          <></>
-        )}
-
+          )}
+        </div>
         {/* https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react */}
         <div
           style={{

@@ -119,60 +119,52 @@ class MessagesPage extends React.Component {
 
         {!this.props.isLoadingForYou &&
         this.props.whichMessagesTab === "For you" ? (
-          <div className="msgstext">
-            <div className="d-grid gap-2">
-              <MessagespageForyou
-                isLoginComplete={this.props.isLoginComplete}
-                isLoadingForYou={this.props.isLoadingForYou}
-                ByYouThreads={this.props.ByYouThreads}
-                ByYouThreadsNames={this.props.ByYouThreadsNames}
-                FromTagsThreads={this.props.FromTagsThreads}
-                FromTagsThreadsNames={this.props.FromTagsThreadsNames}
-                identity={this.props.identity}
-                identityInfo={this.props.identityInfo}
-                uniqueName={this.props.uniqueName}
-                ByYouMsgs={this.props.ByYouMsgs}
-                ByYouNames={this.props.ByYouNames}
-                FromTagsMsgs={this.props.FromTagsMsgs}
-                FromTagsNames={this.props.FromTagsNames}
-                NewDMByYouThreads={this.props.NewDMByYouThreads}
-                NewDMFromTagsMsgs={this.props.NewDMFromTagsMsgs}
-                NewDMFromTagsThreads={this.props.NewDMFromTagsThreads}
-                mode={this.props.mode}
-                showModal={this.props.showModal}
-                handleThread={this.props.handleThread}
-                pushNewDMtoView={this.props.pushNewDMtoView}
-              />
-            </div>
-          </div>
+          <MessagespageForyou
+            isLoginComplete={this.props.isLoginComplete}
+            isLoadingForYou={this.props.isLoadingForYou}
+            ByYouThreads={this.props.ByYouThreads}
+            ByYouThreadsNames={this.props.ByYouThreadsNames}
+            FromTagsThreads={this.props.FromTagsThreads}
+            FromTagsThreadsNames={this.props.FromTagsThreadsNames}
+            identity={this.props.identity}
+            identityInfo={this.props.identityInfo}
+            uniqueName={this.props.uniqueName}
+            ByYouMsgs={this.props.ByYouMsgs}
+            ByYouNames={this.props.ByYouNames}
+            FromTagsMsgs={this.props.FromTagsMsgs}
+            FromTagsNames={this.props.FromTagsNames}
+            NewDMByYouThreads={this.props.NewDMByYouThreads}
+            NewDMFromTagsMsgs={this.props.NewDMFromTagsMsgs}
+            NewDMFromTagsThreads={this.props.NewDMFromTagsThreads}
+            mode={this.props.mode}
+            showModal={this.props.showModal}
+            handleThread={this.props.handleThread}
+            pushNewDMtoView={this.props.pushNewDMtoView}
+          />
         ) : (
           <></>
         )}
 
-        <div className="msgstext">
-          {this.props.whichMessagesTab === "Everyone" ? (
-            <div className="d-grid gap-2">
-              <MessagespageEveryone
-                isLoginComplete={this.props.isLoginComplete}
-                EveryoneThreads={this.props.EveryoneThreads}
-                EveryoneThreadsNames={this.props.EveryoneThreadsNames}
-                identity={this.props.identity}
-                identityInfo={this.props.identityInfo}
-                uniqueName={this.props.uniqueName}
-                EveryoneMsgs={this.props.EveryoneMsgs}
-                EveryoneNames={this.props.EveryoneNames}
-                NewSOMsgs={this.props.NewSOMsgs}
-                NewSOThreads={this.props.NewSOThreads}
-                mode={this.props.mode}
-                showModal={this.props.showModal}
-                handleThread={this.props.handleThread}
-                pushNewSOtoView={this.props.pushNewSOtoView}
-              />
-            </div>
-          ) : (
-            <></>
-          )}
-        </div>
+        {this.props.whichMessagesTab === "Everyone" ? (
+          <MessagespageEveryone
+            isLoginComplete={this.props.isLoginComplete}
+            EveryoneThreads={this.props.EveryoneThreads}
+            EveryoneThreadsNames={this.props.EveryoneThreadsNames}
+            identity={this.props.identity}
+            identityInfo={this.props.identityInfo}
+            uniqueName={this.props.uniqueName}
+            EveryoneMsgs={this.props.EveryoneMsgs}
+            EveryoneNames={this.props.EveryoneNames}
+            NewSOMsgs={this.props.NewSOMsgs}
+            NewSOThreads={this.props.NewSOThreads}
+            mode={this.props.mode}
+            showModal={this.props.showModal}
+            handleThread={this.props.handleThread}
+            pushNewSOtoView={this.props.pushNewSOtoView}
+          />
+        ) : (
+          <></>
+        )}
       </>
     );
   }

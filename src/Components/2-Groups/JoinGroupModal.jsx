@@ -210,11 +210,10 @@ class JoinGroupModal extends React.Component {
               >
                 <b>Join {this.props.selectedGroup}</b>
               </Button>
-              <p></p>
             </div>
+            <p></p>
             {this.state.LoadingMembers ? (
-              <div id="shoutOutSpinner">
-                <p></p>
+              <div id="spinner">
                 <Spinner animation="border">
                   <span className="visually-hidden">Loading...</span>
                 </Spinner>

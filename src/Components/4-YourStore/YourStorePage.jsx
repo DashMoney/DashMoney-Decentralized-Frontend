@@ -15,6 +15,9 @@ import CreditsOnPage from "../CreditsOnPage";
 import "./MerchantPages.css";
 
 class YourStorePage extends React.Component {
+  componentDidMount() {
+    this.props.pullInitialTriggerYOURSTORE();
+  }
   render() {
     return (
       <>

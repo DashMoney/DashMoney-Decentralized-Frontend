@@ -58,8 +58,9 @@ class ViewMembersModal extends React.Component {
             {closeButtonColor}
           </Modal.Header>
           <Modal.Body>
+            <p></p>
             {this.props.LoadingMembers ? (
-              <div id="shoutOutSpinner">
+              <div id="spinner">
                 <Spinner animation="border">
                   <span className="visually-hidden">Loading...</span>
                 </Spinner>
@@ -67,6 +68,7 @@ class ViewMembersModal extends React.Component {
               </div>
             ) : (
               <>
+                <p></p>
                 {members}
                 <p></p>
               </>

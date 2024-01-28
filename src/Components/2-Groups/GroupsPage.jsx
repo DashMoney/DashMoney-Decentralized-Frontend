@@ -13,6 +13,15 @@ class GroupsPage extends React.Component {
     return date.toLocaleDateString();
   };
 
+  componentDidMount() {
+    this.props.pullInitialTriggerGROUPS();
+    // if (
+    //   this.props.isLoginComplete // && this.props.InitialPullGROUPS
+    // ) {
+    //   this.props.pullInitialTriggerGROUPS();
+    // }
+  }
+
   render() {
     let acceptedInvites = [];
     let extraInvites = [];

@@ -349,9 +349,10 @@ class Orders extends React.Component {
 
     return (
       <>
-        {this.props.isLoadingWallet ? (
-          <>
-            {/* <p> </p>
+        <div id="sidetextonlysides">
+          {this.props.isLoadingWallet ? (
+            <>
+              {/* <p> </p>
                   <div id="spinner">
                     <Spinner animation="border" role="status">
                       <span className="visually-hidden">Loading...</span>
@@ -359,31 +360,35 @@ class Orders extends React.Component {
                   </div>
                   <p> </p> */}
 
-            <div className="paddingBadge">
-              <b>Wallet Balance</b>
+              <div className="paddingBadge">
+                <b>Wallet Balance</b>
 
-              <h4>Loading..</h4>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="paddingBadge">
-              <b>Dash Balance</b>
-              <div className="cardTitle">
-                <h4>
-                  <b>{this.handleDenomDisplay(this.props.accountBalance, 1)}</b>
-                </h4>
-                <Button
-                  variant="primary"
-                  onClick={() => this.props.showModal("WalletTXModal")}
-                >
-                  <b>Wallet TXs</b>
-                </Button>
+                <h4>Loading..</h4>
               </div>
-            </div>
-          </>
-        )}
-
+            </>
+          ) : (
+            <>
+              <div className="paddingBadge">
+                <div className="cardTitle">
+                  <div>
+                    <b>Wallet Balance</b>
+                    <h4>
+                      <b>
+                        {this.handleDenomDisplay(this.props.accountBalance, 1)}
+                      </b>
+                    </h4>
+                  </div>
+                  <Button
+                    variant="primary"
+                    onClick={() => this.props.showModal("WalletTXModal")}
+                  >
+                    <b>Wallet TXs</b>
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
         {this.props.DGPStore === "No Store" &&
         !this.props.LoadingStore &&
         !this.props.LoadingOrders ? (

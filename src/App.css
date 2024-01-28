@@ -13,12 +13,21 @@ html {
   margin: auto;
   z-index: -1;
 }
-.msgstext {
-  padding: 0.5rem;
-}
 
 .bodytext {
   padding: 1rem;
+}
+
+.bodytexttighter {
+  padding: 1rem;
+  padding-top: 0.3rem;
+  padding-bottom: 0.2rem;
+}
+
+.bodytexttighternobottom {
+  padding: 1rem;
+  padding-top: 0.3rem;
+  padding-bottom: 0rem;
 }
 
 #sidetext {
@@ -26,6 +35,11 @@ html {
   padding-right: 1rem;
   padding-top: 0.5rem;
   padding-bottom: 1rem;
+}
+
+#sidetextonlysides {
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .summarytext {

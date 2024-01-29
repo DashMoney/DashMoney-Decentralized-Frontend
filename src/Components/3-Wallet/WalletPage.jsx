@@ -517,7 +517,9 @@ class WalletPage extends React.Component {
 
               {this.props.WALLET_whichTab === "Payments" ? (
                 <>
-                  {this.props.WALLET_sendSuccess ? (
+                  {this.props.WALLET_sendSuccess &&
+                  !this.props.WALLET_sendMsgSuccess &&
+                  !this.props.WALLET_sendMsgFailure ? (
                     <>
                       <p></p>
                       <Alert
@@ -526,19 +528,26 @@ class WalletPage extends React.Component {
                         dismissible
                       >
                         <Alert.Heading>Payment Successful!</Alert.Heading>
-                        You have successfully sent{" "}
-                        <b>
-                          {this.handleDenomDisplayNoStyle(
-                            this.props.WALLET_amountToSend
-                          )}
-                        </b>{" "}
-                        to{" "}
-                        <b>
-                          {this.props.WALLET_sendToName !== ""
-                            ? this.props.WALLET_sendToName
-                            : this.props.WALLET_sendToAddress}
-                          !
-                        </b>
+                        <p>
+                          You have successfully sent{" "}
+                          <b>
+                            {this.handleDenomDisplayNoStyle(
+                              this.props.WALLET_amountToSend
+                            )}
+                          </b>{" "}
+                          to{" "}
+                          <b>
+                            {this.props.WALLET_sendToName !== ""
+                              ? this.props.WALLET_sendToName
+                              : this.props.WALLET_sendToAddress}
+                            !
+                          </b>
+                        </p>
+                        {this.props.WALLET_sendToName !== "" ? (
+                          <p>Sending payment message..</p>
+                        ) : (
+                          <></>
+                        )}
                       </Alert>
                     </>
                   ) : (
@@ -873,7 +882,11 @@ class WalletPage extends React.Component {
                             !
                           </b>
                         </p>
-                        <p>Sending payment message..</p>
+                        {this.props.WALLET_sendToName !== "" ? (
+                          <p>Sending payment message..</p>
+                        ) : (
+                          <></>
+                        )}
                       </Alert>
                     </>
                   ) : (

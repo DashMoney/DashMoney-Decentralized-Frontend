@@ -359,7 +359,47 @@ class YourOrders extends React.Component {
 
     return (
       <>
-        {this.props.isLoadingWallet ? (
+        <div id="sidetextonlysides">
+          {this.props.isLoadingWallet ? (
+            <>
+              {/* <p> </p>
+                  <div id="spinner">
+                    <Spinner animation="border" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                  </div>
+                  <p> </p> */}
+
+              <div className="paddingBadge">
+                <b>Wallet Balance</b>
+
+                <h4>Loading..</h4>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="paddingBadge">
+                <div className="cardTitle">
+                  <div>
+                    <b>Wallet Balance</b>
+                    <h4>
+                      <b>
+                        {this.handleDenomDisplay(this.props.accountBalance, 1)}
+                      </b>
+                    </h4>
+                  </div>
+                  <Button
+                    variant="primary"
+                    onClick={() => this.props.showModal("WalletTXModal")}
+                  >
+                    <b>Wallet TXs</b>
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+        {/* {this.props.isLoadingWallet ? (
           <>
             {/* <p> </p>
                   <div id="spinner">
@@ -367,7 +407,7 @@ class YourOrders extends React.Component {
                       <span className="visually-hidden">Loading...</span>
                     </Spinner>
                   </div>
-                  <p> </p> */}
+                  <p> </p> 
 
             <div className="paddingBadge">
               <b>Dash Balance</b>
@@ -389,7 +429,7 @@ class YourOrders extends React.Component {
 
             <p></p>
           </>
-        )}
+        )} */}
 
         {this.props.isLoadingRecentOrders ? (
           //  && !this.props.isLoadingWallet

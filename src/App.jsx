@@ -417,7 +417,10 @@ class App extends React.Component {
 
       //SHOPPING PAGE
 
-      //BUYER PAGE STATE BELOW
+      InitialPullSHOPPING: true,
+
+      whichTabSHOPPING: "Find Merchant",
+
       LoadingOrder: false,
 
       LoadingMerchant: false,
@@ -1555,9 +1558,6 @@ class App extends React.Component {
     // DGM msgs(to&from) && //DGM AddressesFromWallet!
     this.handleLoginQueries_WALLET(theIdentity);
     this.getAddresses_WALLET();
-
-    // Orders(Shopping),
-    //Buyers side -> ON DAPP SELECT
   };
 
   getAliasfromIdentity = (theIdentity) => {
@@ -9514,6 +9514,18 @@ class App extends React.Component {
 
   //FROM DGP -> BUYERPAGES.JS
 
+  pullInitialTriggerSHOPPING = () => {
+    if (this.state.InitialPullSHOPPING) {
+      this.getRecentOrders(this.state.identity);
+      this.getActiveOrders();
+      this.setState({
+        InitialPullSHOPPING: false,
+      });
+    } else {
+      //Pull just orders only or set up an auto pull..
+    }
+  };
+
   handleTabSHOPPING = (eventKey) => {
     if (eventKey === "Your Orders")
       this.setState({
@@ -9636,8 +9648,12 @@ class App extends React.Component {
     }
   };
 
-  searchName = (nameToRetrieve) => {
+  searchName = () => {
     const client = new Dash.Client(this.state.whichNetwork);
+
+    let nameToRetrieve = this.state.merchantName;
+
+    console.log(nameToRetrieve);
 
     const retrieveName = async () => {
       // Retrieve by full name (e.g., myname.dash)
@@ -9732,55 +9748,55 @@ class App extends React.Component {
       .finally(() => client.disconnect());
   };
 
-  // queryDGMDocumentSHOPPING = (theIdentity) => {
-  //   const clientOpts = {
-  //     network: this.state.whichNetwork,
-  //     apps: {
-  //       DGMContract: {
-  //         contractId: this.state.DataContractDGM,
-  //       },
-  //     },
-  //   };
-  //   const client = new Dash.Client(clientOpts);
+  queryDGMDocumentSHOPPING = (theIdentity) => {
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      apps: {
+        DGMContract: {
+          contractId: this.state.DataContractDGM,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
 
-  //   const getDocuments = async () => {
-  //     console.log("Querying Merchant's DGM Documents.");
-  //     //console.log(theIdentity);
+    const getDocuments = async () => {
+      console.log("Querying Merchant's DGM Documents.");
+      //console.log(theIdentity);
 
-  //     return client.platform.documents.get("DGMContract.dgmaddress", {
-  //       where: [["$ownerId", "==", theIdentity]],
-  //     });
-  //   };
+      return client.platform.documents.get("DGMContract.dgmaddress", {
+        where: [["$ownerId", "==", theIdentity]],
+      });
+    };
 
-  //   getDocuments()
-  //     .then((d) => {
-  //       let docArray = [];
-  //       for (const n of d) {
-  //         // console.log("DGM Address:\n", n.toJSON());
-  //         docArray = [...docArray, n.toJSON()];
-  //       }
+    getDocuments()
+      .then((d) => {
+        let docArray = [];
+        for (const n of d) {
+          // console.log("DGM Address:\n", n.toJSON());
+          docArray = [...docArray, n.toJSON()];
+        }
 
-  //       if (docArray.length === 0) {
-  //         this.setState({
-  //           dgmDocumentForMerchant: "No DGM Doc for Merchant.",
-  //           LoadingMerchant: false,
-  //         });
-  //       } else {
-  //         this.setState({
-  //           dgmDocumentForMerchant: docArray,
-  //           LoadingMerchant: false,
-  //         });
-  //       }
-  //     })
-  //     .catch((e) => {
-  //       console.error("Something went wrong:\n", e);
-  //       this.setState({
-  //         dgmDocumentForMerchant: "Document Error", // ADD alert to handle ->
-  //         LoadingMerchant: false,
-  //       });
-  //     })
-  //     .finally(() => client.disconnect());
-  // };
+        if (docArray.length === 0) {
+          this.setState({
+            dgmDocumentForMerchant: "No DGM Doc for Merchant.",
+            LoadingMerchant: false,
+          });
+        } else {
+          this.setState({
+            dgmDocumentForMerchant: docArray,
+            LoadingMerchant: false,
+          });
+        }
+      })
+      .catch((e) => {
+        console.error("Something went wrong:\n", e);
+        this.setState({
+          dgmDocumentForMerchant: "Document Error", // ADD alert to handle ->
+          LoadingMerchant: false,
+        });
+      })
+      .finally(() => client.disconnect());
+  };
 
   getDGPItems = (theIdentity) => {
     if (!this.state.LoadingItems) {
@@ -10056,16 +10072,13 @@ class App extends React.Component {
   //************* FORM HANDLING ************* */
 
   onChangeSHOPPING = (event) => {
-    // console.log(event.target.value);
-
-    event.preventDefault();
-    event.stopPropagation();
+    console.log(event.target.value);
 
     this.setState({
       LoadingMerchant: false,
     });
 
-    //console.log(`id = ${event.target.id}`);
+    console.log(`id = ${event.target.id}`);
 
     if (event.target.id === "validationCustomName") {
       this.nameValidateSHOPPING(event.target.value);
@@ -10089,9 +10102,7 @@ class App extends React.Component {
     }
   };
 
-  handleSubmitClickSHOPPING = (event) => {
-    event.preventDefault();
-
+  handleSubmitClickSHOPPING = () => {
     this.setState({
       LoadingMerchant: true,
       viewStore: false,
@@ -10104,7 +10115,7 @@ class App extends React.Component {
       cartItems: [],
     });
 
-    this.searchName(this.state.merchantName);
+    this.searchName();
   };
 
   //FROM DGP -> APP.JS
@@ -10290,74 +10301,72 @@ class App extends React.Component {
   // TRIGGER -> this.getRecentOrders(theIdentity);
 
   getRecentOrders = (theIdentity) => {
-    if (this.state.isLoggedInAs === "buyer") {
-      this.setState({
-        isLoadingRecentOrders: true,
-      });
+    this.setState({
+      isLoadingRecentOrders: true,
+    });
 
-      const clientOpts = {
-        network: this.state.whichNetwork,
-        apps: {
-          DGPContract: {
-            contractId: this.state.DataContractDGP,
-          },
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      apps: {
+        DGPContract: {
+          contractId: this.state.DataContractDGP,
         },
-      };
-      const client = new Dash.Client(clientOpts);
+      },
+    };
+    const client = new Dash.Client(clientOpts);
 
-      const getDocuments = async () => {
-        console.log("Called Get DGP Recent Orders");
+    const getDocuments = async () => {
+      console.log("Called Get DGP Recent Orders");
 
-        return client.platform.documents.get("DGPContract.dgporder", {
-          where: [["$ownerId", "==", theIdentity]],
-          orderBy: [["$createdAt", "desc"]],
-        });
-      };
+      return client.platform.documents.get("DGPContract.dgporder", {
+        where: [["$ownerId", "==", theIdentity]],
+        orderBy: [["$createdAt", "desc"]],
+      });
+    };
 
-      getDocuments()
-        .then((d) => {
-          let docArray = [];
+    getDocuments()
+      .then((d) => {
+        let docArray = [];
 
-          if (d.length === 0) {
-            this.setState(
-              {
-                //recentOrders: "No Orders",
-                recentOrders: [],
-                isLoadingRecentOrders: false,
-              }
-              //,() => this.getNamesForDGTOrders()
-            );
-          } else {
-            for (const n of d) {
-              let returnedDoc = n.toJSON();
-              //console.log("Order:\n", returnedDoc);
-              returnedDoc.toId = Identifier.from(
-                returnedDoc.toId,
-                "base64"
-              ).toJSON();
-              //  returnedDoc.cart[0] = Identifier.from(returnedDoc.cart[0], 'base64').toJSON();
-              returnedDoc.cart = JSON.parse(returnedDoc.cart);
-              //console.log("newOrder:\n", returnedDoc);
-              docArray = [...docArray, returnedDoc];
+        if (d.length === 0) {
+          this.setState(
+            {
+              //recentOrders: "No Orders",
+              recentOrders: [],
+              isLoadingRecentOrders: false,
             }
+            //,() => this.getNamesForDGTOrders()
+          );
+        } else {
+          for (const n of d) {
+            let returnedDoc = n.toJSON();
+            //console.log("Order:\n", returnedDoc);
+            returnedDoc.toId = Identifier.from(
+              returnedDoc.toId,
+              "base64"
+            ).toJSON();
+            //  returnedDoc.cart[0] = Identifier.from(returnedDoc.cart[0], 'base64').toJSON();
+            returnedDoc.cart = JSON.parse(returnedDoc.cart);
+            //console.log("newOrder:\n", returnedDoc);
+            docArray = [...docArray, returnedDoc];
+          }
 
-            this.setState(
-              {
-                recentOrders: docArray,
-              },
-              () => this.helperRecentOrders(docArray)
-            );
-          } //Ends the else
-        })
-        .catch((e) => {
-          console.error("Something went wrong:\n", e);
-          this.setState({
-            recentOrdersError: true, //I dont think this is in state ->
-            isLoadingRecentOrders: false,
-          });
-        })
-        .finally(() => client.disconnect());
-    } //This closes 'buyer' if statement
+          this.setState(
+            {
+              recentOrders: docArray,
+            },
+            () => this.helperRecentOrders(docArray)
+          );
+        } //Ends the else
+      })
+      .catch((e) => {
+        console.error("Something went wrong:\n", e);
+        this.setState({
+          recentOrdersError: true, //I dont think this is in state ->
+          isLoadingRecentOrders: false,
+        });
+      })
+      .finally(() => client.disconnect());
   };
 
   helperRecentOrders = (theDocArray) => {
@@ -12776,58 +12785,70 @@ class App extends React.Component {
               ) : (
                 <></>
               )}
-              {/* <ShoppingPage
-                isLoadingWallet={this.state.isLoadingWallet}
-                isLoadingRecentOrders={this.state.isLoadingRecentOrders}
-                identity={this.state.identity}
-                identityInfo={this.state.identityInfo}
-                identityRaw={this.state.identityRaw}
-                uniqueName={this.state.uniqueName}
-                recentOrders={this.state.recentOrders}
-                recentOrdersStores={this.state.recentOrdersStores}
-                recentOrdersNames={this.state.recentOrdersNames}
-                recentOrdersDGMAddresses={this.state.recentOrdersDGMAddresses}
-                recentOrdersItems={this.state.recentOrdersItems}
-                recentOrdersMessages={this.state.recentOrdersMessages}
-                handleOrderMessageModalShow={this.handleOrderMessageModalShow}
-                accountBalance={this.state.accountBalance}
-                accountHistory={this.state.accountHistory}
-                showModal={this.showModal}
-                mode={this.state.mode}
-                handleTabSHOPPING={this.handleTabSHOPPING}
-                whichTabSHOPPING={this.state.whichTabSHOPPING}
-                handleSubmitClickSHOPPING={this.handleSubmitClickSHOPPING}
-                onChangeSHOPPING={this.handleSubmitClickSHOPPING}
-                toggleViewStore={this.toggleViewStore}
-                merchantName={this.state.merchantName}
-                viewStore={this.state.viewStore}
-                merchantStoreName={this.state.merchantStoreName}
-                merchantNameFormat={this.state.merchantNameFormat}
-                LoadingMerchant={this.state.LoadingMerchant}
-                isLoginComplete={isLoginComplete}
-                isLoadingActive={this.state.isLoadingActive}
-                handleAddingNewOrder={this.handleAddingNewOrder}
-                mnemonic={this.state.mnemonic}
-                activeOrders={this.state.activeOrders}
-                activeOrdersStores={this.state.activeOrdersStores}
-                activeOrdersNames={this.state.activeOrdersNames}
-                activeOrdersAddresses={this.state.activeOrdersAddresses}
-                getWalletForNewOrder={this.getWalletForNewOrder}
-                
-                whichNetwork={this.state.whichNetwork}
-                handleEditItemModal={this.handleEditItemModal}
-                handleSelectRecentOrActive={this.handleSelectRecentOrActive}
-                LoadingItems={this.state.LoadingItems}
-                LoadingOrder={this.state.LoadingOrder}
-                merchantStore={this.state.merchantStore}
-                dgmDocumentForMerchant={this.state.dgmDocumentForMerchant}
-                merchantItems={this.state.merchantItems}
-                handleViewStore={this.handleViewStore}
-                cartItems={this.state.cartItems}
-                handleAddToCartModal={this.handleAddToCartModal}
-              /> */}
 
               {this.state.selectedDapp === "Shopping" ? (
+                <>
+                  <ShoppingPage
+                    pullInitialTriggerSHOPPING={this.pullInitialTriggerSHOPPING}
+                    InitialPullSHOPPING={this.state.InitialPullSHOPPING}
+                    isLoadingWallet={this.state.isLoadingWallet}
+                    isLoadingRecentOrders={this.state.isLoadingRecentOrders}
+                    identity={this.state.identity}
+                    identityInfo={this.state.identityInfo}
+                    identityRaw={this.state.identityRaw}
+                    uniqueName={this.state.uniqueName}
+                    recentOrders={this.state.recentOrders}
+                    recentOrdersStores={this.state.recentOrdersStores}
+                    recentOrdersNames={this.state.recentOrdersNames}
+                    recentOrdersDGMAddresses={
+                      this.state.recentOrdersDGMAddresses
+                    }
+                    recentOrdersItems={this.state.recentOrdersItems}
+                    recentOrdersMessages={this.state.recentOrdersMessages}
+                    handleOrderMessageModalShow={
+                      this.handleOrderMessageModalShow
+                    }
+                    accountBalance={this.state.accountBalance}
+                    accountHistory={this.state.accountHistory}
+                    showModal={this.showModal}
+                    mode={this.state.mode}
+                    handleTabSHOPPING={this.handleTabSHOPPING}
+                    whichTabSHOPPING={this.state.whichTabSHOPPING}
+                    handleSubmitClickSHOPPING={this.handleSubmitClickSHOPPING}
+                    onChangeSHOPPING={this.onChangeSHOPPING}
+                    toggleViewStore={this.toggleViewStore}
+                    merchantName={this.state.merchantName}
+                    viewStore={this.state.viewStore}
+                    merchantStoreName={this.state.merchantStoreName}
+                    merchantNameFormat={this.state.merchantNameFormat}
+                    LoadingMerchant={this.state.LoadingMerchant}
+                    isLoginComplete={isLoginComplete}
+                    isLoadingActive={this.state.isLoadingActive}
+                    handleAddingNewOrder={this.handleAddingNewOrder}
+                    mnemonic={this.state.mnemonic}
+                    activeOrders={this.state.activeOrders}
+                    activeOrdersStores={this.state.activeOrdersStores}
+                    activeOrdersNames={this.state.activeOrdersNames}
+                    activeOrdersAddresses={this.state.activeOrdersAddresses}
+                    getWalletForNewOrder={this.getWalletForNewOrder}
+                    whichNetwork={this.state.whichNetwork}
+                    handleEditItemModal={this.handleEditItemModal}
+                    handleSelectRecentOrActive={this.handleSelectRecentOrActive}
+                    LoadingItems={this.state.LoadingItems}
+                    LoadingOrder={this.state.LoadingOrder}
+                    merchantStore={this.state.merchantStore}
+                    dgmDocumentForMerchant={this.state.dgmDocumentForMerchant}
+                    merchantItems={this.state.merchantItems}
+                    handleViewStore={this.handleViewStore}
+                    cartItems={this.state.cartItems}
+                    handleAddToCartModal={this.handleAddToCartModal}
+                  />
+                </>
+              ) : (
+                <></>
+              )}
+
+              {/* {this.state.selectedDapp === "Shopping" ? (
                 <>
                   <div className="bodytext">
                     <p>
@@ -12847,7 +12868,7 @@ class App extends React.Component {
                 </>
               ) : (
                 <></>
-              )}
+              )} */}
 
               {this.state.selectedDapp === "Reviews" ? (
                 <>

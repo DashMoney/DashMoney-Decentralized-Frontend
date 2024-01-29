@@ -8,6 +8,8 @@ import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 import Form from "react-bootstrap/Form";
 
+import { IoMdArrowRoundBack } from "react-icons/io";
+
 import FindMerchant from "./FindMerchant";
 import YourOrders from "./YourOrders";
 
@@ -16,6 +18,23 @@ import CreditsOnPage from "../CreditsOnPage";
 import "./BuyerPages.css";
 
 class ShoppingPage extends React.Component {
+  onChange = (event) => {
+    console.log(event.target.value);
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.props.onChangeSHOPPING(event);
+  };
+
+  handleSubmitClick = (event) => {
+    event.preventDefault();
+
+    this.props.handleSubmitClickSHOPPING();
+  };
+  componentDidMount() {
+    this.props.pullInitialTriggerSHOPPING();
+  }
   render() {
     return (
       <>
@@ -43,7 +62,7 @@ class ShoppingPage extends React.Component {
           showModal={this.props.showModal}
         />
 
-        {/* {this.state.orderError ? (
+        {/* {this.props.orderError ? (
               <>
                 <p></p>
                 <Alert variant="danger" dismissible>
@@ -61,19 +80,19 @@ class ShoppingPage extends React.Component {
 
         {this.props.whichTabSHOPPING === "Find Merchant" ? (
           <>
-            <div id="bodytext">
+            <div className="bodytext">
               <Form
                 id="Find-Merchant-form"
                 noValidate
-                onSubmit={this.props.handleSubmitClickSHOPPING}
-                onChange={this.props.onChangeSHOPPING}
+                onSubmit={this.handleSubmitClick}
+                onChange={this.onChange}
               >
                 <Form.Group className="mb-3" controlId="validationCustomName">
                   {/* <Form.Label>Merchant to Visit</Form.Label> */}
 
-                  {this.state.LoadingOrder ? (
+                  {this.props.LoadingOrder ? (
                     <div className="cardTitle">
-                      {this.state.viewStore ? (
+                      {this.props.viewStore ? (
                         <span>
                           <Button
                             variant="primary"
@@ -99,7 +118,7 @@ class ShoppingPage extends React.Component {
                             variant="primary"
                             onClick={() => this.props.toggleViewStore()}
                           >
-                            <b>Back</b>
+                            <IoMdArrowRoundBack size={28} />
                           </Button>
                         </span>
                       ) : (
@@ -144,14 +163,16 @@ class ShoppingPage extends React.Component {
                           <>
                             <p> </p>
                             <Button variant="primary" type="submit">
-                              Find Store/Menu
+                              <b>Find Store/Menu</b>
                             </Button>
                             <p> </p>
                           </>
                         ) : (
                           <>
                             <p> </p>
-                            <Button variant="primary">Find Store/Menu</Button>
+                            <Button variant="primary">
+                              <b>Find Store/Menu</b>
+                            </Button>
                             <p> </p>
                           </>
                         )}
@@ -161,13 +182,13 @@ class ShoppingPage extends React.Component {
                 )}
               </Form>
 
-              {this.state.sendPaymentSuccess ? (
+              {this.props.sendPaymentSuccess ? (
                 <>
                   <p></p>
                   <Alert variant="success" dismissible>
                     <Alert.Heading>Payment Successful!</Alert.Heading>
                     You have successfully paid{" "}
-                    <b>{this.state.merchantStoreName}</b>!<p></p>
+                    <b>{this.props.merchantStoreName}</b>!<p></p>
                     <p>Sending Order Details...</p>
                   </Alert>
                 </>
@@ -175,7 +196,7 @@ class ShoppingPage extends React.Component {
                 <></>
               )}
 
-              {this.state.sendOrderSuccess ? (
+              {this.props.sendOrderSuccess ? (
                 <>
                   <p></p>
                   <Alert variant="success" dismissible>
@@ -188,7 +209,7 @@ class ShoppingPage extends React.Component {
                 <></>
               )}
 
-              {this.state.sendFailure ? (
+              {this.props.sendFailure ? (
                 <>
                   <p></p>
                   <Alert variant="danger" dismissible>
@@ -203,7 +224,7 @@ class ShoppingPage extends React.Component {
                 <></>
               )}
 
-              {this.state.identityIdMerchant === "No Name" ? (
+              {this.props.identityIdMerchant === "No Name" ? (
                 <>
                   <p></p>
                   <Alert variant="danger" dismissible>
@@ -218,7 +239,7 @@ class ShoppingPage extends React.Component {
                 <></>
               )}
 
-              {this.state.identityIdMerchant === "Error" ? (
+              {this.props.identityIdMerchant === "Error" ? (
                 <>
                   <p></p>
                   <Alert variant="danger" dismissible>
@@ -233,7 +254,7 @@ class ShoppingPage extends React.Component {
                 <></>
               )}
 
-              {this.state.merchantStore === "No Store" ? (
+              {this.props.merchantStore === "No Store" ? (
                 <>
                   <p></p>
                   <Alert variant="danger" dismissible>
@@ -248,36 +269,40 @@ class ShoppingPage extends React.Component {
                 <></>
               )}
             </div>
-            <FindMerchant
-              isLoadingWallet={this.props.isLoadingWallet}
-              isLoadingRecentOrders={this.props.isLoadingRecentOrders}
-              isLoadingActive={this.props.isLoadingActive}
-              recentOrders={this.props.recentOrders}
-              recentOrdersStores={this.props.recentOrdersStores}
-              recentOrdersNames={this.props.recentOrdersNames}
-              recentOrdersDGMAddresses={this.props.recentOrdersDGMAddresses}
-              activeOrders={this.props.activeOrders}
-              activeOrdersStores={this.props.activeOrdersStores}
-              activeOrdersNames={this.props.activeOrdersNames}
-              activeOrdersAddresses={this.props.activeOrdersAddresses}
-              handleSelectRecentOrActive={this.props.handleSelectRecentOrActive}
-              LoadingMerchant={this.props.LoadingMerchant}
-              LoadingItems={this.props.LoadingItems}
-              LoadingOrder={this.props.LoadingOrder}
-              merchantStoreName={this.props.merchantStoreName}
-              merchantStore={this.props.merchantStore}
-              dgmDocumentForMerchant={this.props.dgmDocumentForMerchant}
-              merchantItems={this.props.merchantItems}
-              viewStore={this.props.viewStore}
-              handleViewStore={this.handleViewStore}
-              cartItems={this.props.cartItems}
-              handleEditItemModal={this.props.handleEditItemModal}
-              handleAddToCartModal={this.handleAddToCartModal}
-              showModal={this.props.showModal}
-              accountBalance={this.props.accountBalance}
-              mode={this.props.mode}
-              whichNetwork={this.props.whichNetwork}
-            />
+            <div className="sidetextsidesonly">
+              <FindMerchant
+                isLoadingWallet={this.props.isLoadingWallet}
+                isLoadingRecentOrders={this.props.isLoadingRecentOrders}
+                isLoadingActive={this.props.isLoadingActive}
+                recentOrders={this.props.recentOrders}
+                recentOrdersStores={this.props.recentOrdersStores}
+                recentOrdersNames={this.props.recentOrdersNames}
+                recentOrdersDGMAddresses={this.props.recentOrdersDGMAddresses}
+                activeOrders={this.props.activeOrders}
+                activeOrdersStores={this.props.activeOrdersStores}
+                activeOrdersNames={this.props.activeOrdersNames}
+                activeOrdersAddresses={this.props.activeOrdersAddresses}
+                handleSelectRecentOrActive={
+                  this.props.handleSelectRecentOrActive
+                }
+                LoadingMerchant={this.props.LoadingMerchant}
+                LoadingItems={this.props.LoadingItems}
+                LoadingOrder={this.props.LoadingOrder}
+                merchantStoreName={this.props.merchantStoreName}
+                merchantStore={this.props.merchantStore}
+                dgmDocumentForMerchant={this.props.dgmDocumentForMerchant}
+                merchantItems={this.props.merchantItems}
+                viewStore={this.props.viewStore}
+                handleViewStore={this.props.handleViewStore}
+                cartItems={this.props.cartItems}
+                handleEditItemModal={this.props.handleEditItemModal}
+                handleAddToCartModal={this.props.handleAddToCartModal}
+                showModal={this.props.showModal}
+                accountBalance={this.props.accountBalance}
+                mode={this.props.mode}
+                whichNetwork={this.props.whichNetwork}
+              />
+            </div>
           </>
         ) : (
           <></>
@@ -302,7 +327,7 @@ class ShoppingPage extends React.Component {
               }
               accountBalance={this.props.accountBalance}
               accountHistory={this.props.accountHistory}
-              showModal={this.showModal}
+              showModal={this.props.showModal}
               mode={this.props.mode}
             />
           </>

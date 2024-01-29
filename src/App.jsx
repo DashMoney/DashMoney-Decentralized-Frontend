@@ -1043,7 +1043,71 @@ class App extends React.Component {
         itemError: false,
 
         //YOUR STORE PAGE ^^^^
+        //SHOPPING PAGE
 
+        InitialPullSHOPPING: true,
+
+        whichTabSHOPPING: "Find Merchant",
+
+        LoadingOrder: false,
+
+        LoadingMerchant: false,
+        LoadingItems: false,
+
+        identityIdMerchant: "",
+        merchantStoreName: "staged name",
+        merchantStore: [],
+        dgmDocumentForMerchant: [],
+        merchantItems: [],
+
+        viewStore: false,
+
+        cartItems: [],
+
+        selectedItemSHOPPING: "",
+
+        selectedCartItemIndex: 0,
+
+        merchantNameFormat: false,
+        merchantName: "",
+
+        sendPaymentSuccess: false,
+        sendOrderSuccess: false,
+        sendFailure: false,
+
+        orderError: false,
+
+        //APP.JS BUYER STUFF BELOW
+
+        isLoadingRecentOrders: true,
+
+        recentOrders: [],
+        recentOrdersStores: [],
+        recentOrdersNames: [],
+        recentOrdersDGMAddresses: [],
+        recentOrdersItems: [],
+        recentOrdersMessages: [],
+
+        recent1: false,
+        recent2: false,
+        recent3: false,
+        recent4: false,
+        recent5: false,
+
+        isLoadingActive: false,
+        activeOrders: [],
+        activeOrdersStores: [],
+        activeOrdersNames: [],
+        activeOrdersAddresses: [],
+
+        active1: false,
+        active2: false,
+        active3: false,
+
+        messageOrderIdSHOPPING: "", //SHOPPING ->
+        messageStoreOwnerNameSHOPPING: "", //SHOPPING ->
+
+        //SHOPPING PAGE ^^^^
         //NEAR BY PAGE
 
         whichNearbyTab: "Search",

@@ -73,11 +73,17 @@ class TopNav extends React.Component {
               )}
               {"   "}
               {this.props.mode === "primary" ? (
-                <b className="lightMode">
-                  {import.meta.env.VITE_FRONTEND_NAME}
-                </b>
+                <>
+                  <b className="lightMode">
+                    {import.meta.env.VITE_FRONTEND_NAME}
+                  </b>
+                  <span className="textsmaller">testnet</span>
+                </>
               ) : (
-                <b>{import.meta.env.VITE_FRONTEND_NAME}</b>
+                <>
+                  <b>{import.meta.env.VITE_FRONTEND_NAME}</b>
+                  <span className="textsmaller">testnet</span>
+                </>
               )}
             </Navbar.Brand>
 

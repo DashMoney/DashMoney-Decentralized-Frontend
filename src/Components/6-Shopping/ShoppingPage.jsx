@@ -13,13 +13,9 @@ import YourOrders from "./YourOrders";
 
 import CreditsOnPage from "../CreditsOnPage";
 
-//import AddItemToCartModal from "./ShoppingModals/AddItemToCartModal";
-//import EditItemModal from "./ShoppingModals/EditItemModal";
-//import PlaceOrderModal from "./ShoppingModals/PlaceOrderModal";
-
 import "./BuyerPages.css";
 
-class BuyerPages extends React.Component {
+class ShoppingPage extends React.Component {
   render() {
     return (
       <>
@@ -264,24 +260,21 @@ class BuyerPages extends React.Component {
               activeOrdersStores={this.props.activeOrdersStores}
               activeOrdersNames={this.props.activeOrdersNames}
               activeOrdersAddresses={this.props.activeOrdersAddresses}
-              handleSelectRecentOrActive={this.handleSelectRecentOrActive}
-              LoadingMerchant={this.state.LoadingMerchant}
-              LoadingItems={this.state.LoadingItems}
-              LoadingOrder={this.state.LoadingOrder}
-              merchantStoreName={this.state.merchantStoreName}
-              merchantStore={this.state.merchantStore}
-              dgmDocumentForMerchant={this.state.dgmDocumentForMerchant}
-              merchantItems={this.state.merchantItems}
-              viewStore={this.state.viewStore}
+              handleSelectRecentOrActive={this.props.handleSelectRecentOrActive}
+              LoadingMerchant={this.props.LoadingMerchant}
+              LoadingItems={this.props.LoadingItems}
+              LoadingOrder={this.props.LoadingOrder}
+              merchantStoreName={this.props.merchantStoreName}
+              merchantStore={this.props.merchantStore}
+              dgmDocumentForMerchant={this.props.dgmDocumentForMerchant}
+              merchantItems={this.props.merchantItems}
+              viewStore={this.props.viewStore}
               handleViewStore={this.handleViewStore}
-              cartItems={this.state.cartItems}
-              handleEditItemModal={this.handleEditItemModal}
+              cartItems={this.props.cartItems}
+              handleEditItemModal={this.props.handleEditItemModal}
               handleAddToCartModal={this.handleAddToCartModal}
-              showModal={this.showModal}
+              showModal={this.props.showModal}
               accountBalance={this.props.accountBalance}
-              skipSynchronizationBeforeHeight={
-                this.props.skipSynchronizationBeforeHeight
-              }
               mode={this.props.mode}
               whichNetwork={this.props.whichNetwork}
             />
@@ -321,4 +314,4 @@ class BuyerPages extends React.Component {
   }
 }
 
-export default BuyerPages;
+export default ShoppingPage;

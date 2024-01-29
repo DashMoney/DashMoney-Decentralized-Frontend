@@ -31,6 +31,8 @@ import YourStorePage from "./Components/4-YourStore/YourStorePage";
 
 import NearbyPage from "./Components/5-NearBy/NearbyPage";
 
+import ShoppingPage from "./Components/6-Shopping/ShoppingPage";
+
 import ReviewsPage from "./Components/7-Reviews/ReviewsPage";
 
 import ProofsPage from "./Components/8-ProofOfFunds/ProofsPage";
@@ -71,6 +73,11 @@ import MerchantOrderMsgModal from "./Components/4-YourStore/MerchantModals/Merch
 import PostModal from "./Components/5-NearBy/PostModal";
 import CreatePostModal from "./Components/5-NearBy/YourPosts/CreatePostModal";
 import EditPostModal from "./Components/5-NearBy/YourPosts/EditPostModal";
+
+import AddItemToCartModal from "./Components/6-Shopping/ShoppingModals/AddItemToCartModal";
+import EditCartItemModal from "./Components/6-Shopping/ShoppingModals/EditCartItemModal";
+import PlaceOrderModal from "./Components/6-Shopping/ShoppingModals/PlaceOrderModal";
+import OrderMessageModal from "./Components/6-Shopping/ShoppingModals/OrderMessageModal";
 
 import CreateReviewModal from "./Components/7-Reviews/ReviewModals/CreateReviewModal";
 import EditReviewModal from "./Components/7-Reviews/ReviewModals/EditReviewModal";
@@ -397,8 +404,8 @@ class App extends React.Component {
       order1: false, // This if for orders placed to you -> it is reset
       order2: false,
 
-      messageOrderId: "",
-      messageStoreOwnerName: "",
+      messageOrderId: "", //YOURSTORE
+      messageStoreOwnerName: "", //YOURSTORE ->
 
       newOrderAvail: false,
 
@@ -410,7 +417,7 @@ class App extends React.Component {
 
       //SHOPPING PAGE
 
-      //BUYER PAGE STATE
+      //BUYER PAGE STATE BELOW
       LoadingOrder: false,
 
       LoadingMerchant: false,
@@ -439,7 +446,35 @@ class App extends React.Component {
 
       orderError: false,
 
-      //APP.JS BUYER STUFF
+      //APP.JS BUYER STUFF BELOW
+
+      isLoadingRecentOrders: true,
+
+      recentOrders: [],
+      recentOrdersStores: [],
+      recentOrdersNames: [],
+      recentOrdersDGMAddresses: [],
+      recentOrdersItems: [],
+      recentOrdersMessages: [],
+
+      recent1: false,
+      recent2: false,
+      recent3: false,
+      recent4: false,
+      recent5: false,
+
+      isLoadingActive: false,
+      activeOrders: [],
+      activeOrdersStores: [],
+      activeOrdersNames: [],
+      activeOrdersAddresses: [],
+
+      active1: false,
+      active2: false,
+      active3: false,
+
+      messageOrderIdSHOPPING: "", //SHOPPING ->
+      messageStoreOwnerNameSHOPPING: "", //SHOPPING ->
 
       //SHOPPING PAGE ^^^^
 
@@ -2626,7 +2661,6 @@ class App extends React.Component {
         adapter: LocalForage.createInstance,
         unsafeOptions: {
           skipSynchronizationBeforeHeight:
-            //this.state.mostRecentBlockHeight,
             this.state.skipSynchronizationBeforeHeight,
         },
       },
@@ -2853,7 +2887,6 @@ class App extends React.Component {
         adapter: LocalForage.createInstance,
         unsafeOptions: {
           skipSynchronizationBeforeHeight:
-            //this.state.mostRecentBlockHeight,
             this.state.skipSynchronizationBeforeHeight,
         },
       },
@@ -9509,7 +9542,7 @@ class App extends React.Component {
     if (theItem.avail) {
       this.setState(
         {
-          selectedItem: theItem,
+          selectedItemSHOPPING: theItem,
         },
         () => this.showModal("AddItemToCartModal")
       );
@@ -9530,9 +9563,9 @@ class App extends React.Component {
       return tuple[0];
     });
 
-    if (cartObjects.includes(this.state.selectedItem)) {
+    if (cartObjects.includes(this.state.selectedItemSHOPPING)) {
       this.state.cartItems.forEach((tuple, index) => {
-        if (tuple[0] === this.state.selectedItem) {
+        if (tuple[0] === this.state.selectedItemSHOPPING) {
           let newCartItems = this.state.cartItems;
 
           newCartItems.splice(index, 1, [tuple[0], tuple[1] + theQuantity]);
@@ -9549,7 +9582,7 @@ class App extends React.Component {
       this.setState(
         {
           cartItems: [
-            [this.state.selectedItem, theQuantity],
+            [this.state.selectedItemSHOPPING, theQuantity],
             ...this.state.cartItems,
           ],
         },
@@ -9604,7 +9637,7 @@ class App extends React.Component {
   };
 
   searchName = (nameToRetrieve) => {
-    const client = new Dash.Client(this.props.whichNetwork);
+    const client = new Dash.Client(this.state.whichNetwork);
 
     const retrieveName = async () => {
       // Retrieve by full name (e.g., myname.dash)
@@ -9645,17 +9678,17 @@ class App extends React.Component {
 
   helperMerchantQueries = (theIdentity) => {
     this.getDGPStore(theIdentity);
-    this.queryDGMDocument(theIdentity);
+    this.queryDGMDocumentSHOPPING(theIdentity);
     this.getDGPItems(theIdentity);
   };
 
   getDGPStore = (theIdentity) => {
     //Issue -> there should only be one possible return not a list ->
     const clientOpts = {
-      network: this.props.whichNetwork,
+      network: this.state.whichNetwork,
       apps: {
         DGPContract: {
-          contractId: this.props.DataContractDGP,
+          contractId: this.state.DataContractDGP,
         },
       },
     };
@@ -9699,12 +9732,12 @@ class App extends React.Component {
       .finally(() => client.disconnect());
   };
 
-  // queryDGMDocument = (theIdentity) => {
+  // queryDGMDocumentSHOPPING = (theIdentity) => {
   //   const clientOpts = {
-  //     network: this.props.whichNetwork,
+  //     network: this.state.whichNetwork,
   //     apps: {
   //       DGMContract: {
-  //         contractId: this.props.DataContractDGM,
+  //         contractId: this.state.DataContractDGM,
   //       },
   //     },
   //   };
@@ -9757,10 +9790,10 @@ class App extends React.Component {
     }
 
     const clientOpts = {
-      network: this.props.whichNetwork,
+      network: this.state.whichNetwork,
       apps: {
         DGPContract: {
-          contractId: this.props.DataContractDGP,
+          contractId: this.state.DataContractDGP,
         },
       },
     };
@@ -9812,13 +9845,13 @@ class App extends React.Component {
     });
 
     const client = new Dash.Client({
-      network: this.props.whichNetwork,
+      network: this.state.whichNetwork,
       wallet: {
-        mnemonic: this.props.mnemonic,
+        mnemonic: this.state.mnemonic,
         adapter: LocalForage.createInstance,
         unsafeOptions: {
           skipSynchronizationBeforeHeight:
-            this.props.skipSynchronizationBeforeHeight,
+            this.state.skipSynchronizationBeforeHeight,
         },
       },
     });
@@ -9870,18 +9903,18 @@ class App extends React.Component {
     console.log("Called Submit DGP Order Doc");
 
     const clientOpts = {
-      network: this.props.whichNetwork,
+      network: this.state.whichNetwork,
       wallet: {
-        mnemonic: this.props.mnemonic,
+        mnemonic: this.state.mnemonic,
         adapter: LocalForage.createInstance,
         unsafeOptions: {
           skipSynchronizationBeforeHeight:
-            this.props.skipSynchronizationBeforeHeight,
+            this.state.skipSynchronizationBeforeHeight,
         },
       },
       apps: {
         DGPContract: {
-          contractId: this.props.DataContractDGP,
+          contractId: this.state.DataContractDGP,
         },
       },
     };
@@ -9891,10 +9924,10 @@ class App extends React.Component {
       const { platform } = client;
 
       let identity = "";
-      if (this.props.identityRaw !== "") {
-        identity = this.props.identityRaw;
+      if (this.state.identityRaw !== "") {
+        identity = this.state.identityRaw;
       } else {
-        identity = await platform.identities.get(this.props.identity);
+        identity = await platform.identities.get(this.state.identity);
       } // Your identity ID
 
       // ### ###  ### ###  ### ###   ###   ####
@@ -9983,7 +10016,7 @@ class App extends React.Component {
           label: this.state.merchantStoreName,
         };
 
-        this.props.handleAddingNewOrder(
+        this.handleAddingNewOrder(
           order,
           name,
           this.state.merchantStore[0],
@@ -10017,7 +10050,7 @@ class App extends React.Component {
       .finally(() => client.disconnect());
 
     // Added BELOW to go retrieve the wallet after purchase so the wallet balance will update. Trying to maximize the time for order document creation but also load wallet at the same time. ->
-    this.props.getWalletForNewOrder();
+    this.getWalletForNewOrder();
   };
 
   //************* FORM HANDLING ************* */
@@ -10078,8 +10111,8 @@ class App extends React.Component {
   handleOrderMessageModalShow = (theOrderId, ownerName) => {
     this.setState(
       {
-        messageOrderId: theOrderId,
-        messageStoreOwnerName: ownerName,
+        messageOrderIdSHOPPING: theOrderId,
+        messageStoreOwnerNameSHOPPING: ownerName,
       },
       () => this.showModal("OrderMessageModal")
     );
@@ -10122,7 +10155,7 @@ class App extends React.Component {
 
       const msgProperties = {
         msg: orderMsgComment,
-        orderId: this.state.messageOrderId,
+        orderId: this.state.messageOrderIdSHOPPING,
       };
 
       // Create the note document
@@ -10157,7 +10190,7 @@ class App extends React.Component {
           $ownerId: this.state.identity,
           $id: returnedDoc.$id,
           msg: orderMsgComment,
-          orderId: this.state.messageOrderId,
+          orderId: this.state.messageOrderIdSHOPPING,
         };
 
         this.setState({
@@ -12743,63 +12776,56 @@ class App extends React.Component {
               ) : (
                 <></>
               )}
-              {/*  <BuyerPages
-              handleTabSHOPPING={this.handleTabSHOPPING}
-              whichTabSHOPPING={this.state.whichTabSHOPPING}
-              //
-              handleSubmitClickSHOPPING={this.handleSubmitClickSHOPPING}
-              onChangeSHOPPING={this.handleSubmitClickSHOPPING}
-              
-              //
-              toggleViewStore={this.toggleViewStore}
-              merchantName={this.state.merchantName}
-              viewStore={this.state.viewStore}
-              merchantStoreName={this.state.merchantStoreName}
-              merchantNameFormat={this.state.merchantNameFormat}
-              LoadingMerchant={this.state.LoadingMerchant}
-
-                     isLoginComplete={isLoginComplete}
-                     //
-                      isLoadingWallet={this.state.isLoadingWallet}
-                      isLoadingRecentOrders={this.state.isLoadingRecentOrders}
-                      isLoadingActive={this.state.isLoadingActive}
-
-                      handleAddingNewOrder={this.handleAddingNewOrder}
-
-                      mnemonic={this.state.mnemonic}
-                      identity={this.state.identity}
-                      identityInfo={this.state.identityInfo}
-                      identityRaw={this.state.identityRaw}
-                      uniqueName={this.state.uniqueName}
-                      recentOrders={this.state.recentOrders}
-                      recentOrdersStores={this.state.recentOrdersStores}
-                      recentOrdersNames={this.state.recentOrdersNames}
-                      recentOrdersDGMAddresses={
-                        this.state.recentOrdersDGMAddresses
-                      }
-                      recentOrdersItems={this.state.recentOrdersItems}
-                      recentOrdersMessages={this.state.recentOrdersMessages}
-                      handleOrderMessageModalShow={
-                        this.handleOrderMessageModalShow
-                      }
-                      activeOrders={this.state.activeOrders}
-                      activeOrdersStores={this.state.activeOrdersStores}
-                      activeOrdersNames={this.state.activeOrdersNames}
-                      activeOrdersAddresses={this.state.activeOrdersAddresses}
-                      accountBalance={this.state.accountBalance}
-                      accountHistory={this.state.accountHistory}
-                      getWalletForNewOrder={this.getWalletForNewOrder}
-                      DataContractDGP={this.state.DataContractDGP}
-                      DataContractDGM={this.state.DataContractDGM}
-                      DataContractDPNS={this.state.DataContractDPNS}
-                      
-                      skipSynchronizationBeforeHeight={
-                        this.state.skipSynchronizationBeforeHeight
-                      }
-                      showModal={this.showModal}
-                      mode={this.state.mode}
-                      whichNetwork={this.state.whichNetwork}
-                    /> */}
+              {/* <ShoppingPage
+                isLoadingWallet={this.state.isLoadingWallet}
+                isLoadingRecentOrders={this.state.isLoadingRecentOrders}
+                identity={this.state.identity}
+                identityInfo={this.state.identityInfo}
+                identityRaw={this.state.identityRaw}
+                uniqueName={this.state.uniqueName}
+                recentOrders={this.state.recentOrders}
+                recentOrdersStores={this.state.recentOrdersStores}
+                recentOrdersNames={this.state.recentOrdersNames}
+                recentOrdersDGMAddresses={this.state.recentOrdersDGMAddresses}
+                recentOrdersItems={this.state.recentOrdersItems}
+                recentOrdersMessages={this.state.recentOrdersMessages}
+                handleOrderMessageModalShow={this.handleOrderMessageModalShow}
+                accountBalance={this.state.accountBalance}
+                accountHistory={this.state.accountHistory}
+                showModal={this.showModal}
+                mode={this.state.mode}
+                handleTabSHOPPING={this.handleTabSHOPPING}
+                whichTabSHOPPING={this.state.whichTabSHOPPING}
+                handleSubmitClickSHOPPING={this.handleSubmitClickSHOPPING}
+                onChangeSHOPPING={this.handleSubmitClickSHOPPING}
+                toggleViewStore={this.toggleViewStore}
+                merchantName={this.state.merchantName}
+                viewStore={this.state.viewStore}
+                merchantStoreName={this.state.merchantStoreName}
+                merchantNameFormat={this.state.merchantNameFormat}
+                LoadingMerchant={this.state.LoadingMerchant}
+                isLoginComplete={isLoginComplete}
+                isLoadingActive={this.state.isLoadingActive}
+                handleAddingNewOrder={this.handleAddingNewOrder}
+                mnemonic={this.state.mnemonic}
+                activeOrders={this.state.activeOrders}
+                activeOrdersStores={this.state.activeOrdersStores}
+                activeOrdersNames={this.state.activeOrdersNames}
+                activeOrdersAddresses={this.state.activeOrdersAddresses}
+                getWalletForNewOrder={this.getWalletForNewOrder}
+                
+                whichNetwork={this.state.whichNetwork}
+                handleEditItemModal={this.handleEditItemModal}
+                handleSelectRecentOrActive={this.handleSelectRecentOrActive}
+                LoadingItems={this.state.LoadingItems}
+                LoadingOrder={this.state.LoadingOrder}
+                merchantStore={this.state.merchantStore}
+                dgmDocumentForMerchant={this.state.dgmDocumentForMerchant}
+                merchantItems={this.state.merchantItems}
+                handleViewStore={this.handleViewStore}
+                cartItems={this.state.cartItems}
+                handleAddToCartModal={this.handleAddToCartModal}
+              /> */}
 
               {this.state.selectedDapp === "Shopping" ? (
                 <>
@@ -13332,15 +13358,15 @@ class App extends React.Component {
          *              ###
          *  #############
          */}
-         
-        {/* {this.state.isModalShowing &&
+
+        {this.state.isModalShowing &&
         this.state.presentModal === "AddItemToCartModal" ? (
           <AddItemToCartModal
             isModalShowing={this.state.isModalShowing}
-            selectedItem={this.state.selectedItem}
+            selectedItem={this.state.selectedItemSHOPPING}
             addToCart={this.addToCart}
             hideModal={this.hideModal}
-            mode={this.props.mode}
+            mode={this.state.mode}
           />
         ) : (
           <></>
@@ -13354,7 +13380,7 @@ class App extends React.Component {
             cartItems={this.state.cartItems}
             editCart={this.editCart}
             hideModal={this.hideModal}
-            mode={this.props.mode}
+            mode={this.state.mode}
           />
         ) : (
           <></>
@@ -13363,32 +13389,32 @@ class App extends React.Component {
         {this.state.isModalShowing &&
         this.state.presentModal === "PlaceOrderModal" ? (
           <PlaceOrderModal
-            isLoadingWallet={this.props.isLoadingWallet}
-            accountBalance={this.props.accountBalance}
+            isLoadingWallet={this.state.isLoadingWallet}
+            accountBalance={this.state.accountBalance}
             merchantStoreName={this.state.merchantStoreName}
             isModalShowing={this.state.isModalShowing}
             cartItems={this.state.cartItems}
             placeOrder={this.placeOrder}
             hideModal={this.hideModal}
-            mode={this.props.mode}
+            mode={this.state.mode}
           />
         ) : (
           <></>
-        )} */}
+        )}
 
-        {/* {this.state.isModalShowing &&
+        {this.state.isModalShowing &&
         this.state.presentModal === "OrderMessageModal" ? (
           <OrderMessageModal
             isModalShowing={this.state.isModalShowing}
             hideModal={this.hideModal}
             mode={this.state.mode}
-            messageStoreOwnerName={this.state.messageStoreOwnerName}
+            messageStoreOwnerName={this.state.messageStoreOwnerNameSHOPPING}
             handleOrderMessageSubmit={this.handleOrderMessageSubmit}
             closeTopNav={this.closeTopNav}
           />
         ) : (
           <></>
-        )} */}
+        )}
 
         {/* *         ###   ###
          *          ####   ##

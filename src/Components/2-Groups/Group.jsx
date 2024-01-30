@@ -437,10 +437,12 @@ class Group extends React.Component {
     return (
       <>
         <Navbar
-          sticky="top"
-          //style={{ paddingLeft: "2%", paddingRight: "2%" }}
+          //className="sticky top-0"
+          //style={{ paddingLeft: "2%", paddingRight: "2%", zIndex: 10 }}
+          //style={{ position: "sticky", top: "0" }}
           bg={this.props.mode}
           variant={this.props.mode}
+          fixed="top"
         >
           <Container>
             <Button
@@ -465,6 +467,7 @@ class Group extends React.Component {
             </Button>
           </Container>
         </Navbar>
+
         <div>
           {this.state.groupMsgs.length === 0 && !this.state.LoadingMsgs ? (
             <div className="bodytext">

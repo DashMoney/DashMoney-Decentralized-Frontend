@@ -544,7 +544,7 @@ class Group extends React.Component {
             </ButtonGroup>
           </div>
 
-          <div>
+          <div className="footer">
             {messages}
             {msgsToAdd}
           </div>

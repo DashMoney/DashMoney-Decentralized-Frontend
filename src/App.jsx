@@ -4717,6 +4717,7 @@ class App extends React.Component {
         WALLET_amountToSend: Number((inputNumber * 100000000).toFixed(0)),
         WALLET_sendToAddress: inputAddr,
         WALLET_sendToName: "",
+        WALLET_messageToSend: "",
         presentModal: "ConfirmAddrPaymentModal",
         isModalShowing: true,
       } //,

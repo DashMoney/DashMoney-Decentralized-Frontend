@@ -543,7 +543,9 @@ class WalletPage extends React.Component {
                             !
                           </b>
                         </p>
-                        {this.props.WALLET_sendToName !== "" ? (
+
+                        {this.props.WALLET_sendToName !== "" &&
+                        this.props.WALLET_messageToSend !== "" ? (
                           <p>Sending payment message..</p>
                         ) : (
                           <></>
@@ -882,7 +884,8 @@ class WalletPage extends React.Component {
                             !
                           </b>
                         </p>
-                        {this.props.WALLET_sendToName !== "" ? (
+                        {this.props.WALLET_sendToName !== "" &&
+                        this.props.WALLET_messageToSend !== "" ? (
                           <p>Sending payment message..</p>
                         ) : (
                           <></>

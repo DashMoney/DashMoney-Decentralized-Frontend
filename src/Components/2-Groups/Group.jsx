@@ -274,14 +274,25 @@ class Group extends React.Component {
       .finally(() => client.disconnect());
   };
 
-  getNamesforDGTInvites = (msgArr) => {
-    let ownerarrayOfOwnerIds = msgArr.map((doc) => {
+  getNamesforDGTInvites = (invArr) => {
+    let ownerarrayOfOwnerIds = invArr.map((doc) => {
       return doc.$ownerId;
     });
 
     let setOfOwnerIds = [...new Set(ownerarrayOfOwnerIds)];
 
     let arrayOfOwnerIds = [...setOfOwnerIds];
+
+    //***** */
+    //CREATE UNIQUE SET OF INVITES BASED ON MSG OWNERID ->
+
+    let uniqueInvites = arrayOfOwnerIds.map((ownerId) => {
+      let invite = invArr.find((inv) => {
+        return inv.$ownerId === ownerId;
+      });
+      return invite;
+    });
+    //***** */
 
     arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
       Buffer.from(Identifier.from(item))
@@ -324,10 +335,10 @@ class Group extends React.Component {
 
         let tupleArray = []; //<- Final array
 
-        // My 2 arrays are: nameDocArray and msgArr
+        // My 2 arrays are: nameDocArray and invArr
         //There may not be very many name docs because same author for lots of msgs..
 
-        tupleArray = msgArr.map((msg) => {
+        tupleArray = uniqueInvites.map((msg) => {
           let tuple = "";
 
           for (let nameDoc of nameDocArray) {

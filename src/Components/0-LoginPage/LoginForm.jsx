@@ -62,6 +62,18 @@ class LoginForm extends React.Component {
   render() {
     return (
       <>
+        <h1 id="title-bar">
+          <b>Your Money, your way!</b>
+        </h1>
+
+        <div className="heading-shift">
+          <p>
+            <b>
+              Dash is a crypto for connecting people together, like it was
+              always meant to be.
+            </b>
+          </p>
+        </div>
         <div className="bodytext">
           <Form
             noValidate

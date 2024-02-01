@@ -14,6 +14,9 @@ class NearbyPage extends React.Component {
   componentDidMount() {
     if (this.props.isLoginComplete && this.props.InitialPullNearBy) {
       this.props.pullInitialTriggerNEARBY();
+    } else {
+      //This could be cleaner -> dont need to call each time even though but app.js does prevent constant calling.
+      this.props.pullOnPageLoadTriggerNEARBY();
     }
   }
   render() {

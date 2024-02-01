@@ -31,16 +31,20 @@ class LogoutModal extends React.Component {
       <>
         <Modal show={this.props.isModalShowing} contentClassName={modalBkg}>
           <Modal.Header>
-            <Modal.Title>Log out</Modal.Title>
+            <Modal.Title>
+              <b>Log out</b>
+            </Modal.Title>
             {closeButtonColor}
           </Modal.Header>
           <Modal.Body>
-            <p>Are you sure you want to log out?</p>
+            <p>
+              <b>Are you sure you want to log out?</b>
+            </p>
           </Modal.Body>
 
           <Modal.Footer>
             <Button variant="primary" onClick={this.handleDisconnect}>
-              Log Out
+              <b>Log Out</b>
             </Button>
           </Modal.Footer>
         </Modal>

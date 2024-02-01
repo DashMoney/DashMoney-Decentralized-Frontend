@@ -72,6 +72,7 @@ import CloseButton from "react-bootstrap/CloseButton";
         }
  */
 
+//EVENT
 class CreatePostModal extends React.Component {
   constructor(props) {
     super(props);
@@ -104,6 +105,8 @@ class CreatePostModal extends React.Component {
       postActive: true,
       //postAvail: true,
       postDGP: true,
+
+      //EVENT
     };
   }
 
@@ -380,11 +383,15 @@ class CreatePostModal extends React.Component {
     }
   };
 
+  //  EVENT VALIDATION
+
   handleSubmitClick = (event) => {
     event.preventDefault();
     //console.log(event.target.ControlTextarea1.value);
 
     //CHANGE TO NEWPOST AND SET THE LOWERCASE HERE!
+
+    //if statement for POST OR EVENT ->
 
     let newPost = {
       city: this.state.cityInput.toLocaleLowerCase(),
@@ -496,6 +503,19 @@ class CreatePostModal extends React.Component {
                 <b>Trade</b>
               </Button>
             )}
+
+            {/* {this.state.selectedCategory === "events" ? (
+              <Button variant="primary" style={{ textDecoration: "underline" }}>
+                <b>Events</b>
+              </Button>
+            ) : (
+              <Button
+                variant="primary"
+                onClick={() => this.handleCategoryButtons("events")}
+              >
+                <b>Events</b>
+              </Button>
+            )} */}
 
             <h4 style={{ marginTop: ".2rem", marginBottom: ".1rem" }}>
               <b>You are Looking For:</b>
@@ -719,7 +739,7 @@ class CreatePostModal extends React.Component {
               ) : (
                 <></>
               )}
-
+              {/* Make separate/distinct submit for events for separate validation */}
               <div className="ButtonRightNoUnderline">
                 {this.state.validCity &&
                 this.state.validRegion &&
@@ -727,11 +747,11 @@ class CreatePostModal extends React.Component {
                 this.state.validDescription &&
                 this.state.validLink ? (
                   <Button variant="primary" type="submit">
-                    Create Post
+                   <b>Create Post</b>
                   </Button>
                 ) : (
                   <Button variant="primary" disabled>
-                    Create Post
+                    <b>Create Post</b>
                   </Button>
                 )}
               </div>

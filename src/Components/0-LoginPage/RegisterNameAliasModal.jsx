@@ -19,7 +19,6 @@ class RegisterNameAliasModal extends React.Component {
       nameTaken: false,
       nameAvailable: false,
       searchedName: "",
-      validated: true,
       validityCheck: false,
     };
   }
@@ -48,6 +47,61 @@ class RegisterNameAliasModal extends React.Component {
         validityCheck: false,
       });
     }
+  };
+
+  formValidate = (nameInput) => {
+    let regex = /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$/;
+    let valid = regex.test(nameInput);
+
+    if (valid) {
+      this.setState({
+        searchedName: nameInput,
+      });
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  searchName = (nameToRetrieve) => {
+    let client = new Dash.Client({ network: this.props.whichNetwork });
+
+    const retrieveName = async () => {
+      // Retrieve by full name (e.g., myname.dash)
+
+      return client.platform.names.resolve(`${nameToRetrieve}.dash`);
+    };
+
+    retrieveName()
+      .then((d) => {
+        if (d === null) {
+          this.setState({
+            nameAvailable: true,
+            nameTaken: false,
+            isLoading: false,
+            isError: false,
+          });
+        } else {
+          console.log("Name retrieved:\n", d.toJSON());
+          this.setState({
+            nameTaken: true,
+            nameAvailable: false,
+            isLoading: false,
+            isError: false,
+          });
+        }
+      })
+      .catch((e) => {
+        console.error("Something went wrong:\n", e);
+
+        this.setState({
+          nameTaken: false,
+          nameAvailable: false,
+
+          isLoading: false,
+        });
+      })
+      .finally(() => client.disconnect());
   };
 
   purchaseName = (theName) => {
@@ -90,10 +144,13 @@ class RegisterNameAliasModal extends React.Component {
       })
       .catch((e) => {
         console.error("Something went wrong:\n", e);
-        this.setState({
-          isError: true,
-          isLoading: false,
-        });
+        this.setState(
+          {
+            isError: true,
+            isLoading: false,
+          },
+          () => this.props.triggerAliasNotLoading()
+        );
       })
       .finally(() => client.disconnect());
   };
@@ -104,33 +161,23 @@ class RegisterNameAliasModal extends React.Component {
     //setState to loading
     //disable button
     let nameToTry = event.target.validationCustom02.value;
-    this.props.triggerAliasLoading(); //trigger for connected page spinner
     this.setState({
       isLoading: true,
       searchName: event.target.value,
       isError: false,
     });
 
-    if (this.formValidate(nameToTry)) {
-      console.log(`A good one: ${nameToTry}`);
-      ///this is where call  function to Purchase the Name ***
-      this.purchaseName(nameToTry);
+    if (this.state.nameAvailable) {
+      if (this.formValidate(nameToTry)) {
+        console.log(`A good one: ${nameToTry}`);
+        this.props.triggerAliasLoading(); //trigger for connected page spinner
+        ///this is where call  function to Purchase the Name ***
+        this.purchaseName(nameToTry);
+      } else {
+        console.log(`Not a good one: ${nameToTry}`);
+      }
     } else {
-      console.log(`Not a good one: ${nameToTry}`);
-    }
-  };
-
-  formValidate = (nameInput) => {
-    let regex = /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$/;
-    let valid = regex.test(nameInput);
-
-    if (valid) {
-      this.setState({
-        searchedName: nameInput,
-      });
-      return true;
-    } else {
-      return false;
+      this.searchName(nameToTry);
     }
   };
 
@@ -180,18 +227,35 @@ class RegisterNameAliasModal extends React.Component {
                     type="text"
                     placeholder="Enter desired name here..."
                     required
-                    isInvalid={!this.state.validityCheck}
+                    //isInvalid={!this.state.validityCheck}
+                    isValid={this.state.validityCheck}
                   />
                 )}
 
-                <Form.Control.Feedback className="floatLeft" type="invalid">
-                  Please use proper naming format
+                <Form.Control.Feedback className="floatLeft" type="valid">
+                  Alias looks good!
                 </Form.Control.Feedback>
 
                 {this.state.isError ? (
                   <Alert variant="warning">
-                    Testnet Platform is having difficulties... or the identity
-                    has insufficient credits or the name is already taken...
+                    Testnet Platform is having difficulties or your identity has
+                    insufficient credits.
+                  </Alert>
+                ) : (
+                  <></>
+                )}
+
+                {this.state.nameAvailable ? (
+                  <Alert variant="success" dismissible>
+                    <b>{this.state.searchedName} is available!</b>
+                  </Alert>
+                ) : (
+                  <></>
+                )}
+
+                {this.state.nameTaken ? (
+                  <Alert variant="danger" dismissible>
+                    <b> {this.state.searchedName} is not available.</b>
                   </Alert>
                 ) : (
                   <></>
@@ -211,17 +275,65 @@ class RegisterNameAliasModal extends React.Component {
                   <></>
                 )}
 
-                {this.state.validityCheck && !this.state.isLoading ? (
+                {this.state.validityCheck &&
+                !this.state.isLoading &&
+                !this.state.nameAvailable ? (
                   <>
-                    <p> </p>
+                    <p></p>
                     <Button variant="primary" type="submit">
-                      Purchase Name
+                      <b>Check Availability</b>
                     </Button>
                   </>
                 ) : (
-                  <Button disabled variant="primary" type="submit">
-                    Purchase Name
-                  </Button>
+                  <></>
+                )}
+
+                {!this.state.validityCheck ||
+                (this.state.isLoading && !this.state.nameAvailable) ? (
+                  <>
+                    <p></p>
+                    <Button variant="primary" disabled>
+                      <b>Check Availability</b>
+                    </Button>
+                  </>
+                ) : (
+                  <></>
+                )}
+
+                {this.state.validityCheck &&
+                !this.state.isLoading &&
+                this.state.nameAvailable ? (
+                  <>
+                    <div
+                      className="d-grid gap-2"
+                      style={{
+                        marginTop: "1rem",
+                      }}
+                    >
+                      <Button variant="primary" type="submit">
+                        <b>Purchase Alias</b>
+                      </Button>
+                    </div>
+                  </>
+                ) : (
+                  <></>
+                )}
+
+                {this.state.isLoading && this.state.nameAvailable ? (
+                  <>
+                    <div
+                      className="d-grid gap-2"
+                      style={{
+                        marginTop: "1rem",
+                      }}
+                    >
+                      <Button variant="primary" disabled>
+                        <b>Purchase Alias</b>
+                      </Button>
+                    </div>
+                  </>
+                ) : (
+                  <></>
                 )}
 
                 <p></p>

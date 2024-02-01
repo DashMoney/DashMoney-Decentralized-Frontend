@@ -483,6 +483,9 @@ class App extends React.Component {
 
       //NEAR BY PAGE
 
+      OnPageLoadNEARBY: true,
+      InitialPullNearBy: true,
+
       whichNearbyTab: "Search",
       selectedCategoryButton: "offrent",
 
@@ -665,7 +668,6 @@ class App extends React.Component {
 
       selectedDapp: "Login",
 
-      InitialPullNearBy: true,
       InitialPullReviews: true,
       InitialPullProofs: true,
 
@@ -1338,7 +1340,8 @@ class App extends React.Component {
 
   componentDidMount() {
     this.getDSOEveryoneDocs();
-    this.getInitialPosts();
+    //this.getInitialPosts(); // Move to onDapp select because now that there is a post in all the categories there are names that are pulled and this has doubled the queries and cause slowing ->
+    //
     //1) GET WALLETID KEYS For New Wallet Login and Wallet Sync
     //I don't need any of this because the wallet login handles it itself..
     // True^^^ - but using to determine if first time loading so can let know that this may take up to a minute for first time logging in.
@@ -1409,9 +1412,21 @@ class App extends React.Component {
     });
   };
 
+  triggerNameNotLoading = () => {
+    this.setState({
+      isLoadingName: false,
+    });
+  };
+
   triggerAliasLoading = () => {
     this.setState({
       isLoadingAlias: true,
+    });
+  };
+
+  triggerAliasNotLoading = () => {
+    this.setState({
+      isLoadingAlias: false,
     });
   };
 
@@ -7804,6 +7819,15 @@ class App extends React.Component {
     });
   };
 
+  pullOnPageLoadTriggerNEARBY = () => {
+    if (this.state.OnPageLoadNEARBY) {
+      this.getInitialPosts();
+      this.setState({
+        OnPageLoadNEARBY: false,
+      });
+    }
+  };
+
   // FORM FUNCTIONS
   triggerCountryButton = () => {
     this.setState({
@@ -12803,6 +12827,9 @@ class App extends React.Component {
                     isLoginComplete={isLoginComplete}
                     InitialPullNearBy={this.state.InitialPullNearBy}
                     pullInitialTriggerNEARBY={this.pullInitialTriggerNEARBY}
+                    pullOnPageLoadTriggerNEARBY={
+                      this.pullOnPageLoadTriggerNEARBY
+                    }
                     whichNearbyTab={this.state.whichNearbyTab}
                     handleNearbyTab={this.handleNearbyTab}
                     identityInfo={this.state.identityInfo}
@@ -13114,6 +13141,7 @@ class App extends React.Component {
         this.state.presentModal === "RegisterNameModal" ? (
           <RegisterNameModal
             triggerNameLoading={this.triggerNameLoading}
+            triggerNameNotLoading={this.triggerNameNotLoading}
             handleName={this.handleName}
             isModalShowing={this.state.isModalShowing}
             hideModal={this.hideModal}
@@ -13135,6 +13163,7 @@ class App extends React.Component {
         this.state.presentModal === "RegisterNameAliasModal" ? (
           <RegisterNameAliasModal
             triggerAliasLoading={this.triggerAliasLoading}
+            triggerAliasNotLoading={this.triggerAliasNotLoading}
             handleAliases={this.handleAliases}
             isModalShowing={this.state.isModalShowing}
             hideModal={this.hideModal}

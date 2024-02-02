@@ -13372,6 +13372,18 @@ class App extends React.Component {
             //My Store^^
             isLoadingAddresses_WALLET={this.state.isLoadingAddresses_WALLET}
             isLoadingMsgs={this.state.isLoadingMsgs_WALLET}
+            //MyStore and Shopping use TXId to connect name to Tx but does the address pull already accomplish this for shopping <= yes
+            //Shopping
+            /*
+              isLoadingRecentOrders: true,
+              recentOrders: [],
+              recentOrdersStores: [],
+              recentOrdersNames: [],
+              recentOrdersDGMAddresses: [],
+              recentOrdersItems: [],
+              recentOrdersMessages: [],
+             */
+            //Shopping^^
             //sortedTuples={sortedTuples} // <= this is made in the WalletTXModal -> yes
             // So this should only be gotten too after wallet and msgs are loaded.. ->
           />

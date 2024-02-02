@@ -63,6 +63,20 @@ class LoginForm extends React.Component {
     return (
       <>
         <h1 id="title-bar">
+          <b>Money for a new Economy!</b>
+        </h1>
+
+        {/* <h2 id="title-bar">
+          <b>A new Money for a new Economy!</b>
+        </h2> */}
+
+        <div className="heading-shift">
+          <p>
+            <b>With Dash, you will never think of crypto the same way again.</b>
+          </p>
+        </div>
+
+        {/* <h1 id="title-bar">
           <b>Your Money, your way!</b>
         </h1>
 
@@ -73,7 +87,7 @@ class LoginForm extends React.Component {
               always meant to be.
             </b>
           </p>
-        </div>
+        </div> */}
         <div className="bodytext">
           <Form
             noValidate
@@ -82,12 +96,12 @@ class LoginForm extends React.Component {
           >
             <Form.Group className="mb-3" controlId="validationCustom01">
               {/* <Form.Label>Account Login</Form.Label>  */}
-              <h2>
+              <h3>
                 <b>Account Login</b>
                 {/* <Badge bg="primary" pill>
                 Account Login
               </Badge> */}
-              </h2>
+              </h3>
               <Form.Control
                 type="text"
                 placeholder="Enter 12 words here..."

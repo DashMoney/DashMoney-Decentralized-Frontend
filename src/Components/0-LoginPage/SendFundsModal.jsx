@@ -73,7 +73,7 @@ class SendFundsModal extends React.Component {
                   });
                 }}
               >
-                Copy
+                <b>Copy</b>
               </Button>
               {this.state.copiedAddress ? <span>Copied!</span> : <></>}
             </Alert>

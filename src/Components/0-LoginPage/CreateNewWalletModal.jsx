@@ -99,7 +99,7 @@ class CreateNewWalletModal extends React.Component {
                   });
                 }}
               >
-                Copy
+                <b>Copy</b>
               </Button>
               {this.state.copiedMnemonic ? <span>Copied!</span> : <></>}
             </Alert>
@@ -118,7 +118,7 @@ class CreateNewWalletModal extends React.Component {
                   });
                 }}
               >
-                Copy
+                <b>Copy</b>
               </Button>
               {this.state.copiedAddress ? <span>Copied!</span> : <></>}
             </Alert>

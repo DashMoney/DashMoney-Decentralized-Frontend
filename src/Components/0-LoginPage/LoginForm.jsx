@@ -62,9 +62,13 @@ class LoginForm extends React.Component {
   render() {
     return (
       <>
-        <h1 id="title-bar">
+        {/* <h2 id="title-bar">
           <b>Money for a new Economy!</b>
-        </h1>
+        </h2> */}
+
+        <h2 id="title-bar">
+          <b>Your Money, your way!</b>
+        </h2>
 
         {/* <h2 id="title-bar">
           <b>A new Money for a new Economy!</b>
@@ -72,9 +76,23 @@ class LoginForm extends React.Component {
 
         <div className="heading-shift">
           <p>
-            <b>With Dash, you will never think of crypto the same way again.</b>
+            {/* <b>
+              Interact with New Dash Wallet, Chat in totally new way, use Social
+              Media and explore more web3 Dapps, run on Dash Decentralized
+              Platform -Splawik21
+            </b> */}
+            <b>
+              Interact, Chat, and Explore with Dash's Web3 Dapps, powered by
+              Dash's Decentralized Platform!
+            </b>
           </p>
         </div>
+
+        {/* <div className="heading-shift">
+          <p>
+            <b>With Dash, you will never think of crypto the same way again.</b>
+          </p>
+        </div> */}
 
         {/* <h1 id="title-bar">
           <b>Your Money, your way!</b>

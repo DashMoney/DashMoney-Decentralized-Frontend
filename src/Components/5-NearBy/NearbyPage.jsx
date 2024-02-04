@@ -69,6 +69,7 @@ class NearbyPage extends React.Component {
                     OffRentPosts={this.props.OffRentPosts}
                     OffBizPosts={this.props.OffBizPosts}
                     OffOtherPosts={this.props.OffOtherPosts}
+                    OffEventsPosts={this.props.OffEventsPosts}
                     LookRentPosts={this.props.LookRentPosts}
                     LookOtherPosts={this.props.LookOtherPosts}
                   />
@@ -103,6 +104,8 @@ class NearbyPage extends React.Component {
                     OffBizNames={this.props.OffBizNames}
                     OffOtherPosts={this.props.OffOtherPosts}
                     OffOtherNames={this.props.OffOtherNames}
+                    OffEventsPosts={this.props.OffEventsPosts}
+                    OffEventsNames={this.props.OffEventsNames}
                     LookRentPosts={this.props.LookRentPosts}
                     LookRentNames={this.props.LookRentNames}
                     LookOtherPosts={this.props.LookOtherPosts}
@@ -167,6 +170,7 @@ class NearbyPage extends React.Component {
               OffRentPosts={this.props.OffRentPosts}
               OffBizPosts={this.props.OffBizPosts}
               OffOtherPosts={this.props.OffOtherPosts}
+              OffEventsPosts={this.props.OffEventsPosts}
               LookRentPosts={this.props.LookRentPosts}
               LookOtherPosts={this.props.LookOtherPosts}
             />
@@ -198,6 +202,8 @@ class NearbyPage extends React.Component {
               OffBizNames={this.props.OffBizNames}
               OffOtherPosts={this.props.OffOtherPosts}
               OffOtherNames={this.props.OffOtherNames}
+              OffEventsPosts={this.props.OffEventsPosts}
+              OffEventsNames={this.props.OffEventsNames}
               LookRentPosts={this.props.LookRentPosts}
               LookRentNames={this.props.LookRentNames}
               LookOtherPosts={this.props.LookOtherPosts}

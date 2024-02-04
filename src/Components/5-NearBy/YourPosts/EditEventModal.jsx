@@ -4,101 +4,29 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import CloseButton from "react-bootstrap/CloseButton";
 
-//Post
-/**
- * city: {
-          type: 'string',
-          minLength: 1,
-          maxLength: 32,
-        },
-
-        region: {
-          type: 'string',
-          minLength: 1,
-          maxLength: 32,
-        },
-
-        country: {
-          type: 'string',
-          minLength: 1,
-          maxLength: 32,
-        },
-        description: { 
-          type: 'string',
-          minLength: 1,
-          maxLength: 350,
-        },
-        category: { // offrent, offbiz, offother, lookrent, lookother
-          type: 'string',
-          minLength: 0,
-          maxLength: 32,
-        },
-
-        link:{ //one url/http address
-              type: 'string',
-              minLength: 1,
-              maxLength: 350,
-        },
-
-
-        // links:{ //array of url/http addresses
-        //   type: 'array', 
-        //   minItems: 1,
-        //   maxItems: 10,
-        //   items: { //This defines the url
-        //       type: 'string',
-        //       minLength: 1,
-        //       maxLength: 350,
-        //     },
-        // },
-
-        price: { //this will be priced in duffs but i will have Dash, mDash for display
-          type: 'integer',
-          minimum: 0,
-          maximum: 10000000000000, // 100,000 Dash is max
-           
-        },
-
-        // avail:{ //the post appears in the search but cannot click in
-        //   type: 'boolean'
-        // },
-
-        active:{ //Post does not appear in search
-          type: 'boolean'
-        },
-
-        dgp:{
-          type:'boolean'
-        }
- */
-
-//EVENT
-class CreatePostModal extends React.Component {
+class EditEventModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedCategory: "offrent",
+      selectedCategory: this.props.selectedYourPost.category,
 
-      cityInput: "",
-      validCity: false,
+      cityInput: this.props.selectedYourPost.city,
+      validCity: true,
       tooLongCityError: false,
 
-      regionInput: "",
-      validRegion: false,
+      regionInput: this.props.selectedYourPost.region,
+      validRegion: true,
       tooLongRegionError: false,
 
-      countryInput: "",
-      validCountry: false,
+      countryInput: this.props.selectedYourPost.country,
+      validCountry: true,
       tooLongCountryError: false,
 
-      // priceInput: 0,
-      // validPrice: false,
-
-      descriptionInput: "",
-      validDescription: false,
+      descriptionInput: this.props.selectedYourPost.description,
+      validDescription: true,
       tooLongDescriptionError: false,
 
-      linkInput: "",
+      linkInput: this.props.selectedYourPost.link,
       validLink: true,
       tooLongLinkError: false,
 
@@ -118,9 +46,9 @@ class CreatePostModal extends React.Component {
       validTime: true,
       tooLongTimeError: false,
 
-      postActive: true,
-      //postAvail: true,
-      postDGP: true,
+      postActive: this.props.selectedYourPost.active,
+
+      postDGP: this.props.selectedYourPost.dgp,
 
       //EVENT
       // group: maxLength: 32,
@@ -152,54 +80,8 @@ class CreatePostModal extends React.Component {
     }
   };
 
-  handleDGP = () => {
-    if (this.state.postDGP) {
-      this.setState({
-        postDGP: false,
-      });
-    } else {
-      this.setState({
-        postDGP: true,
-      });
-    }
-  };
-
-  // handleAvail = () => {
-  //   if (this.state.itemAvail) {
-  //     this.setState({
-  //       itemAvail: false,
-  //     });
-  //   } else {
-  //     this.setState({
-  //       itemAvail: true,
-  //     });
-  //   }
-  // };
-
-  // formValidate = (messageText) => {
-  //   let regex = /^.[\S\s]{0,350}$/;
-
-  //   let valid = regex.test(messageText);
-
-  //   if (valid) {
-  //     //Put tag error here
-  //     this.setState({
-  //       messageInput: messageText,
-  //       tooLongError: false,
-  //     });
-  //     return true;
-  //   } else {
-  //     if (messageText.length > 300) {
-  //       this.setState({
-  //         tooLongError: true,
-  //       });
-  //     }
-  //     return false;
-  //   }
-  // };
-
   onChange = (event) => {
-    // console.log(event.target.value);
+    //console.log(event.target.id);
 
     //console.log(`id = ${event.target.id}`);
 
@@ -220,10 +102,6 @@ class CreatePostModal extends React.Component {
       event.stopPropagation();
       this.countryValidate(event.target.value);
     }
-
-    // if (event.target.id === "formItemPrice") {
-    //   this.priceValidate(event.target.value);
-    // }
 
     if (event.target.id === "custom-switch") {
       event.stopPropagation();
@@ -246,6 +124,7 @@ class CreatePostModal extends React.Component {
       event.stopPropagation();
       this.linkValidate(event.target.value);
     }
+
     if (event.target.id === "formAddress") {
       event.preventDefault();
       event.stopPropagation();
@@ -347,29 +226,6 @@ class CreatePostModal extends React.Component {
     }
   };
 
-  //   priceValidate = (numberInput) => {
-  //     //console.log(this.props.accountBalance);
-
-  //     let regex = /(^[0-9]+[.,]{0,1}[0-9]{0,5}$)|(^[.,][0-9]{1,5}$)/;
-  //     //CHANGED TO LIMIT TO minimum mDash possible
-  //     //let regex = /(^[0-9]+[.,]{0,1}[0-9]*$)|(^[.,][0-9]+$)/;
-
-  //     let valid = regex.test(numberInput);
-
-  // //MAX SPENDABLE IS 10000 DASH
-  //     if (valid && numberInput > 0 && numberInput <= 10000) {
-  //       this.setState({
-  //         priceInput: numberInput,
-  //         validPrice: true,
-  //       });
-  //     } else {
-  //       this.setState({
-  //         priceInput: numberInput,
-  //         validPrice: false,
-  //       });
-  //     }
-  //   };
-
   descriptionValidate = (description) => {
     let regex = /^.[\S\s]{0,350}$/;
 
@@ -409,7 +265,7 @@ class CreatePostModal extends React.Component {
         tooLongLinkError: false,
       });
     } else {
-      if (link.length > 350) {
+      if (link.length > 300) {
         this.setState({
           linkInput: link,
           validLink: false,
@@ -423,6 +279,7 @@ class CreatePostModal extends React.Component {
       }
     }
   };
+
   //  EVENT VALIDATION
   // group: maxLength: 32,
   // address: maxLength: 100,
@@ -537,44 +394,26 @@ class CreatePostModal extends React.Component {
     //console.log(event.target.ControlTextarea1.value);
 
     //CHANGE TO NEWPOST AND SET THE LOWERCASE HERE!
-    let newPost;
-    //if statement for POST OR EVENT ->
-    if (this.state.selectedCategory === "events") {
-      newPost = {
-        city: this.state.cityInput.toLocaleLowerCase(),
-        region: this.state.regionInput.toLocaleLowerCase(),
-        country: this.state.countryInput.toLocaleLowerCase(),
 
-        description: this.state.descriptionInput,
-        category: this.state.selectedCategory,
-        link: this.state.linkInput,
+    let newEvent = {
+      city: this.state.cityInput.toLocaleLowerCase(),
+      region: this.state.regionInput.toLocaleLowerCase(),
+      country: this.state.countryInput.toLocaleLowerCase(),
 
-        active: this.state.postActive,
-        dgp: this.state.postDGP, //use this in Events also?
+      description: this.state.descriptionInput,
+      category: this.state.selectedCategory,
+      link: this.state.linkInput,
 
-        group: this.state.groupInput,
-        address: this.state.addressInput, //use this in DGP also
-        date: this.state.dateInput,
-        time: this.state.timeInput,
-      };
-    } else {
-      newPost = {
-        city: this.state.cityInput.toLocaleLowerCase(),
-        region: this.state.regionInput.toLocaleLowerCase(),
-        country: this.state.countryInput.toLocaleLowerCase(),
-        //price:  Number((this.state.priceInput * 100000000).toFixed(0)),
-        description: this.state.descriptionInput,
-        category: this.state.selectedCategory,
-        link: this.state.linkInput,
-        address: this.state.addressInput, //use this in DGP also
+      active: this.state.postActive,
+      dgp: this.state.postDGP,
 
-        //avail: this.state.postAvail,
-        active: this.state.postActive,
-        dgp: this.state.postDGP,
-      };
-    }
+      group: this.state.groupInput,
+      address: this.state.addressInput, //use this in DGP also
+      date: this.state.dateInput,
+      time: this.state.timeInput,
+    };
 
-    this.props.createYourPost(newPost);
+    this.props.editYourEvent(newEvent); //Pass the function to here ->
     this.props.hideModal();
   };
 
@@ -605,20 +444,17 @@ class CreatePostModal extends React.Component {
           <Modal.Header style={{ paddingBottom: ".2rem" }}>
             <Modal.Title>
               <h3>
-                <b>Create a Post</b>
+                <b>Edit Event</b>
               </h3>
             </Modal.Title>
             {closeButtonColor}
           </Modal.Header>
-
-          {/* <div className="BottomBorder" style={{ paddingTop: ".5rem" }}></div> */}
-
           <Modal.Body>
             <h4 style={{ marginBottom: ".1rem" }}>
               <b>You are Offering:</b>
             </h4>
 
-            {this.state.selectedCategory === "offrent" ? (
+            {/* {this.state.selectedCategory === "offrent" ? (
               <Button
                 variant="primary"
                 style={{
@@ -637,9 +473,9 @@ class CreatePostModal extends React.Component {
               >
                 <b>Place to Rent</b>
               </Button>
-            )}
+            )} */}
 
-            {this.state.selectedCategory === "offbiz" ? (
+            {/* {this.state.selectedCategory === "offbiz" ? (
               <Button
                 variant="primary"
                 style={{ textDecoration: "underline", marginRight: ".5rem" }}
@@ -654,9 +490,9 @@ class CreatePostModal extends React.Component {
               >
                 <b>Shops/Menus</b>
               </Button>
-            )}
+            )} */}
 
-            {this.state.selectedCategory === "offother" ? (
+            {/* {this.state.selectedCategory === "offother" ? (
               <Button
                 variant="primary"
                 style={{ textDecoration: "underline", marginRight: ".5rem" }}
@@ -671,8 +507,7 @@ class CreatePostModal extends React.Component {
               >
                 <b>Trade</b>
               </Button>
-            )}
-
+            )} */}
             {this.state.selectedCategory === "events" ? (
               <Button variant="primary" style={{ textDecoration: "underline" }}>
                 <b>Events</b>
@@ -686,7 +521,7 @@ class CreatePostModal extends React.Component {
               </Button>
             )}
 
-            <h4 style={{ marginTop: ".2rem", marginBottom: ".1rem" }}>
+            {/* <h4 style={{ marginTop: ".2rem", marginBottom: ".1rem" }}>
               <b>You are Looking For:</b>
             </h4>
 
@@ -722,8 +557,9 @@ class CreatePostModal extends React.Component {
               >
                 <b>Trade</b>
               </Button>
-            )}
+            )} */}
             <div className="BottomBorder" style={{ paddingTop: ".5rem" }}></div>
+
             <Form
               noValidate
               onSubmit={this.handleSubmitClick}
@@ -736,7 +572,7 @@ class CreatePostModal extends React.Component {
                 </h5>
                 <Form.Control
                   type="text"
-                  placeholder="Enter city/town"
+                  defaultValue={this.props.selectedYourPost.city}
                   required
                   isInvalid={this.state.tooLongCityError}
                   isValid={this.state.validCity}
@@ -757,7 +593,7 @@ class CreatePostModal extends React.Component {
                 </h5>
                 <Form.Control
                   type="text"
-                  placeholder="Enter state/province"
+                  defaultValue={this.props.selectedYourPost.region}
                   required
                   isInvalid={this.state.tooLongRegionError}
                   isValid={this.state.validRegion}
@@ -778,7 +614,7 @@ class CreatePostModal extends React.Component {
                 </h5>
                 <Form.Control
                   type="text"
-                  placeholder="Enter country"
+                  defaultValue={this.props.selectedYourPost.country}
                   required
                   isInvalid={this.state.tooLongCountryError}
                   isValid={this.state.validCountry}
@@ -792,25 +628,6 @@ class CreatePostModal extends React.Component {
             </Form.Control.Feedback> */}
               </Form.Group>
 
-              {/*  PRICE FORM BELOW */}
-
-              {/* <Form.Group className="mb-3" controlId="formItemPrice">
-                <Form.Label>Item Price (in Dash)</Form.Label>
-
-                 //<Form.Control
-                   //   type="number"
-                    //  placeholder={this.state.amountToSend}
-                    //  readOnly
-                  //  /> 
-
-                <Form.Control
-                  type="number"
-                  placeholder="0.01 For example.."
-                  required
-                  isValid={this.state.validPrice}
-                  isInvalid={!this.state.validPrice}
-                />
-              </Form.Group> */}
               {this.state.selectedCategory === "events" ? (
                 <>
                   {/* Group FORM BELOW */}
@@ -851,7 +668,7 @@ class CreatePostModal extends React.Component {
                   onChange={this.onChange}
                   as="textarea"
                   rows={2}
-                  placeholder="Put description here.."
+                  defaultValue={this.props.selectedYourPost.description}
                   required
                   isInvalid={this.state.tooLongDescriptionError}
                   isValid={this.state.validDescription}
@@ -933,7 +750,7 @@ class CreatePostModal extends React.Component {
 
                 <Form.Control
                   type="text"
-                  placeholder="Enter a URL (Optional)"
+                  defaultValue={this.props.selectedYourPost.link}
                   required
                   isInvalid={this.state.tooLongLinkError}
                   isValid={this.state.validLink}
@@ -1012,48 +829,24 @@ class CreatePostModal extends React.Component {
               ) : (
                 <></>
               )}
-              {/* Make separate/distinct submit for events for separate validation */}
+
               <div className="ButtonRightNoUnderline">
-                {this.state.selectedCategory === "events" ? (
-                  <>
-                    {this.state.validCity &&
-                    this.state.validRegion &&
-                    this.state.validCountry &&
-                    this.state.validDescription &&
-                    this.state.validLink &&
-                    this.state.validGroup &&
-                    this.state.validAddress &&
-                    this.state.validDate &&
-                    this.state.validTime ? (
-                      <Button
-                        variant="primary" //type="submit" //Reconnect !!!!
-                        disabled
-                      >
-                        <b>Create Post</b>
-                      </Button>
-                    ) : (
-                      <Button variant="primary" disabled>
-                        <b>Create Post</b>
-                      </Button>
-                    )}
-                  </>
+                {this.state.validCity &&
+                this.state.validRegion &&
+                this.state.validCountry &&
+                this.state.validDescription &&
+                this.state.validLink &&
+                this.state.validGroup &&
+                this.state.validAddress &&
+                this.state.validDate &&
+                this.state.validTime ? (
+                  <Button variant="primary" type="submit">
+                    Edit Event
+                  </Button>
                 ) : (
-                  <>
-                    {this.state.validCity &&
-                    this.state.validRegion &&
-                    this.state.validCountry &&
-                    this.state.validDescription &&
-                    this.state.validLink &&
-                    this.state.validAddress ? (
-                      <Button variant="primary" type="submit">
-                        <b>Create Post</b>
-                      </Button>
-                    ) : (
-                      <Button variant="primary" disabled>
-                        <b>Create Post</b>
-                      </Button>
-                    )}
-                  </>
+                  <Button variant="primary" disabled>
+                    Edit Event
+                  </Button>
                 )}
               </div>
             </Form>
@@ -1064,4 +857,4 @@ class CreatePostModal extends React.Component {
   }
 }
 
-export default CreatePostModal;
+export default EditEventModal;

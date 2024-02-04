@@ -30,6 +30,10 @@ class EditPostModal extends React.Component {
       validLink: true,
       tooLongLinkError: false,
 
+      addressInput: this.props.selectedYourPost.address,
+      validAddress: true,
+      tooLongAddressError: false,
+
       postActive: this.props.selectedYourPost.active,
 
       postDGP: this.props.selectedYourPost.dgp,
@@ -101,6 +105,12 @@ class EditPostModal extends React.Component {
       event.preventDefault();
       event.stopPropagation();
       this.linkValidate(event.target.value);
+
+      if (event.target.id === "formAddress") {
+        event.preventDefault();
+        event.stopPropagation();
+        this.addressValidate(event.target.value);
+      }
     }
   };
 
@@ -235,6 +245,31 @@ class EditPostModal extends React.Component {
       }
     }
   };
+  addressValidate = (address) => {
+    let regex = /^[\S\s]{0,100}$/;
+    let valid = regex.test(address);
+
+    if (valid) {
+      this.setState({
+        addressInput: address,
+        tooLongAddressError: false,
+        validAddress: true,
+      });
+    } else {
+      if (address.length > 100) {
+        this.setState({
+          addressInput: address,
+          tooLongAddressError: true,
+          validAddress: false,
+        });
+      } else {
+        this.setState({
+          addressInput: address,
+          validAddress: false,
+        });
+      }
+    }
+  };
 
   handleSubmitClick = (event) => {
     event.preventDefault();
@@ -253,6 +288,8 @@ class EditPostModal extends React.Component {
 
       active: this.state.postActive,
       dgp: this.state.postDGP,
+
+      address: this.state.addressInput,
     };
 
     this.props.editYourPost(newPost); //Pass the function to here ->
@@ -335,12 +372,16 @@ class EditPostModal extends React.Component {
             )}
 
             {this.state.selectedCategory === "offother" ? (
-              <Button variant="primary" style={{ textDecoration: "underline" }}>
+              <Button
+                variant="primary"
+                style={{ textDecoration: "underline", marginRight: ".5rem" }}
+              >
                 <b>Trade</b>
               </Button>
             ) : (
               <Button
                 variant="primary"
+                style={{ marginRight: ".5rem" }}
                 onClick={() => this.handleCategoryButtons("offother")}
               >
                 <b>Trade</b>
@@ -506,6 +547,27 @@ class EditPostModal extends React.Component {
             </Form.Control.Feedback> */}
               </Form.Group>
 
+              {/* ADDRESS FORM BELOW */}
+              <Form.Group className="mb-3" controlId="formAddress">
+                <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
+                  Address
+                </h5>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter address(Optional)"
+                  required
+                  isInvalid={this.state.tooLongAddressError}
+                  isValid={this.state.validAddress}
+                />
+                <p></p>
+                <Form.Control.Feedback type="invalid">
+                  Address is too long.
+                </Form.Control.Feedback>
+                {/* <Form.Control.Feedback type="valid">
+              Address is acceptable!
+            </Form.Control.Feedback> */}
+              </Form.Group>
+
               <Form.Group className="mb-3" id="formGridCheckbox">
                 {/* <Form.Label>
                   <b>Is Post Active?</b>
@@ -534,17 +596,17 @@ class EditPostModal extends React.Component {
                     id="DGP-switch"
                     label={
                       this.state.postDGP ? (
-                        <b>DashGetPaid Store/Menu</b>
+                        <b>My Store</b>
                       ) : (
-                        <b>No DashGetPaid Store/Menu</b>
+                        <b>No 'My Store' for viewing</b>
                       )
                     }
                     //onChange={() => this.handleActive()}
                   />
 
                   <p>
-                    <b>DashGetPaid</b> means you have store/menu available for
-                    viewing.
+                    <b>My Store</b> means you have Shop/Menu available for
+                    viewing in the <b>My Store</b> dapp.
                   </p>
                 </Form.Group>
               ) : (
@@ -556,7 +618,8 @@ class EditPostModal extends React.Component {
                 this.state.validRegion &&
                 this.state.validCountry &&
                 this.state.validDescription &&
-                this.state.validLink ? (
+                this.state.validLink &&
+                this.state.validAddress ? (
                   <Button variant="primary" type="submit">
                     Edit Post
                   </Button>

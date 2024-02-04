@@ -518,6 +518,9 @@ class App extends React.Component {
 
       OffOtherPosts: [],
       OffOtherNames: [],
+      //EVENTS
+      OffEventsPosts: [],
+      OffEventsNames: [],
 
       LookRentPosts: [],
       LookRentNames: [],
@@ -533,6 +536,7 @@ class App extends React.Component {
       InitialNearby3: false,
       InitialNearby4: false,
       InitialNearby5: false,
+      InitialNearby6: false,
 
       InitialOffRentPosts: [],
       InitialOffRentNames: [],
@@ -542,6 +546,9 @@ class App extends React.Component {
 
       InitialOffOtherPosts: [],
       InitialOffOtherNames: [],
+
+      InitialOffEventsPosts: [],
+      InitialOffEventsNames: [],
 
       InitialLookRentPosts: [],
       InitialLookRentNames: [],
@@ -557,6 +564,7 @@ class App extends React.Component {
       SearchNearby3: false,
       SearchNearby4: false,
       SearchNearby5: false,
+      SearchNearby6: false,
 
       //^^^^^ Search POSTS ^^^^^
 
@@ -1891,7 +1899,7 @@ class App extends React.Component {
         isLoadingEveryone: false,
         isLoadingRefresh: false,
       });
-      setInterval(() => this.autoUpdateEveryoneHelper(), 40000);
+      setInterval(() => this.autoUpdateEveryoneHelper(), 50000);
     }
   };
 
@@ -6034,6 +6042,7 @@ class App extends React.Component {
 
         this.setState({
           dgmDocuments: [returnedDoc],
+          DGMAddress: [returnedDoc],
           isLoadingButtons_WALLET: false,
           isLoadingRefresh_WALLET: false,
         });
@@ -7134,7 +7143,7 @@ class App extends React.Component {
       if (DGMAddrDoc.length !== 0) {
         return [...DGPStoreDoc, ...DGMAddrDoc];
       } else {
-        return DGPStoreDoc;
+        return [DGPStoreDoc];
       }
     };
 
@@ -7174,18 +7183,18 @@ class App extends React.Component {
           //Have to handle that may come back in any order.
           //Still may do some assuming
 
-          address = {
+          store = {
             $ownerId: docArray[0].$ownerId,
             $id: docArray[0].$id,
-            address: this.state.accountAddress,
-          };
-
-          store = {
-            $ownerId: docArray[1].$ownerId,
-            $id: docArray[1].$id,
             description: storeObject.description,
             public: storeObject.public,
             open: storeObject.open,
+          };
+
+          address = {
+            $ownerId: docArray[1].$ownerId,
+            $id: docArray[1].$id,
+            address: this.state.accountAddress,
           };
 
           //   if(returnedDoc.transitions[1].$type === 'dgmaddress'){
@@ -7206,6 +7215,7 @@ class App extends React.Component {
 
           this.setState({
             DGMAddress: [address],
+            dgmDocuments: [address],
             DGPStore: [store],
             isLoadingOrdersYOURSTORE: false,
             isLoadingStoreYOURSTORE: false,
@@ -7997,7 +8007,10 @@ class App extends React.Component {
     this.getInitialOffOther();
     this.getInitialLookRent();
     this.getInitialLookOther();
+    this.getInitialOffEvents();
   };
+
+  //Pull SEPARATELY.. => ***
 
   checkInitialRace = () => {
     if (
@@ -8005,7 +8018,8 @@ class App extends React.Component {
       this.state.InitialNearby2 &&
       this.state.InitialNearby3 &&
       this.state.InitialNearby4 &&
-      this.state.InitialNearby5
+      this.state.InitialNearby5 &&
+      this.state.InitialNearby6
     ) {
       this.setState({
         OffRentPosts: this.state.InitialOffRentPosts,
@@ -8016,6 +8030,9 @@ class App extends React.Component {
 
         OffOtherPosts: this.state.InitialOffOtherPosts,
         OffOtherNames: this.state.InitialOffOtherNames,
+
+        OffEventsPosts: this.state.InitialOffEventsPosts,
+        OffEventsNames: this.state.InitialOffEventsNames,
 
         LookRentPosts: this.state.InitialLookRentPosts,
         LookRentNames: this.state.InitialLookRentNames,
@@ -8378,6 +8395,122 @@ class App extends React.Component {
     //END OF NAME RETRIEVAL
   };
 
+  getInitialOffEvents = () => {
+    //console.log("Calling getInitialOffEvents");
+
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      apps: {
+        DMIOContract: {
+          contractId: this.state.DataContractDMIO,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const getDocuments = async () => {
+      return client.platform.documents.get("DMIOContract.dmiopost", {
+        where: [
+          ["category", "==", "offevents"], // offrent, offbiz, offother, offevents, lookrent, lookother
+          ["$createdAt", "<=", Date.now()],
+        ],
+        orderBy: [["$createdAt", "desc"]],
+      });
+    };
+
+    getDocuments()
+      .then((d) => {
+        if (d.length === 0) {
+          //console.log("There are no InitialOffEvents");
+
+          this.setState(
+            {
+              InitialNearby6: true,
+            },
+            () => this.checkInitialRace()
+          );
+        } else {
+          let docArray = [];
+          //console.log("Getting InitialOffEvents");
+          for (const n of d) {
+            //console.log("Document:\n", n.toJSON());
+            docArray = [...docArray, n.toJSON()];
+          }
+          this.getInitialOffEventsNames(docArray);
+        }
+      })
+      .catch((e) => console.error("Something went wrong:\n", e))
+      .finally(() => client.disconnect());
+  };
+
+  getInitialOffEventsNames = (docArray) => {
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      apps: {
+        DPNS: {
+          contractId: this.state.DataContractDPNS,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+    //START OF NAME RETRIEVAL
+
+    let ownerarrayOfOwnerIds = docArray.map((doc) => {
+      return doc.$ownerId;
+    });
+
+    let setOfOwnerIds = [...new Set(ownerarrayOfOwnerIds)];
+
+    let arrayOfOwnerIds = [...setOfOwnerIds];
+
+    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+      Buffer.from(Identifier.from(item))
+    );
+
+    //console.log("Calling getNamesOffOthers");
+
+    const getNameDocuments = async () => {
+      return client.platform.documents.get("DPNS.domain", {
+        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
+        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      });
+    };
+
+    getNameDocuments()
+      .then((d) => {
+        //WHAT IF THERE ARE NO NAMES? -> THEN THIS WON'T BE CALLED
+        if (d.length === 0) {
+          //console.log("No DPNS domain documents retrieved.");
+        }
+
+        let nameDocArray = [];
+
+        for (const n of d) {
+          //console.log("NameDoc:\n", n.toJSON());
+
+          nameDocArray = [n.toJSON(), ...nameDocArray];
+        }
+        //console.log(`DPNS Name Docs: ${nameDocArray}`);
+
+        this.setState(
+          {
+            InitialOffEventsNames: nameDocArray,
+            InitialOffEventsPosts: docArray,
+            InitialNearby6: true,
+          },
+          () => this.checkInitialRace()
+        );
+      })
+      .catch((e) => {
+        console.error(
+          "Something went wrong getting Initial OffEvents Names:\n",
+          e
+        );
+      })
+      .finally(() => client.disconnect());
+    //END OF NAME RETRIEVAL
+  };
+
   getInitialLookRent = () => {
     //console.log("Calling getInitialLookRent");
 
@@ -8693,6 +8826,7 @@ class App extends React.Component {
     this.getOffRent(queryObject, categoryIndex);
     this.getOffBiz(queryObject, categoryIndex);
     this.getOffOther(queryObject, categoryIndex);
+    this.getOffEvents(queryObject, categoryIndex);
     this.getLookRent(queryObject, categoryIndex);
     this.getLookOther(queryObject, categoryIndex);
   };
@@ -9071,6 +9205,120 @@ class App extends React.Component {
     //END OF NAME RETRIEVAL
   };
 
+  getOffEvents = (queryObj, cateIndex) => {
+    //console.log("Calling getOffEvents");
+    let queryOffEvents = JSON.parse(JSON.stringify(queryObj));
+
+    queryOffEvents.where[cateIndex].push("offother");
+
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      apps: {
+        DMIOContract: {
+          contractId: this.state.DataContractDMIO,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const getDocuments = async () => {
+      return client.platform.documents.get(
+        "DMIOContract.dmiopost",
+        queryOffEvents
+      );
+    };
+
+    getDocuments()
+      .then((d) => {
+        if (d.length === 0) {
+          //console.log("There are no OffEvents");
+
+          this.setState(
+            {
+              SearchNearby6: true,
+              OffEventsPosts: [],
+            },
+            () => this.searchNearbyRace()
+          );
+        } else {
+          let docArray = [];
+          //console.log("Getting OffEvents");
+          for (const n of d) {
+            //console.log("Document:\n", n.toJSON());
+            docArray = [...docArray, n.toJSON()];
+          }
+          this.getOffEventsNames(docArray);
+        }
+      })
+      .catch((e) => console.error("Something went wrong getOffEvents:\n", e))
+      .finally(() => client.disconnect());
+  };
+
+  getOffEventsNames = (docArray) => {
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      apps: {
+        DPNS: {
+          contractId: this.state.DataContractDPNS,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+    //START OF NAME RETRIEVAL
+
+    let ownerarrayOfOwnerIds = docArray.map((doc) => {
+      return doc.$ownerId;
+    });
+
+    let setOfOwnerIds = [...new Set(ownerarrayOfOwnerIds)];
+
+    let arrayOfOwnerIds = [...setOfOwnerIds];
+
+    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+      Buffer.from(Identifier.from(item))
+    );
+
+    //console.log("Calling getNamesOffEvents");
+
+    const getNameDocuments = async () => {
+      return client.platform.documents.get("DPNS.domain", {
+        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
+        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      });
+    };
+
+    getNameDocuments()
+      .then((d) => {
+        //WHAT IF THERE ARE NO NAMES? -> THEN THIS WON'T BE CALLED
+        if (d.length === 0) {
+          //console.log("No DPNS domain documents retrieved.");
+        }
+
+        let nameDocArray = [];
+
+        for (const n of d) {
+          //console.log("NameDoc:\n", n.toJSON());
+
+          nameDocArray = [n.toJSON(), ...nameDocArray];
+        }
+        //console.log(`DPNS Name Docs: ${nameDocArray}`);
+
+        this.setState(
+          {
+            OffEventsNames: nameDocArray,
+            OffEventsPosts: docArray,
+            SearchNearby6: true,
+          },
+          () => this.searchNearbyRace()
+        );
+      })
+      .catch((e) => {
+        console.error("Something went wrong getting OffOther Names:\n", e);
+      })
+      .finally(() => client.disconnect());
+    //END OF NAME RETRIEVAL
+  };
+
   getLookRent = (queryObj, cateIndex) => {
     //console.log("Calling getLookRent");
     let queryLookRent = JSON.parse(JSON.stringify(queryObj));
@@ -9336,19 +9584,40 @@ class App extends React.Component {
       } else {
         identity = await platform.identities.get(this.state.identity);
       }
+      let postProperties;
+      if (postObject.category !== "events") {
+        postProperties = {
+          city: postObject.city, //.toLocaleLowerCase() <- done in modal
+          region: postObject.region,
+          country: postObject.country,
 
-      const postProperties = {
-        city: postObject.city, //.toLocaleLowerCase() <- done in modal
-        region: postObject.region,
-        country: postObject.country,
+          description: postObject.description,
+          category: postObject.category,
+          link: postObject.link,
+          // address: postObject.addressInput, //RECONNECT ->
 
-        description: postObject.description,
-        category: postObject.category,
-        link: postObject.link,
+          active: postObject.active,
+          dgp: postObject.dgp,
+        };
+      } else {
+        postProperties = {
+          city: postObject.city, //.toLocaleLowerCase() <- done in modal
+          region: postObject.region,
+          country: postObject.country,
 
-        active: postObject.active,
-        dgp: postObject.dgp,
-      };
+          description: postObject.description,
+          category: postObject.category,
+          link: postObject.link,
+
+          active: postObject.active,
+          dgp: postObject.dgp,
+          //EVENTS
+          group: postObject.groupInput,
+          address: postObject.addressInput,
+          date: postObject.dateInput,
+          time: postObject.timeInput,
+        };
+      }
       //console.log('Post to Create: ', postProperties);
 
       // Create the note document
@@ -9394,6 +9663,11 @@ class App extends React.Component {
 
           active: postObject.active,
           dgp: postObject.dgp,
+          //EVENTS
+          // group: maxLength: 32,
+          // address: maxLength: 100,
+          // date: maxLength: 32,
+          // time: maxLength: 32,
         };
 
         this.setState({
@@ -12861,12 +13135,14 @@ class App extends React.Component {
                     OffRentPosts={this.state.OffRentPosts}
                     OffBizPosts={this.state.OffBizPosts}
                     OffOtherPosts={this.state.OffOtherPosts}
+                    OffEventsPosts={this.state.OffEventsPosts}
                     LookRentPosts={this.state.LookRentPosts}
                     LookOtherPosts={this.state.LookOtherPosts}
                     handleSearchedPost={this.handleSearchedPost}
                     OffRentNames={this.state.OffRentNames}
                     OffBizNames={this.state.OffBizNames}
                     OffOtherNames={this.state.OffOtherNames}
+                    OffEventsNames={this.state.OffEventsNames}
                     LookRentNames={this.state.LookRentNames}
                     LookOtherNames={this.state.LookOtherNames}
                     yourPostsToDisplay={this.state.yourPostsToDisplay}

@@ -22,6 +22,12 @@ class ButtonsOnPage extends React.Component {
     });
     let offOtherNum = offOtherNumFiltered.length;
 
+    //EVENTS
+    let offEventsNumFiltered = this.props.OffEventsPosts.filter((post) => {
+      return post.active;
+    });
+    let offEventsNum = offEventsNumFiltered.length;
+
     let lookRentNumFiltered = this.props.LookRentPosts.filter((post) => {
       return post.active;
     });
@@ -102,7 +108,11 @@ class ButtonsOnPage extends React.Component {
         {this.props.selectedCategoryButton === "offother" ? (
           <Button
             variant="primary"
-            style={{ textDecoration: "underline", marginTop: ".2rem" }}
+            style={{
+              textDecoration: "underline",
+              marginTop: ".2rem",
+              marginRight: ".5rem",
+            }}
           >
             <b>Trade</b>{" "}
             {!this.props.isLoadingNearbySearch &&
@@ -115,7 +125,7 @@ class ButtonsOnPage extends React.Component {
         ) : (
           <Button
             variant="primary"
-            style={{ marginTop: ".2rem" }}
+            style={{ marginTop: ".2rem", marginRight: ".5rem" }}
             onClick={() => this.props.handleSelectedCategoryButton("offother")}
           >
             <b>Trade</b>{" "}
@@ -128,8 +138,39 @@ class ButtonsOnPage extends React.Component {
           </Button>
         )}
 
+        {/* //EVENTS */}
+
+        {this.props.selectedCategoryButton === "offevents" ? (
+          <Button
+            variant="primary"
+            style={{ textDecoration: "underline", marginTop: ".2rem" }}
+          >
+            <b>Events</b>{" "}
+            {!this.props.isLoadingNearbySearch &&
+            !this.props.isLoadingNearbyInitial ? (
+              <b>({offEventsNum})</b>
+            ) : (
+              <></>
+            )}
+          </Button>
+        ) : (
+          <Button
+            variant="primary"
+            style={{ marginTop: ".2rem" }}
+            onClick={() => this.props.handleSelectedCategoryButton("offevents")}
+          >
+            <b>Events</b>
+            {!this.props.isLoadingNearbySearch &&
+            !this.props.isLoadingNearbyInitial ? (
+              <b>({offEventsNum})</b>
+            ) : (
+              <></>
+            )}
+          </Button>
+        )}
+
         <h3 style={{ marginTop: ".5rem", marginBottom: ".1rem" }}>
-          <b>Looking For</b>
+          <b>Looking for</b>
         </h3>
 
         {this.props.selectedCategoryButton === "lookrent" ? (

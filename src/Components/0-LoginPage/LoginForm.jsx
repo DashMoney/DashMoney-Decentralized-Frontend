@@ -164,26 +164,28 @@ class LoginForm extends React.Component {
             If you do not have an account, <b>Create New Account</b> below.
           </p>
           <p></p>
-          <div className="d-grid gap-2">
-            <Button
-              variant="primary"
-              size="lg"
-              onClick={() => this.props.showModal("CreateNewWalletModal")}
-            >
-              <b>Create New Account</b>
-            </Button>
+          <div className="footer">
+            <div className="d-grid gap-2">
+              <Button
+                variant="primary"
+                size="lg"
+                onClick={() => this.props.showModal("CreateNewWalletModal")}
+              >
+                <b>Create New Account</b>
+              </Button>
+            </div>
+            {this.props.LocalForageKeys.length === 0 ? (
+              <>
+                <p></p>
+                <p>
+                  <b>First-Time</b> logins may take up to a minute, but all
+                  subsequent will be much faster. Thank you for your patience.
+                </p>
+              </>
+            ) : (
+              <></>
+            )}
           </div>
-          {this.props.LocalForageKeys.length === 0 ? (
-            <>
-              <p></p>
-              <p>
-                <b>First-Time</b> logins may take up to a minute, but all
-                subsequent will be much faster. Thank you for your patience.
-              </p>
-            </>
-          ) : (
-            <></>
-          )}
         </div>
       </>
     );

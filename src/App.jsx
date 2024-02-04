@@ -8411,7 +8411,7 @@ class App extends React.Component {
     const getDocuments = async () => {
       return client.platform.documents.get("DMIOContract.dmiopost", {
         where: [
-          ["category", "==", "offevents"], // offrent, offbiz, offother, offevents, lookrent, lookother
+          ["category", "==", "events"], // offrent, offbiz, offother, offevents, lookrent, lookother
           ["$createdAt", "<=", Date.now()],
         ],
         orderBy: [["$createdAt", "desc"]],
@@ -9209,7 +9209,7 @@ class App extends React.Component {
     //console.log("Calling getOffEvents");
     let queryOffEvents = JSON.parse(JSON.stringify(queryObj));
 
-    queryOffEvents.where[cateIndex].push("offother");
+    queryOffEvents.where[cateIndex].push("events");
 
     const clientOpts = {
       network: this.state.whichNetwork,

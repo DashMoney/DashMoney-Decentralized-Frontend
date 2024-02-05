@@ -4450,7 +4450,7 @@ class App extends React.Component {
           return invite.$id === d.toJSON().$id;
         });
 
-        let mutableArray = this.state.dgtAcceptedInvites;
+        let mutableArray = this.state.dgtInvites;
         mutableArray.splice(indexToDelete, 1);
 
         this.setState({

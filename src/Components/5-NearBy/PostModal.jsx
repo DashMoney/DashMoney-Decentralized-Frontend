@@ -710,131 +710,54 @@ class PostModal extends React.Component {
           <div className="BottomBorder"></div>
           <p></p>
 
-          {this.state.whichDSODGR === "DSO" ? (
-            <ButtonGroup className="me-2" aria-label="First group">
-              <Button variant="primary" style={{ textDecoration: "underline" }}>
-                <b>Message(DM)</b>
-              </Button>
+          <h4>
+            <b>Reviews</b>
+          </h4>
 
-              <Button variant="primary" onClick={this.triggerDGRButton}>
-                <b>Reviews</b>
-              </Button>
-            </ButtonGroup>
+          {/* Move out of button group and removed DSO */}
+
+          {this.state.LoadingDGR ? (
+            <>
+              <p></p>
+              <div id="spinner">
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </Spinner>
+              </div>
+              <p></p>
+            </>
           ) : (
-            <ButtonGroup className="me-2" aria-label="First group">
-              <Button variant="primary" onClick={this.triggerDSOButton}>
-                <b>Message(DM)</b>
-              </Button>
-
-              <Button variant="primary" style={{ textDecoration: "underline" }}>
-                <b>Reviews</b>
-              </Button>
-            </ButtonGroup>
+            <></>
           )}
 
-          <p></p>
-          {this.state.whichDSODGR === "DSO" ? (
+          <RatingSummary
+            SearchedReviews={this.state.SearchedReviews}
+            SearchedNameDoc={this.props.selectedSearchedPostNameDoc}
+            isLoadingSearch={this.state.LoadingDGR}
+          />
+
+          {!this.state.LoadingDGR ? (
             <>
-              {this.props.isLoggedIn ? (
-                <>
-                  {/* <p>Put the DSO dm but no tag just handle behind the scene. I think maybe have a different component probably form from DSO DM modal YEAH </p> */}
-
-                  <p className="bodytext">
-                    You will be able to send a <b>Message(DM)</b> to the post
-                    owner, once completed!
-                  </p>
-
-                  {/* HOW WILL THE USER KNOW THAT THE MSG HAS BEEN SENT AND WHERE IS LOADING STATE DISPLAYED?
-IF I JUST KEEP IN MODAL IT COULD FAIL TO SEND BUT IF I SET IN APP THEN I HAVE TO TRACK AND DISPLAY WHERE MAYBE JUST ANOTHER THING tHAT I PASS TO THE MODAL
-
-ALRIGHT SO IT WILL KEEP TRACK FOR THE SESSION BUT LOSES IT AFTER <= YEAH  
-
-1) Add stuff from the DM modal/form here
-    CAN I JUST PUT IT IN ITS OWN COMPONENT? => 
-    FORGOT ABOUT THE TAG QUERY AND STUFF
-    It doesn't have to query -> i have the namedoc already!!! <=
-
-2) Add the stuff from App.js to App.js and setstate for message sent.
-
-3) TEST ->
-
-
-*/}
-                </>
-              ) : (
-                <>
-                  <p className="bodytext">
-                    When logged in, you will be able to send a{" "}
-                    <b>Message(DM)</b> to the post owner.
-                  </p>
-                </>
-              )}
+              <Reviews
+                mode={this.props.mode} //Props
+                SearchedReviews={this.state.SearchedReviews} // State
+                SearchedReviewNames={this.state.SearchedReviewNames} //State
+                SearchedReplies={this.state.SearchedReplies} //State
+                SearchedNameDoc={this.props.selectedSearchedPostNameDoc} //Props
+              />
             </>
           ) : (
-            <>
-              {/* <p className='bodytext'><b>DashGetReviews</b> is the next dapp! (Coming Soon!)</p> */}
+            <></>
+          )}
 
-              {/* THIS IS WHERE THE REVIEWS GO */}
-
-              {this.state.LoadingDGR ? (
-                <>
-                  <p></p>
-                  <div id="spinner">
-                    <Spinner animation="border" role="status">
-                      <span className="visually-hidden">Loading...</span>
-                    </Spinner>
-                  </div>
-                  <p></p>
-                </>
-              ) : (
-                <></>
-              )}
-
-              <RatingSummary
-                SearchedReviews={this.state.SearchedReviews}
-                SearchedNameDoc={this.props.selectedSearchedPostNameDoc}
-                isLoadingSearch={this.state.LoadingDGR}
-              />
-
-              {!this.state.LoadingDGR ? (
-                <>
-                  <Reviews
-                    mode={this.props.mode} //Props
-                    SearchedReviews={this.state.SearchedReviews} // State
-                    SearchedReviewNames={this.state.SearchedReviewNames} //State
-                    SearchedReplies={this.state.SearchedReplies} //State
-                    SearchedNameDoc={this.props.selectedSearchedPostNameDoc} //Props
-                  />
-                </>
-              ) : (
-                <></>
-              )}
-
-              {this.state.SearchedReviews.length === 0 &&
-              !this.state.LoadingDGR ? (
-                <div className="bodytext">
-                  <p>Sorry, there are no reviews available.</p>
-                </div>
-              ) : (
-                <></>
-              )}
-            </>
+          {this.state.SearchedReviews.length === 0 && !this.state.LoadingDGR ? (
+            <div className="bodytext">
+              <p>Sorry, there are no reviews available.</p>
+            </div>
+          ) : (
+            <></>
           )}
         </Modal.Body>
-
-        {/* <Modal.Footer>
-
-
-          {this.props.isLoadingWallet?
-          <Button variant="primary">
-          <b>Wallet Loading..</b>
-        </Button>:
-        <Button variant="primary" onClick={}>
-            <b>Top Up Identity</b>
-          </Button>}
-          
-          
-        </Modal.Footer> */}
       </Modal>
     );
   }

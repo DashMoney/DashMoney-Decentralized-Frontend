@@ -156,6 +156,7 @@ class MsgForyou extends React.Component {
 
           <Card.Text
             onClick={() => this.props.handleThread(this.props.tuple[1].$id)}
+            style={{ whiteSpace: "pre-wrap" }}
           >
             {this.props.tuple[1].msg}
           </Card.Text>

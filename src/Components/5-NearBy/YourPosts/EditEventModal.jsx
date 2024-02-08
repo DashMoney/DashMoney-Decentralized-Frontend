@@ -639,15 +639,15 @@ class EditEventModal extends React.Component {
                       type="text"
                       placeholder="Enter event/group"
                       required
-                      isInvalid={this.state.tooLongCityError}
-                      isValid={this.state.validCity}
+                      isInvalid={this.state.tooLongGroupError}
+                      isValid={this.state.validGroup}
                     />
                     <p></p>
                     <Form.Control.Feedback type="invalid">
                       Event/Group name is too long.
                     </Form.Control.Feedback>
                     {/* <Form.Control.Feedback type="valid">
-              City/Town name is acceptable!
+              Group is acceptable!
             </Form.Control.Feedback> */}
                   </Form.Group>
                 </>
@@ -695,8 +695,8 @@ class EditEventModal extends React.Component {
                       type="text"
                       placeholder="Enter date (Optional)"
                       required
-                      isInvalid={this.state.tooLongCityError}
-                      isValid={this.state.validCity}
+                      isInvalid={this.state.tooLongDateError}
+                      isValid={this.state.validDate}
                     />
                     <p className="smallertext">
                       (e.g."Friday, 2nd of January" or "Every Saturday")
@@ -706,7 +706,7 @@ class EditEventModal extends React.Component {
                       Date info is too long.
                     </Form.Control.Feedback>
                     {/* <Form.Control.Feedback type="valid">
-              City/Town name is acceptable!
+              Date is acceptable!
             </Form.Control.Feedback> */}
                   </Form.Group>
                 </>
@@ -725,15 +725,15 @@ class EditEventModal extends React.Component {
                       type="text"
                       placeholder="Enter time (Optional)"
                       required
-                      isInvalid={this.state.tooLongCityError}
-                      isValid={this.state.validCity}
+                      isInvalid={this.state.tooLongTimeError}
+                      isValid={this.state.validTime}
                     />
                     <p></p>
                     <Form.Control.Feedback type="invalid">
                       Time info is too long.
                     </Form.Control.Feedback>
                     {/* <Form.Control.Feedback type="valid">
-              City/Town name is acceptable!
+            Time is acceptable!
             </Form.Control.Feedback> */}
                   </Form.Group>
                 </>

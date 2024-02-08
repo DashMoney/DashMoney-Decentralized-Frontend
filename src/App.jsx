@@ -79,6 +79,8 @@ import EditCartItemModal from "./Components/6-Shopping/ShoppingModals/EditCartIt
 import PlaceOrderModal from "./Components/6-Shopping/ShoppingModals/PlaceOrderModal";
 import OrderMessageModal from "./Components/6-Shopping/ShoppingModals/OrderMessageModal";
 
+import CreateOfferModal from "./Components/9-/CreateOfferModal";
+
 import CreateReviewModal from "./Components/7-Reviews/ReviewModals/CreateReviewModal";
 import EditReviewModal from "./Components/7-Reviews/ReviewModals/EditReviewModal";
 import CreateReplyModal from "./Components/7-Reviews/ReviewModals/CreateReplyModal";
@@ -487,7 +489,7 @@ class App extends React.Component {
       InitialPullNearBy: true,
 
       whichNearbyTab: "Search",
-      selectedCategoryButton: "offrent",
+      selectedCategoryButton: "offbiz",
 
       isLoadingDSODM: false,
 
@@ -13072,29 +13074,6 @@ class App extends React.Component {
                 <></>
               )}
 
-              {/* {this.state.selectedDapp === "My Store" ? (
-                <>
-                  <div className="bodytext">
-                    <p>
-                      Visit{" "}
-                      <b>
-                        <a
-                          rel="noopener noreferrer"
-                          target="_blank"
-                          href="https://dashgetpaid.com/"
-                        >
-                          DashGetPaid.com
-                        </a>
-                      </b>{" "}
-                      and use the Merchant Login to experience this
-                      functionality.
-                    </p>
-                  </div>
-                </>
-              ) : (
-                <></>
-              )} */}
-
               {this.state.selectedDapp === "Near By" ? (
                 <>
                   <NearbyPage
@@ -13216,27 +13195,22 @@ class App extends React.Component {
                 <></>
               )}
 
-              {/* {this.state.selectedDapp === "Shopping" ? (
+              {this.state.selectedDapp === "P2P Exchange" ? (
                 <>
                   <div className="bodytext">
-                    <p>
-                      Visit{" "}
-                      <b>
-                        <a
-                          rel="noopener noreferrer"
-                          target="_blank"
-                          href="https://dashgetpaid.com/"
-                        >
-                          DashGetPaid.com
-                        </a>
-                      </b>{" "}
-                      and use the Buyer Login to experience this functionality.
-                    </p>
+                    <p>This will be a p2P exchagne!</p>
+                    <CreateOfferModal
+                      isModalShowing={this.state.isModalShowing}
+                      createYourOffer={this.createYourOffer}
+                      hideModal={this.hideModal}
+                      mode={this.state.mode}
+                      closeTopNav={this.closeTopNav}
+                    />
                   </div>
                 </>
               ) : (
                 <></>
-              )} */}
+              )}
 
               {this.state.selectedDapp === "Reviews" ? (
                 <>
@@ -13877,6 +13851,24 @@ class App extends React.Component {
         ) : (
           <></>
         )}
+        {/* *   ################
+         *      ###          ####
+         *      ################
+         *      ###
+         *      ###            */}
+
+        {/* {this.state.isModalShowing &&
+        this.state.presentModal === "CreateOfferModal" ? (
+          <CreateOfferModal
+            isModalShowing={this.state.isModalShowing}
+            createYourOffer={this.createYourOffer}
+            hideModal={this.hideModal}
+            mode={this.state.mode}
+            closeTopNav={this.closeTopNav}
+          />
+        ) : (
+          <></>
+        )} */}
 
         {/* *   ################
          *      ###          ####

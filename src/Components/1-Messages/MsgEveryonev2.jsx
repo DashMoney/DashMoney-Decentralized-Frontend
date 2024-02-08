@@ -150,7 +150,10 @@ class MsgEveryone extends React.Component {
             </span>
           </Card.Title>
 
-          <Card.Text onClick={() => this.handleReplyClick()}>
+          <Card.Text
+            onClick={() => this.handleReplyClick()}
+            style={{ whiteSpace: "pre-wrap" }}
+          >
             {this.props.tuple[1].msg}
           </Card.Text>
           {threadsToDisplay}

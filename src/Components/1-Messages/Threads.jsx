@@ -117,7 +117,10 @@ class Threads extends React.Component {
             )}
           </span>
         </Card.Title>
-        <Card.Text onClick={() => this.handleReplyClick()}>
+        <Card.Text
+          style={{ whiteSpace: "pre-wrap" }}
+          onClick={() => this.handleReplyClick()}
+        >
           {this.props.thr.msg}
         </Card.Text>
       </>

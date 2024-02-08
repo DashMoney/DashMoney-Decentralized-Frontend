@@ -792,25 +792,6 @@ class CreatePostModal extends React.Component {
             </Form.Control.Feedback> */}
               </Form.Group>
 
-              {/*  PRICE FORM BELOW */}
-
-              {/* <Form.Group className="mb-3" controlId="formItemPrice">
-                <Form.Label>Item Price (in Dash)</Form.Label>
-
-                 //<Form.Control
-                   //   type="number"
-                    //  placeholder={this.state.amountToSend}
-                    //  readOnly
-                  //  /> 
-
-                <Form.Control
-                  type="number"
-                  placeholder="0.01 For example.."
-                  required
-                  isValid={this.state.validPrice}
-                  isInvalid={!this.state.validPrice}
-                />
-              </Form.Group> */}
               {this.state.selectedCategory === "events" ? (
                 <>
                   {/* Group FORM BELOW */}
@@ -820,10 +801,10 @@ class CreatePostModal extends React.Component {
                     </h5>
                     <Form.Control
                       type="text"
-                      placeholder="Enter event/group"
+                      placeholder="Enter event/group name"
                       required
-                      isInvalid={this.state.tooLongCityError}
-                      isValid={this.state.validCity}
+                      isInvalid={this.state.tooLongGroupError}
+                      isValid={this.state.validGroup}
                     />
                     <p></p>
                     <Form.Control.Feedback type="invalid">
@@ -878,8 +859,8 @@ class CreatePostModal extends React.Component {
                       type="text"
                       placeholder="Enter date (Optional)"
                       required
-                      isInvalid={this.state.tooLongCityError}
-                      isValid={this.state.validCity}
+                      isInvalid={this.state.tooLongDateError}
+                      isValid={this.state.validDate}
                     />
                     <p className="smallertext">
                       (e.g."Friday, 2nd of January" or "Every Saturday")
@@ -908,8 +889,8 @@ class CreatePostModal extends React.Component {
                       type="text"
                       placeholder="Enter time (Optional)"
                       required
-                      isInvalid={this.state.tooLongCityError}
-                      isValid={this.state.validCity}
+                      isInvalid={this.state.tooLongTimeError}
+                      isValid={this.state.validTime}
                     />
                     <p></p>
                     <Form.Control.Feedback type="invalid">
@@ -1029,11 +1010,11 @@ class CreatePostModal extends React.Component {
                         variant="primary" //type="submit" //Reconnect !!!!
                         disabled
                       >
-                        <b>Create Post</b>
+                        <b>Create Event</b>
                       </Button>
                     ) : (
                       <Button variant="primary" disabled>
-                        <b>Create Post</b>
+                        <b>Create Event</b>
                       </Button>
                     )}
                   </>

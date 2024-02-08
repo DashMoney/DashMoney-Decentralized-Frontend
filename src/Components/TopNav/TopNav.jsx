@@ -258,6 +258,11 @@ class TopNav extends React.Component {
                   )}
 
                   <p></p>
+                  {/* <NavSelects
+                    selection="P2P Exchange"
+                    selectedDapp={this.props.selectedDapp}
+                    handleSelectedDapp={this.props.handleSelectedDapp}
+                  /> */}
 
                   <NavSelects
                     selection="Reviews"

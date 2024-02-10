@@ -618,13 +618,63 @@ class CreatePostModal extends React.Component {
               <b>You are Offering:</b>
             </h4>
 
+            {this.state.selectedCategory === "offbiz" ? (
+              <Button
+                variant="primary"
+                style={{ textDecoration: "underline", marginRight: ".5rem",
+                marginBottom: ".7rem" }}
+              >
+                <b>Shops/Menus</b>
+              </Button>
+            ) : (
+              <Button
+                variant="primary"
+                style={{ marginRight: ".5rem",
+                marginBottom: ".7rem"}}
+                onClick={() => this.handleCategoryButtons("offbiz")}
+              >
+                <b>Shops/Menus</b>
+              </Button>
+            )}
+
+            {this.state.selectedCategory === "events" ? (
+              <Button variant="primary" style={{ textDecoration: "underline" ,
+              marginBottom: ".7rem"}}>
+                <b
+                  style={{
+                    paddingLeft: ".5rem",
+                    paddingRight: ".5rem",
+                  }}
+                >
+                  Events
+                </b>
+              </Button>
+            ) : (
+              <Button
+                variant="primary"
+                style={{ 
+                marginBottom: ".7rem"}}
+                onClick={() => this.handleCategoryButtons("events")}
+              >
+                <b
+                  style={{
+                    paddingLeft: ".5rem",
+                    paddingRight: ".5rem",
+                  }}
+                >
+                  Events
+                </b>
+              </Button>
+            )}
+
             {this.state.selectedCategory === "offrent" ? (
               <Button
                 variant="primary"
                 style={{
                   textDecoration: "underline",
                   marginRight: ".5rem",
-                  marginBottom: ".2rem",
+                  
+              marginBottom: ".7rem"
                 }}
               >
                 <b>Place to Rent</b>
@@ -632,57 +682,44 @@ class CreatePostModal extends React.Component {
             ) : (
               <Button
                 variant="primary"
-                style={{ marginRight: ".5rem", marginBottom: ".2rem" }}
+                style={{ marginRight: ".5rem",
+                marginBottom: ".7rem"}}
                 onClick={() => this.handleCategoryButtons("offrent")}
               >
                 <b>Place to Rent</b>
               </Button>
             )}
 
-            {this.state.selectedCategory === "offbiz" ? (
-              <Button
-                variant="primary"
-                style={{ textDecoration: "underline", marginRight: ".5rem" }}
-              >
-                <b>Shops/Menus</b>
-              </Button>
-            ) : (
-              <Button
-                variant="primary"
-                style={{ marginRight: ".5rem" }}
-                onClick={() => this.handleCategoryButtons("offbiz")}
-              >
-                <b>Shops/Menus</b>
-              </Button>
-            )}
-
             {this.state.selectedCategory === "offother" ? (
               <Button
                 variant="primary"
-                style={{ textDecoration: "underline", marginRight: ".5rem" }}
+                style={{ textDecoration: "underline", marginRight: ".5rem",
+                marginBottom: ".7rem" }}
               >
-                <b>Trade</b>
+                <b
+                  style={{
+                    paddingLeft: ".7rem",
+                    paddingRight: ".7rem",
+                  }}
+                >
+                  Trade
+                </b>
               </Button>
             ) : (
               <Button
                 variant="primary"
-                style={{ marginRight: ".5rem" }}
+                style={{ marginRight: ".5rem",
+                marginBottom: ".7rem" }}
                 onClick={() => this.handleCategoryButtons("offother")}
               >
-                <b>Trade</b>
-              </Button>
-            )}
-
-            {this.state.selectedCategory === "events" ? (
-              <Button variant="primary" style={{ textDecoration: "underline" }}>
-                <b>Events</b>
-              </Button>
-            ) : (
-              <Button
-                variant="primary"
-                onClick={() => this.handleCategoryButtons("events")}
-              >
-                <b>Events</b>
+                <b
+                  style={{
+                    paddingLeft: ".7rem",
+                    paddingRight: ".7rem",
+                  }}
+                >
+                  Trade
+                </b>
               </Button>
             )}
 
@@ -712,7 +749,14 @@ class CreatePostModal extends React.Component {
                 variant="primary"
                 style={{ textDecoration: "underline", marginRight: ".5rem" }}
               >
-                <b>Trade</b>
+                <b
+                  style={{
+                    paddingLeft: ".7rem",
+                    paddingRight: ".7rem",
+                  }}
+                >
+                  Trade
+                </b>
               </Button>
             ) : (
               <Button
@@ -720,7 +764,14 @@ class CreatePostModal extends React.Component {
                 style={{ marginRight: ".5rem" }}
                 onClick={() => this.handleCategoryButtons("lookother")}
               >
-                <b>Trade</b>
+                <b
+                  style={{
+                    paddingLeft: ".7rem",
+                    paddingRight: ".7rem",
+                  }}
+                >
+                  Trade
+                </b>
               </Button>
             )}
             <div className="BottomBorder" style={{ paddingTop: ".5rem" }}></div>

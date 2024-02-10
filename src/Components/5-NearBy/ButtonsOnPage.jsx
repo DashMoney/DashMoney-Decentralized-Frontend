@@ -93,28 +93,67 @@ class ButtonsOnPage extends React.Component {
               marginBottom: ".7rem",
             }}
           >
-            <b>Events</b>
+            <b
+              style={{
+                paddingLeft: ".5rem",
+              }}
+            >
+              Events
+            </b>
             {""}
             {!this.props.isLoadingNearbySearch &&
             !this.props.isLoadingNearbyInitial ? (
-              <b>({offEventsNum})</b>
+              <b
+                style={{
+                  paddingRight: ".5rem",
+                }}
+              >
+                ({offEventsNum})
+              </b>
             ) : (
-              <></>
+              <>
+                <b
+                  style={{
+                    paddingRight: ".5rem",
+                  }}
+                ></b>
+              </>
             )}
           </Button>
         ) : (
           <Button
             variant="primary"
-            style={{ marginRight: ".5rem", marginBottom: ".7rem" }}
+            style={{
+              marginRight: ".5rem",
+              marginBottom: ".7rem",
+            }}
             onClick={() => this.props.handleSelectedCategoryButton("offevents")}
           >
-            <b>Events</b>
+            <b
+              style={{
+                paddingLeft: ".5rem",
+              }}
+            >
+              Events
+            </b>
             {""}
             {!this.props.isLoadingNearbySearch &&
             !this.props.isLoadingNearbyInitial ? (
-              <b>({offEventsNum})</b>
+              <b
+                style={{
+                  paddingRight: ".5rem",
+                }}
+              >
+                ({offEventsNum})
+              </b>
             ) : (
-              <></>
+              <>
+                <b
+                  style={{
+                    paddingRight: ".5rem",
+                  }}
+                ></b>
+              </>
             )}
           </Button>
         )}
@@ -160,30 +199,72 @@ class ButtonsOnPage extends React.Component {
             style={{
               textDecoration: "underline",
               marginBottom: ".7rem",
+              paddingLeft: ".5rem",
+              paddingRight: ".5rem",
             }}
           >
-            <b>Trade</b>
+            <b
+              style={{
+                paddingLeft: ".7rem",
+              }}
+            >
+              Trade
+            </b>
             {""}
             {!this.props.isLoadingNearbySearch &&
             !this.props.isLoadingNearbyInitial ? (
-              <b>({offOtherNum})</b>
+              <b
+                style={{
+                  paddingRight: ".7rem",
+                }}
+              >
+                ({offOtherNum})
+              </b>
             ) : (
-              <></>
+              <>
+                <b
+                  style={{
+                    paddingRight: ".7rem",
+                  }}
+                ></b>
+              </>
             )}
           </Button>
         ) : (
           <Button
             variant="primary"
-            style={{ marginBottom: ".7rem" }}
+            style={{
+              marginBottom: ".7rem",
+              paddingLeft: ".5rem",
+              paddingRight: ".5rem",
+            }}
             onClick={() => this.props.handleSelectedCategoryButton("offother")}
           >
-            <b>Trade</b>
+            <b
+              style={{
+                paddingLeft: ".7rem",
+              }}
+            >
+              Trade
+            </b>
             {""}
             {!this.props.isLoadingNearbySearch &&
             !this.props.isLoadingNearbyInitial ? (
-              <b>({offOtherNum})</b>
+              <b
+                style={{
+                  paddingRight: ".7rem",
+                }}
+              >
+                ({offOtherNum})
+              </b>
             ) : (
-              <></>
+              <>
+                <b
+                  style={{
+                    paddingRight: ".7rem",
+                  }}
+                ></b>
+              </>
             )}
           </Button>
         )}
@@ -225,13 +306,31 @@ class ButtonsOnPage extends React.Component {
 
         {this.props.selectedCategoryButton === "lookother" ? (
           <Button variant="primary" style={{ textDecoration: "underline" }}>
-            <b>Trade</b>
+            <b
+              style={{
+                paddingLeft: ".7rem",
+              }}
+            >
+              Trade
+            </b>
             {""}
             {!this.props.isLoadingNearbySearch &&
             !this.props.isLoadingNearbyInitial ? (
-              <b>({lookOtherNum})</b>
+              <b
+                style={{
+                  paddingRight: ".7rem",
+                }}
+              >
+                ({lookOtherNum})
+              </b>
             ) : (
-              <></>
+              <>
+                <b
+                  style={{
+                    paddingRight: ".7rem",
+                  }}
+                ></b>
+              </>
             )}
           </Button>
         ) : (
@@ -239,13 +338,31 @@ class ButtonsOnPage extends React.Component {
             variant="primary"
             onClick={() => this.props.handleSelectedCategoryButton("lookother")}
           >
-            <b>Trade</b>
+            <b
+              style={{
+                paddingLeft: ".7rem",
+              }}
+            >
+              Trade
+            </b>
             {""}
             {!this.props.isLoadingNearbySearch &&
             !this.props.isLoadingNearbyInitial ? (
-              <b>({lookOtherNum})</b>
+              <b
+                style={{
+                  paddingRight: ".7rem",
+                }}
+              >
+                ({lookOtherNum})
+              </b>
             ) : (
-              <></>
+              <>
+                <b
+                  style={{
+                    paddingRight: ".7rem",
+                  }}
+                ></b>
+              </>
             )}
           </Button>
         )}

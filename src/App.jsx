@@ -33,6 +33,8 @@ import NearbyPage from "./Components/5-NearBy/NearbyPage";
 
 import ShoppingPage from "./Components/6-Shopping/ShoppingPage";
 
+import ExchangePage from "./Components/9-P2PExchange/ExchangePage";
+
 import ReviewsPage from "./Components/7-Reviews/ReviewsPage";
 
 import ProofsPage from "./Components/8-ProofOfFunds/ProofsPage";
@@ -79,7 +81,7 @@ import EditCartItemModal from "./Components/6-Shopping/ShoppingModals/EditCartIt
 import PlaceOrderModal from "./Components/6-Shopping/ShoppingModals/PlaceOrderModal";
 import OrderMessageModal from "./Components/6-Shopping/ShoppingModals/OrderMessageModal";
 
-import CreateOfferModal from "./Components/9-/CreateOfferModal";
+import CreateOfferModal from "./Components/9-P2PExchange/CreateOfferModal";
 
 import CreateReviewModal from "./Components/7-Reviews/ReviewModals/CreateReviewModal";
 import EditReviewModal from "./Components/7-Reviews/ReviewModals/EditReviewModal";
@@ -103,6 +105,8 @@ class App extends React.Component {
     this.state = {
       isLoggedIn: false,
       mode: "dark",
+      unit: "base", //or 'micro', //or 'hecto', //μ OR hd, no.. hD  hecto-Duff yes
+
       feeAmountBaseNumber: 10000000 - Math.floor(Math.random() * 5000), //Needs to be determined by env var and needs a random part to vary the input so state transistion already in chain is not triggered.
 
       //isLoading: true, //For identity and name And not identityInfo that is handle on display component
@@ -576,6 +580,70 @@ class App extends React.Component {
       yourPostsToDisplay: [],
 
       //NEAR BY PAGE^^^^^^
+
+      //EXCHANGE PAGE
+
+      whichExchangeTab: "Search", //Search and Your Reviews
+
+      whichOffersName: "Offers",
+
+      isLoadingExchangeSearch: false,
+      isLoadingYourOffers: true,
+
+      nameToSearch_EXCHANGE: "",
+      nameFormat_EXCHANGE: false,
+
+      isTooLongNameError_EXCHANGE: false, //Pass to form and add ->
+
+      YourOffers: [],
+
+      offerToEdit: [], //use a function to find and pass to modal ->
+      offerToEditIndex: "",
+
+      //##### OFFER FORM STATE ######
+      toMeInput: "",
+      validtoMe: false,
+      //tooLongtoMeError: false,
+
+      toMeInputOTHER: "",
+      validtoMeOTHER: false,
+      tooLongtoMeErrorOTHER: false,
+
+      toMeViaInput: "",
+      validtoMeVia: false,
+      // tooLongtoMeViaError: false,
+
+      toMeViaInputOTHER: "",
+      validtoMeViaOTHER: false,
+      tooLongtoMeViaErrorOTHER: false,
+
+      toMeFinal: false,
+      toMe4Doc: "",
+      toMeVia4Doc: "",
+      //toMeHandle4Doc: "",
+
+      toUInput: "",
+      validtoU: false,
+      //tooLongtoUError: false,
+
+      toUInputOTHER: "",
+      validtoUOTHER: false,
+      tooLongtoUErrorOTHER: false,
+
+      toUViaInput: "",
+      validtoUVia: false,
+      //tooLongtoUViaError: false,
+
+      toUViaInputOTHER: "",
+      validtoUViaOTHER: false,
+      tooLongtoUViaErrorOTHER: false,
+
+      toUFinal: false,
+      toU4Doc: "",
+      toUVia4Doc: "",
+      //##### OFFER FORM STATE ######
+
+      //EXCHANGE PAGE^^^^^
 
       //REVIEWS PAGE
       whichReviewsTab: "Search", //Search and Your Reviews
@@ -11372,6 +11440,721 @@ class App extends React.Component {
    *                             #############
    *
    *
+   *      ################
+   *      ###
+   *      ################
+   *      ###
+   *      ################
+   */
+  //EXCHANGE FUNCTIONS
+  handleExchangeTab = (eventKey) => {
+    if (eventKey === "Search")
+      this.setState({
+        whichOffersTab: "Search",
+      });
+    else {
+      this.setState({
+        whichOffersTab: "Your Offers",
+      });
+    }
+  };
+
+  triggerOffersButton = () => {
+    this.setState({
+      whichOffersName: "Offers",
+    });
+  };
+
+  triggerNameButton = () => {
+    this.setState({
+      whichOffersName: "Name",
+    });
+  };
+
+  handleExchangeNameSearchOnChangeValidation = (event) => {
+    this.setState({
+      isTooLongNameError_EXCHANGE: false,
+    });
+
+    if (event.target.id === "validationCustomName") {
+      this.nameValidate_EXCHANGE(event.target.value);
+    }
+  };
+
+  nameValidate_EXCHANGE = (nameInput) => {
+    let regex = /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$/;
+    let valid = regex.test(nameInput);
+
+    if (valid) {
+      this.setState({
+        nameToSearch_EXCHANGE: nameInput,
+        nameFormat_EXCHANGE: true,
+      });
+    } else {
+      //isTooLongNameError => Add if statement here =>
+      this.setState({
+        nameToSearch_EXCHANGE: nameInput,
+        nameFormat_EXCHANGE: false,
+      });
+    }
+  };
+
+  searchName_EXCHANGE = () => {
+    //add spinner start -> connect ->
+    // clear previous results ->
+
+    this.setState({
+      isLoadingExchangeSearch: true,
+      SearchedOffers: [], //This is not the same I think
+    });
+
+    const client = new Dash.Client(this.state.whichNetwork);
+
+    const retrieveName = async () => {
+      // Retrieve by full name (e.g., myname.dash)
+      console.log(this.state.nameToSearch_EXCHANGE);
+      return client.platform.names.resolve(
+        `${this.state.nameToSearch_EXCHANGE}.dash`
+      );
+    };
+
+    retrieveName()
+      .then((d) => {
+        if (d === null) {
+          console.log("No DPNS Document for this Name.");
+          this.setState({
+            SearchedNameDoc_EXCHANGE: "No NameDoc", //Handle if name fails ->
+            isLoadingExchangeSearch: false,
+          });
+        } else {
+          let nameDoc = d.toJSON();
+          console.log("Name retrieved:\n", nameDoc);
+
+          this.startSearch_EXCHANGE(nameDoc.$ownerId);
+
+          this.setState({
+            SearchedNameDoc_EXCHANGE: nameDoc,
+          });
+        }
+      })
+      .catch((e) => {
+        this.setState({
+          SearchedNameDoc_EXCHANGE: "No NameDoc",
+          isLoadingExchangeSearch: false,
+        });
+        console.error("Something went wrong:\n", e);
+      })
+      .finally(() => client.disconnect());
+  };
+
+  clearExchangeOffersForm = () => {
+    this.setState({
+      toMeInput: "",
+      validtoMe: false,
+      //tooLongtoMeError: false,
+
+      toMeInputOTHER: "",
+      validtoMeOTHER: false,
+      tooLongtoMeErrorOTHER: false,
+
+      toMeViaInput: "",
+      validtoMeVia: false,
+      // tooLongtoMeViaError: false,
+
+      toMeViaInputOTHER: "",
+      validtoMeViaOTHER: false,
+      tooLongtoMeViaErrorOTHER: false,
+
+      toMeFinal: false,
+      toMe4Doc: "",
+      toMeVia4Doc: "",
+      //toMeHandle4Doc: "",
+
+      toUInput: "",
+      validtoU: false,
+      //tooLongtoUError: false,
+
+      toUInputOTHER: "",
+      validtoUOTHER: false,
+      tooLongtoUErrorOTHER: false,
+
+      toUViaInput: "",
+      validtoUVia: false,
+      //tooLongtoUViaError: false,
+
+      toUViaInputOTHER: "",
+      validtoUViaOTHER: false,
+      tooLongtoUViaErrorOTHER: false,
+
+      toUFinal: false,
+      toU4Doc: "",
+      toUVia4Doc: "",
+    });
+  };
+  //
+  //Called after state is set.
+  verifyOrigi = () => {
+    //set false unless hits a success full case
+    // this.setState({
+    //   toMeFinal: false,
+    // },()=>this.verifyOrigi());
+
+    // toMeFinal: false,
+    // toMe4Doc: "",
+    // toMeVia4Doc: "",
+    // toMeHandle4Doc: "",
+    //
+    // 1) Dash <- (PaytoName, Address) THERE IS ONLY DASH
+    if (this.state.toMeInput === "Dash") {
+      this.setState({
+        toMeFinal: true,
+        toMe4Doc: "Dash",
+        toMeVia4Doc: "Wallet",
+      });
+    }
+    //
+    //THIS IS FOR THE USD AND EUR
+    if (this.state.toMeInput !== "" && this.state.toMeInput !== "Other") {
+      // 2) USD AND EUR(Inside) -> Velle, Venmo, PayPal
+      if (
+        this.state.toMeViaInput !== "" &&
+        this.state.toMeViaInput !== "Other"
+      ) {
+        this.setState({
+          toMeFinal: true,
+          toMe4Doc: this.state.toMeInput,
+          toMeVia4Doc: this.state.toMeViaInput,
+        });
+      }
+      //
+      // 3) USD AND EUR(Inside) -> Other
+      if (this.state.toMeViaInput === "Other" && this.state.validtoMeViaOTHER) {
+        this.setState({
+          toMeFinal: true,
+          toMe4Doc: this.state.toMeInput,
+          toMeVia4Doc: this.state.toMeViaInputOTHER,
+        });
+      }
+    }
+    //
+    //THIS IS FOR THE Other ->
+    if (this.state.toMeInput === "Other" && this.state.validtoMeOTHER) {
+      // 4) Other(Inside) -> Velle, Venmo, PayPal
+      if (
+        this.state.toMeViaInput !== "" &&
+        this.state.toMeViaInput !== "Other"
+      ) {
+        this.setState({
+          toMeFinal: true,
+          toMe4Doc: this.state.toMeInputOTHER,
+          toMeVia4Doc: this.state.toMeViaInput,
+        });
+      }
+      // 6) Other(Inside) -> Other
+      if (this.state.toMeViaInput === "Other" && this.state.validtoMeViaOTHER) {
+        this.setState({
+          toMeFinal: true,
+          toMe4Doc: this.state.toMeInputOTHER,
+          toMeVia4Doc: this.state.toMeViaInputOTHER,
+        });
+      }
+    }
+  };
+
+  verifyRecip = () => {
+    // 1) Dash <- (PaytoName, Address) THERE IS ONLY DASH
+    if (this.state.toUInput === "Dash") {
+      this.setState({
+        toUFinal: true,
+        toU4Doc: "Dash",
+        toUVia4Doc: "Wallet", //DONT SEARCH WITH , JUST USE TO TRIGGER
+      });
+    }
+
+    //
+    //THIS IS FOR THE USD AND EUR
+    if (this.state.toUInput !== "" && this.state.toUInput !== "Other") {
+      // 2) USD AND EUR(Inside) -> Velle, Venmo, PayPal
+      if (this.state.toUViaInput !== "" && this.state.toUViaInput !== "Other") {
+        this.setState({
+          toUFinal: true,
+          toU4Doc: this.state.toUInput,
+          toUVia4Doc: this.state.toUViaInput,
+        });
+      }
+      //
+      // 3) USD AND EUR(Inside) -> Other
+      if (this.state.toUViaInput === "Other" && this.state.validtoUViaOTHER) {
+        this.setState({
+          toUFinal: true,
+          toU4Doc: this.state.toUInput,
+          toUVia4Doc: this.state.toUViaInputOTHER,
+        });
+      }
+    }
+
+    //
+    //THIS IS FOR THE Other ->
+    if (this.state.toUInput === "Other" && this.state.validtoUOTHER) {
+      // 4) Other(Inside) -> Velle, Venmo, PayPal
+      if (this.state.toUViaInput !== "" && this.state.toUViaInput !== "Other") {
+        this.setState({
+          toUFinal: true,
+          toU4Doc: this.state.toUInputOTHER,
+          toUVia4Doc: this.state.toUViaInput,
+        });
+      }
+      // 5) Other(Inside) -> Other
+      if (this.state.toUViaInput === "Other" && this.state.validtoUViaOTHER) {
+        this.setState({
+          toUFinal: true,
+          toU4Doc: this.state.toUInputOTHER,
+          toUVia4Doc: this.state.toUViaInputOTHER,
+        });
+      }
+    }
+  };
+
+  handleExchangeOffersSearchOnChangeValidation = (event) => {
+    // console.log(event.target.value);
+    //console.log(`id = ${event.target.id}`);
+
+    if (event.target.id === "formtoMe") {
+      event.preventDefault();
+      event.stopPropagation();
+      //Set invalid to reset the forms below
+      this.setState(
+        {
+          validtoMe: false,
+        },
+        () => this.toMeValidate(event.target.value)
+      );
+    }
+
+    if (event.target.id === "formtoMeOTHER") {
+      event.preventDefault();
+      event.stopPropagation();
+      this.toMeValidateOTHER(event.target.value);
+    }
+
+    if (event.target.id === "formtoMeVia") {
+      event.preventDefault();
+      event.stopPropagation();
+      this.toMeViaValidate(event.target.value);
+    }
+
+    if (event.target.id === "formtoMeViaDash") {
+      event.preventDefault();
+      event.stopPropagation();
+      this.toMeViaDashValidate(event.target.value);
+    }
+
+    if (event.target.id === "formtoMeViaOTHER") {
+      event.preventDefault();
+      event.stopPropagation();
+      this.toMeViaValidateOTHER(event.target.value);
+    }
+
+    if (event.target.id === "formtoU") {
+      event.preventDefault();
+      event.stopPropagation();
+      this.toUValidate(event.target.value);
+    }
+
+    if (event.target.id === "formtoUOTHER") {
+      event.preventDefault();
+      event.stopPropagation();
+      this.toUValidateOTHER(event.target.value);
+    }
+
+    if (event.target.id === "formtoUVia") {
+      event.preventDefault();
+      event.stopPropagation();
+      this.toUViaValidate(event.target.value);
+    }
+
+    if (event.target.id === "formtoUViaDash") {
+      event.preventDefault();
+      event.stopPropagation();
+      this.toUViaDashValidate(event.target.value);
+    }
+
+    if (event.target.id === "formtoUViaOTHER") {
+      event.preventDefault();
+      event.stopPropagation();
+      this.toUViaValidateOTHER(event.target.value);
+    }
+  };
+  // toMe ***
+  toMeValidate = (toMe) => {
+    let regex = /^\S.{0,32}\S$/;
+    let valid = regex.test(toMe);
+
+    if (valid) {
+      this.setState(
+        {
+          toMeInput: toMe,
+          validtoMe: true,
+          tooLongtoMeError: false,
+
+          toMeFinal: false,
+
+          //Must reset other inputs if change above one.
+          toMeViaInput: "",
+          validtoMeVia: false,
+
+          toMeViaInputOTHER: "",
+          validtoMeViaOTHER: false,
+          //
+          toMeHandle: "",
+          validtoMeHandle: false,
+          //
+          toMeAddr: "",
+          validtoMeAddr: false,
+        },
+        () => this.verifyOrigi()
+      );
+    } else {
+      if (toMe.length > 34) {
+        this.setState({
+          toMeInput: toMe,
+          tooLongtoMeError: true,
+          validtoMe: false,
+          toMeFinal: false,
+        });
+      } else {
+        this.setState({
+          toMeInput: toMe,
+          validtoMe: false,
+          toMeFinal: false,
+        });
+      }
+    }
+  };
+
+  toMeValidateOTHER = (toMe) => {
+    let regex = /^\S.{0,32}\S$/;
+    let valid = regex.test(toMe);
+
+    if (valid) {
+      this.setState(
+        {
+          toMeInputOTHER: toMe,
+          tooLongtoMeErrorOTHER: false,
+          validtoMeOTHER: true,
+          ////set false unless hits a success full case
+          toMeFinal: false,
+        },
+        () => this.verifyOrigi()
+      );
+    } else {
+      if (toMe.length > 34) {
+        this.setState({
+          toMeInputOTHER: toMe,
+          tooLongtoMeErrorOTHER: true,
+          validtoMeOTHER: false,
+          toMeFinal: false,
+        });
+      } else {
+        this.setState({
+          toMeInputOTHER: toMe,
+          validtoMeOTHER: false,
+          toMeFinal: false,
+        });
+      }
+    }
+  };
+  //toMeVia ***
+  toMeViaValidate = (toMeVia) => {
+    let regex = /^\S.{0,32}\S$/;
+    let valid = regex.test(toMeVia);
+
+    if (valid) {
+      this.setState(
+        {
+          toMeViaInput: toMeVia,
+          tooLongtoMeViaError: false,
+          validtoMeVia: true,
+          //Must reset other inputs if change above one.
+          toMeViaInputOTHER: "",
+          tooLongtoMeViaErrorOTHER: false,
+          validtoMeViaOTHER: false,
+          ////set false unless hits a success full case
+          toMeFinal: false,
+        },
+        () => this.verifyOrigi()
+      );
+    } else {
+      if (toMeVia.length > 34) {
+        this.setState({
+          toMeViaInput: toMeVia,
+          tooLongtoMeViaError: true,
+          validtoMeVia: false,
+          toMeFinal: false,
+        });
+      } else {
+        this.setState({
+          toMeViaInput: toMeVia,
+          validtoMeVia: false,
+          toMeFinal: false,
+        });
+      }
+    }
+  };
+
+  toMeViaDashValidate = (toMeVia) => {
+    let regex = /^\S.{1,32}\S$/;
+    let valid = regex.test(toMeVia);
+
+    if (valid) {
+      this.setState(
+        {
+          toMeViaInput: toMeVia,
+          tooLongtoMeViaError: false,
+          validtoMeVia: true,
+          ////set false unless hits a success full case
+          toMeFinal: false,
+        },
+        () => this.verifyOrigi()
+      );
+    } else {
+      if (toMeVia.length > 34) {
+        this.setState({
+          toMeViaInput: toMeVia,
+          tooLongtoMeViaError: true,
+          validtoMeVia: false,
+          toMeFinal: false,
+        });
+      } else {
+        this.setState({
+          toMeViaInput: toMeVia,
+          validtoMeVia: false,
+          toMeFinal: false,
+        });
+      }
+    }
+  };
+
+  toMeViaValidateOTHER = (toMeVia) => {
+    let regex = /^\S.{1,32}\S$/;
+    let valid = regex.test(toMeVia);
+
+    if (valid) {
+      this.setState(
+        {
+          toMeViaInputOTHER: toMeVia,
+          tooLongtoMeViaErrorOTHER: false,
+          validtoMeViaOTHER: true,
+          ////set false unless hits a success full case
+          toMeFinal: false,
+        },
+        () => this.verifyOrigi()
+      );
+    } else {
+      if (toMeVia.length > 34) {
+        this.setState({
+          toMeViaInputOTHER: toMeVia,
+          tooLongtoMeViaErrorOTHER: true,
+          validtoMeViaOTHER: false,
+          toMeFinal: false,
+        });
+      } else {
+        this.setState({
+          toMeViaInputOTHER: toMeVia,
+          validtoMeViaOTHER: false,
+          toMeFinal: false,
+        });
+      }
+    }
+  };
+  //
+  //
+  // toU ***
+  toUValidate = (toU) => {
+    let regex = /^\S.{0,32}\S$/;
+    let valid = regex.test(toU);
+
+    if (valid) {
+      this.setState(
+        {
+          toUInput: toU,
+          tooLongtoUError: false,
+          validtoU: true,
+
+          toUFinal: false,
+
+          //Must reset other inputs if change above one.
+          toUViaInput: "",
+          validtoUVia: false,
+
+          toUViaInputOTHER: "",
+          validtoUViaOTHER: false,
+        },
+        () => this.verifyRecip()
+      );
+    } else {
+      if (toU.length > 34) {
+        this.setState({
+          toUInput: toU,
+          tooLongtoUError: true,
+          validtoU: false,
+          toUFinal: false,
+        });
+      } else {
+        this.setState({
+          toUInput: toU,
+          validtoU: false,
+          toUFinal: false,
+        });
+      }
+    }
+  };
+
+  toUValidateOTHER = (toU) => {
+    let regex = /^\S.{0,32}\S$/;
+    let valid = regex.test(toU);
+
+    if (valid) {
+      this.setState(
+        {
+          toUInputOTHER: toU,
+          tooLongtoUErrorOTHER: false,
+          validtoUOTHER: true,
+          ////set false unless hits a success full case
+          toUFinal: false,
+        },
+        () => this.verifyRecip()
+      );
+    } else {
+      if (toU.length > 34) {
+        this.setState({
+          toUInputOTHER: toU,
+          tooLongtoUErrorOTHER: true,
+          validtoUOTHER: false,
+          toUFinal: false,
+        });
+      } else {
+        this.setState({
+          toUInputOTHER: toU,
+          validtoUOTHER: false,
+          toUFinal: false,
+        });
+      }
+    }
+  };
+  //toUVia ***
+  toUViaValidate = (toUVia) => {
+    let regex = /^\S.{0,32}\S$/;
+    let valid = regex.test(toUVia);
+
+    if (valid) {
+      this.setState(
+        {
+          toUViaInput: toUVia,
+          tooLongtoUViaError: false,
+          validtoUVia: true,
+
+          //Must reset other inputs if change above one.
+          toUViaInputOTHER: "",
+          tooLongtoUViaErrorOTHER: false,
+          validtoUViaOTHER: false,
+          ////set false unless hits a success full case
+          toUFinal: false,
+        },
+        () => this.verifyRecip()
+      );
+    } else {
+      if (toUVia.length > 34) {
+        this.setState({
+          toUViaInput: toUVia,
+          tooLongtoUViaError: true,
+          validtoUVia: false,
+          toUFinal: false,
+        });
+      } else {
+        this.setState({
+          toUViaInput: toUVia,
+          validtoUVia: false,
+          toUFinal: false,
+        });
+      }
+    }
+  };
+
+  toUViaDashValidate = (toUVia) => {
+    let regex = /^\S.{0,32}\S$/;
+    let valid = regex.test(toUVia);
+
+    if (valid) {
+      this.setState(
+        {
+          toUViaInput: toUVia,
+          tooLongtoUViaError: false,
+          validtoUVia: true,
+          ////set false unless hits a success full case
+          toUFinal: false,
+        },
+        () => this.verifyRecip()
+      );
+    } else {
+      if (toUVia.length > 34) {
+        this.setState({
+          toUViaInput: toUVia,
+          tooLongtoUViaError: true,
+          validtoUVia: false,
+          toUFinal: false,
+        });
+      } else {
+        this.setState({
+          toUViaInput: toUVia,
+          validtoUVia: false,
+          toUFinal: false,
+        });
+      }
+    }
+  };
+
+  toUViaValidateOTHER = (toUVia) => {
+    let regex = /^\S.{0,32}\S$/;
+    let valid = regex.test(toUVia);
+
+    if (valid) {
+      this.setState(
+        {
+          toUViaInputOTHER: toUVia,
+          tooLongtoUViaErrorOTHER: false,
+          validtoUViaOTHER: true,
+          ////set false unless hits a success full case
+          toUFinal: false,
+        },
+        () => this.verifyRecip()
+      );
+    } else {
+      if (toUVia.length > 34) {
+        this.setState({
+          toUViaInputOTHER: toUVia,
+          tooLongtoUViaErrorOTHER: true,
+          validtoUViaOTHER: false,
+          toUFinal: false,
+        });
+      } else {
+        this.setState({
+          toUViaInputOTHER: toUVia,
+          validtoUViaOTHER: false,
+          toUFinal: false,
+        });
+      }
+    }
+  };
+  /*
+   *EXCHANGE FUNCTIONS^^^^
+   *                                 ################
+   *                                 ###
+   *                                 ################
+   *                                 ###
+   *                                 ################
+   *
+   *
    *   ################
    *   ###          ####
    *   ################
@@ -13194,11 +13977,11 @@ class App extends React.Component {
               ) : (
                 <></>
               )}
-
-              {this.state.selectedDapp === "P2P Exchange" ? (
+              {/* 
+              {this.state.selectedDapp === "Exchange" ? (
                 <>
                   <div className="bodytext">
-                    <p>This will be a p2P exchagne!</p>
+                    <p>This will be a p2P exchange!</p>
                     <CreateOfferModal
                       isModalShowing={this.state.isModalShowing}
                       createYourOffer={this.createYourOffer}
@@ -13207,6 +13990,74 @@ class App extends React.Component {
                       closeTopNav={this.closeTopNav}
                     />
                   </div>
+                </>
+              ) : (
+                <></>
+              )} */}
+
+              {this.state.selectedDapp === "P2P Exchange" ? (
+                <>
+                  <ExchangePage
+                    isLoginComplete={isLoginComplete}
+                    InitialPullExchange={this.state.InitialPullExchange}
+                    pullInitialTriggerEXCHANGE={this.pullInitialTriggerEXCHANGE}
+                    whichExchangeTab={this.state.whichExchangeTab}
+                    handleExchangeTab={this.handleExchangeTab}
+                    whichOffersName={this.state.whichOffersName}
+                    triggerOffersButton={this.triggerOffersButton}
+                    triggerNameButton={this.triggerNameButton}
+                    identity={this.state.identity}
+                    identityInfo={this.state.identityInfo}
+                    uniqueName={this.state.uniqueName}
+                    showModal={this.showModal}
+                    mode={this.state.mode}
+                    isLoadingExchangeSearch={this.state.isLoadingExchangeSearch}
+                    isLoadingYourOffers={this.state.isLoadingYourOffers}
+                    nameToSearch_EXCHANGE={this.state.nameToSearch_EXCHANGE}
+                    nameFormat_EXCHANGE={this.state.nameFormat_EXCHANGE}
+                    isTooLongNameError_EXCHANGE={
+                      this.state.isTooLongNameError_EXCHANGE
+                    }
+                    searchName_EXCHANGE={this.searchName_EXCHANGE}
+                    handleExchangeNameSearchOnChangeValidation={
+                      this.handleExchangeNameSearchOnChangeValidation
+                    }
+                    YourOffers={this.state.YourOffers}
+                    offerToEdit={this.state.offerToEdit}
+                    offerToEditIndex={this.state.offerToEditIndex}
+                    clearExchangeOffersForm={this.clearExchangeOffersForm}
+                    handleExchangeOffersSearchOnChangeValidation={
+                      this.handleExchangeOffersSearchOnChangeValidation
+                    }
+                    toMeInput={this.state.toMeInput}
+                    validtoMe={this.state.validtoMe}
+                    toMeInputOTHER={this.state.toMeInputOTHER}
+                    validtoMeOTHER={this.state.validtoMeOTHER}
+                    tooLongtoMeErrorOTHER={this.state.tooLongtoMeErrorOTHER}
+                    toMeViaInput={this.state.toMeViaInput}
+                    validtoMeVia={this.state.validtoMeVia}
+                    toMeViaInputOTHER={this.state.toMeViaInputOTHER}
+                    validtoMeViaOTHER={this.state.validtoMeViaOTHER}
+                    tooLongtoMeViaErrorOTHER={
+                      this.state.tooLongtoMeViaErrorOTHER
+                    }
+                    toMeFinal={this.state.toMeFinal}
+                    toMe4Doc={this.state.toMe4Doc}
+                    toMeVia4Doc={this.state.toMeVia4Doc}
+                    toUInput={this.state.toUInput}
+                    validtoU={this.state.validtoU}
+                    toUInputOTHER={this.state.toUInputOTHER}
+                    validtoUOTHER={this.state.validtoUOTHER}
+                    tooLongtoUErrorOTHER={this.state.tooLongtoUErrorOTHER}
+                    toUViaInput={this.state.toUViaInput}
+                    validtoUVia={this.state.validtoUVia}
+                    toUViaInputOTHER={this.state.toUViaInputOTHER}
+                    validtoUViaOTHER={this.state.validtoUViaOTHER}
+                    tooLongtoUViaErrorOTHER={this.state.tooLongtoUViaErrorOTHER}
+                    toUFinal={this.state.toUFinal}
+                    toU4Doc={this.state.toU4Doc}
+                    toUVia4Doc={this.state.toUVia4Doc}
+                  />
                 </>
               ) : (
                 <></>
@@ -13852,12 +14703,12 @@ class App extends React.Component {
           <></>
         )}
         {/* *   ################
-         *      ###          ####
+         *      ###
          *      ################
          *      ###
-         *      ###            */}
+         *      ################            */}
 
-        {/* {this.state.isModalShowing &&
+        {this.state.isModalShowing &&
         this.state.presentModal === "CreateOfferModal" ? (
           <CreateOfferModal
             isModalShowing={this.state.isModalShowing}
@@ -13868,7 +14719,7 @@ class App extends React.Component {
           />
         ) : (
           <></>
-        )} */}
+        )}
 
         {/* *   ################
          *      ###          ####

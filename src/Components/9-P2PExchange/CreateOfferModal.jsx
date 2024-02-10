@@ -1090,8 +1090,7 @@ class CreateOfferModal extends React.Component {
     return (
       <>
         <Modal
-          // show={this.props.isModalShowing}
-          show={true}
+          show={this.props.isModalShowing}
           backdropClassName={modalBackdrop}
           contentClassName={modalBkg}
         >
@@ -1329,8 +1328,11 @@ class CreateOfferModal extends React.Component {
               {this.state.toMeFinal ? (
                 <>
                   {" "}
-                  <p className="smallertext" style={{ color: "green" }}>
-                    Payment option looks good.
+                  <p
+                    className="smallertext"
+                    style={{ color: "green", padding: "0.2rem" }}
+                  >
+                    Payment option acceptable.
                   </p>
                 </>
               ) : (
@@ -1358,16 +1360,7 @@ class CreateOfferModal extends React.Component {
                       <></>
                     )}
                   </Col>
-                  {/* <Col>
-                    <Form.Select aria-label="Default select example">
-                      <option value="">Options</option>
 
-                      <option value="USD">Dollars(USD)</option>
-                      <option value="EUR">Euro(EUR)</option>
-                      <option value="Dash">Dash</option>
-                      <option value="Other">Other</option>
-                    </Form.Select>
-                  </Col> */}
                   <Col>
                     <Form.Select aria-label="Default select example">
                       <option value="">Options</option>
@@ -1483,8 +1476,11 @@ class CreateOfferModal extends React.Component {
               {this.state.toUFinal ? (
                 <>
                   {" "}
-                  <p className="smallertext" style={{ color: "green" }}>
-                    Payment option looks good.
+                  <p
+                    className="smallertext"
+                    style={{ color: "green", padding: "0rem" }}
+                  >
+                    Payment option acceptable.
                   </p>
                 </>
               ) : (
@@ -1542,55 +1538,64 @@ class CreateOfferModal extends React.Component {
                   placeholder="30.01 For example.."
                   required
                   isValid={this.state.validexRate}
-                  isInvalid={!this.state.validexRate}
+                  //isInvalid={!this.state.validexRate}
                 />
                 <p className="smallertext">
                   (i.e. Must include 2 decimal precision)
                 </p>
               </Form.Group>
               {/*  */}
-              <Card
-                bg={cardBkg}
-                text={cardText}
-                style={{ border: "solid 2px white", padding: ".2rem" }}
-              >
-                <Form.Group className="mb-1" controlId="formCalc">
-                  <Form.Label>
-                    <h5 style={{ marginTop: ".2rem", marginBottom: "0rem" }}>
-                      Rate Calculator
-                    </h5>
-                  </Form.Label>
-                  <Row>
-                    <Col>
-                      <Form.Control
-                        type="number"
-                        placeholder="Amount(Dash)"
-                        required
-                        isValid={this.state.validminAmt}
-                        isInvalid={!this.state.validminAmt}
-                      />
-                    </Col>
-                    <Col>
-                      <h5 className="mt-1">
-                        <b>Dash x Rate =</b>
-                      </h5>
-                    </Col>
-                  </Row>
-                </Form.Group>
-                <p className="smallertext">
-                  (i.e. Must include 3 decimal precision)
-                </p>
+              {/* {this.state.validexRate ? (
+                <>
+                  <Card
+                    bg={cardBkg}
+                    text={cardText}
+                    style={{ border: "solid 2px white", padding: ".2rem" }}
+                  >
+                    <Form.Group className="mb-1" controlId="formCalc">
+                      <Form.Label>
+                        <h5
+                          style={{ marginTop: ".2rem", marginBottom: "0rem" }}
+                        >
+                          Rate Calculator
+                        </h5>
+                      </Form.Label>
+                      <Row>
+                        <Col>
+                          <Form.Control
+                            type="number"
+                            placeholder="Amount(Dash)"
+                            required
+                            //isValid={this.state.validminAmt}
+                            // isInvalid={!this.state.validminAmt}
+                          />
+                        </Col>
+                        <Col>
+                          <h5 className="mt-1">
+                            <b>Dash x Rate =</b>
+                          </h5>
+                        </Col>
+                      </Row>
+                    </Form.Group>
+                    <p className="smallertext">
+                      (i.e. Must include 3 decimal precision)
+                    </p>
 
-                <h5 style={{ paddingLeft: "2rem" }}>
-                  <b> = {calcAmt} (fiat)</b>
-                </h5>
-              </Card>
+                    <h5 style={{ paddingLeft: "2rem" }}>
+                      <b> = {calcAmt} (fiat)</b>
+                    </h5>
+                  </Card>
+                </>
+              ) : (
+                <></>
+              )} */}
+
               {/*  MINAMT FORM BELOW */}
 
               <Form.Group className="mb-2" controlId="formminAmt">
                 <Form.Label>
                   <h6 style={{ marginTop: ".2rem", marginBottom: ".1rem" }}>
-                    Minimum Amount Accepted(Dash)
+                    Minimum per Exchange(Fiat)
                   </h6>
                 </Form.Label>
 
@@ -1605,10 +1610,10 @@ class CreateOfferModal extends React.Component {
                   placeholder="0.010 For example.."
                   required
                   isValid={this.state.validminAmt}
-                  isInvalid={!this.state.validminAmt}
+                  //isInvalid={!this.state.validminAmt}
                 />
                 <p className="smallertext">
-                  (i.e. Must include 3 decimal precision)
+                  (i.e. Must include 2 decimal precision)
                 </p>
               </Form.Group>
 
@@ -1617,7 +1622,7 @@ class CreateOfferModal extends React.Component {
               <Form.Group className="mb-3" controlId="formmaxAmt">
                 <Form.Label>
                   <h6 style={{ marginTop: ".2rem", marginBottom: ".1rem" }}>
-                    Maximum Amount Accepted(Dash)
+                    Maximum per Exchange(Fiat)
                   </h6>
                 </Form.Label>
 
@@ -1632,10 +1637,10 @@ class CreateOfferModal extends React.Component {
                   placeholder="10.000 For example.."
                   required
                   isValid={this.state.validmaxAmt}
-                  isInvalid={!this.state.validmaxAmt}
+                  // isInvalid={!this.state.validmaxAmt}
                 />
                 <p className="smallertext">
-                  (i.e. Must include 3 decimal precision)
+                  (i.e. Must include 2 decimal precision)
                 </p>
               </Form.Group>
 

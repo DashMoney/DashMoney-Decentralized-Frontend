@@ -339,7 +339,8 @@ class EditPostModal extends React.Component {
                 style={{
                   textDecoration: "underline",
                   marginRight: ".5rem",
-                  marginBottom: ".2rem",
+
+                  marginBottom: ".7rem",
                 }}
               >
                 <b>Place to Rent</b>
@@ -347,7 +348,7 @@ class EditPostModal extends React.Component {
             ) : (
               <Button
                 variant="primary"
-                style={{ marginRight: ".5rem", marginBottom: ".2rem" }}
+                style={{ marginRight: ".5rem", marginBottom: ".7rem" }}
                 onClick={() => this.handleCategoryButtons("offrent")}
               >
                 <b>Place to Rent</b>
@@ -357,14 +358,18 @@ class EditPostModal extends React.Component {
             {this.state.selectedCategory === "offbiz" ? (
               <Button
                 variant="primary"
-                style={{ textDecoration: "underline", marginRight: ".5rem" }}
+                style={{
+                  textDecoration: "underline",
+                  marginRight: ".5rem",
+                  marginBottom: ".7rem",
+                }}
               >
                 <b>Shops/Menus</b>
               </Button>
             ) : (
               <Button
                 variant="primary"
-                style={{ marginRight: ".5rem" }}
+                style={{ marginRight: ".5rem", marginBottom: ".7rem" }}
                 onClick={() => this.handleCategoryButtons("offbiz")}
               >
                 <b>Shops/Menus</b>
@@ -374,17 +379,35 @@ class EditPostModal extends React.Component {
             {this.state.selectedCategory === "offother" ? (
               <Button
                 variant="primary"
-                style={{ textDecoration: "underline", marginRight: ".5rem" }}
+                style={{
+                  textDecoration: "underline",
+                  marginRight: ".5rem",
+                  marginBottom: ".7rem",
+                }}
               >
-                <b>Trade</b>
+                <b
+                  style={{
+                    paddingLeft: ".7rem",
+                    paddingRight: ".7rem",
+                  }}
+                >
+                  Trade
+                </b>
               </Button>
             ) : (
               <Button
                 variant="primary"
-                style={{ marginRight: ".5rem" }}
+                style={{ marginRight: ".5rem", marginBottom: ".7rem" }}
                 onClick={() => this.handleCategoryButtons("offother")}
               >
-                <b>Trade</b>
+                <b
+                  style={{
+                    paddingLeft: ".7rem",
+                    paddingRight: ".7rem",
+                  }}
+                >
+                  Trade
+                </b>
               </Button>
             )}
 
@@ -395,14 +418,18 @@ class EditPostModal extends React.Component {
             {this.state.selectedCategory === "lookrent" ? (
               <Button
                 variant="primary"
-                style={{ textDecoration: "underline", marginRight: ".5rem" }}
+                style={{
+                  textDecoration: "underline",
+                  marginRight: ".5rem",
+                  marginBottom: ".7rem",
+                }}
               >
                 <b>Place to Rent</b>
               </Button>
             ) : (
               <Button
                 variant="primary"
-                style={{ marginRight: ".5rem" }}
+                style={{ marginRight: ".5rem", marginBottom: ".7rem" }}
                 onClick={() => this.handleCategoryButtons("lookrent")}
               >
                 <b>Place to Rent</b>
@@ -412,17 +439,35 @@ class EditPostModal extends React.Component {
             {this.state.selectedCategory === "lookother" ? (
               <Button
                 variant="primary"
-                style={{ textDecoration: "underline", marginRight: ".5rem" }}
+                style={{
+                  textDecoration: "underline",
+                  marginRight: ".5rem",
+                  marginBottom: ".7rem",
+                }}
               >
-                <b>Trade</b>
+                <b
+                  style={{
+                    paddingLeft: ".7rem",
+                    paddingRight: ".7rem",
+                  }}
+                >
+                  Trade
+                </b>
               </Button>
             ) : (
               <Button
                 variant="primary"
-                style={{ marginRight: ".5rem" }}
+                style={{ marginRight: ".5rem", marginBottom: ".7rem" }}
                 onClick={() => this.handleCategoryButtons("lookother")}
               >
-                <b>Trade</b>
+                <b
+                  style={{
+                    paddingLeft: ".7rem",
+                    paddingRight: ".7rem",
+                  }}
+                >
+                  Trade
+                </b>
               </Button>
             )}
             <div className="BottomBorder" style={{ paddingTop: ".5rem" }}></div>

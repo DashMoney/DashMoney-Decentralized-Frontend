@@ -42,65 +42,73 @@ class OffersSearchForm extends React.Component {
           </h4>
 
           {/* toMe FORM BELOW */}
-          <Form.Group className="mb-3" controlId="formtoMe">
-            <Row>
-              <Col>
-                <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
-                  Send:
-                </h5>
-                {this.props.toMeInput === "Other" ? (
-                  <>
-                    <p className="smallertext">
-                      (e.g. CHF, AUD, GBP, MXN, or INR)
-                    </p>
-                  </>
-                ) : (
-                  <></>
-                )}
-              </Col>
-              <Col>
-                <Form.Select aria-label="Default select example">
+
+          <Row>
+            <Col>
+              <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
+                Send:
+              </h5>
+              {this.props.toMeInput === "Other" ? (
+                <>
+                  <p className="smallertext">
+                    (e.g. CHF, AUD, GBP, MXN, or INR)
+                  </p>
+                </>
+              ) : (
+                <></>
+              )}
+            </Col>
+            <Col>
+              <Form.Group //className="mb-3"
+                controlId="formtoMe"
+              >
+                <Form.Select
+                  aria-label="Default select example"
+                  isValid={
+                    this.props.validtoMe && this.props.toMeInput !== "Other"
+                  }
+                >
                   <option value="">Options</option>
                   <option value="USD">Dollars(USD)</option>
                   <option value="EUR">Euro(EUR)</option>
                   <option value="Dash">Dash</option>
                   <option value="Other">Other</option>
                 </Form.Select>
+              </Form.Group>
+              {this.props.toMeInput === "Other" ? (
+                <>
+                  <Form.Group //className="mb-3"
+                    controlId="formtoMeOTHER"
+                  >
+                    <Form.Control
+                      type="text"
+                      placeholder="Enter option"
+                      required
+                      isInvalid={this.props.tooLongtoMeErrorOTHER}
+                      isValid={this.props.validtoMeOTHER}
+                    />
 
-                {this.props.toMeInput === "Other" ? (
-                  <>
-                    <Form.Group //className="mb-3"
-                      controlId="formtoMeOTHER"
-                    >
-                      <Form.Control
-                        type="text"
-                        placeholder="Enter option"
-                        required
-                        isInvalid={this.props.tooLongtoMeErrorOTHER}
-                        isValid={this.props.validtoMeOTHER}
-                      />
+                    <Form.Control.Feedback className="mt-1" type="invalid">
+                      Option is too long.
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </>
+              ) : (
+                <></>
+              )}
+            </Col>
+          </Row>
 
-                      <Form.Control.Feedback className="mt-1" type="invalid">
-                        Option is too long.
-                      </Form.Control.Feedback>
-                    </Form.Group>
-                  </>
-                ) : (
-                  <></>
-                )}
-              </Col>
-            </Row>
-          </Form.Group>
           {this.props.validtoMe ? (
             <>
               {" "}
               {/* toMeVia FORM BELOW */}
-              <Row>
+              <Row style={{ marginTop: "1.2rem" }}>
                 {this.props.toMeInput !== "Dash" ? (
                   <>
                     <Col>
-                      <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
-                        Send via:
+                      <h5 style={{ marginTop: ".2rem" }}>
+                        Send via: (Optional)
                       </h5>
                     </Col>
                   </>
@@ -109,28 +117,19 @@ class OffersSearchForm extends React.Component {
                 )}
 
                 <Col>
-                  {/* {this.props.toMeInput === "Dash" ? (
-                        <>
-                          <Form.Group //className="mb-3"
-                            controlId="formtoMeViaDash"
-                          >
-                            <Form.Select aria-label="Default select example">
-                              <option value="">Options</option>
-                              <option value="PaytoName">Pay-to-Name</option>
-                              <option value="Address">Address</option>
-                            </Form.Select>
-                          </Form.Group>
-                        </>
-                      ) : (
-                        <></>
-                      )} */}
                   {this.props.toMeInput !== "Dash" ? (
                     <>
                       <Form.Group //className="mb-3"
                         controlId="formtoMeVia"
                       >
-                        <Form.Select aria-label="Default select example">
-                          <option value="">Options</option>
+                        <Form.Select
+                          aria-label="Default select example"
+                          isValid={
+                            this.props.validtoMeVia &&
+                            this.props.toMeViaInput !== "Other"
+                          }
+                        >
+                          <option value="Optional">(Optional)</option>
                           <option value="Venmo">Venmo</option>
                           <option value="Velle">Velle</option>
                           <option value="Paypal">PayPal</option>
@@ -174,7 +173,7 @@ class OffersSearchForm extends React.Component {
             <></>
           )}
 
-          {this.props.toMeFinal ? (
+          {/* {this.props.toMeFinal ? (
             <>
               {" "}
               <p
@@ -186,74 +185,83 @@ class OffersSearchForm extends React.Component {
             </>
           ) : (
             <></>
-          )}
+          )} */}
 
-          <h4 style={{ marginBottom: ".5rem", marginTop: ".5rem" }}>
-            <b>You Receive from Offer:</b>
+          <h4 style={{ marginBottom: ".5rem", marginTop: "1.5rem" }}>
+            <b>Receive from Offer:</b>
           </h4>
 
           {/* toU FORM BELOW */}
-          <Form.Group className="mb-3" controlId="formtoU">
-            <Row>
-              <Col>
-                <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
-                  Receive (You):
-                </h5>
-                {this.props.toUInput === "Other" ? (
-                  <>
-                    <p className="smallertext">
-                      (e.g. CHF, AUD, GBP, MXN, or INR)
-                    </p>
-                  </>
-                ) : (
-                  <></>
-                )}
-              </Col>
 
-              <Col>
-                <Form.Select aria-label="Default select example">
+          <Row>
+            <Col>
+              <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
+                (You) Receive:
+              </h5>
+              {this.props.toUInput === "Other" ? (
+                <>
+                  <p className="smallertext">
+                    (e.g. CHF, AUD, GBP, MXN, or INR)
+                  </p>
+                </>
+              ) : (
+                <></>
+              )}
+            </Col>
+
+            <Col>
+              <Form.Group //className="mb-3"
+                controlId="formtoU"
+              >
+                <Form.Select
+                  aria-label="Default select example"
+                  isValid={
+                    this.props.validtoU && this.props.toUInput !== "Other"
+                  }
+                >
                   <option value="">Options</option>
                   <option value="USD">Dollars(USD)</option>
                   <option value="EUR">Euro(EUR)</option>
                   <option value="Dash">Dash</option>
                   <option value="Other">Other</option>
                 </Form.Select>
+              </Form.Group>
 
-                {this.props.toUInput === "Other" ? (
-                  <>
-                    <Form.Group //className="mb-3"
-                      controlId="formtoUOTHER"
-                    >
-                      <Form.Control
-                        type="text"
-                        placeholder="Enter option"
-                        required
-                        isInvalid={this.props.tooLongtoUErrorOTHER}
-                        isValid={this.props.validtoUOTHER}
-                      />
+              {this.props.toUInput === "Other" ? (
+                <>
+                  <Form.Group //className="mb-3"
+                    controlId="formtoUOTHER"
+                  >
+                    <Form.Control
+                      type="text"
+                      placeholder="Enter option"
+                      required
+                      isInvalid={this.props.tooLongtoUErrorOTHER}
+                      isValid={this.props.validtoUOTHER}
+                    />
 
-                      <Form.Control.Feedback className="mt-1" type="invalid">
-                        Option is too long.
-                      </Form.Control.Feedback>
-                    </Form.Group>
-                  </>
-                ) : (
-                  <></>
-                )}
-              </Col>
-            </Row>
-          </Form.Group>
+                    <Form.Control.Feedback className="mt-1" type="invalid">
+                      Option is too long.
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </>
+              ) : (
+                <></>
+              )}
+            </Col>
+          </Row>
+
           {/*  */}
           {this.props.validtoU ? (
             <>
               {" "}
               {/* toUVia FORM BELOW */}
-              <Row>
+              <Row style={{ marginTop: "1.2rem" }}>
                 {this.props.toUInput !== "Dash" ? (
                   <>
                     <Col>
                       <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
-                        Receives via:
+                        Receive via: (Optional)
                       </h5>
                     </Col>
                   </>
@@ -262,28 +270,19 @@ class OffersSearchForm extends React.Component {
                 )}
 
                 <Col>
-                  {/* {this.props.toUInput === "Dash" ? (
-                    <>
-                      <Form.Group //className="mb-3"
-                        controlId="formtoUViaDash"
-                      >
-                        <Form.Select aria-label="Default select example">
-                          <option value="">Options</option>
-                          <option value="PaytoName">Pay-to-Name</option>
-                          <option value="Address">Address</option>
-                        </Form.Select>
-                      </Form.Group>
-                    </>
-                  ) : (
-                    <></>
-                  )} */}
                   {this.props.toUInput !== "Dash" ? (
                     <>
-                      <Form.Group //className="mb-3"
+                      <Form.Group //className="mt-2"
                         controlId="formtoUVia"
                       >
-                        <Form.Select aria-label="Default select example">
-                          <option value="">Options</option>
+                        <Form.Select
+                          aria-label="Default select example"
+                          isValid={
+                            this.props.validtoUVia &&
+                            this.props.toUViaInput !== "Other"
+                          }
+                        >
+                          <option value="Optional">(Optional)</option>
                           <option value="Venmo">Venmo</option>
                           <option value="Velle">Velle</option>
                           <option value="Paypal">PayPal</option>
@@ -323,7 +322,7 @@ class OffersSearchForm extends React.Component {
             <></>
           )}
 
-          {this.props.toUFinal ? (
+          {/* {this.props.toUFinal ? (
             <>
               {" "}
               <p
@@ -337,7 +336,7 @@ class OffersSearchForm extends React.Component {
             <>
               <p></p>
             </>
-          )}
+          )} */}
 
           {this.props.toMeInput === "Dash" ||
           this.props.toMeInput === "" ||
@@ -347,7 +346,10 @@ class OffersSearchForm extends React.Component {
           ) : (
             <>
               {" "}
-              <p className="smallertext" style={{ color: "red" }}>
+              <p
+                className="smallertext"
+                style={{ color: "red", marginTop: "1rem" }}
+              >
                 One of the options should be Dash. But.. You can do what you
                 want.
               </p>
@@ -357,7 +359,10 @@ class OffersSearchForm extends React.Component {
           {this.props.toMeInput === "Dash" && this.props.toUInput === "Dash" ? (
             <>
               {" "}
-              <p className="smallertext" style={{ color: "red" }}>
+              <p
+                className="smallertext"
+                style={{ color: "red", marginTop: "1rem" }}
+              >
                 Only one of the options should be Dash. But.. It could be a good
                 way to test if a user is viable as Dash spends instantly, and
                 you can send really small amounts.

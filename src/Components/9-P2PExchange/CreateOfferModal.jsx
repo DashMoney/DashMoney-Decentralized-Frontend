@@ -271,32 +271,19 @@ class CreateOfferModal extends React.Component {
   };
 
   verifyRecip = () => {
-    // 1) Dash -> PaytoName
-    if (
-      this.state.toUInput === "Dash" &&
-      this.state.toUViaInput === "PaytoName"
-    ) {
+    // 1) Dash <= PaytoName or Address
+    if (this.state.toUInput === "Dash") {
       this.setState({
         toUFinal: true,
         toU4Doc: "Dash",
-        toUVia4Doc: "PaytoName",
+        toUVia4Doc: "Wallet", // "Address", "PaytoName" NEED SOMETHING FOR THE DOCUMENT BEING CREATED.
       });
     }
-    // 2) Dash -> Address -> addr
-    if (
-      this.state.toUInput === "Dash" &&
-      this.state.toUViaInput === "Address"
-    ) {
-      this.setState({
-        toUFinal: true,
-        toU4Doc: "Dash",
-        toUVia4Doc: "Address",
-      });
-    }
+
     //
     //THIS IS FOR THE USD AND EUR
     if (this.state.toUInput !== "" && this.state.toUInput !== "Other") {
-      // 3) USD AND EUR(Inside) -> Velle, Venmo, PayPal
+      // 2) USD AND EUR(Inside) -> Velle, Venmo, PayPal
       if (this.state.toUViaInput !== "" && this.state.toUViaInput !== "Other") {
         this.setState({
           toUFinal: true,
@@ -305,7 +292,7 @@ class CreateOfferModal extends React.Component {
         });
       }
       //
-      // 4) USD AND EUR(Inside) -> Other
+      // 3) USD AND EUR(Inside) -> Other
       if (this.state.toUViaInput === "Other" && this.state.validtoUViaOTHER) {
         this.setState({
           toUFinal: true,
@@ -318,7 +305,7 @@ class CreateOfferModal extends React.Component {
     //
     //THIS IS FOR THE Other ->
     if (this.state.toUInput === "Other" && this.state.validtoUOTHER) {
-      // 5) Other(Inside) -> Velle, Venmo, PayPal
+      // 4) Other(Inside) -> Velle, Venmo, PayPal
       if (this.state.toUViaInput !== "" && this.state.toUViaInput !== "Other") {
         this.setState({
           toUFinal: true,
@@ -326,7 +313,7 @@ class CreateOfferModal extends React.Component {
           toUVia4Doc: this.state.toUViaInput,
         });
       }
-      // 6) Other(Inside) -> Other
+      // 5) Other(Inside) -> Other
       if (this.state.toUViaInput === "Other" && this.state.validtoUViaOTHER) {
         this.setState({
           toUFinal: true,
@@ -392,7 +379,13 @@ class CreateOfferModal extends React.Component {
     if (event.target.id === "formtoU") {
       event.preventDefault();
       event.stopPropagation();
-      this.toUValidate(event.target.value);
+      //Set invalid to reset the forms below
+      this.setState(
+        {
+          validtoU: false,
+        },
+        () => this.toUValidate(event.target.value)
+      );
     }
 
     if (event.target.id === "formtoUOTHER") {
@@ -407,11 +400,11 @@ class CreateOfferModal extends React.Component {
       this.toUViaValidate(event.target.value);
     }
 
-    if (event.target.id === "formtoUViaDash") {
-      event.preventDefault();
-      event.stopPropagation();
-      this.toUViaDashValidate(event.target.value);
-    }
+    // if (event.target.id === "formtoUViaDash") {
+    //   event.preventDefault();
+    //   event.stopPropagation();
+    //   this.toUViaDashValidate(event.target.value);
+    // }
 
     if (event.target.id === "formtoUViaOTHER") {
       event.preventDefault();
@@ -813,38 +806,38 @@ class CreateOfferModal extends React.Component {
     }
   };
 
-  toUViaDashValidate = (toUVia) => {
-    let regex = /^\S.{0,32}\S$/;
-    let valid = regex.test(toUVia);
+  // toUViaDashValidate = (toUVia) => {
+  //   let regex = /^\S.{0,32}\S$/;
+  //   let valid = regex.test(toUVia);
 
-    if (valid) {
-      this.setState(
-        {
-          toUViaInput: toUVia,
-          tooLongtoUViaError: false,
-          validtoUVia: true,
-          ////set false unless hits a success full case
-          toUFinal: false,
-        },
-        () => this.verifyRecip()
-      );
-    } else {
-      if (toUVia.length > 34) {
-        this.setState({
-          toUViaInput: toUVia,
-          tooLongtoUViaError: true,
-          validtoUVia: false,
-          toUFinal: false,
-        });
-      } else {
-        this.setState({
-          toUViaInput: toUVia,
-          validtoUVia: false,
-          toUFinal: false,
-        });
-      }
-    }
-  };
+  //   if (valid) {
+  //     this.setState(
+  //       {
+  //         toUViaInput: toUVia,
+  //         tooLongtoUViaError: false,
+  //         validtoUVia: true,
+  //         ////set false unless hits a success full case
+  //         toUFinal: false,
+  //       },
+  //       () => this.verifyRecip()
+  //     );
+  //   } else {
+  //     if (toUVia.length > 34) {
+  //       this.setState({
+  //         toUViaInput: toUVia,
+  //         tooLongtoUViaError: true,
+  //         validtoUVia: false,
+  //         toUFinal: false,
+  //       });
+  //     } else {
+  //       this.setState({
+  //         toUViaInput: toUVia,
+  //         validtoUVia: false,
+  //         toUFinal: false,
+  //       });
+  //     }
+  //   }
+  // };
 
   toUViaValidateOTHER = (toUVia) => {
     let regex = /^\S.{0,32}\S$/;
@@ -1133,7 +1126,12 @@ class CreateOfferModal extends React.Component {
                     )}
                   </Col>
                   <Col>
-                    <Form.Select aria-label="Default select example">
+                    <Form.Select
+                      aria-label="Default select example"
+                      isValid={
+                        this.state.validtoMe && this.state.toMeInput !== "Other"
+                      }
+                    >
                       <option value="">Options</option>
                       <option value="USD">Dollars(USD)</option>
                       <option value="EUR">Euro(EUR)</option>
@@ -1184,7 +1182,13 @@ class CreateOfferModal extends React.Component {
                           <Form.Group //className="mb-3"
                             controlId="formtoMeViaDash"
                           >
-                            <Form.Select aria-label="Default select example">
+                            <Form.Select
+                              aria-label="Default select example"
+                              isValid={
+                                this.state.validtoMeVia &&
+                                this.state.toMeViaInput !== "Other"
+                              }
+                            >
                               <option value="">Options</option>
                               <option value="PaytoName">Pay-to-Name</option>
                               <option value="Address">Address</option>
@@ -1199,7 +1203,13 @@ class CreateOfferModal extends React.Component {
                           <Form.Group //className="mb-3"
                             controlId="formtoMeVia"
                           >
-                            <Form.Select aria-label="Default select example">
+                            <Form.Select
+                              aria-label="Default select example"
+                              isValid={
+                                this.state.validtoMeVia &&
+                                this.state.toMeViaInput !== "Other"
+                              }
+                            >
                               <option value="">Options</option>
                               <option value="Venmo">Venmo</option>
                               <option value="Velle">Velle</option>
@@ -1344,65 +1354,69 @@ class CreateOfferModal extends React.Component {
               </h4>
 
               {/* toU FORM BELOW */}
-              <Form.Group className="mb-3" controlId="formtoU">
-                <Row>
-                  <Col>
-                    <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
-                      Receives:
-                    </h5>
-                    {this.state.toUInput === "Other" ? (
-                      <>
-                        <p className="smallertext">
-                          (e.g. CHF, AUD, GBP, MXN, or INR)
-                        </p>
-                      </>
-                    ) : (
-                      <></>
-                    )}
-                  </Col>
 
-                  <Col>
-                    <Form.Select aria-label="Default select example">
+              <Row>
+                <Col>
+                  <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
+                    Receives:
+                  </h5>
+                  {this.state.toUInput === "Other" ? (
+                    <>
+                      <p className="smallertext">
+                        (e.g. CHF, AUD, GBP, MXN, or INR)
+                      </p>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </Col>
+
+                <Col>
+                  <Form.Group //className="mb-3"
+                    controlId="formtoU"
+                  >
+                    <Form.Select
+                      aria-label="Default select example"
+                      isValid={
+                        this.state.validtoU && this.state.toUInput !== "Other"
+                      }
+                    >
                       <option value="">Options</option>
                       <option value="USD">Dollars(USD)</option>
                       <option value="EUR">Euro(EUR)</option>
                       <option value="Dash">Dash</option>
                       <option value="Other">Other</option>
                     </Form.Select>
+                  </Form.Group>
+                  {this.state.toUInput === "Other" ? (
+                    <>
+                      <Form.Group //className="mb-3"
+                        controlId="formtoUOTHER"
+                      >
+                        <Form.Control
+                          type="text"
+                          placeholder="Enter option"
+                          required
+                          isInvalid={this.state.tooLongtoUErrorOTHER}
+                          isValid={this.state.validtoUOTHER}
+                        />
 
-                    {this.state.toUInput === "Other" ? (
-                      <>
-                        <Form.Group //className="mb-3"
-                          controlId="formtoUOTHER"
-                        >
-                          <Form.Control
-                            type="text"
-                            placeholder="Enter option"
-                            required
-                            isInvalid={this.state.tooLongtoUErrorOTHER}
-                            isValid={this.state.validtoUOTHER}
-                          />
-
-                          <Form.Control.Feedback
-                            className="mt-1"
-                            type="invalid"
-                          >
-                            Option is too long.
-                          </Form.Control.Feedback>
-                        </Form.Group>
-                      </>
-                    ) : (
-                      <></>
-                    )}
-                  </Col>
-                </Row>
-              </Form.Group>
+                        <Form.Control.Feedback className="mt-1" type="invalid">
+                          Option is too long.
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </Col>
+              </Row>
               {/*  */}
               {this.state.validtoU ? (
                 <>
                   {" "}
                   {/* toUVia FORM BELOW */}
-                  <Row>
+                  <Row style={{ marginTop: "1.2rem" }}>
                     <Col>
                       <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
                         Receives via:
@@ -1411,15 +1425,28 @@ class CreateOfferModal extends React.Component {
                     <Col>
                       {this.state.toUInput === "Dash" ? (
                         <>
-                          <Form.Group //className="mb-3"
+                          {/* <Form.Group //className="mb-3"
                             controlId="formtoUViaDash"
                           >
-                            <Form.Select aria-label="Default select example">
+                            <Form.Select
+                              aria-label="Default select example"
+                              isValid={
+                                this.state.validtoUVia &&
+                                this.state.toUViaInput !== "Other"
+                              }
+                            >
                               <option value="">Options</option>
                               <option value="PaytoName">Pay-to-Name</option>
                               <option value="Address">Address</option>
                             </Form.Select>
-                          </Form.Group>
+                          </Form.Group> */}
+                          <>
+                            {" "}
+                            {/* <h5 className="mt-3 mb-3">To either:</h5> */}
+                            <h5 className="mt-1 mb-1">
+                              <b>Address or Pay-to-Name</b>
+                            </h5>
+                          </>
                         </>
                       ) : (
                         <></>
@@ -1429,7 +1456,13 @@ class CreateOfferModal extends React.Component {
                           <Form.Group //className="mb-3"
                             controlId="formtoUVia"
                           >
-                            <Form.Select aria-label="Default select example">
+                            <Form.Select
+                              aria-label="Default select example"
+                              isValid={
+                                this.state.validtoUVia &&
+                                this.state.toUViaInput !== "Other"
+                              }
+                            >
                               <option value="">Options</option>
                               <option value="Venmo">Venmo</option>
                               <option value="Velle">Velle</option>

@@ -609,8 +609,8 @@ class App extends React.Component {
       validtoMeOTHER: false,
       tooLongtoMeErrorOTHER: false,
 
-      toMeViaInput: "",
-      validtoMeVia: false,
+      toMeViaInput: "Optional",
+      validtoMeVia: true,
       // tooLongtoMeViaError: false,
 
       toMeViaInputOTHER: "",
@@ -630,8 +630,8 @@ class App extends React.Component {
       validtoUOTHER: false,
       tooLongtoUErrorOTHER: false,
 
-      toUViaInput: "",
-      validtoUVia: false,
+      toUViaInput: "Optional",
+      validtoUVia: true,
       //tooLongtoUViaError: false,
 
       toUViaInputOTHER: "",
@@ -11743,11 +11743,11 @@ class App extends React.Component {
       this.toMeViaValidate(event.target.value);
     }
 
-    if (event.target.id === "formtoMeViaDash") {
-      event.preventDefault();
-      event.stopPropagation();
-      this.toMeViaDashValidate(event.target.value);
-    }
+    // if (event.target.id === "formtoMeViaDash") {
+    //   event.preventDefault();
+    //   event.stopPropagation();
+    //   this.toMeViaDashValidate(event.target.value);
+    // }
 
     if (event.target.id === "formtoMeViaOTHER") {
       event.preventDefault();
@@ -11758,7 +11758,12 @@ class App extends React.Component {
     if (event.target.id === "formtoU") {
       event.preventDefault();
       event.stopPropagation();
-      this.toUValidate(event.target.value);
+      this.setState(
+        {
+          validtoU: false,
+        },
+        () => this.toUValidate(event.target.value)
+      );
     }
 
     if (event.target.id === "formtoUOTHER") {
@@ -11800,17 +11805,12 @@ class App extends React.Component {
           toMeFinal: false,
 
           //Must reset other inputs if change above one.
-          toMeViaInput: "",
+          toMeViaInput: "Optional",
           validtoMeVia: false,
 
           toMeViaInputOTHER: "",
           validtoMeViaOTHER: false,
           //
-          toMeHandle: "",
-          validtoMeHandle: false,
-          //
-          toMeAddr: "",
-          validtoMeAddr: false,
         },
         () => this.verifyOrigi()
       );
@@ -11902,38 +11902,38 @@ class App extends React.Component {
     }
   };
 
-  toMeViaDashValidate = (toMeVia) => {
-    let regex = /^\S.{1,32}\S$/;
-    let valid = regex.test(toMeVia);
+  // toMeViaDashValidate = (toMeVia) => {
+  //   let regex = /^\S.{1,32}\S$/;
+  //   let valid = regex.test(toMeVia);
 
-    if (valid) {
-      this.setState(
-        {
-          toMeViaInput: toMeVia,
-          tooLongtoMeViaError: false,
-          validtoMeVia: true,
-          ////set false unless hits a success full case
-          toMeFinal: false,
-        },
-        () => this.verifyOrigi()
-      );
-    } else {
-      if (toMeVia.length > 34) {
-        this.setState({
-          toMeViaInput: toMeVia,
-          tooLongtoMeViaError: true,
-          validtoMeVia: false,
-          toMeFinal: false,
-        });
-      } else {
-        this.setState({
-          toMeViaInput: toMeVia,
-          validtoMeVia: false,
-          toMeFinal: false,
-        });
-      }
-    }
-  };
+  //   if (valid) {
+  //     this.setState(
+  //       {
+  //         toMeViaInput: toMeVia,
+  //         tooLongtoMeViaError: false,
+  //         validtoMeVia: true,
+  //         ////set false unless hits a success full case
+  //         toMeFinal: false,
+  //       },
+  //       () => this.verifyOrigi()
+  //     );
+  //   } else {
+  //     if (toMeVia.length > 34) {
+  //       this.setState({
+  //         toMeViaInput: toMeVia,
+  //         tooLongtoMeViaError: true,
+  //         validtoMeVia: false,
+  //         toMeFinal: false,
+  //       });
+  //     } else {
+  //       this.setState({
+  //         toMeViaInput: toMeVia,
+  //         validtoMeVia: false,
+  //         toMeFinal: false,
+  //       });
+  //     }
+  //   }
+  // };
 
   toMeViaValidateOTHER = (toMeVia) => {
     let regex = /^\S.{1,32}\S$/;
@@ -11984,7 +11984,7 @@ class App extends React.Component {
           toUFinal: false,
 
           //Must reset other inputs if change above one.
-          toUViaInput: "",
+          toUViaInput: "Optional",
           validtoUVia: false,
 
           toUViaInputOTHER: "",

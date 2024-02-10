@@ -697,6 +697,7 @@ class PostModal extends React.Component {
                   <DGPView
                     merchantStore={this.state.merchantStore}
                     merchantItems={this.state.merchantItems}
+                    mode={this.props.mode}
                   />
                 </>
               ) : (

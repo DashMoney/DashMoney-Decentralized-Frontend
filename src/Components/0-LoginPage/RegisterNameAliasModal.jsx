@@ -228,7 +228,11 @@ class RegisterNameAliasModal extends React.Component {
                     placeholder="Enter desired name here..."
                     required
                     //isInvalid={!this.state.validityCheck}
-                    isValid={this.state.validityCheck}
+                    isValid={
+                      this.state.validityCheck &&
+                      !this.state.nameAvailable &&
+                      !this.state.nameTaken
+                    }
                   />
                 )}
 
@@ -246,17 +250,23 @@ class RegisterNameAliasModal extends React.Component {
                 )}
 
                 {this.state.nameAvailable ? (
-                  <Alert variant="success" dismissible>
+                  <p
+                    className="smallertext"
+                    style={{ color: "green", marginTop: ".2rem" }}
+                  >
                     <b>{this.state.searchedName} is available!</b>
-                  </Alert>
+                  </p>
                 ) : (
                   <></>
                 )}
 
                 {this.state.nameTaken ? (
-                  <Alert variant="danger" dismissible>
-                    <b> {this.state.searchedName} is not available.</b>
-                  </Alert>
+                  <p
+                    className="smallertext"
+                    style={{ color: "red", marginTop: ".2rem" }}
+                  >
+                    <b>{this.state.searchedName} is not available.</b>
+                  </p>
                 ) : (
                   <></>
                 )}

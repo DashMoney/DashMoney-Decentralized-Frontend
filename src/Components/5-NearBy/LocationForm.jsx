@@ -25,7 +25,7 @@ class LocationForm extends React.Component {
     event.preventDefault();
     //console.log(event.target.ControlTextarea1.value);
 
-    this.props.constructQueryThenSearch();
+    this.props.submittedStateAndCategoryTHENConstruct();
   };
 
   render() {

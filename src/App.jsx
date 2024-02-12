@@ -515,6 +515,10 @@ class App extends React.Component {
       tooLongCountryRegionNameError: false,
       //^^^^^ LOCATION FORM STATE ^^^^^
 
+      citySubmitted: "",
+      countryRegionSubmitted: "Country",
+      whichSubmitted: "offbiz",
+
       //#####  POSTS TO DISPLAY ######
       OffRentPosts: [],
       OffRentNames: [],
@@ -535,42 +539,14 @@ class App extends React.Component {
       LookOtherNames: [],
       //^^^^^ POSTS TO DISPLAY ^^^^^
 
-      //##### INITIAL POSTS ######
-
-      InitialNearby1: false,
-      InitialNearby2: false,
-      InitialNearby3: false,
-      InitialNearby4: false,
-      InitialNearby5: false,
-      InitialNearby6: false,
-
-      InitialOffRentPosts: [],
-      InitialOffRentNames: [],
-
-      InitialOffBizPosts: [],
-      InitialOffBizNames: [],
-
-      InitialOffOtherPosts: [],
-      InitialOffOtherNames: [],
-
-      InitialOffEventsPosts: [],
-      InitialOffEventsNames: [],
-
-      InitialLookRentPosts: [],
-      InitialLookRentNames: [],
-
-      InitialLookOtherPosts: [],
-      InitialLookOtherNames: [],
-      //^^^^^ INITIAL POSTS ^^^^^
-
       //##### Search POSTS ######
 
-      SearchNearby1: false,
-      SearchNearby2: false,
-      SearchNearby3: false,
-      SearchNearby4: false,
-      SearchNearby5: false,
-      SearchNearby6: false,
+      OffBizPulled: false,
+      OffEventsPulled: false,
+      OffRentPulled: false,
+      OffTradePulled: false,
+      LookRentPulled: false,
+      LookTradePulled: false,
 
       //^^^^^ Search POSTS ^^^^^
 
@@ -830,14 +806,33 @@ class App extends React.Component {
 
   handleMode = () => {
     if (this.state.mode === "primary")
-      this.setState({
-        mode: "dark",
-      });
+      this.setState(
+        {
+          mode: "dark",
+        },
+        () => this.setFrontendLFmode()
+      );
     else {
-      this.setState({
-        mode: "primary",
-      });
+      this.setState(
+        {
+          mode: "primary",
+        },
+        () => this.setFrontendLFmode()
+      );
     }
+  };
+
+  setFrontendLFmode = () => {
+    let DashFrontend = LocalForage.createInstance({
+      name: "dash-frontend",
+    });
+    DashFrontend.setItem("mode", this.state.mode)
+      .then((d) => {
+        console.log("Return from LF setitem:", d);
+      })
+      .catch((err) => {
+        console.error("Something went wrong setting to localForage:\n", err);
+      });
   };
 
   handleLogout = () => {
@@ -1213,6 +1208,10 @@ class App extends React.Component {
         tooLongCountryRegionNameError: false,
         //^^^^^ LOCATION FORM STATE ^^^^^
 
+        citySubmitted: "",
+        countryRegionSubmitted: "Country",
+        whichSubmitted: "offbiz",
+
         //#####  POSTS TO DISPLAY ######
         OffRentPosts: [],
         OffRentNames: [],
@@ -1230,37 +1229,14 @@ class App extends React.Component {
         LookOtherNames: [],
         //^^^^^ POSTS TO DISPLAY ^^^^^
 
-        //##### INITIAL POSTS ######
-
-        InitialNearby1: false,
-        InitialNearby2: false,
-        InitialNearby3: false,
-        InitialNearby4: false,
-        InitialNearby5: false,
-
-        InitialOffRentPosts: [],
-        InitialOffRentNames: [],
-
-        InitialOffBizPosts: [],
-        InitialOffBizNames: [],
-
-        InitialOffOtherPosts: [],
-        InitialOffOtherNames: [],
-
-        InitialLookRentPosts: [],
-        InitialLookRentNames: [],
-
-        InitialLookOtherPosts: [],
-        InitialLookOtherNames: [],
-        //^^^^^ INITIAL POSTS ^^^^^
-
         //##### Search POSTS ######
 
-        SearchNearby1: false,
-        SearchNearby2: false,
-        SearchNearby3: false,
-        SearchNearby4: false,
-        SearchNearby5: false,
+        OffBizPulled: false,
+        OffEventsPulled: false,
+        OffRentPulled: false,
+        OffTradePulled: false,
+        LookRentPulled: false,
+        LookTradePulled: false,
 
         //^^^^^ Search POSTS ^^^^^
 
@@ -1417,7 +1393,6 @@ class App extends React.Component {
   };
 
   componentDidMount() {
-    this.getDSOEveryoneDocs();
     //this.getInitialPosts(); // Move to onDapp select because now that there is a post in all the categories there are names that are pulled and this has doubled the queries and cause slowing ->
     //
     //1) GET WALLETID KEYS For New Wallet Login and Wallet Sync
@@ -1481,6 +1456,29 @@ class App extends React.Component {
     //     console.error("Something went wrong:\n", e);
     //   })
     //   .finally(() => client.disconnect());
+    //FIX THIS^^^
+    LocalForage.config({
+      name: "dash-frontend",
+    });
+    let DashFrontend = LocalForage.createInstance({
+      name: "dash-frontend",
+    });
+    DashFrontend.getItem("mode")
+      .then((modeVal) => {
+        if (modeVal !== null) {
+          this.setState({
+            mode: modeVal,
+          });
+        }
+        // this.setState({
+        //   DashMoneyLFKeys: keys,
+        // });
+        // console.log(keys);
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
+    this.getDSOEveryoneDocs(); //WHY NOT MOVE TO ONSELECT LIKE OTHERS ->
   } //FIX THIS^^^
 
   //ACCOUNT LOGIN FUNCTIONS => SIMPLE LOGIN FIRST
@@ -7994,9 +7992,15 @@ class App extends React.Component {
 
   // 5 BUTTONS below form
   handleSelectedCategoryButton = (clickedButton) => {
-    this.setState({
-      selectedCategoryButton: clickedButton,
-    });
+    //What are the clickedButton input? -> "lookrent" 'offbiz' 'offevents' offother lookother -> DONE
+    //
+
+    this.setState(
+      {
+        selectedCategoryButton: clickedButton,
+      },
+      () => this.checkIfPulledAlready()
+    );
   };
 
   // ^^^^ 5 BUTTONS below form
@@ -8023,7 +8027,7 @@ class App extends React.Component {
   };
 
   getYourPosts = (theIdentity) => {
-    //console.log("Calling getInitialOffRent");
+    //console.log("Calling getYourPosts");
 
     const clientOpts = {
       network: this.state.whichNetwork,
@@ -8072,166 +8076,10 @@ class App extends React.Component {
   };
 
   getInitialPosts = () => {
-    this.getInitialOffRent();
     this.getInitialOffBiz();
-    this.getInitialOffOther();
-    this.getInitialLookRent();
-    this.getInitialLookOther();
-    this.getInitialOffEvents();
   };
 
-  //Pull SEPARATELY.. => ***
-
-  checkInitialRace = () => {
-    if (
-      this.state.InitialNearby1 &&
-      this.state.InitialNearby2 &&
-      this.state.InitialNearby3 &&
-      this.state.InitialNearby4 &&
-      this.state.InitialNearby5 &&
-      this.state.InitialNearby6
-    ) {
-      this.setState({
-        OffRentPosts: this.state.InitialOffRentPosts,
-        OffRentNames: this.state.InitialOffRentNames,
-
-        OffBizPosts: this.state.InitialOffBizPosts,
-        OffBizNames: this.state.InitialOffBizNames,
-
-        OffOtherPosts: this.state.InitialOffOtherPosts,
-        OffOtherNames: this.state.InitialOffOtherNames,
-
-        OffEventsPosts: this.state.InitialOffEventsPosts,
-        OffEventsNames: this.state.InitialOffEventsNames,
-
-        LookRentPosts: this.state.InitialLookRentPosts,
-        LookRentNames: this.state.InitialLookRentNames,
-
-        LookOtherPosts: this.state.InitialLookOtherPosts,
-        LookOtherNames: this.state.InitialLookOtherNames,
-
-        //I DONT NEED ^^ BECAUSE INITIAL SHOULD PULL AUTOMATICALLY!! well actually I do.. I need to push the initials to the display..
-
-        isLoadingNearbyInitial: false,
-      });
-    }
-  };
-
-  getInitialOffRent = () => {
-    // console.log("Calling getInitialOffRent");
-
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DMIOContract: {
-          contractId: this.state.DataContractDMIO,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
-
-    const getDocuments = async () => {
-      return client.platform.documents.get("DMIOContract.dmiopost", {
-        where: [
-          ["category", "==", "offrent"], // offrent, offbiz, offother, lookrent, lookother
-          ["$createdAt", "<=", Date.now()],
-        ],
-        orderBy: [["$createdAt", "desc"]],
-      });
-    };
-
-    getDocuments()
-      .then((d) => {
-        if (d.length === 0) {
-          // console.log("There are no InitialOffRent");
-
-          this.setState(
-            {
-              InitialNearby1: true,
-            },
-            () => this.checkInitialRace()
-          );
-        } else {
-          let docArray = [];
-          //console.log("Getting ForyouByyouMsgs");
-          for (const n of d) {
-            //console.log("Document:\n", n.toJSON());
-            docArray = [...docArray, n.toJSON()];
-          }
-          this.getInitialOffRentNames(docArray);
-        }
-      })
-      .catch((e) => console.error("Something went wrong:\n", e))
-      .finally(() => client.disconnect());
-  };
-
-  getInitialOffRentNames = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
-    //START OF NAME RETRIEVAL
-
-    let ownerarrayOfOwnerIds = docArray.map((doc) => {
-      return doc.$ownerId;
-    });
-
-    let setOfOwnerIds = [...new Set(ownerarrayOfOwnerIds)];
-
-    let arrayOfOwnerIds = [...setOfOwnerIds];
-
-    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
-
-    //console.log("Calling getNamesforDSOmsgs");
-
-    const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
-      });
-    };
-
-    getNameDocuments()
-      .then((d) => {
-        //WHAT IF THERE ARE NO NAMES? -> THEN THIS WON'T BE CALLED
-        if (d.length === 0) {
-          //console.log("No DPNS domain documents retrieved.");
-        }
-
-        let nameDocArray = [];
-
-        for (const n of d) {
-          //console.log("NameDoc:\n", n.toJSON());
-
-          nameDocArray = [n.toJSON(), ...nameDocArray];
-        }
-        //console.log(`DPNS Name Docs: ${nameDocArray}`);
-
-        this.setState(
-          {
-            InitialOffRentNames: nameDocArray,
-            InitialOffRentPosts: docArray,
-            InitialNearby1: true,
-          },
-          () => this.checkInitialRace()
-        );
-      })
-      .catch((e) => {
-        console.error(
-          "Something went wrong getting Initial OffRent Names:\n",
-          e
-        );
-      })
-      .finally(() => client.disconnect());
-    //END OF NAME RETRIEVAL
-  };
+  //Pull SEPARATELY.. => *** -> DONE
 
   getInitialOffBiz = () => {
     //console.log("Calling getInitialOffBiz");
@@ -8259,14 +8107,12 @@ class App extends React.Component {
     getDocuments()
       .then((d) => {
         if (d.length === 0) {
-          //console.log("There are no ForyouByyouMsgs");
+          //console.log("There are no OffBiz Posts");
 
-          this.setState(
-            {
-              InitialNearby2: true,
-            },
-            () => this.checkInitialRace()
-          );
+          this.setState({
+            isLoadingNearbyInitial: false,
+            OffBizPulled: true,
+          });
         } else {
           let docArray = [];
           //console.log("Getting ForyouByyouMsgs");
@@ -8330,14 +8176,12 @@ class App extends React.Component {
         }
         //console.log(`DPNS Name Docs: ${nameDocArray}`);
 
-        this.setState(
-          {
-            InitialOffBizNames: nameDocArray,
-            InitialOffBizPosts: docArray,
-            InitialNearby2: true,
-          },
-          () => this.checkInitialRace()
-        );
+        this.setState({
+          OffBizPosts: docArray,
+          OffBizNames: nameDocArray,
+          isLoadingNearbyInitial: false,
+          OffBizPulled: true,
+        });
       })
       .catch((e) => {
         console.error(
@@ -8349,478 +8193,99 @@ class App extends React.Component {
     //END OF NAME RETRIEVAL
   };
 
-  getInitialOffOther = () => {
-    //console.log("Calling getInitialOffOther");
+  // BELOW IF FOR WHEN HIT "SUBMIT" <=
+  //
+  submittedStateAndCategoryTHENConstruct = () => {
+    //THIS IS CALLED DIRECTLY FROM LOCATION FORM AND USES THE STATE FROM ONCHANGE. SO THIS MAKES MY CONVERSION A BIT MORE TRICKY
+    //I JUST NEED TO ADD SOME STATE THAT SAVES THE ONCHANGE UPON SUBMISSION AND RESETS THE PULLED STATES..
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DMIOContract: {
-          contractId: this.state.DataContractDMIO,
-        },
+    this.setState(
+      {
+        citySubmitted: this.state.cityInput,
+        countryRegionSubmitted: this.state.countryRegionInput,
+        whichSubmitted: this.state.whichCountryRegion,
+        //Submitted ^^^
+        OffBizPulled: false,
+        OffEventsPulled: false,
+        OffRentPulled: false,
+        OffTradePulled: false,
+        LookRentPulled: false,
+        LookTradePulled: false,
+        //Pulled States^^^
+
+        OffRentPosts: [],
+        OffRentNames: [],
+
+        OffBizPosts: [],
+        OffBizNames: [],
+
+        OffOtherPosts: [],
+        OffOtherNames: [],
+        //EVENTS
+        OffEventsPosts: [],
+        OffEventsNames: [],
+
+        LookRentPosts: [],
+        LookRentNames: [],
+
+        LookOtherPosts: [],
+        LookOtherNames: [],
+        //CLEAR ^^^ THE STATES.
+
+        isLoadingNearbySearch: true,
+        isLoadingNearbyForm: true,
       },
-    };
-    const client = new Dash.Client(clientOpts);
-
-    const getDocuments = async () => {
-      return client.platform.documents.get("DMIOContract.dmiopost", {
-        where: [
-          ["category", "==", "offother"], // offrent, offbiz, offother, lookrent, lookother
-          ["$createdAt", "<=", Date.now()],
-        ],
-        orderBy: [["$createdAt", "desc"]],
-      });
-    };
-
-    getDocuments()
-      .then((d) => {
-        if (d.length === 0) {
-          //console.log("There are no InitialOffOther");
-
-          this.setState(
-            {
-              InitialNearby3: true,
-            },
-            () => this.checkInitialRace()
-          );
-        } else {
-          let docArray = [];
-          //console.log("Getting InitialOffOther");
-          for (const n of d) {
-            //console.log("Document:\n", n.toJSON());
-            docArray = [...docArray, n.toJSON()];
-          }
-          this.getInitialOffOtherNames(docArray);
-        }
-      })
-      .catch((e) => console.error("Something went wrong:\n", e))
-      .finally(() => client.disconnect());
-  };
-
-  getInitialOffOtherNames = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
-    //START OF NAME RETRIEVAL
-
-    let ownerarrayOfOwnerIds = docArray.map((doc) => {
-      return doc.$ownerId;
-    });
-
-    let setOfOwnerIds = [...new Set(ownerarrayOfOwnerIds)];
-
-    let arrayOfOwnerIds = [...setOfOwnerIds];
-
-    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-      Buffer.from(Identifier.from(item))
+      () => this.constructQueryThenSearch()
     );
-
-    //console.log("Calling getNamesOffOthers");
-
-    const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
-      });
-    };
-
-    getNameDocuments()
-      .then((d) => {
-        //WHAT IF THERE ARE NO NAMES? -> THEN THIS WON'T BE CALLED
-        if (d.length === 0) {
-          //console.log("No DPNS domain documents retrieved.");
-        }
-
-        let nameDocArray = [];
-
-        for (const n of d) {
-          //console.log("NameDoc:\n", n.toJSON());
-
-          nameDocArray = [n.toJSON(), ...nameDocArray];
-        }
-        //console.log(`DPNS Name Docs: ${nameDocArray}`);
-
-        this.setState(
-          {
-            InitialOffOtherNames: nameDocArray,
-            InitialOffOtherPosts: docArray,
-            InitialNearby3: true,
-          },
-          () => this.checkInitialRace()
-        );
-      })
-      .catch((e) => {
-        console.error(
-          "Something went wrong getting Initial OffOther Names:\n",
-          e
-        );
-      })
-      .finally(() => client.disconnect());
-    //END OF NAME RETRIEVAL
   };
-
-  getInitialOffEvents = () => {
-    //console.log("Calling getInitialOffEvents");
-
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DMIOContract: {
-          contractId: this.state.DataContractDMIO,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
-
-    const getDocuments = async () => {
-      return client.platform.documents.get("DMIOContract.dmiopost", {
-        where: [
-          ["category", "==", "events"], // offrent, offbiz, offother, offevents, lookrent, lookother
-          ["$createdAt", "<=", Date.now()],
-        ],
-        orderBy: [["$createdAt", "desc"]],
-      });
-    };
-
-    getDocuments()
-      .then((d) => {
-        if (d.length === 0) {
-          //console.log("There are no InitialOffEvents");
-
-          this.setState(
-            {
-              InitialNearby6: true,
-            },
-            () => this.checkInitialRace()
-          );
-        } else {
-          let docArray = [];
-          //console.log("Getting InitialOffEvents");
-          for (const n of d) {
-            //console.log("Document:\n", n.toJSON());
-            docArray = [...docArray, n.toJSON()];
-          }
-          this.getInitialOffEventsNames(docArray);
+  //BELOW IS FOR WHEN HIT CATEGORY BUTTON =>
+  checkIfPulledAlready = () => {
+    switch (this.state.selectedCategoryButton) {
+      case "offbiz":
+        if (!this.state.OffBizPulled) {
+          this.constructQueryThenSearch();
         }
-      })
-      .catch((e) => console.error("Something went wrong:\n", e))
-      .finally(() => client.disconnect());
-  };
-
-  getInitialOffEventsNames = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
-    //START OF NAME RETRIEVAL
-
-    let ownerarrayOfOwnerIds = docArray.map((doc) => {
-      return doc.$ownerId;
-    });
-
-    let setOfOwnerIds = [...new Set(ownerarrayOfOwnerIds)];
-
-    let arrayOfOwnerIds = [...setOfOwnerIds];
-
-    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
-
-    //console.log("Calling getNamesOffOthers");
-
-    const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
-      });
-    };
-
-    getNameDocuments()
-      .then((d) => {
-        //WHAT IF THERE ARE NO NAMES? -> THEN THIS WON'T BE CALLED
-        if (d.length === 0) {
-          //console.log("No DPNS domain documents retrieved.");
+        break;
+      case "offevents":
+        if (!this.state.OffEventsPulled) {
+          this.constructQueryThenSearch();
         }
-
-        let nameDocArray = [];
-
-        for (const n of d) {
-          //console.log("NameDoc:\n", n.toJSON());
-
-          nameDocArray = [n.toJSON(), ...nameDocArray];
+        break;
+      case "offrent":
+        if (!this.state.OffRentPulled) {
+          this.constructQueryThenSearch();
         }
-        //console.log(`DPNS Name Docs: ${nameDocArray}`);
-
-        this.setState(
-          {
-            InitialOffEventsNames: nameDocArray,
-            InitialOffEventsPosts: docArray,
-            InitialNearby6: true,
-          },
-          () => this.checkInitialRace()
-        );
-      })
-      .catch((e) => {
-        console.error(
-          "Something went wrong getting Initial OffEvents Names:\n",
-          e
-        );
-      })
-      .finally(() => client.disconnect());
-    //END OF NAME RETRIEVAL
-  };
-
-  getInitialLookRent = () => {
-    //console.log("Calling getInitialLookRent");
-
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DMIOContract: {
-          contractId: this.state.DataContractDMIO,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
-
-    const getDocuments = async () => {
-      return client.platform.documents.get("DMIOContract.dmiopost", {
-        where: [
-          ["category", "==", "lookrent"], // offrent, offbiz, offother, lookrent, lookother
-          ["$createdAt", "<=", Date.now()],
-        ],
-        orderBy: [["$createdAt", "desc"]],
-      });
-    };
-
-    getDocuments()
-      .then((d) => {
-        if (d.length === 0) {
-          //console.log("There are no Initial LookRent Posts");
-
-          this.setState(
-            {
-              InitialNearby4: true,
-            },
-            () => this.checkInitialRace()
-          );
-        } else {
-          let docArray = [];
-          //console.log("Getting Initial LookRent Posts");
-          for (const n of d) {
-            //console.log("Document:\n", n.toJSON());
-            docArray = [...docArray, n.toJSON()];
-          }
-          this.getInitialLookRentNames(docArray);
+        break;
+      case "offother":
+        if (!this.state.OffTradePulled) {
+          this.constructQueryThenSearch();
         }
-      })
-      .catch((e) => console.error("Something went wrong:\n", e))
-      .finally(() => client.disconnect());
-  };
-
-  getInitialLookRentNames = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
-    //START OF NAME RETRIEVAL
-
-    let ownerarrayOfOwnerIds = docArray.map((doc) => {
-      return doc.$ownerId;
-    });
-
-    let setOfOwnerIds = [...new Set(ownerarrayOfOwnerIds)];
-
-    let arrayOfOwnerIds = [...setOfOwnerIds];
-
-    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
-
-    //console.log("Calling InitialLookRentNames");
-
-    const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
-      });
-    };
-
-    getNameDocuments()
-      .then((d) => {
-        //WHAT IF THERE ARE NO NAMES? -> THEN THIS WON'T BE CALLED
-        if (d.length === 0) {
-          //console.log("No DPNS domain documents retrieved.");
+        break;
+      case "lookrent":
+        if (!this.state.LookRentPulled) {
+          this.constructQueryThenSearch();
         }
-
-        let nameDocArray = [];
-
-        for (const n of d) {
-          //console.log("NameDoc:\n", n.toJSON());
-
-          nameDocArray = [n.toJSON(), ...nameDocArray];
+        break;
+      case "lookother":
+        if (!this.state.LookTradePulled) {
+          this.constructQueryThenSearch();
         }
-        //console.log(`DPNS Name Docs: ${nameDocArray}`);
-
-        this.setState(
-          {
-            InitialLookRentNames: nameDocArray,
-            InitialLookRentPosts: docArray,
-            InitialNearby4: true,
-          },
-          () => this.checkInitialRace()
-        );
-      })
-      .catch((e) => {
-        console.error(
-          "Something went wrong getting Initial LookRent Names:\n",
-          e
-        );
-      })
-      .finally(() => client.disconnect());
-    //END OF NAME RETRIEVAL
-  };
-
-  getInitialLookOther = () => {
-    //console.log("Calling getInitialLookOther");
-
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DMIOContract: {
-          contractId: this.state.DataContractDMIO,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
-
-    const getDocuments = async () => {
-      return client.platform.documents.get("DMIOContract.dmiopost", {
-        where: [
-          ["category", "==", "lookother"], // offrent, offbiz, offother, lookrent, lookother
-          ["$createdAt", "<=", Date.now()],
-        ],
-        orderBy: [["$createdAt", "desc"]],
-      });
-    };
-
-    getDocuments()
-      .then((d) => {
-        if (d.length === 0) {
-          //console.log("There are no Initial LookOther Posts");
-
-          this.setState(
-            {
-              InitialNearby5: true,
-            },
-            () => this.checkInitialRace()
-          );
-        } else {
-          let docArray = [];
-          //console.log("Getting Initial LookOther Posts");
-          for (const n of d) {
-            //console.log("Document:\n", n.toJSON());
-            docArray = [...docArray, n.toJSON()];
-          }
-          this.getInitialLookOtherNames(docArray);
-        }
-      })
-      .catch((e) => console.error("Something went wrong:\n", e))
-      .finally(() => client.disconnect());
-  };
-
-  getInitialLookOtherNames = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
-    //START OF NAME RETRIEVAL
-
-    let ownerarrayOfOwnerIds = docArray.map((doc) => {
-      return doc.$ownerId;
-    });
-
-    let setOfOwnerIds = [...new Set(ownerarrayOfOwnerIds)];
-
-    let arrayOfOwnerIds = [...setOfOwnerIds];
-
-    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
-
-    //console.log("Calling getNamesforDSOmsgs");
-
-    const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "desc"]],
-      });
-    };
-
-    getNameDocuments()
-      .then((d) => {
-        //WHAT IF THERE ARE NO NAMES? -> THEN THIS WON'T BE CALLED
-        if (d.length === 0) {
-          //console.log("No DPNS domain documents retrieved.");
-        }
-
-        let nameDocArray = [];
-
-        for (const n of d) {
-          //console.log("NameDoc:\n", n.toJSON());
-
-          nameDocArray = [n.toJSON(), ...nameDocArray];
-        }
-        //console.log(`DPNS Name Docs: ${nameDocArray}`);
-
-        this.setState(
-          {
-            InitialLookOtherNames: nameDocArray,
-            InitialLookOtherPosts: docArray,
-            InitialNearby5: true,
-          },
-          () => this.checkInitialRace()
-        );
-      })
-      .catch((e) => {
-        console.error(
-          "Something went wrong getting Initial LookOther Names:\n",
-          e
-        );
-      })
-      .finally(() => client.disconnect());
-    //END OF NAME RETRIEVAL
+        break;
+      default:
+        console.log("No case that matches!");
+    }
   };
 
   //This one will be interesting bc I am goin to construct the query and then pass it to each of the functions this will save about 3 or 4 different
 
   constructQueryThenSearch = () => {
-    this.setState({
-      isLoadingNearbySearch: true,
-      isLoadingNearbyForm: true,
-    });
-
+    //IF THE PULLED IS ALREADY DONE DONT PULL AGAIN -> THIS NEED TO CHECK THE PULL STATE BASED ON THE BUTTON
+    if (!this.state.isLoadingNearbySearch && !this.state.isLoadingNearbyForm) {
+      this.setState({
+        isLoadingNearbySearch: true,
+        isLoadingNearbyForm: true,
+      });
+    }
     //So what are the parts and I assume I will pull from state for the parameters
     /* NEED TO DO 5 QUERIES FOR EACH SEARCH (need to normalize/lowercase)
   SO ITS AN OBJECT!!! 
@@ -8859,23 +8324,27 @@ class App extends React.Component {
 
     let whereArray = [];
 
-    if (this.state.cityInput !== "") {
-      whereArray.push(["city", "==", this.state.cityInput.toLocaleLowerCase()]); //push adds to end!
+    if (this.state.citySubmitted !== "") {
+      whereArray.push([
+        "city",
+        "==",
+        this.state.citySubmitted.toLocaleLowerCase(),
+      ]); //push adds to end!
     }
 
-    if (this.state.countryRegionInput !== "") {
-      if (this.state.whichCountryRegion === "Country") {
+    if (this.state.countryRegionSubmitted !== "") {
+      if (this.state.whichSubmitted === "Country") {
         whereArray.push([
           "country",
           "==",
-          this.state.countryRegionInput.toLocaleLowerCase(),
+          this.state.countryRegionSubmitted.toLocaleLowerCase(),
         ]);
       }
-      if (this.state.whichCountryRegion === "Region") {
+      if (this.state.whichSubmitted === "Region") {
         whereArray.push([
           "region",
           "==",
-          this.state.countryRegionInput.toLocaleLowerCase(),
+          this.state.countryRegionSubmitted.toLocaleLowerCase(),
         ]);
       }
     }
@@ -8893,33 +8362,35 @@ class App extends React.Component {
 
     console.log(queryObject);
 
-    this.getOffRent(queryObject, categoryIndex);
-    this.getOffBiz(queryObject, categoryIndex);
-    this.getOffOther(queryObject, categoryIndex);
-    this.getOffEvents(queryObject, categoryIndex);
-    this.getLookRent(queryObject, categoryIndex);
-    this.getLookOther(queryObject, categoryIndex);
-  };
-
-  searchNearbyRace = () => {
-    if (
-      this.state.SearchNearby1 &&
-      this.state.SearchNearby2 &&
-      this.state.SearchNearby3 &&
-      this.state.SearchNearby4 &&
-      this.state.SearchNearby5
-    ) {
-      this.setState({
-        SearchNearby1: false,
-        SearchNearby2: false,
-        SearchNearby3: false,
-        SearchNearby4: false,
-        SearchNearby5: false,
-
-        isLoadingNearbySearch: false,
-        isLoadingNearbyForm: false,
-      });
+    switch (this.state.selectedCategoryButton) {
+      case "offbiz":
+        this.getOffBiz(queryObject, categoryIndex);
+        break;
+      case "offevents":
+        this.getOffEvents(queryObject, categoryIndex);
+        break;
+      case "offrent":
+        this.getOffRent(queryObject, categoryIndex);
+        break;
+      case "offother":
+        this.getOffOther(queryObject, categoryIndex);
+        break;
+      case "lookrent":
+        this.getLookRent(queryObject, categoryIndex);
+        break;
+      case "lookother":
+        this.getLookOther(queryObject, categoryIndex);
+        break;
+      default:
+        console.log("No case that matches!");
     }
+
+    // this.getOffRent(queryObject, categoryIndex);
+    // this.getOffBiz(queryObject, categoryIndex);
+    // this.getOffOther(queryObject, categoryIndex);
+    // this.getOffEvents(queryObject, categoryIndex);
+    // this.getLookRent(queryObject, categoryIndex);
+    // this.getLookOther(queryObject, categoryIndex);
   };
 
   getOffRent = (queryObj, cateIndex) => {
@@ -8953,13 +8424,12 @@ class App extends React.Component {
         if (d.length === 0) {
           //console.log("There are no getOffRent Posts");
 
-          this.setState(
-            {
-              OffRentPosts: [],
-              SearchNearby1: true,
-            },
-            () => this.searchNearbyRace()
-          );
+          this.setState({
+            OffRentPosts: [],
+            OffRentPulled: true,
+            isLoadingNearbySearch: false,
+            isLoadingNearbyForm: false,
+          });
         } else {
           let docArray = [];
           //console.log("Getting getOffRent Posts");
@@ -9023,14 +8493,13 @@ class App extends React.Component {
         }
         //console.log(`DPNS Name Docs: ${nameDocArray}`);
 
-        this.setState(
-          {
-            OffRentNames: nameDocArray,
-            OffRentPosts: docArray,
-            SearchNearby1: true,
-          },
-          () => this.searchNearbyRace()
-        );
+        this.setState({
+          OffRentNames: nameDocArray,
+          OffRentPosts: docArray,
+          OffRentPulled: true,
+          isLoadingNearbySearch: false,
+          isLoadingNearbyForm: false,
+        });
       })
       .catch((e) => {
         console.error("Something went wrong getting OffRent Names:\n", e);
@@ -9075,13 +8544,12 @@ class App extends React.Component {
         if (d.length === 0) {
           //console.log("There are no getOffBiz");
 
-          this.setState(
-            {
-              OffBizPosts: [],
-              SearchNearby2: true,
-            },
-            () => this.searchNearbyRace()
-          );
+          this.setState({
+            OffBizPosts: [],
+            OffBizPulled: true,
+            isLoadingNearbySearch: false,
+            isLoadingNearbyForm: false,
+          });
         } else {
           let docArray = [];
           //console.log("Getting getOffBiz");
@@ -9145,14 +8613,13 @@ class App extends React.Component {
         }
         //console.log(`DPNS Name Docs: ${nameDocArray}`);
 
-        this.setState(
-          {
-            OffBizNames: nameDocArray,
-            OffBizPosts: docArray,
-            SearchNearby2: true,
-          },
-          () => this.searchNearbyRace()
-        );
+        this.setState({
+          OffBizNames: nameDocArray,
+          OffBizPosts: docArray,
+          OffBizPulled: true,
+          isLoadingNearbySearch: false,
+          isLoadingNearbyForm: false,
+        });
       })
       .catch((e) => {
         console.error("Something went wrong getting OffBiz Names:\n", e);
@@ -9189,13 +8656,12 @@ class App extends React.Component {
         if (d.length === 0) {
           //console.log("There are no OffOther");
 
-          this.setState(
-            {
-              SearchNearby3: true,
-              OffOtherPosts: [],
-            },
-            () => this.searchNearbyRace()
-          );
+          this.setState({
+            OffTradePulled: true,
+            OffOtherPosts: [],
+            isLoadingNearbySearch: false,
+            isLoadingNearbyForm: false,
+          });
         } else {
           let docArray = [];
           //console.log("Getting OffOther");
@@ -9259,14 +8725,13 @@ class App extends React.Component {
         }
         //console.log(`DPNS Name Docs: ${nameDocArray}`);
 
-        this.setState(
-          {
-            OffOtherNames: nameDocArray,
-            OffOtherPosts: docArray,
-            SearchNearby3: true,
-          },
-          () => this.searchNearbyRace()
-        );
+        this.setState({
+          OffOtherNames: nameDocArray,
+          OffOtherPosts: docArray,
+          OffTradePulled: true,
+          isLoadingNearbySearch: false,
+          isLoadingNearbyForm: false,
+        });
       })
       .catch((e) => {
         console.error("Something went wrong getting OffOther Names:\n", e);
@@ -9303,13 +8768,12 @@ class App extends React.Component {
         if (d.length === 0) {
           //console.log("There are no OffEvents");
 
-          this.setState(
-            {
-              SearchNearby6: true,
-              OffEventsPosts: [],
-            },
-            () => this.searchNearbyRace()
-          );
+          this.setState({
+            OffEventsPulled: true,
+            OffEventsPosts: [],
+            isLoadingNearbySearch: false,
+            isLoadingNearbyForm: false,
+          });
         } else {
           let docArray = [];
           //console.log("Getting OffEvents");
@@ -9373,14 +8837,13 @@ class App extends React.Component {
         }
         //console.log(`DPNS Name Docs: ${nameDocArray}`);
 
-        this.setState(
-          {
-            OffEventsNames: nameDocArray,
-            OffEventsPosts: docArray,
-            SearchNearby6: true,
-          },
-          () => this.searchNearbyRace()
-        );
+        this.setState({
+          OffEventsNames: nameDocArray,
+          OffEventsPosts: docArray,
+          OffEventsPulled: true,
+          isLoadingNearbySearch: false,
+          isLoadingNearbyForm: false,
+        });
       })
       .catch((e) => {
         console.error("Something went wrong getting OffOther Names:\n", e);
@@ -9417,13 +8880,12 @@ class App extends React.Component {
         if (d.length === 0) {
           //console.log("There are no LookRent Posts");
 
-          this.setState(
-            {
-              SearchNearby4: true,
-              LookRentPosts: [],
-            },
-            () => this.searchNearbyRace()
-          );
+          this.setState({
+            LookRentPulled: true,
+            LookRentPosts: [],
+            isLoadingNearbySearch: false,
+            isLoadingNearbyForm: false,
+          });
         } else {
           let docArray = [];
           //console.log("Getting LookRent Posts");
@@ -9487,14 +8949,13 @@ class App extends React.Component {
         }
         //console.log(`DPNS Name Docs: ${nameDocArray}`);
 
-        this.setState(
-          {
-            LookRentNames: nameDocArray,
-            LookRentPosts: docArray,
-            SearchNearby4: true,
-          },
-          () => this.searchNearbyRace()
-        );
+        this.setState({
+          LookRentNames: nameDocArray,
+          LookRentPosts: docArray,
+          LookRentPulled: true,
+          isLoadingNearbySearch: false,
+          isLoadingNearbyForm: false,
+        });
       })
       .catch((e) => {
         console.error("Something went wrong getting LookRent Names:\n", e);
@@ -9532,13 +8993,12 @@ class App extends React.Component {
         if (d.length === 0) {
           //console.log("There are no LookOther Posts");
 
-          this.setState(
-            {
-              SearchNearby5: true,
-              LookOtherPosts: [],
-            },
-            () => this.searchNearbyRace()
-          );
+          this.setState({
+            LookTradePulled: true,
+            LookOtherPosts: [],
+            isLoadingNearbySearch: false,
+            isLoadingNearbyForm: false,
+          });
         } else {
           let docArray = [];
           //console.log("Getting LookOther Posts");
@@ -9602,14 +9062,13 @@ class App extends React.Component {
         }
         //console.log(`DPNS Name Docs: ${nameDocArray}`);
 
-        this.setState(
-          {
-            LookOtherNames: nameDocArray,
-            LookOtherPosts: docArray,
-            SearchNearby5: true,
-          },
-          () => this.searchNearbyRace()
-        );
+        this.setState({
+          LookOtherNames: nameDocArray,
+          LookOtherPosts: docArray,
+          LookTradePulled: true,
+          isLoadingNearbySearch: false,
+          isLoadingNearbyForm: false,
+        });
       })
       .catch((e) => {
         console.error("Something went wrong getting LookOther Names:\n", e);
@@ -11778,11 +11237,11 @@ class App extends React.Component {
       this.toUViaValidate(event.target.value);
     }
 
-    if (event.target.id === "formtoUViaDash") {
-      event.preventDefault();
-      event.stopPropagation();
-      this.toUViaDashValidate(event.target.value);
-    }
+    // if (event.target.id === "formtoUViaDash") {
+    //   event.preventDefault();
+    //   event.stopPropagation();
+    //   this.toUViaDashValidate(event.target.value);
+    // }
 
     if (event.target.id === "formtoUViaOTHER") {
       event.preventDefault();
@@ -12081,38 +11540,38 @@ class App extends React.Component {
     }
   };
 
-  toUViaDashValidate = (toUVia) => {
-    let regex = /^\S.{0,32}\S$/;
-    let valid = regex.test(toUVia);
+  // toUViaDashValidate = (toUVia) => {
+  //   let regex = /^\S.{0,32}\S$/;
+  //   let valid = regex.test(toUVia);
 
-    if (valid) {
-      this.setState(
-        {
-          toUViaInput: toUVia,
-          tooLongtoUViaError: false,
-          validtoUVia: true,
-          ////set false unless hits a success full case
-          toUFinal: false,
-        },
-        () => this.verifyRecip()
-      );
-    } else {
-      if (toUVia.length > 34) {
-        this.setState({
-          toUViaInput: toUVia,
-          tooLongtoUViaError: true,
-          validtoUVia: false,
-          toUFinal: false,
-        });
-      } else {
-        this.setState({
-          toUViaInput: toUVia,
-          validtoUVia: false,
-          toUFinal: false,
-        });
-      }
-    }
-  };
+  //   if (valid) {
+  //     this.setState(
+  //       {
+  //         toUViaInput: toUVia,
+  //         tooLongtoUViaError: false,
+  //         validtoUVia: true,
+  //         ////set false unless hits a success full case
+  //         toUFinal: false,
+  //       },
+  //       () => this.verifyRecip()
+  //     );
+  //   } else {
+  //     if (toUVia.length > 34) {
+  //       this.setState({
+  //         toUViaInput: toUVia,
+  //         tooLongtoUViaError: true,
+  //         validtoUVia: false,
+  //         toUFinal: false,
+  //       });
+  //     } else {
+  //       this.setState({
+  //         toUViaInput: toUVia,
+  //         validtoUVia: false,
+  //         toUFinal: false,
+  //       });
+  //     }
+  //   }
+  // };
 
   toUViaValidateOTHER = (toUVia) => {
     let regex = /^\S.{0,32}\S$/;
@@ -13249,7 +12708,7 @@ class App extends React.Component {
   };
 
   getYourProofs = (theIdentity) => {
-    //console.log("Calling getInitialOffRent");
+    //console.log("Calling getYourProofs");
 
     const clientOpts = {
       network: this.state.whichNetwork,
@@ -13887,13 +13346,21 @@ class App extends React.Component {
                     handleNearbyOnChangeValidation={
                       this.handleNearbyOnChangeValidation
                     }
-                    constructQueryThenSearch={this.constructQueryThenSearch}
+                    submittedStateAndCategoryTHENConstruct={
+                      this.submittedStateAndCategoryTHENConstruct
+                    }
                     selectedCategoryButton={this.state.selectedCategoryButton}
                     handleSelectedCategoryButton={
                       this.handleSelectedCategoryButton
                     }
                     isLoadingNearbySearch={this.state.isLoadingNearbySearch}
                     isLoadingNearbyInitial={this.state.isLoadingNearbyInitial}
+                    OffBizPulled={this.state.OffBizPulled}
+                    OffEventsPulled={this.state.OffEventsPulled}
+                    OffRentPulled={this.state.OffRentPulled}
+                    OffTradePulled={this.state.OffTradePulled}
+                    LookRentPulled={this.state.LookRentPulled}
+                    LookTradePulled={this.state.LookTradePulled}
                     OffRentPosts={this.state.OffRentPosts}
                     OffBizPosts={this.state.OffBizPosts}
                     OffOtherPosts={this.state.OffOtherPosts}

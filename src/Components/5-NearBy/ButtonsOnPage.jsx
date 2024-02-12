@@ -41,6 +41,15 @@ class ButtonsOnPage extends React.Component {
 
     let lookOtherNum = lookOtherNumFiltered.length;
 
+    /**
+     *  OffBizPulled={this.props.OffBizPulled}
+        OffEventsPulled={this.props.OffEventsPulled}
+        OffRentPulled={this.props.OffRentPulled}
+        OffTradePulled={this.props.OffTradePulled}
+        LookRentPulled={this.props.LookRentPulled}
+        LookTradePulled={this.props.LookTradePulled}
+     */
+
     return (
       <>
         <h3 style={{ marginTop: ".5rem", marginBottom: ".3rem" }}>
@@ -58,12 +67,7 @@ class ButtonsOnPage extends React.Component {
           >
             <b>Shops/Menus</b>
             {""}
-            {!this.props.isLoadingNearbySearch &&
-            !this.props.isLoadingNearbyInitial ? (
-              <b>({offBizNum})</b>
-            ) : (
-              <></>
-            )}
+            {this.props.OffBizPulled ? <b>({offBizNum})</b> : <></>}
           </Button>
         ) : (
           <Button
@@ -73,12 +77,7 @@ class ButtonsOnPage extends React.Component {
           >
             <b>Shops/Menus</b>
             {""}
-            {!this.props.isLoadingNearbySearch &&
-            !this.props.isLoadingNearbyInitial ? (
-              <b>({offBizNum})</b>
-            ) : (
-              <></>
-            )}
+            {this.props.OffBizPulled ? <b>({offBizNum})</b> : <></>}
           </Button>
         )}
 
@@ -101,8 +100,7 @@ class ButtonsOnPage extends React.Component {
               Events
             </b>
             {""}
-            {!this.props.isLoadingNearbySearch &&
-            !this.props.isLoadingNearbyInitial ? (
+            {this.props.OffEventsPulled ? (
               <b
                 style={{
                   paddingRight: ".5rem",
@@ -137,8 +135,7 @@ class ButtonsOnPage extends React.Component {
               Events
             </b>
             {""}
-            {!this.props.isLoadingNearbySearch &&
-            !this.props.isLoadingNearbyInitial ? (
+            {this.props.OffEventsPulled ? (
               <b
                 style={{
                   paddingRight: ".5rem",
@@ -169,12 +166,7 @@ class ButtonsOnPage extends React.Component {
           >
             <b>Place to Rent</b>
             {""}
-            {!this.props.isLoadingNearbySearch &&
-            !this.props.isLoadingNearbyInitial ? (
-              <b>({offRentNum})</b>
-            ) : (
-              <></>
-            )}
+            {this.props.OffRentPulled ? <b>({offRentNum})</b> : <></>}
           </Button>
         ) : (
           <Button
@@ -184,12 +176,7 @@ class ButtonsOnPage extends React.Component {
           >
             <b>Place to Rent</b>
             {""}
-            {!this.props.isLoadingNearbySearch &&
-            !this.props.isLoadingNearbyInitial ? (
-              <b>({offRentNum})</b>
-            ) : (
-              <></>
-            )}
+            {this.props.OffRentPulled ? <b>({offRentNum})</b> : <></>}
           </Button>
         )}
 
@@ -211,8 +198,7 @@ class ButtonsOnPage extends React.Component {
               Trade
             </b>
             {""}
-            {!this.props.isLoadingNearbySearch &&
-            !this.props.isLoadingNearbyInitial ? (
+            {this.props.OffTradePulled ? (
               <b
                 style={{
                   paddingRight: ".7rem",
@@ -248,8 +234,7 @@ class ButtonsOnPage extends React.Component {
               Trade
             </b>
             {""}
-            {!this.props.isLoadingNearbySearch &&
-            !this.props.isLoadingNearbyInitial ? (
+            {this.props.OffTradePulled ? (
               <b
                 style={{
                   paddingRight: ".7rem",
@@ -280,12 +265,7 @@ class ButtonsOnPage extends React.Component {
           >
             <b>Place to Rent</b>
             {""}
-            {!this.props.isLoadingNearbySearch &&
-            !this.props.isLoadingNearbyInitial ? (
-              <b>({lookRentNum})</b>
-            ) : (
-              <></>
-            )}
+            {this.props.LookRentPulled ? <b>({lookRentNum})</b> : <></>}
           </Button>
         ) : (
           <Button
@@ -295,12 +275,7 @@ class ButtonsOnPage extends React.Component {
           >
             <b>Place to Rent</b>
             {""}
-            {!this.props.isLoadingNearbySearch &&
-            !this.props.isLoadingNearbyInitial ? (
-              <b>({lookRentNum})</b>
-            ) : (
-              <></>
-            )}
+            {this.props.LookRentPulled ? <b>({lookRentNum})</b> : <></>}
           </Button>
         )}
 
@@ -314,8 +289,7 @@ class ButtonsOnPage extends React.Component {
               Trade
             </b>
             {""}
-            {!this.props.isLoadingNearbySearch &&
-            !this.props.isLoadingNearbyInitial ? (
+            {this.props.LookTradePulled ? (
               <b
                 style={{
                   paddingRight: ".7rem",
@@ -346,8 +320,7 @@ class ButtonsOnPage extends React.Component {
               Trade
             </b>
             {""}
-            {!this.props.isLoadingNearbySearch &&
-            !this.props.isLoadingNearbyInitial ? (
+            {this.props.LookTradePulled ? (
               <b
                 style={{
                   paddingRight: ".7rem",

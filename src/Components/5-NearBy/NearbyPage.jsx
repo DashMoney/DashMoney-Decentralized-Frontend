@@ -54,8 +54,8 @@ class NearbyPage extends React.Component {
                     handleNearbyOnChangeValidation={
                       this.props.handleNearbyOnChangeValidation
                     }
-                    constructQueryThenSearch={
-                      this.props.constructQueryThenSearch
+                    submittedStateAndCategoryTHENConstruct={
+                      this.props.submittedStateAndCategoryTHENConstruct
                     }
                   />
 
@@ -72,6 +72,12 @@ class NearbyPage extends React.Component {
                     OffEventsPosts={this.props.OffEventsPosts}
                     LookRentPosts={this.props.LookRentPosts}
                     LookOtherPosts={this.props.LookOtherPosts}
+                    OffBizPulled={this.props.OffBizPulled}
+                    OffEventsPulled={this.props.OffEventsPulled}
+                    OffRentPulled={this.props.OffRentPulled}
+                    OffTradePulled={this.props.OffTradePulled}
+                    LookRentPulled={this.props.LookRentPulled}
+                    LookTradePulled={this.props.LookTradePulled}
                   />
 
                   {/* <div
@@ -157,7 +163,9 @@ class NearbyPage extends React.Component {
               handleNearbyOnChangeValidation={
                 this.props.handleNearbyOnChangeValidation
               }
-              constructQueryThenSearch={this.props.constructQueryThenSearch}
+              submittedStateAndCategoryTHENConstruct={
+                this.props.submittedStateAndCategoryTHENConstruct
+              }
             />
 
             <ButtonsOnPage
@@ -173,6 +181,12 @@ class NearbyPage extends React.Component {
               OffEventsPosts={this.props.OffEventsPosts}
               LookRentPosts={this.props.LookRentPosts}
               LookOtherPosts={this.props.LookOtherPosts}
+              OffBizPulled={this.props.OffBizPulled}
+              OffEventsPulled={this.props.OffEventsPulled}
+              OffRentPulled={this.props.OffRentPulled}
+              OffTradePulled={this.props.OffTradePulled}
+              LookRentPulled={this.props.LookRentPulled}
+              LookTradePulled={this.props.LookTradePulled}
             />
 
             {/* <div className="BottomBorder" style={{ paddingTop: ".5rem" }}></div> */}

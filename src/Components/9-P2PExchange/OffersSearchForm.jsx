@@ -20,8 +20,7 @@ class OffersSearchForm extends React.Component {
   handleSubmitClick = (event) => {
     event.preventDefault();
     //console.log(event.target.ControlTextarea1.value);
-
-    //this.props.searchOffers();
+    this.props.constructQueryThenSearch_EXCHANGE();
   };
 
   componentDidMount() {

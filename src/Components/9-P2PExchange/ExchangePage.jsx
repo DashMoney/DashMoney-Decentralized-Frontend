@@ -48,22 +48,144 @@ class ExchangePage extends React.Component {
                     showModal={this.props.showModal}
                   />
 
+                  <div className="bodytext" style={{ textAlign: "center" }}>
+                    <h3>Peer-to-Peer Exchange or Marketplace of Exchanges.</h3>
+
+                    <h6>"Caveat Emptor" -DashMoney</h6>
+                  </div>
+
                   <h3>
                     <b>Get Offers for</b>
                   </h3>
 
-                  {/* <NameSearchForm
-                    mode={this.props.mode}
-                    nameToSearch={this.props.nameToSearch}
-                    nameFormat={this.props.nameFormat}
-                    SearchedNameDoc={this.props.SearchedNameDoc}
-                    searchName={this.props.searchName}
-                    //tooLongNameError={this.props.tooLongNameError}
+                  <p></p>
+                  <div style={{ display: "flex", justifyContent: "center" }}>
+                    {this.props.whichOffersName === "Offers" ? (
+                      <ButtonGroup className="me-2" aria-label="offer-name">
+                        <Button
+                          variant="primary"
+                          style={{ textDecoration: "underline" }}
+                        >
+                          <b
+                            style={{
+                              fontSize: "larger",
+                              paddingLeft: ".8rem",
+                              paddingRight: ".8rem",
+                            }}
+                          >
+                            Offers
+                          </b>
+                        </Button>
 
-                    handleReviewsOnChangeValidation={
-                      this.props.handleReviewsOnChangeValidation
-                    }
-                  /> */}
+                        <Button
+                          variant="primary"
+                          onClick={this.props.triggerNameButton}
+                        >
+                          <b
+                            style={{
+                              fontSize: "larger",
+                              paddingLeft: "1rem",
+                              paddingRight: "1rem",
+                            }}
+                          >
+                            Name
+                          </b>
+                        </Button>
+                      </ButtonGroup>
+                    ) : (
+                      <ButtonGroup className="me-2" aria-label="First group">
+                        <Button
+                          variant="primary"
+                          onClick={this.props.triggerOffersButton}
+                        >
+                          <b
+                            style={{
+                              fontSize: "larger",
+                              paddingLeft: ".8rem",
+                              paddingRight: ".8rem",
+                            }}
+                          >
+                            Offers
+                          </b>
+                        </Button>
+
+                        <Button
+                          variant="primary"
+                          style={{ textDecoration: "underline" }}
+                        >
+                          <b
+                            style={{
+                              fontSize: "larger",
+                              paddingLeft: "1rem",
+                              paddingRight: "1rem",
+                            }}
+                          >
+                            Name
+                          </b>
+                        </Button>
+                      </ButtonGroup>
+                    )}
+                  </div>
+
+                  <p></p>
+                  {this.props.whichOffersName === "Offers" ? (
+                    <>
+                      <OffersSearchForm
+                        mode={this.props.mode}
+                        handleExchangeOffersSearchOnChangeValidation={
+                          this.props
+                            .handleExchangeOffersSearchOnChangeValidation
+                        }
+                        constructQueryThenSearch_EXCHANGE={
+                          this.props.constructQueryThenSearch_EXCHANGE
+                        }
+                        clearExchangeOffersForm={
+                          this.props.clearExchangeOffersForm
+                        }
+                        toMeFinal={this.props.toMeFinal}
+                        toMeInput={this.props.toMeInput}
+                        validtoMe={this.props.validtoMe}
+                        toMeInputOTHER={this.props.toMeInputOTHER}
+                        validtoMeOTHER={this.props.validtoMeOTHER}
+                        tooLongtoMeErrorOTHER={this.props.tooLongtoMeErrorOTHER}
+                        toMeViaInput={this.props.toMeViaInput}
+                        validtoMeVia={this.props.validtoMeVia}
+                        toMeViaInputOTHER={this.props.toMeViaInputOTHER}
+                        validtoMeViaOTHER={this.props.validtoMeViaOTHER}
+                        tooLongtoMeViaErrorOTHER={
+                          this.props.tooLongtoMeViaErrorOTHER
+                        }
+                        toUFinal={this.props.toUFinal}
+                        toUInput={this.props.toUInput}
+                        validtoU={this.props.validtoU}
+                        toUInputOTHER={this.props.toUInputOTHER}
+                        validtoUOTHER={this.props.validtoUOTHER}
+                        tooLongtoUErrorOTHER={this.props.tooLongtoUErrorOTHER}
+                        toUViaInput={this.props.toUViaInput}
+                        validtoUVia={this.props.validtoUVia}
+                        toUViaInputOTHER={this.props.toUViaInputOTHER}
+                        validtoUViaOTHER={this.props.validtoUViaOTHER}
+                        tooLongtoUViaErrorOTHER={
+                          this.props.tooLongtoUViaErrorOTHER
+                        }
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <NameSearchFormEXCHANGE
+                        mode={this.props.mode}
+                        nameToSearch_EXCHANGE={this.props.nameToSearch_EXCHANGE}
+                        nameFormat_EXCHANGE={this.props.nameFormat_EXCHANGE}
+                        isTooLongNameError_EXCHANGE={
+                          this.props.isTooLongNameError_EXCHANGE
+                        }
+                        searchName_EXCHANGE={this.props.searchName_EXCHANGE}
+                        handleExchangeNameSearchOnChangeValidation={
+                          this.props.handleExchangeNameSearchOnChangeValidation
+                        }
+                      />
+                    </>
+                  )}
 
                   {/* <div
                     className="BottomBorder"
@@ -113,6 +235,16 @@ class ExchangePage extends React.Component {
                     showModal={this.props.showModal}
                   />
 
+                  <p></p>
+                  <div className="d-grid gap-2">
+                    <Button
+                      variant="primary"
+                      onClick={() => this.props.showModal("CreateOfferModal")}
+                    >
+                      <b style={{ fontSize: "larger" }}>Create New Offer</b>
+                    </Button>
+                  </div>
+
                   {/* <YourOffers
                     YourOffers={this.props.YourOffers}
                     identity={this.props.identity}
@@ -139,7 +271,7 @@ class ExchangePage extends React.Component {
               </h5> */}
               <h6>"Caveat Emptor" -DashMoney</h6>
             </div>
-            <p></p>
+            {/* <p></p>
             <div className="d-grid gap-2">
               <Button
                 variant="primary"
@@ -147,7 +279,7 @@ class ExchangePage extends React.Component {
               >
                 <b style={{ fontSize: "larger" }}>Create New Offer</b>
               </Button>
-            </div>
+            </div> */}
             <p></p>
             <div style={{ display: "flex", justifyContent: "center" }}>
               {this.props.whichOffersName === "Offers" ? (
@@ -229,6 +361,9 @@ class ExchangePage extends React.Component {
                   handleExchangeOffersSearchOnChangeValidation={
                     this.props.handleExchangeOffersSearchOnChangeValidation
                   }
+                  constructQueryThenSearch_EXCHANGE={
+                    this.props.constructQueryThenSearch_EXCHANGE
+                  }
                   clearExchangeOffersForm={this.props.clearExchangeOffersForm}
                   toMeFinal={this.props.toMeFinal}
                   toMeInput={this.props.toMeInput}
@@ -271,7 +406,7 @@ class ExchangePage extends React.Component {
               </>
             )}
 
-            {this.props.isLoadingReviewsSearch ? (
+            {this.props.isLoadingExchangeSearch ? (
               <>
                 <p></p>
                 <div id="spinner">

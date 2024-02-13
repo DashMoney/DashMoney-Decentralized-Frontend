@@ -19,7 +19,7 @@ import "./BuyerPages.css";
 
 class ShoppingPage extends React.Component {
   onChange = (event) => {
-    console.log(event.target.value);
+    // console.log(event.target.value);
 
     event.preventDefault();
     event.stopPropagation();

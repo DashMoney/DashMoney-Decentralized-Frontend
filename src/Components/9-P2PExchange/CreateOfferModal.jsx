@@ -1023,18 +1023,17 @@ class CreateOfferModal extends React.Component {
     let newOffer;
 
     newOffer = {
-      toMe: this.state.toMe4Doc,
-      toMeVia: this.state.toMeVia4Doc,
+      toMe: this.state.toMe4Doc.toLocaleUpperCase(),
+      toMeVia: this.state.toMeVia4Doc.toLocaleLowerCase(),
       toMeHandle: this.state.toMeHandle4Doc,
-      toU: this.state.toU4Doc,
-      toUVia: this.state.toUVia4Doc,
+      toU: this.state.toU4Doc.toLocaleUpperCase(),
+      toUVia: this.state.toUVia4Doc.toLocaleLowerCase(),
       // toUHandle  <- Not a thing
       exRate: this.state.exRateInput,
       instruction: this.state.instructionInput,
       minAmt: this.state.minAmtInput,
       maxAmt: this.state.maxAmtInput,
       active: this.state.offerActive,
-      ///city: this.state.cityInput.toLocaleLowerCase()
     };
 
     console.log(newOffer);

@@ -160,7 +160,7 @@ class MyStore extends React.Component {
                 <span></span>
               </div>
 
-              <h5 className="bodytext">
+              <h5 className="bodytext" style={{ whiteSpace: "pre-wrap" }}>
                 <b>{this.props.DGPStore[0].description}</b>
               </h5>
               {/* <Card id="card" bg={cardBkg} text={cardText}>

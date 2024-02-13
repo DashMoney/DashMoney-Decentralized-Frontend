@@ -279,7 +279,10 @@ class FindMerchant extends React.Component {
                               <h3 style={{ color: "#008de4" }}>
                                 <b> {this.props.merchantStoreName}</b>
                               </h3>
-                              <h5 className="bodytext">
+                              <h5
+                                className="bodytext"
+                                style={{ whiteSpace: "pre-wrap" }}
+                              >
                                 <b>{this.props.merchantStore[0].description}</b>
                               </h5>
 

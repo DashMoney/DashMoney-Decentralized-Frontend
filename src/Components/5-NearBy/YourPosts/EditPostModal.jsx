@@ -193,9 +193,23 @@ class EditPostModal extends React.Component {
   };
 
   descriptionValidate = (description) => {
-    let regex = /^.[\S\s]{0,350}$/;
+    // let regex = /^.[\S\s]{0,350}$/;
 
-    let valid = regex.test(description);
+    // let valid = regex.test(description);
+
+    let regex1 = /^.[\S\s]{0,349}$/;
+
+    let valid1 = regex1.test(messageText);
+
+    let regex2 = /^(?:[^\r\n]*(?:\r\n?|\n)){0,4}[^\r\n]*$/;
+
+    let valid2 = regex2.test(messageText);
+
+    let valid = false;
+
+    if (valid1 && valid2) {
+      valid = true;
+    }
 
     if (valid) {
       this.setState({

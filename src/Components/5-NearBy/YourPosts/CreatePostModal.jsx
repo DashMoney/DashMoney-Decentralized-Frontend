@@ -371,9 +371,23 @@ class CreatePostModal extends React.Component {
   //   };
 
   descriptionValidate = (description) => {
-    let regex = /^.[\S\s]{0,350}$/;
+    // let regex = /^.[\S\s]{0,350}$/;
 
-    let valid = regex.test(description);
+    // let valid = regex.test(description);
+
+    let regex1 = /^.[\S\s]{0,349}$/;
+
+    let valid1 = regex1.test(messageText);
+
+    let regex2 = /^(?:[^\r\n]*(?:\r\n?|\n)){0,4}[^\r\n]*$/;
+
+    let valid2 = regex2.test(messageText);
+
+    let valid = false;
+
+    if (valid1 && valid2) {
+      valid = true;
+    }
 
     if (valid) {
       this.setState({
@@ -621,16 +635,18 @@ class CreatePostModal extends React.Component {
             {this.state.selectedCategory === "offbiz" ? (
               <Button
                 variant="primary"
-                style={{ textDecoration: "underline", marginRight: ".5rem",
-                marginBottom: ".7rem" }}
+                style={{
+                  textDecoration: "underline",
+                  marginRight: ".5rem",
+                  marginBottom: ".7rem",
+                }}
               >
                 <b>Shops/Menus</b>
               </Button>
             ) : (
               <Button
                 variant="primary"
-                style={{ marginRight: ".5rem",
-                marginBottom: ".7rem"}}
+                style={{ marginRight: ".5rem", marginBottom: ".7rem" }}
                 onClick={() => this.handleCategoryButtons("offbiz")}
               >
                 <b>Shops/Menus</b>
@@ -638,8 +654,10 @@ class CreatePostModal extends React.Component {
             )}
 
             {this.state.selectedCategory === "events" ? (
-              <Button variant="primary" style={{ textDecoration: "underline" ,
-              marginBottom: ".7rem"}}>
+              <Button
+                variant="primary"
+                style={{ textDecoration: "underline", marginBottom: ".7rem" }}
+              >
                 <b
                   style={{
                     paddingLeft: ".5rem",
@@ -652,8 +670,9 @@ class CreatePostModal extends React.Component {
             ) : (
               <Button
                 variant="primary"
-                style={{ 
-                marginBottom: ".7rem"}}
+                style={{
+                  marginBottom: ".7rem",
+                }}
                 onClick={() => this.handleCategoryButtons("events")}
               >
                 <b
@@ -673,8 +692,8 @@ class CreatePostModal extends React.Component {
                 style={{
                   textDecoration: "underline",
                   marginRight: ".5rem",
-                  
-              marginBottom: ".7rem"
+
+                  marginBottom: ".7rem",
                 }}
               >
                 <b>Place to Rent</b>
@@ -682,8 +701,7 @@ class CreatePostModal extends React.Component {
             ) : (
               <Button
                 variant="primary"
-                style={{ marginRight: ".5rem",
-                marginBottom: ".7rem"}}
+                style={{ marginRight: ".5rem", marginBottom: ".7rem" }}
                 onClick={() => this.handleCategoryButtons("offrent")}
               >
                 <b>Place to Rent</b>
@@ -693,8 +711,11 @@ class CreatePostModal extends React.Component {
             {this.state.selectedCategory === "offother" ? (
               <Button
                 variant="primary"
-                style={{ textDecoration: "underline", marginRight: ".5rem",
-                marginBottom: ".7rem" }}
+                style={{
+                  textDecoration: "underline",
+                  marginRight: ".5rem",
+                  marginBottom: ".7rem",
+                }}
               >
                 <b
                   style={{
@@ -708,8 +729,7 @@ class CreatePostModal extends React.Component {
             ) : (
               <Button
                 variant="primary"
-                style={{ marginRight: ".5rem",
-                marginBottom: ".7rem" }}
+                style={{ marginRight: ".5rem", marginBottom: ".7rem" }}
                 onClick={() => this.handleCategoryButtons("offother")}
               >
                 <b

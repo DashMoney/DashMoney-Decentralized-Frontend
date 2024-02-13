@@ -136,7 +136,9 @@ class YourPost extends React.Component {
               {this.handleActive()}
             </Card.Title>
 
-            <p>{this.props.post.description}</p>
+            <p style={{ whiteSpace: "pre-wrap" }}>
+              {this.props.post.description}
+            </p>
 
             {this.props.post.link !== undefined &&
             this.props.post.link !== "" ? (

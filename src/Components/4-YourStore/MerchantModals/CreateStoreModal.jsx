@@ -60,18 +60,32 @@ class CreateStoreModal extends React.Component {
   };
 
   storeDescriptionValidate = (description) => {
-    let regex = /^.[\S\s]{1,250}$/;
+    // let regex = /^.[\S\s]{1,450}$/;
 
-    let valid = regex.test(description);
+    let regex1 = /^.[\S\s]{0,349}$/;
 
-    if (valid) {
+    let valid1 = regex1.test(messageText);
+
+    let regex2 = /^(?:[^\r\n]*(?:\r\n?|\n)){0,4}[^\r\n]*$/;
+
+    let valid2 = regex2.test(messageText);
+
+    // let valid = false;
+
+    // if (valid1 && valid2) {
+    //   valid = true;
+    // }
+
+    //let valid = regex.test(description);
+
+    if (valid1 && valid2) {
       this.setState({
         descriptionInput: description,
         validDescription: true,
         tooLongDescriptionError: false,
       });
     } else {
-      if (description.length > 250) {
+      if (description.length > 350) {
         this.setState({
           descriptionInput: description,
           validDescription: false,
@@ -222,7 +236,9 @@ class CreateStoreModal extends React.Component {
                       <b>Create Store/Menu</b>
                     </Button>
                   ) : (
-                    <Button variant="primary"><b>Create Store/Menu</b></Button>
+                    <Button variant="primary">
+                      <b>Create Store/Menu</b>
+                    </Button>
                   )}
                 </>
               )}

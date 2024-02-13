@@ -645,7 +645,9 @@ class PostModal extends React.Component {
             </span>
           </div>
 
-          <p>{this.props.selectedSearchedPost.description}</p>
+          <p style={{ whiteSpace: "pre-wrap" }}>
+            {this.props.selectedSearchedPost.description}
+          </p>
 
           {this.props.selectedSearchedPost.link !== undefined &&
           this.props.selectedSearchedPost.link !== "" ? (

@@ -118,7 +118,9 @@ class Post extends React.Component {
               </span>
             </Card.Title>
 
-            <Card.Text>{this.props.post.description}</Card.Text>
+            <Card.Text style={{ whiteSpace: "pre-wrap" }}>
+              {this.props.post.description}
+            </Card.Text>
           </Card.Body>
         </Card>
       </>

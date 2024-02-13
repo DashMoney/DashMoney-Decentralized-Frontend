@@ -89,7 +89,7 @@ class NearbyPage extends React.Component {
                   this.props.isLoadingNearbySearch ? (
                     <>
                       <p></p>
-                      <div id="spinner">
+                      <div className="footer" id="spinner">
                         <Spinner animation="border" role="status">
                           <span className="visually-hidden">Loading...</span>
                         </Spinner>
@@ -195,7 +195,7 @@ class NearbyPage extends React.Component {
             this.props.isLoadingNearbySearch ? (
               <>
                 <p></p>
-                <div id="spinner">
+                <div className="footer" id="spinner">
                   <Spinner animation="border" role="status">
                     <span className="visually-hidden">Loading...</span>
                   </Spinner>

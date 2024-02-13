@@ -112,7 +112,7 @@ class App extends React.Component {
       //isLoading: true, //For identity and name And not identityInfo that is handle on display component
       //^^^ IS THIS NOW HANDLED BY THE isLoginComplete render variable??
 
-      //ACCOUNT 'LOGIN' PAGE
+      //ACCOUNT 'LOGIN' PAGE STATE
       isLoadingIdentity: true,
       isLoadingIdInfo: true,
       isLoadingCreditTransfer: false,
@@ -126,7 +126,7 @@ class App extends React.Component {
       idInfoError: false,
       nameError: false,
       aliasError: false,
-      //ACCOUNT 'LOGIN' PAGE^^^^^^
+      //ACCOUNT 'LOGIN' PAGE STATE^^^^^^
 
       //MESSAGES PAGE
       // isLoading={this.state.isLoading}
@@ -250,7 +250,7 @@ class App extends React.Component {
       // pushNewSOtoView={this.pushNewSOtoView}
       // pushNewDMtoView={this.pushNewDMtoView}
 
-      //MESSAGES PAGE ^^^^^
+      //MESSAGES PAGE STATE^^^^^
 
       //GROUPS PAGE
 
@@ -281,7 +281,7 @@ class App extends React.Component {
       sentGroupInviteSuccess: false,
       sendToNameInvite: "", //For invite
 
-      //GROUPS PAGE ^^^^^
+      //GROUPS PAGE STATE^^^^^
 
       //WALLET PAGE
 
@@ -380,7 +380,7 @@ class App extends React.Component {
       WALLET_ThreadMessageId: "",
       WALLET_messageToWhomName: "",
 
-      //WALLET PAGE ^^^^^^
+      //WALLET PAGE STATE^^^^^^
 
       //YOUR STORE PAGE
 
@@ -419,7 +419,7 @@ class App extends React.Component {
       storeError: false,
       itemError: false,
 
-      //YOUR STORE PAGE ^^^^
+      //YOUR STORE PAGE STATE^^^^^^
 
       //SHOPPING PAGE
 
@@ -485,7 +485,7 @@ class App extends React.Component {
       messageOrderIdSHOPPING: "", //SHOPPING ->
       messageStoreOwnerNameSHOPPING: "", //SHOPPING ->
 
-      //SHOPPING PAGE ^^^^
+      //SHOPPING PAGE STATE^^^^^^
 
       //NEAR BY PAGE
 
@@ -555,7 +555,10 @@ class App extends React.Component {
 
       yourPostsToDisplay: [],
 
-      //NEAR BY PAGE^^^^^^
+      selectedYourPost: "",
+      selectedYourPostIndex: "",
+
+      //NEAR BY PAGE STATE^^^^^^
 
       //EXCHANGE PAGE
 
@@ -563,7 +566,11 @@ class App extends React.Component {
 
       whichOffersName: "Offers",
 
+      InitialPullExchange: true,
+
       isLoadingExchangeSearch: false,
+      isLoadingExchangeForm: false,
+
       isLoadingYourOffers: true,
 
       nameToSearch_EXCHANGE: "",
@@ -619,7 +626,13 @@ class App extends React.Component {
       toUVia4Doc: "",
       //##### OFFER FORM STATE ######
 
-      //EXCHANGE PAGE^^^^^
+      selectedSearchedOffer: "",
+      selectedSearchedOfferNameDoc: "",
+
+      selectedYourOffer: "", //For Edit
+      selectedYourOfferIndex: "",
+
+      //EXCHANGE PAGE  STATE^^^^^
 
       //REVIEWS PAGE
       whichReviewsTab: "Search", //Search and Your Reviews
@@ -681,7 +694,7 @@ class App extends React.Component {
       replyToEdit: [],
       replyingToName: "",
 
-      //REVIEWS PAGE^^^^^^
+      //REVIEWS PAGE STATE^^^^^^
 
       //PROOFS PAGE
       whichTab_POD: "Search",
@@ -718,7 +731,7 @@ class App extends React.Component {
       selectedYourProof: "",
       selectedYourProofIndex: "",
 
-      //PROOFS PAGE^^^^^^
+      //PROOFS PAGE STATE^^^^^^
 
       selectedDapp: "Login",
 
@@ -758,6 +771,7 @@ class App extends React.Component {
       DataContractDGM: "4PUQmGdGLLWwTFntgwEDhJWzUKoKqbSKanjVGTi2Fbcj",
       DataContractDGP: "785cZo4ok3DgyCJKsg4NPwuFmdDdcbp1hZKBW5b4SZ97",
       DataContractDMIO: "931HGHM5fMrRegVe3998hHcBAft1p8d9sWynfGnKxkw2",
+      DataContractP2P: "",
       DataContractDGR: "5C8ZwmirWwqsMk7EguTf2p2RHa1cD9z3hrR29quE92ug",
       DataContractPOD: "9umPSgjEukfYiygXCMW7zfUVuHTFJSm7VAzbX6rwJgT9",
       DataContractDPNS: "GWRSAVFMjXx8HpQFaNJMqBV7MBgMK4br5UESsB4S31Ec",
@@ -1382,6 +1396,7 @@ class App extends React.Component {
         DataContractDGM: "4PUQmGdGLLWwTFntgwEDhJWzUKoKqbSKanjVGTi2Fbcj",
         DataContractDGP: "785cZo4ok3DgyCJKsg4NPwuFmdDdcbp1hZKBW5b4SZ97",
         DataContractDMIO: "931HGHM5fMrRegVe3998hHcBAft1p8d9sWynfGnKxkw2",
+
         DataContractDGR: "5C8ZwmirWwqsMk7EguTf2p2RHa1cD9z3hrR29quE92ug",
         DataContractPOD: "9umPSgjEukfYiygXCMW7zfUVuHTFJSm7VAzbX6rwJgT9",
         DataContractDPNS: "GWRSAVFMjXx8HpQFaNJMqBV7MBgMK4br5UESsB4S31Ec",
@@ -8360,7 +8375,7 @@ class App extends React.Component {
       orderBy: [["$createdAt", "desc"]],
     };
 
-    console.log(queryObject);
+    // console.log(queryObject);
 
     switch (this.state.selectedCategoryButton) {
       case "offbiz":
@@ -9964,13 +9979,13 @@ class App extends React.Component {
   //************* FORM HANDLING ************* */
 
   onChangeSHOPPING = (event) => {
-    console.log(event.target.value);
+    //console.log(event.target.value);
 
     this.setState({
       LoadingMerchant: false,
     });
 
-    console.log(`id = ${event.target.id}`);
+    //console.log(`id = ${event.target.id}`);
 
     if (event.target.id === "validationCustomName") {
       this.nameValidateSHOPPING(event.target.value);
@@ -10918,6 +10933,23 @@ class App extends React.Component {
     }
   };
 
+  pullInitialTriggerEXCHANGE = () => {
+    this.getYourOffers(this.state.identity);
+    this.setState({
+      InitialPullExchange: false,
+    });
+  };
+
+  handleSearchedOffer = (offer, nameDoc) => {
+    this.setState(
+      {
+        selectedSearchedOffer: offer,
+        selectedSearchedOfferNameDoc: nameDoc,
+      },
+      () => this.showModal("OfferModal")
+    );
+  };
+
   triggerOffersButton = () => {
     this.setState({
       whichOffersName: "Offers",
@@ -11050,7 +11082,7 @@ class App extends React.Component {
       toUVia4Doc: "",
     });
   };
-  //
+
   //Called after state is set.
   verifyOrigi = () => {
     //set false unless hits a success full case
@@ -11061,7 +11093,6 @@ class App extends React.Component {
     // toMeFinal: false,
     // toMe4Doc: "",
     // toMeVia4Doc: "",
-    // toMeHandle4Doc: "",
     //
     // 1) Dash <- (PaytoName, Address) THERE IS ONLY DASH
     if (this.state.toMeInput === "Dash") {
@@ -11604,6 +11635,437 @@ class App extends React.Component {
         });
       }
     }
+  };
+
+  getYourOffers = (theIdentity) => {
+    //console.log("Calling getYourOffers");
+
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      apps: {
+        P2PContract: {
+          contractId: this.state.DataContractP2P,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const getDocuments = async () => {
+      return client.platform.documents.get("P2PContract.offer", {
+        where: [
+          ["$ownerId", "==", theIdentity],
+          ["$createdAt", "<=", Date.now()],
+        ],
+        orderBy: [["$createdAt", "desc"]],
+      });
+    };
+
+    getDocuments()
+      .then((d) => {
+        if (d.length === 0) {
+          console.log("There are no Your Offers");
+
+          this.setState({
+            isLoadingYourOffers: false,
+          });
+        } else {
+          let docArray = [];
+          //console.log("GettingYour Offers");
+          for (const n of d) {
+            console.log("Document:\n", n.toJSON());
+            docArray = [...docArray, n.toJSON()];
+          }
+
+          this.setState({
+            YourOffers: docArray,
+            isLoadingYourOffers: false,
+          });
+        }
+      })
+      .catch((e) => console.error("Something went wrong:\n", e))
+      .finally(() => client.disconnect());
+  };
+  //CHANGE BELOW ->
+  constructQueryThenSearch_EXCHANGE = () => {
+    //IF THE PULLED IS ALREADY DONE DONT PULL AGAIN -> THIS NEED TO CHECK THE PULL STATE BASED ON THE BUTTON
+    if (
+      !this.state.isLoadingExchangeSearch &&
+      !this.state.isLoadingExchangeForm
+    ) {
+      this.setState({
+        isLoadingExchangeSearch: true,
+        isLoadingExchangeForm: true,
+      });
+    }
+    //So what are the parts and I assume I will pull from state for the parameters
+    /* NEED TO DO 5 QUERIES FOR EACH SEARCH (need to normalize/lowercase)
+  SO ITS AN OBJECT!!! 
+
+    /* { 
+    where: [
+      ['toMe', '==', ****toMe4Doc***],
+      ['toMeVia', '==', ****toMeVia4Doc***], //OPTIONAL
+      ['toU', '==', ****toU4Doc***],
+      ['toUVia', '==', ****toUVia4Doc***], //OPTIONAL
+      ["$updatedAt", "<=",  Date.now()],
+        ],
+        orderBy: [["$updatedAt", "desc"]],
+  }*/
+
+    //1) CREATE THE where ARRAY ->
+    //2) tHEN TACK ON THE CONSTANT STUFF ->
+    //3) CUSTOMIZE THE CATEGORY IN EACH FUNCTION ->
+
+    //How to search if all blank-> it is handled automatically ??
+
+    //Do i want to add the category here and then change in each or just add the rest in each?? -> just change in each that is pretty easy. <- how then?
+    //I got a way, dont fill in 3rd spot, use find with length === 2 and then push the specific query!! <- I like it => done
+
+    let whereArray = [];
+
+    whereArray.push(["toMe", "==", this.state.toMe4Doc.toLocaleUpperCase()]); //push adds to end!
+
+    if (
+      this.state.toMe4Doc !== "Dash" &&
+      this.state.toMeVia4Doc !== "Optional"
+    ) {
+      whereArray.push([
+        "toMeVia",
+        "==",
+        this.state.toMeVia4Doc.toLocaleLowerCase(),
+      ]); //push adds to end!
+    }
+
+    if (this.state.toU4Doc !== "") {
+      whereArray.push(["toU", "==", this.state.toU4Doc.toLocaleUpperCase()]); //push adds to end!
+    }
+
+    if (this.state.toU4Doc !== "Dash" && this.state.toUVia4Doc !== "Optional") {
+      whereArray.push([
+        "toUVia",
+        "==",
+        this.state.toUVia4Doc.toLocaleLowerCase(),
+      ]); //push adds to end!
+    }
+
+    let categoryIndex = whereArray.length;
+
+    whereArray.push(["$updateAt", "<=", Date.now()]);
+
+    let queryObject = {
+      where: whereArray,
+      orderBy: [["$updateAt", "desc"]],
+    };
+
+    console.log(queryObject);
+
+    // this.getOffRent(queryObject, categoryIndex);
+  };
+
+  createYourOffer = (offerObject) => {
+    console.log("Called Create Offer");
+
+    this.setState({
+      isLoadingYourOffers: true,
+    });
+
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+      apps: {
+        P2PContract: {
+          contractId: this.state.DataContractP2P,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const submitOfferDoc = async () => {
+      const { platform } = client;
+
+      let identity = "";
+      if (this.state.identityRaw !== "") {
+        identity = this.state.identityRaw;
+      } else {
+        identity = await platform.identities.get(this.state.identity);
+      }
+      let offerProperties;
+      //I think like NEARBY, just normalize everything this simplifies the query and make the display of all offers uniform... <= so no normalize nothing is special..
+      offerProperties = {
+        toMe: offerObject.toMe, //.toLocaleUpperCase() <- done in modal
+        toMeVia: offerObject.toMeVia, //.toLocaleLowerCase() <- done in modal
+        toMeHandle: offerObject.toMeHandle,
+        toU: offerObject.toU, //.toLocaleUpperCase() <- done in modal
+        toUVia: offerObject.toUVia, //.toLocaleLowerCase() <- done in modal
+        //toUHandle -> Not Data Contract
+        exRate: offerObject.exRate,
+        instruction: offerObject.instruction,
+        minAmt: offerObject.minAmt,
+        maxAmt: offerObject.maxAmt,
+        active: offerObject.active,
+      };
+
+      //console.log('Offer to Create: ', offerProperties);
+
+      // Create the note document
+      const p2pDocument = await platform.documents.create(
+        "P2PContract.offer",
+        identity,
+        postProperties
+      );
+
+      //############################################################
+      //This below disconnects the document sending..***
+
+      // return p2pDocument;
+
+      //This is to disconnect the Document Creation***
+      //############################################################
+
+      const documentBatch = {
+        create: [p2pDocument], // Document(s) to create
+      };
+
+      await platform.documents.broadcast(documentBatch, identity);
+      return p2pDocument;
+    };
+
+    submitOfferDoc()
+      .then((d) => {
+        let returnedDoc = d.toJSON();
+        console.log("Document:\n", returnedDoc);
+
+        let offer = {
+          $ownerId: returnedDoc.$ownerId,
+          $id: returnedDoc.$id,
+          $createdAt: returnedDoc.$createdAt,
+          $updatedAt: returnedDoc.$updatedAt,
+
+          toMe: offerObject.toMe, //.toLocaleLowerCase() <- done in modal
+          toMeVia: offerObject.toMeVia, //.toLocaleLowerCase() <- done in modal
+          toMeHandle: offerObject.toMeHandle,
+          toU: offerObject.toU, //.toLocaleLowerCase() <- done in modal
+          toUVia: offerObject.toUVia, //.toLocaleLowerCase() <- done in modal
+
+          //toUHandle -> Not Data Contract
+          exRate: offerObject.exRate,
+          instruction: offerObject.instruction,
+          minAmt: offerObject.minAmt,
+          maxAmt: offerObject.maxAmt,
+          active: offerObject.active,
+        };
+
+        this.setState({
+          YourOffers: [offer, ...this.state.YourOffers],
+          isLoadingYourOffers: false,
+        });
+      })
+      .catch((e) => {
+        console.error("Something went wrong with post creation:\n", e);
+        this.setState({
+          yourOfferError: true,
+          isLoadingYourOffers: false,
+        });
+      })
+      .finally(() => client.disconnect());
+  };
+
+  editYourOffer = (offerObject) => {
+    //  console.log("Called Edit Offer");
+
+    this.setState({
+      isLoadingYourOffers: true,
+    });
+
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+      apps: {
+        P2PContract: {
+          contractId: this.state.DataContractP2P,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const submitPostDoc = async () => {
+      const { platform } = client;
+
+      let identity = "";
+      if (this.state.identityRaw !== "") {
+        identity = this.state.identityRaw;
+      } else {
+        identity = await platform.identities.get(this.state.identity);
+      }
+
+      const [document] = await client.platform.documents.get(
+        "P2PContract.offer",
+        {
+          where: [
+            [
+              "$id",
+              "==",
+              this.state.YourOffers[this.state.selectedYourOfferIndex].$id,
+            ],
+          ],
+        }
+      );
+      /**
+       *  toMe: offerObject.toMe, //.toLocaleUpperCase() <- done in modal
+          toMeVia: offerObject.toMeVia, //.toLocaleLowerCase() <- done in modal
+          toMeHandle: offerObject.toMeHandle,
+          toU: offerObject.toU, //.toLocaleUpperCase() <- done in modal
+          toUVia: offerObject.toUVia, //.toLocaleLowerCase() <- done in modal
+
+          //toUHandle -> Not Data Contract
+          exRate: offerObject.exRate,
+          instruction: offerObject.instruction,
+          minAmt: offerObject.minAmt,
+          maxAmt: offerObject.maxAmt,
+          active: offerObject.active,
+       */
+
+      if (
+        this.state.YourOffers[this.state.selectedYourOfferIndex].toMe !==
+        offerObject.toMe
+      ) {
+        document.set("toMe", offerObject.toMe);
+      }
+
+      if (
+        this.state.YourOffers[this.state.selectedYourOfferIndex].toMeVia !==
+        offerObject.toMeVia
+      ) {
+        document.set("toMeVia", offerObject.toMeVia);
+      }
+
+      if (
+        this.state.YourOffers[this.state.selectedYourOfferIndex].toMeHandle !==
+        offerObject.toMeHandle
+      ) {
+        document.set("toMeHandle", offerObject.toMeHandle);
+      }
+
+      if (
+        this.state.YourOffers[this.state.selectedYourOfferIndex].toU !==
+        offerObject.toU
+      ) {
+        document.set("toU", offerObject.toU);
+      }
+
+      if (
+        this.state.YourOffers[this.state.selectedYourOfferIndex].toUVia !==
+        offerObject.toUVia
+      ) {
+        document.set("toUVia", offerObject.toUVia);
+      }
+
+      if (
+        this.state.YourOffers[this.state.selectedYourOfferIndex].exRate !==
+        offerObject.exRate
+      ) {
+        document.set("exRate", offerObject.exRate);
+      }
+
+      if (
+        this.state.YourOffers[this.state.selectedYourOfferIndex].instruction !==
+        offerObject.instruction
+      ) {
+        document.set("instruction", offerObject.instruction);
+      }
+
+      if (
+        this.state.YourOffers[this.state.selectedYourOfferIndex].minAmt !==
+        offerObject.minAmt
+      ) {
+        document.set("minAmt", offerObject.minAmt);
+      }
+
+      if (
+        this.state.YourOffers[this.state.selectedYourOfferIndex].maxAmt !==
+        offerObject.maxAmt
+      ) {
+        document.set("maxAmt", offerObject.maxAmt);
+      }
+
+      if (
+        this.state.YourOffers[this.state.selectedYourOfferIndex].active !==
+        offerObject.active
+      ) {
+        document.set("active", offerObject.active);
+      }
+
+      await platform.documents.broadcast({ replace: [document] }, identity);
+      return document;
+
+      //############################################################
+      //This below disconnects the document editing..***
+
+      //return document;
+
+      //This is to disconnect the Document editing***
+      //############################################################
+    };
+
+    submitPostDoc()
+      .then((d) => {
+        let returnedDoc = d.toJSON();
+        console.log("Edited Offer Doc:\n", returnedDoc);
+
+        let offer = {
+          $ownerId: returnedDoc.$ownerId,
+          $id: returnedDoc.$id,
+          $createdAt: returnedDoc.$createdAt,
+          $updatedAt: returnedDoc.$updatedAt,
+
+          toMe: offerObject.toMe, //.toLocaleLowerCase() <- done in modal
+          toMeVia: offerObject.toMeVia, //.toLocaleLowerCase() <- done in modal
+          toMeHandle: offerObject.toMeHandle,
+          toU: offerObject.toU, //.toLocaleLowerCase() <- done in modal
+          toUVia: offerObject.toUVia, //.toLocaleLowerCase() <- done in modal
+
+          //toUHandle -> Not Data Contract
+          exRate: offerObject.exRate,
+          instruction: offerObject.instruction,
+          minAmt: offerObject.minAmt,
+          maxAmt: offerObject.maxAmt,
+          active: offerObject.active,
+        };
+
+        let editedOffers = this.state.YourOffers;
+
+        editedOffers.splice(this.state.selectedYourOfferIndex, 1, offer);
+
+        this.setState(
+          {
+            YourOffers: editedOffers,
+            isLoadingYourOffers: false,
+          }
+          //,() => console.log(this.state.YourOffers)
+        );
+      })
+      .catch((e) => {
+        console.error("Something went wrong with Offer creation:\n", e);
+        this.setState({
+          offerError: true,
+          isLoadingYourOffers: false,
+        });
+      })
+      .finally(() => client.disconnect());
   };
   /*
    *EXCHANGE FUNCTIONS^^^^
@@ -13524,6 +13986,14 @@ class App extends React.Component {
                     toUFinal={this.state.toUFinal}
                     toU4Doc={this.state.toU4Doc}
                     toUVia4Doc={this.state.toUVia4Doc}
+                    constructQueryThenSearch_EXCHANGE={
+                      this.constructQueryThenSearch_EXCHANGE
+                    }
+                    selectedSearchedOffer={this.state.selectedSearchedOffer}
+                    selectedSearchedOfferNameDoc={
+                      this.state.selectedSearchedOfferNameDoc
+                    }
+                    handleSearchedOffer={this.handleSearchedOffer}
                   />
                 </>
               ) : (
@@ -14187,6 +14657,38 @@ class App extends React.Component {
         ) : (
           <></>
         )}
+
+        {/* {this.state.isModalShowing &&
+        this.state.presentModal === "EditOfferModal" ? (
+          <EditOfferModal
+            selectedYourOffer={this.state.selectedYourOffer}
+            editYourOffer={this.editYourOffer}
+            isModalShowing={this.state.isModalShowing}
+            hideModal={this.hideModal}
+            mode={this.state.mode}
+            closeTopNav={this.closeTopNav}
+          />
+        ) : (
+          <></>
+        )} */}
+
+        {/* {this.state.isModalShowing &&
+        this.state.presentModal === "OfferModal" ? (
+          <OfferModal
+            selectedSearchedOffer={this.state.selectedSearchedOffer}
+            selectedSearchedOfferNameDoc={this.state.selectedSearchedOfferNameDoc}
+            whichNetwork={this.state.whichNetwork}
+            DataContractDGR={this.state.DataContractDGR}
+            DataContractDPNS={this.state.DataContractDPNS}
+            //isLoggedIn={this.state.isLoggedIn}
+            isModalShowing={this.state.isModalShowing}
+            hideModal={this.hideModal}
+            mode={this.state.mode}
+            closeTopNav={this.closeTopNav}
+          />
+        ) : (
+          <></>
+        )} */}
 
         {/* *   ################
          *      ###          ####

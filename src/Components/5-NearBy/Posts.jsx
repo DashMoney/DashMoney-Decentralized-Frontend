@@ -16,14 +16,19 @@ class Posts extends React.Component {
     let postNameArray = [];
 
     switch (this.props.selectedCategoryButton) {
-      case "offrent":
-        postArray = this.props.OffRentPosts;
-        postNameArray = this.props.OffRentNames;
-        break;
-
       case "offbiz":
         postArray = this.props.OffBizPosts;
         postNameArray = this.props.OffBizNames;
+        break;
+
+      case "offevents":
+        postArray = this.props.OffEventsPosts;
+        postNameArray = this.props.OffEventsNames;
+        break;
+
+      case "offrent":
+        postArray = this.props.OffRentPosts;
+        postNameArray = this.props.OffRentNames;
         break;
 
       case "offother":
@@ -50,24 +55,50 @@ class Posts extends React.Component {
       return post.active;
     });
 
-    let posts = postFilteredArray.map((post, index) => {
-      //console.log(post);
-      return (
-        <Post
-          key={index}
-          mode={this.props.mode}
-          index={index}
-          post={post}
-          //today={today}
-          //yesterday={yesterday}
-          identity={this.props.identity}
-          uniqueName={this.props.uniqueName}
-          showModal={this.props.showModal}
-          handleSearchedPost={this.props.handleSearchedPost}
-          PostNames={postNameArray}
-        />
-      );
-    });
+    let posts;
+    //let events; Just use the posts because for display
+
+    if (this.props.selectedCategoryButton === "offevents") {
+      posts = postFilteredArray.map((event, index) => {
+        //console.log(post);
+        return (
+          <Event
+            key={index}
+            mode={this.props.mode}
+            index={index}
+            event={event}
+            identity={this.props.identity}
+            uniqueName={this.props.uniqueName}
+            showModal={this.props.showModal}
+            handleSearchedPost={this.props.handleSearchedPost}
+            EventNames={postNameArray}
+            isLoginComplete={this.props.isLoginComplete}
+            dgtInvitesForEvents={this.props.dgtInvitesForEvents}
+            isLoadingGroupEvents={this.props.isLoadingGroupEvents}
+            handleSelectedJoinGroup={this.props.handleSelectedJoinGroup}
+          />
+        );
+      });
+    } else {
+      posts = postFilteredArray.map((post, index) => {
+        //console.log(post);
+        return (
+          <Post
+            key={index}
+            mode={this.props.mode}
+            index={index}
+            post={post}
+            //today={today}
+            //yesterday={yesterday}
+            identity={this.props.identity}
+            uniqueName={this.props.uniqueName}
+            showModal={this.props.showModal}
+            handleSearchedPost={this.props.handleSearchedPost}
+            PostNames={postNameArray}
+          />
+        );
+      });
+    }
 
     return (
       <>

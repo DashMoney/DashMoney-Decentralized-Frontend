@@ -503,6 +503,10 @@ class App extends React.Component {
 
       isLoadingYourPosts: true,
 
+      //Event Groups -> getDGTInvitesForEvents
+      dgtInvitesForEvents: [],
+      isLoadingGroupEvents: true,
+
       //##### LOCATION FORM STATE ######
       whichCountryRegion: "Country",
 
@@ -4172,10 +4176,11 @@ class App extends React.Component {
   // I WNANT THE GROUPS TO APPEAR BUT ALSO i WANT
   pullInitialTriggerGROUPS = () => {
     //DOES THE STATE MAINTAIN AS i PULL NEW? -> and not show loading?
-    this.getActiveGroups();
+    this.getDGTInvites(this.state.identity); //invites and names.
+    //will loading state protect if events pulled first?
 
     if (this.state.InitialPullGROUPS) {
-      this.getDGTInvites(this.state.identity);
+      this.getActiveGroups();
       this.setState({
         InitialPullGROUPS: false, //ADD
       });
@@ -4203,8 +4208,64 @@ class App extends React.Component {
       isGroupShowing: true,
     });
   };
+  //BELOW should not require the names, but can I still use the same state?
+  //Which invites do I need.. just the ones that I sent my self and not invites from others or that I sent to others.. yeah I think separating is best.
+
+  getDGTInvitesForEvents = () => {
+    this.setState({
+      isLoadingGroupEvents: true,
+    });
+    console.log("Calling DGTInvitesForEvents");
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      apps: {
+        DGTContract: {
+          contractId: this.state.DataContractDGT, // Your contract ID
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    //DGTInvite Query
+    const getDocuments = async () => {
+      return client.platform.documents.get("DGTContract.dgtinvite", {
+        where: [["toId", "==", this.state.identity]],
+      });
+    };
+
+    getDocuments()
+      .then((d) => {
+        if (d.length === 0) {
+          console.log("There are no DGTInvites");
+        } else {
+          let docArray = [];
+
+          for (const n of d) {
+            let returnedDoc = n.toJSON();
+            //console.log("Invite:\n", returnedDoc);
+            returnedDoc.toId = Identifier.from(
+              returnedDoc.toId,
+              "base64"
+            ).toJSON();
+            //console.log("newInvite:\n", returnedDoc);
+            docArray = [...docArray, returnedDoc];
+          }
+
+          this.setState({
+            dgtInvitesForEvents: docArray,
+            isLoadingGroupEvents: false,
+          });
+        }
+      })
+      .catch((e) => console.error("Something went wrong:\n", e))
+
+      .finally(() => client.disconnect());
+  };
 
   getDGTInvites = (theIdentity) => {
+    this.setState({
+      isLoadingGroups: true,
+    });
     const clientOpts = {
       network: this.state.whichNetwork,
       apps: {
@@ -4461,6 +4522,10 @@ class App extends React.Component {
 
           this.setState({
             dgtInvites: [submittedDoc, ...this.state.dgtInvites],
+            dgtInvitesForEvents: [
+              submittedDoc,
+              ...this.state.dgtInvitesForEvents,
+            ],
             isLoadingGroups: false,
           });
         })
@@ -4538,6 +4603,7 @@ class App extends React.Component {
 
         this.setState({
           dgtInvites: mutableArray,
+          dgtInvitesForEvents: mutableArray,
           isLoadingGroups: false,
         });
       })
@@ -4617,6 +4683,10 @@ class App extends React.Component {
 
         this.setState({
           dgtInvites: [submittedDoc, ...this.state.dgtInvites],
+          dgtInvitesForEvents: [
+            submittedDoc,
+            ...this.state.dgtInvitesForEvents,
+          ],
           isLoadingGroups: false,
         });
       })
@@ -7907,6 +7977,7 @@ class App extends React.Component {
 
   pullInitialTriggerNEARBY = () => {
     this.getYourPosts(this.state.identity);
+    this.getDGTInvitesForEvents(); //Use InitialPullNearBy As control
     this.setState({
       InitialPullNearBy: false,
     });
@@ -9154,10 +9225,10 @@ class App extends React.Component {
           link: postObject.link,
 
           active: postObject.active,
-          dgp: postObject.dgp,
+          dgp: false, // postObject.dgp,
           //EVENTS
           group: postObject.groupInput,
-          address: postObject.addressInput,
+          // address: postObject.addressInput,
           date: postObject.dateInput,
           time: postObject.timeInput,
         };
@@ -9191,6 +9262,42 @@ class App extends React.Component {
       .then((d) => {
         let returnedDoc = d.toJSON();
         console.log("Document:\n", returnedDoc);
+        /**
+         *  let postProperties;
+      if (postObject.category !== "events") {
+        postProperties = {
+          city: postObject.city, //.toLocaleLowerCase() <- done in modal
+          region: postObject.region,
+          country: postObject.country,
+
+          description: postObject.description,
+          category: postObject.category,
+          link: postObject.link,
+          // address: postObject.addressInput, //RECONNECT ->
+
+          active: postObject.active,
+          dgp: postObject.dgp,
+        };
+      } else {
+        postProperties = {
+          city: postObject.city, //.toLocaleLowerCase() <- done in modal
+          region: postObject.region,
+          country: postObject.country,
+
+          description: postObject.description,
+          category: postObject.category,
+          link: postObject.link,
+
+          active: postObject.active,
+          dgp: false, // postObject.dgp,
+          //EVENTS
+          group: postObject.groupInput,
+          // address: postObject.addressInput,
+          date: postObject.dateInput,
+          time: postObject.timeInput,
+        };
+      }
+         */
 
         let post = {
           $ownerId: returnedDoc.$ownerId,
@@ -13787,6 +13894,7 @@ class App extends React.Component {
                     pullOnPageLoadTriggerNEARBY={
                       this.pullOnPageLoadTriggerNEARBY
                     }
+                    OnPageLoadNEARBY={this.state.OnPageLoadNEARBY}
                     whichNearbyTab={this.state.whichNearbyTab}
                     handleNearbyTab={this.handleNearbyTab}
                     identityInfo={this.state.identityInfo}
@@ -13839,6 +13947,10 @@ class App extends React.Component {
                     yourPostsToDisplay={this.state.yourPostsToDisplay}
                     handleYourPost={this.handleYourPost}
                     isLoadingYourPosts={this.state.isLoadingYourPosts}
+                    //
+                    dgtInvitesForEvents={this.state.dgtInvitesForEvents}
+                    isLoadingGroupEvents={this.state.isLoadingGroupEvents}
+                    handleSelectedJoinGroup={this.handleSelectedJoinGroup}
                   />
                 </>
               ) : (

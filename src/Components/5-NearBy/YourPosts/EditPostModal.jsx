@@ -199,11 +199,11 @@ class EditPostModal extends React.Component {
 
     let regex1 = /^.[\S\s]{0,349}$/;
 
-    let valid1 = regex1.test(messageText);
+    let valid1 = regex1.test(description);
 
     let regex2 = /^(?:[^\r\n]*(?:\r\n?|\n)){0,4}[^\r\n]*$/;
 
-    let valid2 = regex2.test(messageText);
+    let valid2 = regex2.test(description);
 
     let valid = false;
 

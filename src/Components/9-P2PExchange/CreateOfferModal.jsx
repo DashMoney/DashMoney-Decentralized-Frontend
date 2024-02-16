@@ -1709,7 +1709,10 @@ class CreateOfferModal extends React.Component {
                 Instructions can include things like:
                 <ul>
                   <li>Send (DM) Message prior to pay.</li>
-                  <li>Check out Group (GroupName) to ask you questions</li>
+                  <li>
+                    Check out Group (GroupName) to ask you questions, or Go to
+                    my store and place order.
+                  </li>
                   <li>
                     IMPORTANT: Ensure you spell your receiving handle correctly
                     if you are getting fiat.

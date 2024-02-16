@@ -103,19 +103,19 @@ class CreatePostModal extends React.Component {
       tooLongLinkError: false,
 
       groupInput: "",
-      validGroup: true,
+      validGroup: false,
       tooLongGroupError: false,
 
       addressInput: "",
-      validAddress: true,
+      validAddress: false,
       tooLongAddressError: false,
 
       dateInput: "",
-      validDate: true,
+      validDate: false,
       tooLongDateError: false,
 
       timeInput: "",
-      validTime: true,
+      validTime: false,
       tooLongTimeError: false,
 
       postActive: true,
@@ -377,11 +377,11 @@ class CreatePostModal extends React.Component {
 
     let regex1 = /^.[\S\s]{0,349}$/;
 
-    let valid1 = regex1.test(messageText);
+    let valid1 = regex1.test(description);
 
     let regex2 = /^(?:[^\r\n]*(?:\r\n?|\n)){0,4}[^\r\n]*$/;
 
-    let valid2 = regex2.test(messageText);
+    let valid2 = regex2.test(description);
 
     let valid = false;
 
@@ -469,7 +469,7 @@ class CreatePostModal extends React.Component {
   };
 
   addressValidate = (address) => {
-    let regex = /^[\S\s]{0,100}$/;
+    let regex = /^[\S\s]{0,150}$/;
     let valid = regex.test(address);
 
     if (valid) {
@@ -479,7 +479,7 @@ class CreatePostModal extends React.Component {
         validAddress: true,
       });
     } else {
-      if (address.length > 100) {
+      if (address.length > 150) {
         this.setState({
           addressInput: address,
           tooLongAddressError: true,
@@ -567,9 +567,9 @@ class CreatePostModal extends React.Component {
         dgp: this.state.postDGP, //use this in Events also?
 
         group: this.state.groupInput,
-        address: this.state.addressInput, //use this in DGP also
+        // address: this.state.addressInput, //use this in DGP also
         date: this.state.dateInput,
-        time: this.state.timeInput,
+        // time: this.state.timeInput,
       };
     } else {
       newPost = {
@@ -580,9 +580,8 @@ class CreatePostModal extends React.Component {
         description: this.state.descriptionInput,
         category: this.state.selectedCategory,
         link: this.state.linkInput,
-        address: this.state.addressInput, //use this in DGP also
+        // address: this.state.addressInput, //use this in DGP also
 
-        //avail: this.state.postAvail,
         active: this.state.postActive,
         dgp: this.state.postDGP,
       };
@@ -949,9 +948,11 @@ class CreatePostModal extends React.Component {
                 <></>
               )}
 
-              {this.state.selectedCategory === "events" ? (
+              {/* Time FORM BELOW */}
+
+              {/* {this.state.selectedCategory === "events" ? (
                 <>
-                  {/* Time FORM BELOW */}
+                  
                   <Form.Group className="mb-3" controlId="formTime">
                     <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
                       <b>Time of Event</b>
@@ -967,14 +968,12 @@ class CreatePostModal extends React.Component {
                     <Form.Control.Feedback type="invalid">
                       Time info is too long.
                     </Form.Control.Feedback>
-                    {/* <Form.Control.Feedback type="valid">
-              City/Town name is acceptable!
-            </Form.Control.Feedback> */}
+                   
                   </Form.Group>
                 </>
               ) : (
                 <></>
-              )}
+              )} */}
 
               {/* LINKS FORM BELOW */}
 
@@ -1000,7 +999,7 @@ class CreatePostModal extends React.Component {
               </Form.Group>
 
               {/* ADDRESS FORM BELOW */}
-              <Form.Group className="mb-3" controlId="formAddress">
+              {/* <Form.Group className="mb-3" controlId="formAddress">
                 <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
                   Address
                 </h5>
@@ -1015,10 +1014,8 @@ class CreatePostModal extends React.Component {
                 <Form.Control.Feedback type="invalid">
                   Address is too long.
                 </Form.Control.Feedback>
-                {/* <Form.Control.Feedback type="valid">
-              Address is acceptable!
-            </Form.Control.Feedback> */}
-              </Form.Group>
+                
+              </Form.Group> */}
 
               <Form.Group className="mb-3" id="formGridCheckbox">
                 {/* <Form.Label>
@@ -1074,9 +1071,9 @@ class CreatePostModal extends React.Component {
                     this.state.validDescription &&
                     this.state.validLink &&
                     this.state.validGroup &&
-                    this.state.validAddress &&
-                    this.state.validDate &&
-                    this.state.validTime ? (
+                    // this.state.validAddress &&
+                    this.state.validDate ? ( //&&
+                      //  this.state.validTime
                       <Button
                         variant="primary" //type="submit" //Reconnect !!!!
                         disabled
@@ -1095,8 +1092,8 @@ class CreatePostModal extends React.Component {
                     this.state.validRegion &&
                     this.state.validCountry &&
                     this.state.validDescription &&
-                    this.state.validLink &&
-                    this.state.validAddress ? (
+                    this.state.validLink ? ( //&&
+                      // this.state.validAddress
                       <Button variant="primary" type="submit">
                         <b>Create Post</b>
                       </Button>

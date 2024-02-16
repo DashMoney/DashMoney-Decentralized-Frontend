@@ -12,11 +12,12 @@ import YourPostsPage from "./YourPosts/YourPostsPage";
 
 class NearbyPage extends React.Component {
   componentDidMount() {
+    if (this.props.OnPageLoadNEARBY) {
+      this.props.pullOnPageLoadTriggerNEARBY();
+    }
+
     if (this.props.isLoginComplete && this.props.InitialPullNearBy) {
       this.props.pullInitialTriggerNEARBY();
-    } else {
-      //This could be cleaner -> dont need to call each time even though but app.js does prevent constant calling.
-      this.props.pullOnPageLoadTriggerNEARBY();
     }
   }
   render() {
@@ -118,6 +119,10 @@ class NearbyPage extends React.Component {
                     LookOtherNames={this.props.LookOtherNames}
                     isLoadingNearbySearch={this.props.isLoadingNearbySearch}
                     isLoadingNearbyInitial={this.props.isLoadingNearbyInitial}
+                    dgtInvitesForEvents={this.props.dgtInvitesForEvents}
+                    isLoginComplete={this.props.isLoginComplete}
+                    isLoadingGroupEvents={this.props.isLoadingGroupEvents}
+                    handleSelectedJoinGroup={this.props.handleSelectedJoinGroup}
                   />
                 </>
               ) : (
@@ -224,6 +229,10 @@ class NearbyPage extends React.Component {
               LookOtherNames={this.props.LookOtherNames}
               isLoadingNearbySearch={this.props.isLoadingNearbySearch}
               isLoadingNearbyInitial={this.props.isLoadingNearbyInitial}
+              dgtInvitesForEvents={this.props.dgtInvitesForEvents}
+              isLoginComplete={this.props.isLoginComplete}
+              isLoadingGroupEvents={this.props.isLoadingGroupEvents}
+              handleSelectedJoinGroup={this.props.handleSelectedJoinGroup}
             />
           </div>
         )}

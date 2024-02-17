@@ -1,6 +1,7 @@
 import React from "react";
 
 import Post from "./Post";
+import Event from "./Event";
 
 class Posts extends React.Component {
   render() {
@@ -70,12 +71,8 @@ class Posts extends React.Component {
             identity={this.props.identity}
             uniqueName={this.props.uniqueName}
             showModal={this.props.showModal}
-            handleSearchedPost={this.props.handleSearchedPost}
+            handleSearchedEvent={this.props.handleSearchedEvent}
             EventNames={postNameArray}
-            isLoginComplete={this.props.isLoginComplete}
-            dgtInvitesForEvents={this.props.dgtInvitesForEvents}
-            isLoadingGroupEvents={this.props.isLoadingGroupEvents}
-            handleSelectedJoinGroup={this.props.handleSelectedJoinGroup}
           />
         );
       });

@@ -77,7 +77,7 @@ class CreatePostModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedCategory: "offrent",
+      selectedCategory: "offbiz",
 
       cityInput: "",
       validCity: false,
@@ -495,7 +495,7 @@ class CreatePostModal extends React.Component {
   };
 
   dateValidate = (date) => {
-    let regex = /^[\S\s]{0,32}$/;
+    let regex = /^[\S\s]{1,32}$/;
     let valid = regex.test(date);
 
     if (valid) {
@@ -586,7 +586,7 @@ class CreatePostModal extends React.Component {
         dgp: this.state.postDGP,
       };
     }
-
+    console.log(newPost);
     this.props.createYourPost(newPost);
     this.props.hideModal();
   };
@@ -655,7 +655,11 @@ class CreatePostModal extends React.Component {
             {this.state.selectedCategory === "events" ? (
               <Button
                 variant="primary"
-                style={{ textDecoration: "underline", marginBottom: ".7rem" }}
+                style={{
+                  textDecoration: "underline",
+                  marginRight: ".5rem",
+                  marginBottom: ".7rem",
+                }}
               >
                 <b
                   style={{
@@ -671,6 +675,7 @@ class CreatePostModal extends React.Component {
                 variant="primary"
                 style={{
                   marginBottom: ".7rem",
+                  marginRight: ".5rem",
                 }}
                 onClick={() => this.handleCategoryButtons("events")}
               >
@@ -1075,7 +1080,7 @@ class CreatePostModal extends React.Component {
                     this.state.validDate ? ( //&&
                       //  this.state.validTime
                       <Button
-                        variant="primary" //type="submit" //Reconnect !!!!
+                        variant="primary" //type="submit" <-RECONNECT
                         disabled
                       >
                         <b>Create Event</b>

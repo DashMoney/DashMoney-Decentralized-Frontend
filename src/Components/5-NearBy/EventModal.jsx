@@ -6,12 +6,7 @@ import Modal from "react-bootstrap/Modal";
 import CloseButton from "react-bootstrap/CloseButton";
 import Spinner from "react-bootstrap/Spinner";
 
-import Dash from "dash";
-
-const {
-  Essentials: { Buffer },
-  PlatformProtocol: { Identifier },
-} = Dash;
+import JoinEventComponent from "./JoinEventComponent";
 
 class EventModal extends React.Component {
   constructor(props) {
@@ -74,11 +69,9 @@ class EventModal extends React.Component {
       >
         {/* <Modal.Header> */}
 
-        {/* NO HEADER JUST PUT EVERYTHING IN THE BODY??? -> PROBABLY NEED TO TEST AND LOOK AT ->  */}
-
         {/* <Modal.Title>
           <h3>
-               <b>Selected Post</b>
+               <b>Selected Event</b>
                </h3>
                </Modal.Title>  */}
 
@@ -91,19 +84,19 @@ class EventModal extends React.Component {
           <div className="locationTitle">
             <h5>
               <Badge bg="primary" style={{ marginRight: ".2rem" }}>
-                {this.props.selectedSearchedPost.city}
+                {this.props.selectedSearchedEvent.city}
               </Badge>
             </h5>
 
             <h5>
               <Badge bg="primary" style={{ marginRight: ".2rem" }}>
-                {this.props.selectedSearchedPost.region}
+                {this.props.selectedSearchedEvent.region}
               </Badge>
             </h5>
 
             <h5>
               <Badge bg="primary">
-                {this.props.selectedSearchedPost.country}
+                {this.props.selectedSearchedEvent.country}
               </Badge>
             </h5>
           </div>
@@ -113,11 +106,11 @@ class EventModal extends React.Component {
               style={{ color: "#008de4" }}
               onClick={() =>
                 this.handleNameClick(
-                  this.props.selectedSearchedPostNameDoc.label
+                  this.props.selectedSearchedEventNameDoc.label
                 )
               }
             >
-              {this.props.selectedSearchedPostNameDoc.label}
+              {this.props.selectedSearchedEventNameDoc.label}
             </h4>
 
             {/* <span onClick={() => this.handleNameClick()}>
@@ -127,37 +120,41 @@ class EventModal extends React.Component {
 
             <span className="textsmaller">
               {this.formatDate(
-                this.props.selectedSearchedPost.$createdAt,
+                this.props.selectedSearchedEvent.$createdAt,
                 today,
                 yesterday
               )}
             </span>
           </div>
 
+          <JoinEventComponent
+            mode={this.props.mode}
+            //  handleSelectedJoinGroup = (groupName) => {
+
+            isLoginComplete={this.props.isLoginComplete}
+            dgtInvitesForEvents={this.props.dgtInvitesForEvents}
+            isLoadingGroupEvents={this.props.isLoadingGroupEvents}
+            handleSelectedJoinGroup={this.props.handleSelectedJoinGroup}
+          />
+
           <p style={{ whiteSpace: "pre-wrap" }}>
-            {this.props.selectedSearchedPost.description}
+            {this.props.selectedSearchedEvent.description}
           </p>
 
-          {this.props.selectedSearchedPost.link !== undefined &&
-          this.props.selectedSearchedPost.link !== "" ? (
+          {this.props.selectedSearchedEvent.link !== undefined &&
+          this.props.selectedSearchedEvent.link !== "" ? (
             <>
               <a
                 rel="noopener noreferrer"
                 target="_blank"
-                href={this.props.selectedSearchedPost.link}
+                href={this.props.selectedSearchedEvent.link}
               >
-                <b>{this.props.selectedSearchedPost.link}</b>
+                <b>{this.props.selectedSearchedEvent.link}</b>
               </a>
             </>
           ) : (
             <></>
           )}
-          {/* <p></p>
-          {this.props.selectedSearchedPost.category === "offbiz" ? (
-            <>
-              <h5>
-                <b>Shop/Menu Items</b>
-              </h5> */}
         </Modal.Body>
       </Modal>
     );

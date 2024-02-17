@@ -105,6 +105,7 @@ class NearbyPage extends React.Component {
                     selectedCategoryButton={this.props.selectedCategoryButton}
                     mode={this.props.mode}
                     handleSearchedPost={this.props.handleSearchedPost}
+                    handleSearchedEvent={this.props.handleSearchedEvent}
                     OffRentPosts={this.props.OffRentPosts}
                     OffRentNames={this.props.OffRentNames}
                     OffBizPosts={this.props.OffBizPosts}
@@ -215,6 +216,7 @@ class NearbyPage extends React.Component {
               selectedCategoryButton={this.props.selectedCategoryButton}
               mode={this.props.mode}
               handleSearchedPost={this.props.handleSearchedPost}
+              handleSearchedEvent={this.props.handleSearchedEvent}
               OffRentPosts={this.props.OffRentPosts}
               OffRentNames={this.props.OffRentNames}
               OffBizPosts={this.props.OffBizPosts}
@@ -229,10 +231,6 @@ class NearbyPage extends React.Component {
               LookOtherNames={this.props.LookOtherNames}
               isLoadingNearbySearch={this.props.isLoadingNearbySearch}
               isLoadingNearbyInitial={this.props.isLoadingNearbyInitial}
-              dgtInvitesForEvents={this.props.dgtInvitesForEvents}
-              isLoginComplete={this.props.isLoginComplete}
-              isLoadingGroupEvents={this.props.isLoadingGroupEvents}
-              handleSelectedJoinGroup={this.props.handleSelectedJoinGroup}
             />
           </div>
         )}

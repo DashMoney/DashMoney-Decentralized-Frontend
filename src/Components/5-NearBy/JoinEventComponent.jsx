@@ -1,13 +1,3 @@
-//
-//This is a button but also could tell you if you already have joined the group/event
-
-//What does it need passed to it? ->
-//dgtInvites
-//  handleSelectedJoinGroup = (groupName) => {
-//  this.props.dgtInvites
-//  event -> passed through component
-// isLoading -> which one to protect?
-
 import React from "react";
 import Button from "react";
 

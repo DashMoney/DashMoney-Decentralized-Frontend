@@ -73,6 +73,7 @@ import EditItemModal from "./Components/4-YourStore/MerchantModals/EditItemModal
 import MerchantOrderMsgModal from "./Components/4-YourStore/MerchantModals/MerchantOrderMsgModal";
 
 import PostModal from "./Components/5-NearBy/PostModal";
+import EventModal from "./Components/5-NearBy/EventModal";
 import CreatePostModal from "./Components/5-NearBy/YourPosts/CreatePostModal";
 import EditPostModal from "./Components/5-NearBy/YourPosts/EditPostModal";
 
@@ -8095,10 +8096,21 @@ class App extends React.Component {
     this.setState(
       {
         selectedYourPost: this.state.yourPostsToDisplay[index],
-        //I also need the name <- NOT FOR MY POSTS -> GET IT TOGETHER - nOICE
+        //I also need the name <- NOT FOR MY POSTS
         selectedYourPostIndex: index, //<- Need this for the editingfunction!!
       },
       () => this.showModal("EditPostModal")
+    );
+  };
+
+  handleYourEvent = (index) => {
+    this.setState(
+      {
+        selectedYourPost: this.state.yourPostsToDisplay[index],
+        //I also need the name <- NOT FOR MY POSTS
+        selectedYourPostIndex: index, //<- Need this for the editingfunction!!
+      },
+      () => this.showModal("EditEventModal")
     );
   };
 
@@ -8109,6 +8121,16 @@ class App extends React.Component {
         selectedSearchedPostNameDoc: nameDoc,
       },
       () => this.showModal("PostModal")
+    );
+  };
+
+  handleSearchedEvent = (event, nameDoc) => {
+    this.setState(
+      {
+        selectedSearchedPost: event,
+        selectedSearchedPostNameDoc: nameDoc,
+      },
+      () => this.showModal("EventModal")
     );
   };
 
@@ -8164,8 +8186,6 @@ class App extends React.Component {
   getInitialPosts = () => {
     this.getInitialOffBiz();
   };
-
-  //Pull SEPARATELY.. => *** -> DONE
 
   getInitialOffBiz = () => {
     //console.log("Calling getInitialOffBiz");
@@ -8864,7 +8884,7 @@ class App extends React.Component {
           let docArray = [];
           //console.log("Getting OffEvents");
           for (const n of d) {
-            //console.log("Document:\n", n.toJSON());
+            console.log("Document:\n", n.toJSON());
             docArray = [...docArray, n.toJSON()];
           }
           this.getOffEventsNames(docArray);
@@ -8925,7 +8945,7 @@ class App extends React.Component {
 
         this.setState({
           OffEventsNames: nameDocArray,
-          OffEventsPosts: docArray,
+          OffEventsPosts: [], //docArray, //<- RECONNECT
           OffEventsPulled: true,
           isLoadingNearbySearch: false,
           isLoadingNearbyForm: false,
@@ -9230,7 +9250,7 @@ class App extends React.Component {
           group: postObject.groupInput,
           // address: postObject.addressInput,
           date: postObject.dateInput,
-          time: postObject.timeInput,
+          //time: postObject.timeInput,
         };
       }
       //console.log('Post to Create: ', postProperties);
@@ -9262,64 +9282,49 @@ class App extends React.Component {
       .then((d) => {
         let returnedDoc = d.toJSON();
         console.log("Document:\n", returnedDoc);
-        /**
-         *  let postProperties;
-      if (postObject.category !== "events") {
-        postProperties = {
-          city: postObject.city, //.toLocaleLowerCase() <- done in modal
-          region: postObject.region,
-          country: postObject.country,
 
-          description: postObject.description,
-          category: postObject.category,
-          link: postObject.link,
-          // address: postObject.addressInput, //RECONNECT ->
+        let post;
+        if (postObject.category !== "events") {
+          post = {
+            $ownerId: returnedDoc.$ownerId,
+            $id: returnedDoc.$id,
+            $createdAt: returnedDoc.$createdAt,
 
-          active: postObject.active,
-          dgp: postObject.dgp,
-        };
-      } else {
-        postProperties = {
-          city: postObject.city, //.toLocaleLowerCase() <- done in modal
-          region: postObject.region,
-          country: postObject.country,
+            city: postObject.city,
+            region: postObject.region,
+            country: postObject.country,
 
-          description: postObject.description,
-          category: postObject.category,
-          link: postObject.link,
+            description: postObject.description,
+            category: postObject.category,
+            link: postObject.link,
+            // address: postObject.addressInput, //RECONNECT ->
 
-          active: postObject.active,
-          dgp: false, // postObject.dgp,
-          //EVENTS
-          group: postObject.groupInput,
-          // address: postObject.addressInput,
-          date: postObject.dateInput,
-          time: postObject.timeInput,
-        };
-      }
-         */
+            active: postObject.active,
+            dgp: postObject.dgp,
+          };
+        } else {
+          post = {
+            $ownerId: returnedDoc.$ownerId,
+            $id: returnedDoc.$id,
+            $createdAt: returnedDoc.$createdAt,
 
-        let post = {
-          $ownerId: returnedDoc.$ownerId,
-          $id: returnedDoc.$id,
-          $createdAt: returnedDoc.$createdAt,
+            city: postObject.city, //.toLocaleLowerCase() <- done in modal
+            region: postObject.region,
+            country: postObject.country,
 
-          city: postObject.city,
-          region: postObject.region,
-          country: postObject.country,
+            description: postObject.description,
+            category: postObject.category,
+            link: postObject.link,
 
-          description: postObject.description,
-          category: postObject.category,
-          link: postObject.link,
-
-          active: postObject.active,
-          dgp: postObject.dgp,
-          //EVENTS
-          // group: maxLength: 32,
-          // address: maxLength: 100,
-          // date: maxLength: 32,
-          // time: maxLength: 32,
-        };
+            active: postObject.active,
+            dgp: false, // postObject.dgp,
+            //EVENTS
+            group: postObject.groupInput,
+            // address: postObject.addressInput,
+            date: postObject.dateInput,
+            //time: postObject.timeInput,
+          };
+        }
 
         this.setState({
           yourPostsToDisplay: [post, ...this.state.yourPostsToDisplay],
@@ -9452,6 +9457,170 @@ class App extends React.Component {
       ) {
         document.set("dgp", postObject.dgp);
       }
+
+      //TEST ->
+      await platform.documents.broadcast({ replace: [document] }, identity);
+      return document;
+
+      //############################################################
+      //This below disconnects the document editing..***
+
+      //return document;
+
+      //This is to disconnect the Document editing***
+      //############################################################
+    };
+
+    submitPostDoc()
+      .then((d) => {
+        let returnedDoc = d.toJSON();
+        console.log("Edited Post Doc:\n", returnedDoc);
+
+        let post = {
+          $ownerId: returnedDoc.$ownerId,
+          $id: returnedDoc.$id,
+          $createdAt: returnedDoc.$createdAt,
+
+          city: postObject.city,
+          region: postObject.region,
+          country: postObject.country,
+
+          description: postObject.description,
+          category: postObject.category,
+          link: postObject.link,
+
+          active: postObject.active,
+          dgp: postObject.dgp,
+        };
+
+        let editedPosts = this.state.yourPostsToDisplay;
+
+        editedPosts.splice(this.state.selectedYourPostIndex, 1, post);
+
+        this.setState(
+          {
+            yourPostsToDisplay: editedPosts,
+            isLoadingYourPosts: false,
+          }
+          //,() => console.log(this.state.yourPostsToDisplay)
+        );
+      })
+      .catch((e) => {
+        console.error("Something went wrong with Post creation:\n", e);
+        this.setState({
+          postError: true,
+          isLoadingYourPosts: false,
+        });
+      })
+      .finally(() => client.disconnect());
+  };
+
+  editYourEvent = (postObject) => {
+    //Finish this.
+    console.log("Called Edit Event");
+
+    this.setState({
+      isLoadingYourPosts: true,
+    });
+
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+      apps: {
+        DMIOContract: {
+          contractId: this.state.DataContractDMIO,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const submitPostDoc = async () => {
+      const { platform } = client;
+
+      let identity = "";
+      if (this.state.identityRaw !== "") {
+        identity = this.state.identityRaw;
+      } else {
+        identity = await platform.identities.get(this.state.identity);
+      }
+
+      const [document] = await client.platform.documents.get(
+        "DMIOContract.dmiopost",
+        {
+          where: [
+            [
+              "$id",
+              "==",
+              this.state.yourPostsToDisplay[this.state.selectedYourPostIndex]
+                .$id,
+            ],
+          ],
+        }
+      );
+
+      if (
+        this.state.yourPostsToDisplay[this.state.selectedYourPostIndex].city !==
+        postObject.city
+      ) {
+        document.set("city", postObject.city);
+      }
+
+      if (
+        this.state.yourPostsToDisplay[this.state.selectedYourPostIndex]
+          .region !== postObject.region
+      ) {
+        document.set("region", postObject.region);
+      }
+
+      if (
+        this.state.yourPostsToDisplay[this.state.selectedYourPostIndex]
+          .country !== postObject.country
+      ) {
+        document.set("country", postObject.country);
+      }
+
+      if (
+        this.state.yourPostsToDisplay[this.state.selectedYourPostIndex]
+          .category !== postObject.category
+      ) {
+        document.set("category", postObject.category);
+      }
+
+      if (
+        this.state.yourPostsToDisplay[this.state.selectedYourPostIndex]
+          .description !== postObject.description
+      ) {
+        document.set("description", postObject.description);
+      }
+      //Gruop and DAte
+
+      if (
+        this.state.yourPostsToDisplay[this.state.selectedYourPostIndex].link !==
+        postObject.link
+      ) {
+        document.set("link", postObject.link);
+      }
+
+      if (
+        this.state.yourPostsToDisplay[this.state.selectedYourPostIndex]
+          .active !== postObject.active
+      ) {
+        document.set("active", postObject.active);
+      }
+
+      // if (
+      //   this.state.yourPostsToDisplay[this.state.selectedYourPostIndex].dgp !==
+      //   postObject.dgp
+      // ) {
+      //   document.set("dgp", postObject.dgp);
+      // }
 
       //TEST ->
       await platform.documents.broadcast({ replace: [document] }, identity);
@@ -13938,6 +14107,7 @@ class App extends React.Component {
                     LookRentPosts={this.state.LookRentPosts}
                     LookOtherPosts={this.state.LookOtherPosts}
                     handleSearchedPost={this.handleSearchedPost}
+                    handleSearchedEvent={this.handleSearchedEvent}
                     OffRentNames={this.state.OffRentNames}
                     OffBizNames={this.state.OffBizNames}
                     OffOtherNames={this.state.OffOtherNames}
@@ -14747,6 +14917,27 @@ class App extends React.Component {
             hideModal={this.hideModal}
             mode={this.state.mode}
             closeTopNav={this.closeTopNav}
+          />
+        ) : (
+          <></>
+        )}
+
+        {this.state.isModalShowing &&
+        this.state.presentModal === "EventModal" ? (
+          <EventModal
+            selectedSearchedEvent={this.state.selectedSearchedPost}
+            selectedSearchedEventNameDoc={
+              this.state.selectedSearchedPostNameDoc
+            }
+            isLoggedIn={this.state.isLoggedIn}
+            isModalShowing={this.state.isModalShowing}
+            hideModal={this.hideModal}
+            mode={this.state.mode}
+            closeTopNav={this.closeTopNav}
+            isLoginComplete={this.state.isLoginComplete}
+            dgtInvitesForEvents={this.state.dgtInvitesForEvents}
+            isLoadingGroupEvents={this.state.isLoadingGroupEvents}
+            handleSelectedJoinGroup={this.state.handleSelectedJoinGroup}
           />
         ) : (
           <></>

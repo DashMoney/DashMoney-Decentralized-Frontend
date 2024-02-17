@@ -4,8 +4,6 @@ import Badge from "react-bootstrap/Badge";
 //import Button from 'react-bootstrap/Button';
 import Card from "react-bootstrap/Card";
 
-import JoinEventComponent from "./JoinEventComponent";
-
 class Event extends React.Component {
   constructor(props) {
     super(props);
@@ -60,7 +58,7 @@ class Event extends React.Component {
         <Card id="card" key={this.props.index} bg={cardBkg} text={cardText}>
           <Card.Body
             onClick={() =>
-              this.props.handleSearchedPost(this.props.event, nameDocToPass)
+              this.props.handleSearchedEvent(this.props.event, nameDocToPass)
             }
           >
             <div className="locationTitle" style={{ marginBottom: ".5rem" }}>
@@ -78,12 +76,13 @@ class Event extends React.Component {
             <Card.Title className="cardTitle">
               {/* {this.handleName(this.props.post)} */}
 
-              <span
+              <h5
                 style={{ color: "#008de3" }}
                 // onClick={() => this.handleNameClick(nameDocToPass.label)}
               >
-                {nameDocToPass.label}
-              </span>
+                {/* {nameDocToPass.label} */}
+                {this.props.event.group}
+              </h5>
 
               {/* <span>
     {this.state.copiedName?<span>✅</span>:<></>}
@@ -93,19 +92,6 @@ class Event extends React.Component {
                 {this.formatDate(this.props.event.$createdAt)}
               </span>
             </Card.Title>
-
-            <JoinEventComponent
-              mode={this.props.mode}
-              event={this.props.event}
-              //  handleSelectedJoinGroup = (groupName) => {
-              //event={event}
-              //  event -> passed through component
-              // isLoginComplete={this.props.isLoginComplete}
-
-              //dgtInvitesForEvents={this.props.dgtInvitesForEvents}
-              // isLoadingGroupEvents={this.props.isLoadingGroupEvents}
-              //handleSelectedJoinGroup={this.props.handleSelectedJoinGroup}
-            />
 
             <Card.Text style={{ whiteSpace: "pre-wrap" }}>
               {this.props.event.description}

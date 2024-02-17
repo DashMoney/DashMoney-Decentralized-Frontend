@@ -4609,7 +4609,7 @@ class App extends React.Component {
         console.log("Document deleted:\n", d.toJSON());
 
         let indexToDelete = this.state.dgtInvites.findIndex((invite) => {
-          return invite.$id === d.toJSON().$id;
+          return invite.$id === d.toJSON().$id && invite.dgt === "self";
         });
 
         let mutableArray = this.state.dgtInvites;

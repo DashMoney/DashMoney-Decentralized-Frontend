@@ -252,7 +252,7 @@ class EditEventModal extends React.Component {
         tooLongDescriptionError: false,
       });
     } else {
-      if (description.length > 350 || valid2) {
+      if (description.length > 350 || !valid2) {
         this.setState({
           descriptionInput: description,
           validDescription: false,

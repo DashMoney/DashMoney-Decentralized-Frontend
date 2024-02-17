@@ -174,7 +174,7 @@ class EditStoreModal extends React.Component {
                   onChange={this.onChange}
                   as="textarea"
                   rows={2}
-                  placeholder={this.props.DGPStore[0].description}
+                  defaultValue={this.props.DGPStore[0].description}
                   required
                   isInvalid={this.state.tooLongDescriptionError}
                 />

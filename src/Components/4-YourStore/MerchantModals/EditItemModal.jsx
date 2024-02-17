@@ -387,7 +387,7 @@ class EditItemModal extends React.Component {
                 </Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder={
+                  defaultValue={
                     this.props.selectedItem.category !== ""
                       ? this.props.selectedItem.category
                       : "Optional"

@@ -224,7 +224,7 @@ class EditOfferModal extends React.Component {
         tooLonginstructionError: false,
       });
     } else {
-      if (instruction.length > 500) {
+      if (instruction.length > 500 || !valid2) {
         this.setState({
           instructionInput: instruction,
           validinstruction: false,

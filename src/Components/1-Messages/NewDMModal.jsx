@@ -98,7 +98,7 @@ class NewDMModal extends React.Component {
       });
       return true;
     } else {
-      if (messageText.length > 450) {
+      if (messageText.length > 450 || !valid2) {
         this.setState({
           tooLongError: true,
         });

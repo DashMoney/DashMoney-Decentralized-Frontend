@@ -76,6 +76,7 @@ import PostModal from "./Components/5-NearBy/PostModal";
 import EventModal from "./Components/5-NearBy/EventModal";
 import CreatePostModal from "./Components/5-NearBy/YourPosts/CreatePostModal";
 import EditPostModal from "./Components/5-NearBy/YourPosts/EditPostModal";
+import EditEventModal from "./Components/5-NearBy/YourPosts/EditEventModal";
 
 import AddItemToCartModal from "./Components/6-Shopping/ShoppingModals/AddItemToCartModal";
 import EditCartItemModal from "./Components/6-Shopping/ShoppingModals/EditCartItemModal";
@@ -255,7 +256,7 @@ class App extends React.Component {
 
       //GROUPS PAGE
 
-      isLoadingGroups: true, //Invite Pull, Active(Msgs) Pull, creating Group, deleting group, accepting invite
+      isLoadingGroups: false, //Invite Pull, Active(Msgs) Pull, creating Group, deleting group, accepting invite
       isLoadingGroup: false, // Msgs Pull, Members pull, sending msg,
       //But that is done in Group -> !!???
 
@@ -4213,9 +4214,12 @@ class App extends React.Component {
   //Which invites do I need.. just the ones that I sent my self and not invites from others or that I sent to others.. yeah I think separating is best.
 
   getDGTInvitesForEvents = () => {
-    this.setState({
-      isLoadingGroupEvents: true,
-    });
+    if (!this.state.isLoadingGroupEvents) {
+      this.setState({
+        isLoadingGroupEvents: true,
+      });
+    }
+
     console.log("Calling DGTInvitesForEvents");
     const clientOpts = {
       network: this.state.whichNetwork,
@@ -4238,6 +4242,10 @@ class App extends React.Component {
       .then((d) => {
         if (d.length === 0) {
           console.log("There are no DGTInvites");
+          this.setState({
+            dgtInvitesForEvents: [],
+            isLoadingGroupEvents: false,
+          });
         } else {
           let docArray = [];
 
@@ -4258,7 +4266,12 @@ class App extends React.Component {
           });
         }
       })
-      .catch((e) => console.error("Something went wrong:\n", e))
+      .catch((e) => {
+        console.error("Something went wrong:\n", e);
+        this.setState({
+          isLoadingGroupEvents: false,
+        });
+      })
 
       .finally(() => client.disconnect());
   };
@@ -8945,7 +8958,7 @@ class App extends React.Component {
 
         this.setState({
           OffEventsNames: nameDocArray,
-          OffEventsPosts: [], //docArray, //<- RECONNECT
+          OffEventsPosts: docArray, //<- RECONNECT  //[],
           OffEventsPulled: true,
           isLoadingNearbySearch: false,
           isLoadingNearbyForm: false,
@@ -9247,13 +9260,13 @@ class App extends React.Component {
           active: postObject.active,
           dgp: false, // postObject.dgp,
           //EVENTS
-          group: postObject.groupInput,
-          // address: postObject.addressInput,
-          date: postObject.dateInput,
-          //time: postObject.timeInput,
+          group: postObject.group,
+          // address: postObject.address,
+          date: postObject.date,
+          //time: postObject.time,
         };
       }
-      //console.log('Post to Create: ', postProperties);
+      console.log("Post to Create: ", postProperties);
 
       // Create the note document
       const dmioDocument = await platform.documents.create(
@@ -9265,7 +9278,7 @@ class App extends React.Component {
       //############################################################
       //This below disconnects the document sending..***
 
-      // return dmioDocument;
+      //return dmioDocument;
 
       //This is to disconnect the Document Creation***
       //############################################################
@@ -9319,10 +9332,10 @@ class App extends React.Component {
             active: postObject.active,
             dgp: false, // postObject.dgp,
             //EVENTS
-            group: postObject.groupInput,
-            // address: postObject.addressInput,
-            date: postObject.dateInput,
-            //time: postObject.timeInput,
+            group: postObject.group,
+            // address: postObject.address,
+            date: postObject.date,
+            //time: postObject.time,
           };
         }
 
@@ -9599,7 +9612,20 @@ class App extends React.Component {
       ) {
         document.set("description", postObject.description);
       }
-      //Gruop and DAte
+      //Group and DAte
+      if (
+        this.state.yourPostsToDisplay[this.state.selectedYourPostIndex]
+          .group !== postObject.group
+      ) {
+        document.set("group", postObject.group);
+      }
+
+      if (
+        this.state.yourPostsToDisplay[this.state.selectedYourPostIndex].date !==
+        postObject.date
+      ) {
+        document.set("date", postObject.date);
+      }
 
       if (
         this.state.yourPostsToDisplay[this.state.selectedYourPostIndex].link !==
@@ -9653,8 +9679,11 @@ class App extends React.Component {
           category: postObject.category,
           link: postObject.link,
 
+          group: postObject.group,
+          date: postObject.date,
+
           active: postObject.active,
-          dgp: postObject.dgp,
+          dgp: false,
         };
 
         let editedPosts = this.state.yourPostsToDisplay;
@@ -14116,11 +14145,8 @@ class App extends React.Component {
                     LookOtherNames={this.state.LookOtherNames}
                     yourPostsToDisplay={this.state.yourPostsToDisplay}
                     handleYourPost={this.handleYourPost}
+                    handleYourEvent={this.handleYourEvent}
                     isLoadingYourPosts={this.state.isLoadingYourPosts}
-                    //
-                    dgtInvitesForEvents={this.state.dgtInvitesForEvents}
-                    isLoadingGroupEvents={this.state.isLoadingGroupEvents}
-                    handleSelectedJoinGroup={this.handleSelectedJoinGroup}
                   />
                 </>
               ) : (
@@ -14897,6 +14923,20 @@ class App extends React.Component {
         )}
 
         {this.state.isModalShowing &&
+        this.state.presentModal === "EditEventModal" ? (
+          <EditEventModal
+            selectedYourPost={this.state.selectedYourPost}
+            editYourEvent={this.editYourEvent}
+            isModalShowing={this.state.isModalShowing}
+            hideModal={this.hideModal}
+            mode={this.state.mode}
+            closeTopNav={this.closeTopNav}
+          />
+        ) : (
+          <></>
+        )}
+
+        {this.state.isModalShowing &&
         this.state.presentModal === "PostModal" ? (
           <PostModal
             //MUST ALSO ADD THINGS NEEDED FOR THE DSO DM =>
@@ -14916,7 +14956,6 @@ class App extends React.Component {
             isModalShowing={this.state.isModalShowing}
             hideModal={this.hideModal}
             mode={this.state.mode}
-            closeTopNav={this.closeTopNav}
           />
         ) : (
           <></>
@@ -14929,15 +14968,15 @@ class App extends React.Component {
             selectedSearchedEventNameDoc={
               this.state.selectedSearchedPostNameDoc
             }
-            isLoggedIn={this.state.isLoggedIn}
+            //isLoggedIn={this.state.isLoggedIn}
             isModalShowing={this.state.isModalShowing}
             hideModal={this.hideModal}
             mode={this.state.mode}
-            closeTopNav={this.closeTopNav}
-            isLoginComplete={this.state.isLoginComplete}
+            isLoginComplete={isLoginComplete}
             dgtInvitesForEvents={this.state.dgtInvitesForEvents}
+            isLoadingGroups={this.state.isLoadingGroups}
             isLoadingGroupEvents={this.state.isLoadingGroupEvents}
-            handleSelectedJoinGroup={this.state.handleSelectedJoinGroup}
+            handleSelectedJoinGroup={this.handleSelectedJoinGroup}
           />
         ) : (
           <></>

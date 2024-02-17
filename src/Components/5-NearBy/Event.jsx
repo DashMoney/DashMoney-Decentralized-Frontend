@@ -73,20 +73,10 @@ class Event extends React.Component {
               <Badge bg="primary">{this.props.event.country}</Badge>
             </div>
 
-            <Card.Title className="cardTitle">
-              {/* {this.handleName(this.props.post)} */}
-
-              <h5
-                style={{ color: "#008de3" }}
-                // onClick={() => this.handleNameClick(nameDocToPass.label)}
-              >
-                {/* {nameDocToPass.label} */}
-                {this.props.event.group}
+            <Card.Title className="cardCenterTitle">
+              <h5 style={{ color: "#008de3", marginTop: "1rem" }}>
+                <b> {this.props.event.group}</b>
               </h5>
-
-              {/* <span>
-    {this.state.copiedName?<span>✅</span>:<></>}
-    </span> */}
 
               <span className="textsmaller">
                 {this.formatDate(this.props.event.$createdAt)}
@@ -96,6 +86,9 @@ class Event extends React.Component {
             <Card.Text style={{ whiteSpace: "pre-wrap" }}>
               {this.props.event.description}
             </Card.Text>
+            <p className="textsmaller" style={{ textAlign: "right" }}>
+              Created by: {nameDocToPass.label}
+            </p>
           </Card.Body>
         </Card>
       </>

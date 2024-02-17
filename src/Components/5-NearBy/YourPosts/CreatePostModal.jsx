@@ -77,7 +77,7 @@ class CreatePostModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedCategory: "offbiz",
+      selectedCategory: "",
 
       cityInput: "",
       validCity: false,
@@ -564,7 +564,7 @@ class CreatePostModal extends React.Component {
         link: this.state.linkInput,
 
         active: this.state.postActive,
-        dgp: this.state.postDGP, //use this in Events also?
+        dgp: false, //use this in Events also? -> ? maybe
 
         group: this.state.groupInput,
         // address: this.state.addressInput, //use this in DGP also
@@ -586,7 +586,7 @@ class CreatePostModal extends React.Component {
         dgp: this.state.postDGP,
       };
     }
-    console.log(newPost);
+    //console.log(newPost);
     this.props.createYourPost(newPost);
     this.props.hideModal();
   };
@@ -799,163 +799,184 @@ class CreatePostModal extends React.Component {
               </Button>
             )}
             <div className="BottomBorder" style={{ paddingTop: ".5rem" }}></div>
-            <Form
-              noValidate
-              onSubmit={this.handleSubmitClick}
-              onChange={this.onChange}
-            >
-              {/* CITY FORM BELOW */}
-              <Form.Group className="mb-3" controlId="formCityName">
-                <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
-                  City/Town
-                </h5>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter city/town"
-                  required
-                  isInvalid={this.state.tooLongCityError}
-                  isValid={this.state.validCity}
-                />
-                <p></p>
-                <Form.Control.Feedback type="invalid">
-                  City/Town name is too long.
-                </Form.Control.Feedback>
-                {/* <Form.Control.Feedback type="valid">
+
+            {this.state.selectedCategory === "" ? (
+              <>
+                <p className="bodytext">
+                  Please select the appropriate category for this post above.
+                </p>
+                <div className="ButtonRightNoUnderline">
+                  <Button variant="primary" disabled>
+                    <b>Create Post</b>
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <>
+                <Form
+                  noValidate
+                  onSubmit={this.handleSubmitClick}
+                  onChange={this.onChange}
+                >
+                  {/* CITY FORM BELOW */}
+                  <Form.Group className="mb-3" controlId="formCityName">
+                    <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
+                      City/Town
+                    </h5>
+                    <Form.Control
+                      type="text"
+                      placeholder="Enter city/town"
+                      required
+                      isInvalid={this.state.tooLongCityError}
+                      isValid={this.state.validCity}
+                    />
+                    <p></p>
+                    <Form.Control.Feedback type="invalid">
+                      City/Town name is too long.
+                    </Form.Control.Feedback>
+                    {/* <Form.Control.Feedback type="valid">
               City/Town name is acceptable!
             </Form.Control.Feedback> */}
-              </Form.Group>
+                  </Form.Group>
 
-              {/* REGION FORM BELOW */}
-              <Form.Group className="mb-3" controlId="formRegionName">
-                <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
-                  Region
-                </h5>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter state/province"
-                  required
-                  isInvalid={this.state.tooLongRegionError}
-                  isValid={this.state.validRegion}
-                />
-                <p></p>
-                <Form.Control.Feedback type="invalid">
-                  State/Province name is too long.
-                </Form.Control.Feedback>
-                {/* <Form.Control.Feedback type="valid">
+                  {/* REGION FORM BELOW */}
+                  <Form.Group className="mb-3" controlId="formRegionName">
+                    <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
+                      Region
+                    </h5>
+                    <Form.Control
+                      type="text"
+                      placeholder="Enter state/province"
+                      required
+                      isInvalid={this.state.tooLongRegionError}
+                      isValid={this.state.validRegion}
+                    />
+                    <p></p>
+                    <Form.Control.Feedback type="invalid">
+                      State/Province name is too long.
+                    </Form.Control.Feedback>
+                    {/* <Form.Control.Feedback type="valid">
               State/Province name is acceptable!
             </Form.Control.Feedback> */}
-              </Form.Group>
+                  </Form.Group>
 
-              {/* COUNTRY FORM BELOW */}
-              <Form.Group className="mb-3" controlId="formCountryName">
-                <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
-                  Country
-                </h5>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter country"
-                  required
-                  isInvalid={this.state.tooLongCountryError}
-                  isValid={this.state.validCountry}
-                />
-                <p></p>
-                <Form.Control.Feedback type="invalid">
-                  Country name is too long.
-                </Form.Control.Feedback>
-                {/* <Form.Control.Feedback type="valid">
+                  {/* COUNTRY FORM BELOW */}
+                  <Form.Group className="mb-3" controlId="formCountryName">
+                    <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
+                      Country
+                    </h5>
+                    <Form.Control
+                      type="text"
+                      placeholder="Enter country"
+                      required
+                      isInvalid={this.state.tooLongCountryError}
+                      isValid={this.state.validCountry}
+                    />
+                    <p></p>
+                    <Form.Control.Feedback type="invalid">
+                      Country name is too long.
+                    </Form.Control.Feedback>
+                    {/* <Form.Control.Feedback type="valid">
               Country name is acceptable!
             </Form.Control.Feedback> */}
-              </Form.Group>
+                  </Form.Group>
 
-              {this.state.selectedCategory === "events" ? (
-                <>
-                  {/* Group FORM BELOW */}
-                  <Form.Group className="mb-3" controlId="formGroup">
-                    <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
-                      <b>Name of Event/Group</b>
-                    </h5>
-                    <Form.Control
-                      type="text"
-                      placeholder="Enter event/group name"
-                      required
-                      isInvalid={this.state.tooLongGroupError}
-                      isValid={this.state.validGroup}
-                    />
-                    <p></p>
-                    <Form.Control.Feedback type="invalid">
-                      Event/Group name is too long.
-                    </Form.Control.Feedback>
-                    {/* <Form.Control.Feedback type="valid">
+                  {this.state.selectedCategory === "events" ? (
+                    <>
+                      {/* Group FORM BELOW */}
+                      <Form.Group className="mb-3" controlId="formGroup">
+                        <h5
+                          style={{ marginTop: ".2rem", marginBottom: ".2rem" }}
+                        >
+                          <b>Name of Event/Group</b>
+                        </h5>
+                        <Form.Control
+                          type="text"
+                          placeholder="Enter event/group name"
+                          required
+                          isInvalid={this.state.tooLongGroupError}
+                          isValid={this.state.validGroup}
+                        />
+                        <p></p>
+                        <Form.Control.Feedback type="invalid">
+                          Event/Group name is too long.
+                        </Form.Control.Feedback>
+                        {/* <Form.Control.Feedback type="valid">
               City/Town name is acceptable!
             </Form.Control.Feedback> */}
-                  </Form.Group>
-                </>
-              ) : (
-                <></>
-              )}
+                      </Form.Group>
+                    </>
+                  ) : (
+                    <></>
+                  )}
 
-              {/* POST DESCRIPTION FORM BELOW */}
+                  {/* POST DESCRIPTION FORM BELOW */}
 
-              <Form.Group className="mb-3" controlId="formDescription">
-                <Form.Label>
-                  <h5 style={{ marginTop: ".5rem", marginBottom: ".2rem" }}>
-                    Description
-                  </h5>
-                </Form.Label>
+                  <Form.Group className="mb-3" controlId="formDescription">
+                    <Form.Label>
+                      <h5 style={{ marginTop: ".5rem", marginBottom: ".2rem" }}>
+                        Description
+                      </h5>
+                    </Form.Label>
 
-                <Form.Control
-                  onChange={this.onChange}
-                  as="textarea"
-                  rows={2}
-                  placeholder="Put description here.."
-                  required
-                  isInvalid={this.state.tooLongDescriptionError}
-                  isValid={this.state.validDescription}
-                />
-
-                {this.state.tooLongDescriptionError ? (
-                  <Form.Control.Feedback className="floatLeft" type="invalid">
-                    Sorry, this is too long! Please use less than 300
-                    characters.
-                  </Form.Control.Feedback>
-                ) : (
-                  <></>
-                )}
-              </Form.Group>
-
-              {this.state.selectedCategory === "events" ? (
-                <>
-                  {/* Date FORM BELOW */}
-                  <Form.Group className="mb-3" controlId="formDate">
-                    <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
-                      <b>Date of Event</b>
-                    </h5>
                     <Form.Control
-                      type="text"
-                      placeholder="Enter date (Optional)"
+                      onChange={this.onChange}
+                      as="textarea"
+                      rows={2}
+                      placeholder="Put description here.."
                       required
-                      isInvalid={this.state.tooLongDateError}
-                      isValid={this.state.validDate}
+                      isInvalid={this.state.tooLongDescriptionError}
+                      isValid={this.state.validDescription}
                     />
-                    <p className="smallertext">
-                      (e.g."Friday, 2nd of January" or "Every Saturday")
-                    </p>
-                    <p></p>
-                    <Form.Control.Feedback type="invalid">
-                      Date info is too long.
-                    </Form.Control.Feedback>
-                    {/* <Form.Control.Feedback type="valid">
+
+                    {this.state.tooLongDescriptionError ? (
+                      <Form.Control.Feedback
+                        className="floatLeft"
+                        type="invalid"
+                      >
+                        Sorry, this is too long! Please use less than 300
+                        characters.
+                      </Form.Control.Feedback>
+                    ) : (
+                      <></>
+                    )}
+                  </Form.Group>
+
+                  {this.state.selectedCategory === "events" ? (
+                    <>
+                      {/* Date FORM BELOW */}
+                      <Form.Group className="mb-3" controlId="formDate">
+                        <h5
+                          style={{ marginTop: ".2rem", marginBottom: ".2rem" }}
+                        >
+                          <b>Date of Event</b>
+                        </h5>
+                        <Form.Control
+                          type="text"
+                          placeholder="Enter date (Optional)"
+                          required
+                          isInvalid={this.state.tooLongDateError}
+                          isValid={this.state.validDate}
+                        />
+                        <p className="smallertext">
+                          (e.g."Friday, 2nd of January" or "Every Saturday")
+                        </p>
+                        <p></p>
+                        <Form.Control.Feedback type="invalid">
+                          Date info is too long.
+                        </Form.Control.Feedback>
+                        {/* <Form.Control.Feedback type="valid">
               City/Town name is acceptable!
             </Form.Control.Feedback> */}
-                  </Form.Group>
-                </>
-              ) : (
-                <></>
-              )}
+                      </Form.Group>
+                    </>
+                  ) : (
+                    <></>
+                  )}
 
-              {/* Time FORM BELOW */}
+                  {/* Time FORM BELOW */}
 
-              {/* {this.state.selectedCategory === "events" ? (
+                  {/* {this.state.selectedCategory === "events" ? (
                 <>
                   
                   <Form.Group className="mb-3" controlId="formTime">
@@ -980,31 +1001,31 @@ class CreatePostModal extends React.Component {
                 <></>
               )} */}
 
-              {/* LINKS FORM BELOW */}
+                  {/* LINKS FORM BELOW */}
 
-              <Form.Group className="mb-3" controlId="formLink">
-                <h5 style={{ marginTop: ".5rem", marginBottom: ".2rem" }}>
-                  Link
-                </h5>
+                  <Form.Group className="mb-3" controlId="formLink">
+                    <h5 style={{ marginTop: ".5rem", marginBottom: ".2rem" }}>
+                      Link
+                    </h5>
 
-                <Form.Control
-                  type="text"
-                  placeholder="Enter a URL (Optional)"
-                  required
-                  isInvalid={this.state.tooLongLinkError}
-                  isValid={this.state.validLink}
-                />
-                <p></p>
-                <Form.Control.Feedback type="invalid">
-                  Link is too long.
-                </Form.Control.Feedback>
-                {/* <Form.Control.Feedback type="valid">
+                    <Form.Control
+                      type="text"
+                      placeholder="Enter a URL (Optional)"
+                      required
+                      isInvalid={this.state.tooLongLinkError}
+                      isValid={this.state.validLink}
+                    />
+                    <p></p>
+                    <Form.Control.Feedback type="invalid">
+                      Link is too long.
+                    </Form.Control.Feedback>
+                    {/* <Form.Control.Feedback type="valid">
               Link is acceptable!
             </Form.Control.Feedback> */}
-              </Form.Group>
+                  </Form.Group>
 
-              {/* ADDRESS FORM BELOW */}
-              {/* <Form.Group className="mb-3" controlId="formAddress">
+                  {/* ADDRESS FORM BELOW */}
+                  {/* <Form.Group className="mb-3" controlId="formAddress">
                 <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
                   Address
                 </h5>
@@ -1022,95 +1043,99 @@ class CreatePostModal extends React.Component {
                 
               </Form.Group> */}
 
-              <Form.Group className="mb-3" id="formGridCheckbox">
-                {/* <Form.Label>
+                  <Form.Group className="mb-3" id="formGridCheckbox">
+                    {/* <Form.Label>
                   <b>Is Post Active?</b>
                 </Form.Label> */}
-                <Form.Check
-                  type="switch"
-                  id="custom-switch"
-                  label={
-                    this.state.postActive ? <b>Active</b> : <b>Inactive</b>
-                  }
-                  //onChange={() => this.handleActive()}
-                />
+                    <Form.Check
+                      type="switch"
+                      id="custom-switch"
+                      label={
+                        this.state.postActive ? <b>Active</b> : <b>Inactive</b>
+                      }
+                      //onChange={() => this.handleActive()}
+                    />
 
-                <p>
-                  <b>Active</b> means people can view the post when searching.
-                </p>
-              </Form.Group>
+                    <p>
+                      <b>Active</b> means people can view the post when
+                      searching.
+                    </p>
+                  </Form.Group>
 
-              {this.state.selectedCategory === "offbiz" ? (
-                <Form.Group className="mb-3" id="formDGPCheckbox">
-                  {/* <Form.Label>
+                  {this.state.selectedCategory === "offbiz" ? (
+                    <Form.Group className="mb-3" id="formDGPCheckbox">
+                      {/* <Form.Label>
                   <b>Is Post Active?</b>
                 </Form.Label> */}
-                  <Form.Check
-                    type="switch"
-                    id="DGP-switch"
-                    label={
-                      this.state.postDGP ? (
-                        <b>My Store</b>
-                      ) : (
-                        <b>No 'My Store' for viewing</b>
-                      )
-                    }
-                    //onChange={() => this.handleActive()}
-                  />
+                      <Form.Check
+                        type="switch"
+                        id="DGP-switch"
+                        label={
+                          this.state.postDGP ? (
+                            <b>My Store</b>
+                          ) : (
+                            <b>No 'My Store' for viewing</b>
+                          )
+                        }
+                        //onChange={() => this.handleActive()}
+                      />
 
-                  <p>
-                    <b>My Store</b> means you have Shop/Menu available for
-                    viewing in the <b>My Store</b> dapp.
-                  </p>
-                </Form.Group>
-              ) : (
-                <></>
-              )}
-              {/* Make separate/distinct submit for events for separate validation */}
-              <div className="ButtonRightNoUnderline">
-                {this.state.selectedCategory === "events" ? (
-                  <>
-                    {this.state.validCity &&
-                    this.state.validRegion &&
-                    this.state.validCountry &&
-                    this.state.validDescription &&
-                    this.state.validLink &&
-                    this.state.validGroup &&
-                    // this.state.validAddress &&
-                    this.state.validDate ? ( //&&
-                      //  this.state.validTime
-                      <Button
-                        variant="primary" //type="submit" <-RECONNECT
-                        disabled
-                      >
-                        <b>Create Event</b>
-                      </Button>
+                      <p>
+                        <b>My Store</b> means you have Shop/Menu available for
+                        viewing in the <b>My Store</b> dapp.
+                      </p>
+                    </Form.Group>
+                  ) : (
+                    <></>
+                  )}
+                  {/* Make separate/distinct submit for events for separate validation */}
+                  <div className="ButtonRightNoUnderline">
+                    {this.state.selectedCategory === "events" ? (
+                      <>
+                        {this.state.validCity &&
+                        this.state.validRegion &&
+                        this.state.validCountry &&
+                        this.state.validDescription &&
+                        this.state.validLink &&
+                        this.state.validGroup &&
+                        // this.state.validAddress &&
+                        this.state.validDate ? ( //&&
+                          //  this.state.validTime
+                          <Button
+                            variant="primary"
+                            type="submit" // <-RECONNECT
+                            //disabled
+                          >
+                            <b>Create Event</b>
+                          </Button>
+                        ) : (
+                          <Button variant="primary" disabled>
+                            <b>Create Event</b>
+                          </Button>
+                        )}
+                      </>
                     ) : (
-                      <Button variant="primary" disabled>
-                        <b>Create Event</b>
-                      </Button>
+                      <>
+                        {this.state.validCity &&
+                        this.state.validRegion &&
+                        this.state.validCountry &&
+                        this.state.validDescription &&
+                        this.state.validLink ? ( //&&
+                          // this.state.validAddress
+                          <Button variant="primary" type="submit">
+                            <b>Create Post</b>
+                          </Button>
+                        ) : (
+                          <Button variant="primary" disabled>
+                            <b>Create Post</b>
+                          </Button>
+                        )}
+                      </>
                     )}
-                  </>
-                ) : (
-                  <>
-                    {this.state.validCity &&
-                    this.state.validRegion &&
-                    this.state.validCountry &&
-                    this.state.validDescription &&
-                    this.state.validLink ? ( //&&
-                      // this.state.validAddress
-                      <Button variant="primary" type="submit">
-                        <b>Create Post</b>
-                      </Button>
-                    ) : (
-                      <Button variant="primary" disabled>
-                        <b>Create Post</b>
-                      </Button>
-                    )}
-                  </>
-                )}
-              </div>
-            </Form>
+                  </div>
+                </Form>
+              </>
+            )}
           </Modal.Body>
         </Modal>
       </>

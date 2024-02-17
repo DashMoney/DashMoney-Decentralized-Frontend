@@ -210,6 +210,12 @@ div {
   align-items: baseline;
 } /*baseline instead of center BC the smaller date didn't line up right vs the name*/
 
+.cardCenterTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .modalTitle {
   display: flex;
   justify-content: space-between;

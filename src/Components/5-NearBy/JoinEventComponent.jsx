@@ -1,5 +1,6 @@
 import React from "react";
-import Button from "react";
+
+import Button from "react-bootstrap/Button";
 
 import Spinner from "react-bootstrap/Spinner";
 
@@ -15,14 +16,15 @@ class JoinEventComponent extends React.Component {
         }
       });
     }
-
+    // invite.dgt !== undefined &&
     joined = myGroups.includes(this.props.event.group);
+    //console.log(joined);
 
     return (
       <>
         {this.props.isLoginComplete ? (
           <>
-            {this.props.isLoadingGroupEvents ? (
+            {this.props.isLoadingGroupEvents || this.props.isLoadingGroups ? (
               <>
                 <p></p>
                 <div id="spinner">
@@ -34,24 +36,25 @@ class JoinEventComponent extends React.Component {
               </>
             ) : (
               <>
-                {joined ? (
-                  <>
-                    <div className="d-grid gap-2">
-                      <Button
-                        variant="primary"
-                        //handleSelectedJoinGroup(groupName)
-                        //
-                        // onClick={() =>
-                        //   this.props.showModal("JoinGroupModal")
-                        // }  // I think there is a function that I pass the group name as a parameter ->
-                      >
-                        <b>Join {this.props.event.group}</b>
-                      </Button>
-                    </div>
-                  </>
+                {!joined ? (
+                  <div className="d-grid gap-2">
+                    <Button
+                      variant="primary"
+                      onClick={() =>
+                        this.props.handleSelectedJoinGroup(
+                          this.props.event.group
+                        )
+                      }
+                    >
+                      <b>Join {this.props.event.group}?</b>
+                    </Button>
+                  </div>
                 ) : (
                   <>
-                    <b>{this.props.event.group} joined!</b>
+                    <h5 style={{ textAlign: "center", margin: "1.2rem" }}>
+                      {" "}
+                      <b>{this.props.event.group} joined!</b>
+                    </h5>
                   </>
                 )}
               </>
@@ -59,7 +62,11 @@ class JoinEventComponent extends React.Component {
           </>
         ) : (
           <>
-            <b>{this.props.event.group}</b>
+            <div className="d-grid gap-2">
+              <Button variant="primary" disabled>
+                <b>Join {this.props.event.group}?</b>
+              </Button>
+            </div>
           </>
         )}
       </>

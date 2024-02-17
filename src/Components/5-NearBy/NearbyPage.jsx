@@ -120,10 +120,6 @@ class NearbyPage extends React.Component {
                     LookOtherNames={this.props.LookOtherNames}
                     isLoadingNearbySearch={this.props.isLoadingNearbySearch}
                     isLoadingNearbyInitial={this.props.isLoadingNearbyInitial}
-                    dgtInvitesForEvents={this.props.dgtInvitesForEvents}
-                    isLoginComplete={this.props.isLoginComplete}
-                    isLoadingGroupEvents={this.props.isLoadingGroupEvents}
-                    handleSelectedJoinGroup={this.props.handleSelectedJoinGroup}
                   />
                 </>
               ) : (
@@ -138,6 +134,7 @@ class NearbyPage extends React.Component {
                   <YourPostsPage
                     yourPostsToDisplay={this.props.yourPostsToDisplay}
                     handleYourPost={this.props.handleYourPost}
+                    handleYourEvent={this.props.handleYourEvent}
                     mode={this.props.mode}
                     showModal={this.props.showModal}
                     isLoadingYourPosts={this.props.isLoadingYourPosts}

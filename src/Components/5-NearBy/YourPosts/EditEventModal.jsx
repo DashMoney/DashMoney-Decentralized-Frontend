@@ -30,19 +30,19 @@ class EditEventModal extends React.Component {
       validLink: true,
       tooLongLinkError: false,
 
-      groupInput: "",
+      groupInput: this.props.selectedYourPost.group,
       validGroup: true,
       tooLongGroupError: false,
 
-      addressInput: "",
+      addressInput: this.props.selectedYourPost.address,
       validAddress: true,
       tooLongAddressError: false,
 
-      dateInput: "",
+      dateInput: this.props.selectedYourPost.date,
       validDate: true,
       tooLongDateError: false,
 
-      timeInput: "",
+      timeInput: this.props.selectedYourPost.time,
       validTime: true,
       tooLongTimeError: false,
 
@@ -252,7 +252,7 @@ class EditEventModal extends React.Component {
         tooLongDescriptionError: false,
       });
     } else {
-      if (description.length > 350) {
+      if (description.length > 350 || valid2) {
         this.setState({
           descriptionInput: description,
           validDescription: false,
@@ -419,12 +419,12 @@ class EditEventModal extends React.Component {
       link: this.state.linkInput,
 
       active: this.state.postActive,
-      dgp: this.state.postDGP,
+      // dgp: this.state.postDGP,
 
       group: this.state.groupInput,
-      address: this.state.addressInput, //use this in DGP also
+      //address: this.state.addressInput, //use this in DGP also
       date: this.state.dateInput,
-      time: this.state.timeInput,
+      // time: this.state.timeInput,
     };
 
     this.props.editYourEvent(newEvent); //Pass the function to here ->
@@ -595,9 +595,6 @@ class EditEventModal extends React.Component {
                 <Form.Control.Feedback type="invalid">
                   City/Town name is too long.
                 </Form.Control.Feedback>
-                {/* <Form.Control.Feedback type="valid">
-              City/Town name is acceptable!
-            </Form.Control.Feedback> */}
               </Form.Group>
 
               {/* REGION FORM BELOW */}
@@ -616,9 +613,6 @@ class EditEventModal extends React.Component {
                 <Form.Control.Feedback type="invalid">
                   State/Province name is too long.
                 </Form.Control.Feedback>
-                {/* <Form.Control.Feedback type="valid">
-              State/Province name is acceptable!
-            </Form.Control.Feedback> */}
               </Form.Group>
 
               {/* COUNTRY FORM BELOW */}
@@ -637,9 +631,6 @@ class EditEventModal extends React.Component {
                 <Form.Control.Feedback type="invalid">
                   Country name is too long.
                 </Form.Control.Feedback>
-                {/* <Form.Control.Feedback type="valid">
-              Country name is acceptable!
-            </Form.Control.Feedback> */}
               </Form.Group>
 
               {this.state.selectedCategory === "events" ? (
@@ -651,7 +642,7 @@ class EditEventModal extends React.Component {
                     </h5>
                     <Form.Control
                       type="text"
-                      placeholder="Enter event/group"
+                      defaultValue={this.props.selectedYourPost.group}
                       required
                       isInvalid={this.state.tooLongGroupError}
                       isValid={this.state.validGroup}
@@ -660,9 +651,6 @@ class EditEventModal extends React.Component {
                     <Form.Control.Feedback type="invalid">
                       Event/Group name is too long.
                     </Form.Control.Feedback>
-                    {/* <Form.Control.Feedback type="valid">
-              Group is acceptable!
-            </Form.Control.Feedback> */}
                   </Form.Group>
                 </>
               ) : (
@@ -690,8 +678,7 @@ class EditEventModal extends React.Component {
 
                 {this.state.tooLongDescriptionError ? (
                   <Form.Control.Feedback className="floatLeft" type="invalid">
-                    Sorry, this is too long! Please use less than 300
-                    characters.
+                    Sorry, this is too long!
                   </Form.Control.Feedback>
                 ) : (
                   <></>
@@ -707,7 +694,7 @@ class EditEventModal extends React.Component {
                     </h5>
                     <Form.Control
                       type="text"
-                      placeholder="Enter date (Optional)"
+                      defaultValue={this.props.selectedYourPost.date}
                       required
                       isInvalid={this.state.tooLongDateError}
                       isValid={this.state.validDate}
@@ -727,10 +714,10 @@ class EditEventModal extends React.Component {
               ) : (
                 <></>
               )}
-
-              {this.state.selectedCategory === "events" ? (
+              {/* Time FORM BELOW */}
+              {/* {this.state.selectedCategory === "events" ? (
                 <>
-                  {/* Time FORM BELOW */}
+                  
                   <Form.Group className="mb-3" controlId="formTime">
                     <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
                       <b>Time of Event</b>
@@ -744,16 +731,14 @@ class EditEventModal extends React.Component {
                     />
                     <p></p>
                     <Form.Control.Feedback type="invalid">
-                      Time info is too long.
+                      Time is too long.
                     </Form.Control.Feedback>
-                    {/* <Form.Control.Feedback type="valid">
-            Time is acceptable!
-            </Form.Control.Feedback> */}
+                    
                   </Form.Group>
                 </>
               ) : (
                 <></>
-              )}
+              )} */}
 
               {/* LINKS FORM BELOW */}
 
@@ -779,7 +764,8 @@ class EditEventModal extends React.Component {
               </Form.Group>
 
               {/* ADDRESS FORM BELOW */}
-              <Form.Group className="mb-3" controlId="formAddress">
+
+              {/* <Form.Group className="mb-3" controlId="formAddress">
                 <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
                   Address
                 </h5>
@@ -794,10 +780,8 @@ class EditEventModal extends React.Component {
                 <Form.Control.Feedback type="invalid">
                   Address is too long.
                 </Form.Control.Feedback>
-                {/* <Form.Control.Feedback type="valid">
-              Address is acceptable!
-            </Form.Control.Feedback> */}
-              </Form.Group>
+                
+              </Form.Group> */}
 
               <Form.Group className="mb-3" id="formGridCheckbox">
                 {/* <Form.Label>
@@ -850,12 +834,12 @@ class EditEventModal extends React.Component {
                 this.state.validCountry &&
                 this.state.validDescription &&
                 this.state.validLink &&
-                this.state.validGroup &&
-                this.state.validAddress &&
-                this.state.validDate &&
-                this.state.validTime ? (
+                this.state.validGroup && //&&
+                // this.state.validAddress
+                this.state.validDate ? ( // &&
+                  // this.state.validTime
                   <Button variant="primary" type="submit">
-                    Edit Event
+                    <b>Edit Event</b>
                   </Button>
                 ) : (
                   <Button variant="primary" disabled>

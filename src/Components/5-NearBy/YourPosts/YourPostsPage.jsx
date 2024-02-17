@@ -23,6 +23,7 @@ class YourPostsPage extends React.Component {
           index={index}
           post={post}
           handleYourPost={this.props.handleYourPost}
+          handleYourEvent={this.props.handleYourEvent}
         />
       );
     });

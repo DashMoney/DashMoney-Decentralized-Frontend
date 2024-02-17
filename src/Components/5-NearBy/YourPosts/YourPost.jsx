@@ -52,6 +52,19 @@ class YourPost extends React.Component {
         );
         break;
 
+      case "events":
+        categoryDisplay = (
+          <div>
+            <h3 style={{ marginTop: ".5rem", marginBottom: ".1rem" }}>
+              <b>Offering</b>
+            </h3>
+            <Button>
+              <b>Events</b>
+            </Button>
+          </div>
+        );
+        break;
+
       case "offother":
         categoryDisplay = (
           <div>
@@ -136,9 +149,32 @@ class YourPost extends React.Component {
               {this.handleActive()}
             </Card.Title>
 
+            {this.props.post.group !== undefined &&
+            this.props.post.group !== "" ? (
+              <>
+                <h5 style={{ textAlign: "center", margin: "1.2rem" }}>
+                  {" "}
+                  <b>{this.props.post.group}</b>
+                </h5>
+              </>
+            ) : (
+              <></>
+            )}
+
             <p style={{ whiteSpace: "pre-wrap" }}>
               {this.props.post.description}
             </p>
+
+            {this.props.post.date !== undefined &&
+            this.props.post.date !== "" ? (
+              <>
+                <p>
+                  Date: <b>{this.props.post.date}</b>
+                </p>
+              </>
+            ) : (
+              <></>
+            )}
 
             {this.props.post.link !== undefined &&
             this.props.post.link !== "" ? (
@@ -156,15 +192,29 @@ class YourPost extends React.Component {
             )}
 
             <p></p>
-
-            <div className="ButtonRightNoUnderline">
-              <Button
-                variant="primary"
-                onClick={() => this.props.handleYourPost(this.props.index)}
-              >
-                <b>Edit Post</b>
-              </Button>
-            </div>
+            {this.props.post.category === "events" ? (
+              <>
+                <div className="ButtonRightNoUnderline">
+                  <Button
+                    variant="primary"
+                    onClick={() => this.props.handleYourEvent(this.props.index)}
+                  >
+                    <b>Edit Event</b>
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="ButtonRightNoUnderline">
+                  <Button
+                    variant="primary"
+                    onClick={() => this.props.handleYourPost(this.props.index)}
+                  >
+                    <b>Edit Post</b>
+                  </Button>
+                </div>
+              </>
+            )}
           </Card.Body>
         </Card>
       </>

@@ -259,6 +259,7 @@ class EditPostModal extends React.Component {
       }
     }
   };
+
   addressValidate = (address) => {
     let regex = /^[\S\s]{0,100}$/;
     let valid = regex.test(address);
@@ -303,7 +304,7 @@ class EditPostModal extends React.Component {
       active: this.state.postActive,
       dgp: this.state.postDGP,
 
-      address: this.state.addressInput,
+      // address: this.state.addressInput,
     };
 
     this.props.editYourPost(newPost); //Pass the function to here ->
@@ -347,6 +348,41 @@ class EditPostModal extends React.Component {
               <b>You are Offering:</b>
             </h4>
 
+            {this.state.selectedCategory === "offbiz" ? (
+              <Button
+                variant="primary"
+                style={{
+                  textDecoration: "underline",
+                  marginRight: ".5rem",
+                  marginBottom: ".7rem",
+                }}
+              >
+                <b>Shops/Menus</b>
+              </Button>
+            ) : (
+              <Button
+                variant="primary"
+                style={{ marginRight: ".5rem", marginBottom: ".7rem" }}
+                onClick={() => this.handleCategoryButtons("offbiz")}
+              >
+                <b>Shops/Menus</b>
+              </Button>
+            )}
+
+            {/* {this.state.selectedCategory === "events" ? (
+              <Button variant="primary" style={{ textDecoration: "underline",marginRight: ".5rem", marginBottom: ".7rem" }}>
+                <b>Events</b>
+              </Button>
+            ) : (
+              <Button
+                variant="primary"
+                style={{ marginRight: ".5rem", marginBottom: ".7rem" }}
+                onClick={() => this.handleCategoryButtons("events")}
+              >
+                <b>Events</b>
+              </Button>
+            )} */}
+
             {this.state.selectedCategory === "offrent" ? (
               <Button
                 variant="primary"
@@ -366,27 +402,6 @@ class EditPostModal extends React.Component {
                 onClick={() => this.handleCategoryButtons("offrent")}
               >
                 <b>Place to Rent</b>
-              </Button>
-            )}
-
-            {this.state.selectedCategory === "offbiz" ? (
-              <Button
-                variant="primary"
-                style={{
-                  textDecoration: "underline",
-                  marginRight: ".5rem",
-                  marginBottom: ".7rem",
-                }}
-              >
-                <b>Shops/Menus</b>
-              </Button>
-            ) : (
-              <Button
-                variant="primary"
-                style={{ marginRight: ".5rem", marginBottom: ".7rem" }}
-                onClick={() => this.handleCategoryButtons("offbiz")}
-              >
-                <b>Shops/Menus</b>
               </Button>
             )}
 
@@ -607,7 +622,7 @@ class EditPostModal extends React.Component {
               </Form.Group>
 
               {/* ADDRESS FORM BELOW */}
-              <Form.Group className="mb-3" controlId="formAddress">
+              {/* <Form.Group className="mb-3" controlId="formAddress">
                 <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
                   Address
                 </h5>
@@ -622,10 +637,8 @@ class EditPostModal extends React.Component {
                 <Form.Control.Feedback type="invalid">
                   Address is too long.
                 </Form.Control.Feedback>
-                {/* <Form.Control.Feedback type="valid">
-              Address is acceptable!
-            </Form.Control.Feedback> */}
-              </Form.Group>
+            
+              </Form.Group> */}
 
               <Form.Group className="mb-3" id="formGridCheckbox">
                 {/* <Form.Label>
@@ -677,8 +690,8 @@ class EditPostModal extends React.Component {
                 this.state.validRegion &&
                 this.state.validCountry &&
                 this.state.validDescription &&
-                this.state.validLink &&
-                this.state.validAddress ? (
+                this.state.validLink ? ( //&&
+                  //this.state.validAddress
                   <Button variant="primary" type="submit">
                     Edit Post
                   </Button>

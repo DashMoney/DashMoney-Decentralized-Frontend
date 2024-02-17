@@ -127,19 +127,30 @@ class EventModal extends React.Component {
             </span>
           </div>
 
-          <JoinEventComponent
-            mode={this.props.mode}
-            //  handleSelectedJoinGroup = (groupName) => {
-
-            isLoginComplete={this.props.isLoginComplete}
-            dgtInvitesForEvents={this.props.dgtInvitesForEvents}
-            isLoadingGroupEvents={this.props.isLoadingGroupEvents}
-            handleSelectedJoinGroup={this.props.handleSelectedJoinGroup}
-          />
+          <div style={{ marginTop: "1rem", marginBottom: "1.6rem" }}>
+            <JoinEventComponent
+              mode={this.props.mode}
+              event={this.props.selectedSearchedEvent}
+              isLoginComplete={this.props.isLoginComplete}
+              dgtInvitesForEvents={this.props.dgtInvitesForEvents}
+              isLoadingGroupEvents={this.props.isLoadingGroupEvents}
+              isLoadingGroups={this.props.isLoadingGroups}
+              handleSelectedJoinGroup={this.props.handleSelectedJoinGroup}
+            />
+          </div>
 
           <p style={{ whiteSpace: "pre-wrap" }}>
             {this.props.selectedSearchedEvent.description}
           </p>
+
+          {this.props.selectedSearchedEvent.date !== undefined &&
+          this.props.selectedSearchedEvent.date !== "" ? (
+            <p>
+              Date: <b>{this.props.selectedSearchedEvent.date}</b>
+            </p>
+          ) : (
+            <></>
+          )}
 
           {this.props.selectedSearchedEvent.link !== undefined &&
           this.props.selectedSearchedEvent.link !== "" ? (

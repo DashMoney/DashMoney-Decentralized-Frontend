@@ -96,6 +96,10 @@ html {
   border-bottom: 0.05rem solid white;
 }
 
+.BottomThinBorder {
+  border-bottom: 0.01rem solid white;
+}
+
 .ThreadBorder {
   border-bottom: 0rem solid rgba(255, 255, 255, 0.4);
 }

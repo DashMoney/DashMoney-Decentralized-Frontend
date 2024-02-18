@@ -50,34 +50,38 @@ class YourReply extends React.Component {
   }
 
   render() {
-    let cardBkg;
-    let cardText;
+    // let cardBkg;
+    // let cardText;
 
-    if (this.props.mode === "primary") {
-      cardBkg = "white";
-      cardText = "dark";
-    } else {
-      cardBkg = "dark";
-      cardText = "white";
-    }
+    // if (this.props.mode === "primary") {
+    //   cardBkg = "white";
+    //   cardText = "dark";
+    // } else {
+    //   cardBkg = "dark";
+    //   cardText = "white";
+    // }
 
     return (
-      <Card id="thread" key={this.props.index} bg={cardBkg} text={cardText}>
-        <Card.Body>
-          <Card.Title className="cardTitle">
-            {this.handleName(this.props.YourNameDoc)}
+      // <Card id="thread" key={this.props.index} bg={cardBkg} text={cardText}>
+      //   <Card.Body>
+      <>
+        <div
+          className="ThreadBorder"
+          style={{ paddingTop: ".2rem", marginBottom: ".3rem" }}
+        ></div>
+        <Card.Title className="cardTitle">
+          {this.handleName(this.props.YourNameDoc)}
 
-            <span className="textsmaller">
-              {this.formatDate(
-                this.props.reply.$createdAt,
-                this.props.today,
-                this.props.yesterday
-              )}
-            </span>
-          </Card.Title>
-          <Card.Text>{this.props.reply.reply}</Card.Text>
-        </Card.Body>
-      </Card>
+          <span className="textsmaller">
+            {this.formatDate(
+              this.props.reply.$createdAt,
+              this.props.today,
+              this.props.yesterday
+            )}
+          </span>
+        </Card.Title>
+        <Card.Text>{this.props.reply.reply}</Card.Text>
+      </>
     );
   }
 }

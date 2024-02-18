@@ -66,7 +66,7 @@ class GroupMsg extends React.Component {
     return (
       <>
         <div
-          className="BottomBorder"
+          className="BottomThinBorder"
           //style={{ paddingTop: ".5rem" }}
         ></div>
         <div
@@ -74,8 +74,8 @@ class GroupMsg extends React.Component {
           style={{
             paddingTop: ".5rem",
             paddingBottom: ".2rem",
-            paddingLeft: "1rem",
-            paddingRight: "1rem",
+            paddingLeft: "1.5rem",
+            paddingRight: "1.5rem",
           }}
         >
           <div className="cardTitle">

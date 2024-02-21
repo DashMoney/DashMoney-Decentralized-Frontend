@@ -3,18 +3,11 @@ import React from "react";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 
-//import YourPost from "./YourPost";
+import YourOffer from "./YourOffer";
 
 class YourOffers extends React.Component {
-  //Dont need a constructor because gets data from app.js this is just to display
-  /**
-   * 1) So the tabs and credits appear at the top
-   * 2) like DGP -> button that says add post
-   * 3)
-   */
-
   render() {
-    let offers = this.props.YourOffers.map((post, index) => {
+    let offers = this.props.YourOffers.map((offer, index) => {
       //console.log(item);
       return (
         <YourOffer
@@ -30,17 +23,19 @@ class YourOffers extends React.Component {
     return (
       <>
         <p></p>
-        {this.props.isLoadingYourOrders ? (
+        {this.props.isLoadingYourOffers ? (
           <>
             <div id="spinner">
               <Spinner animation="border" role="status">
                 <span className="visually-hidden">Loading...</span>
               </Spinner>
             </div>
+            <p></p>
           </>
         ) : (
-          <>
-            <div className="d-grid gap-2">
+          <></>
+        )}
+        {/* <div className="d-grid gap-2">
               <Button
                 variant="primary"
                 onClick={() => this.props.showModal("CreateOfferModal")}
@@ -48,19 +43,20 @@ class YourOffers extends React.Component {
                 <b>Create Offer</b>
               </Button>
             </div>
-            <p></p>
+            <p></p> */}
 
-            {this.props.YourOffers.length === 0 ? (
-              <>
-                <p style={{ textAlign: "center" }}>
-                  This is where your offers will appear.
-                </p>
-              </>
-            ) : (
-              <>{offers}</>
-            )}
+        {this.props.YourOffers.length === 0 &&
+        !this.props.isLoadingYourOffers ? (
+          <>
+            <p style={{ textAlign: "center" }}>
+              This is where your offers will appear.
+            </p>
           </>
+        ) : (
+          <></>
         )}
+
+        {this.props.YourOffers.length !== 0 ? <>{offers}</> : <></>}
       </>
     );
   }

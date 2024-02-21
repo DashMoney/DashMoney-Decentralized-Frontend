@@ -4,10 +4,10 @@ import Offer from "./Offer";
 
 class Offers extends React.Component {
   render() {
-    let offerArray = [];
-    let offerNameArray = [];
+    //let offerArray = [];
+    //let offerNameArray = [];
 
-    let offerFilteredArray = offerArray.filter((offer) => {
+    let offerFilteredArray = this.props.SearchedOffers.filter((offer) => {
       return offer.active;
     });
 
@@ -21,9 +21,8 @@ class Offers extends React.Component {
           offer={offer}
           identity={this.props.identity}
           uniqueName={this.props.uniqueName}
-          showModal={this.props.showModal}
           handleSearchedOffer={this.props.handleSearchedOffer}
-          OfferNames={offerNameArray}
+          OfferNames={this.props.SearchedOffersNames}
         />
       );
     });
@@ -32,12 +31,21 @@ class Offers extends React.Component {
       <>
         {!this.props.isLoadingExchangeSearch ? (
           <div className="footer">
-            {offerArray.length !== 0 ? (
+            {offerFilteredArray.length !== 0 ? (
               <>{offers}</>
             ) : (
-              <div className="bodytext">
-                Sorry, there are no offers yet for this.
-              </div>
+              <>
+                {this.props.whichOffersName === "Offers" ? (
+                  <div className="bodytext">
+                    Sorry, there are no offers available. But someone could make
+                    one.. 🤔
+                  </div>
+                ) : (
+                  <div className="bodytext">
+                    Sorry, there are no offers available
+                  </div>
+                )}
+              </>
             )}
           </div>
         ) : (

@@ -11,24 +11,16 @@ import CreditsOnPage from "../CreditsOnPage";
 import NameSearchFormEXCHANGE from "./NameSearchFormEXCHANGE";
 import OffersSearchForm from "./OffersSearchForm";
 
-//import Offers from "./Offers";
-//import YourOffers from "./YourOffers/YourOffers";
+import Offers from "./Offers";
+import YourOffers from "./YourOffers";
 
 class ExchangePage extends React.Component {
-  // componentDidMount() {
-  //   if (this.props.isLoginComplete && this.props.InitialPullExchange) {
-  //     this.props.pullInitialTriggerEXCHANGE();
-  //   }
-  // }
+  componentDidMount() {
+    if (this.props.isLoginComplete && this.props.InitialPullExchange) {
+      this.props.pullInitialTriggerEXCHANGE();
+    }
+  }
 
-  // componentDidMount() {
-  //   if (this.props.isLoginComplete && this.props.InitialPullNearBy) {
-  //     this.props.pullInitialTriggerNEARBY();
-  //   } else {
-  //     //This could be cleaner -> dont need to call each time even though but app.js does prevent constant calling.
-  //     this.props.pullOnPageLoadTriggerNEARBY();
-  //   }
-  // }
   render() {
     return (
       <>
@@ -40,7 +32,7 @@ class ExchangePage extends React.Component {
             />
 
             <div className="bodytext">
-              {this.props.whichReviewsTab === "Search" ? (
+              {this.props.whichExchangeTab === "Search" ? (
                 <>
                   <LowCreditsOnPage
                     identityInfo={this.props.identityInfo}
@@ -49,14 +41,14 @@ class ExchangePage extends React.Component {
                   />
 
                   <div className="bodytext" style={{ textAlign: "center" }}>
-                    <h3>Peer-to-Peer Exchange or Marketplace of Exchanges.</h3>
+                    {/* <h3>Peer-to-Peer Exchange or Marketplace of Exchanges.</h3> */}
 
                     <h6>"Caveat Emptor" -DashMoney</h6>
                   </div>
 
-                  <h3>
+                  {/* <h3>
                     <b>Get Offers for</b>
-                  </h3>
+                  </h3> */}
 
                   <p></p>
                   <div style={{ display: "flex", justifyContent: "center" }}>
@@ -210,11 +202,21 @@ class ExchangePage extends React.Component {
                     <></>
                   )}
 
-                  {/* <Offers
-                    mode={this.props.mode}
-                    SearchedOffers={this.props.SearchedOffers}
-                    SearchedOffersNames={this.props.SearchedOffersNames}
-                  /> */}
+                  {!this.props.isLoadingExchangeSearch ? (
+                    <>
+                      <Offers
+                        mode={this.props.mode}
+                        identity={this.props.identity}
+                        uniqueName={this.props.uniqueName}
+                        whichOffersName={this.props.whichOffersName}
+                        handleSearchedOffer={this.props.handleSearchedOffer}
+                        SearchedOffers={this.props.SearchedOffers}
+                        SearchedOffersNames={this.props.SearchedOffersNames}
+                      />
+                    </>
+                  ) : (
+                    <></>
+                  )}
 
                   {/* {this.props.SearchedOffers.length === 0 &&
                   !this.props.isLoadingExchangeSearch ? (
@@ -241,18 +243,18 @@ class ExchangePage extends React.Component {
                       variant="primary"
                       onClick={() => this.props.showModal("CreateOfferModal")}
                     >
-                      <b style={{ fontSize: "larger" }}>Create New Offer</b>
+                      <b style={{ fontSize: "larger" }}>Create Offer</b>
                     </Button>
                   </div>
 
-                  {/* <YourOffers
+                  <YourOffers
                     YourOffers={this.props.YourOffers}
                     identity={this.props.identity}
                     uniqueName={this.props.uniqueName}
                     handleYourOffer={this.props.handleYourOffer}
                     mode={this.props.mode}
                     isLoadingYourOffers={this.props.isLoadingYourOffers}
-                  /> */}
+                  />
                 </>
               )}
             </div>
@@ -260,7 +262,9 @@ class ExchangePage extends React.Component {
         ) : (
           <div className="bodytextnotop">
             <div className="bodytext" style={{ textAlign: "center" }}>
-              <h3>Peer-to-Peer Exchange or Marketplace of Exchanges.</h3>
+              <h3>Peer-to-Peer Exchange</h3>
+              <h3>or</h3>
+              <h3>Marketplace of Exchanges</h3>
               {/* <h5>
                 “If ye love wealth better than liberty, the tranquility of
                 servitude better than the animating contest of freedom, go home
@@ -269,6 +273,7 @@ class ExchangePage extends React.Component {
                 upon you, and may posterity forget that ye were our countrymen.”
                 -Samuel Adams
               </h5> */}
+              <p></p>
               <h6>"Caveat Emptor" -DashMoney</h6>
             </div>
             {/* <p></p>
@@ -409,7 +414,7 @@ class ExchangePage extends React.Component {
             {this.props.isLoadingExchangeSearch ? (
               <>
                 <p></p>
-                <div id="spinner">
+                <div className="footer" id="spinner">
                   <Spinner animation="border" role="status">
                     <span className="visually-hidden">Loading...</span>
                   </Spinner>
@@ -422,13 +427,15 @@ class ExchangePage extends React.Component {
 
             {!this.props.isLoadingExchangeSearch ? (
               <>
-                {/* <Offers
+                <Offers
                   mode={this.props.mode}
-                  //SearchedReviews={this.props.SearchedReviews}
-                  // SearchedReviewNames={this.props.SearchedReviewNames}
-
-                  // SearchedNameDoc={this.props.SearchedNameDoc}
-                /> */}
+                  identity={this.props.identity}
+                  uniqueName={this.props.uniqueName}
+                  whichOffersName={this.props.whichOffersName}
+                  handleSearchedOffer={this.props.handleSearchedOffer}
+                  SearchedOffers={this.props.SearchedOffers}
+                  SearchedOffersNames={this.props.SearchedOffersNames}
+                />
               </>
             ) : (
               <></>
@@ -437,7 +444,7 @@ class ExchangePage extends React.Component {
             {/* {this.props.SearchedOffers.length === 0 &&
             !this.props.isLoadingExchangeSearch ? (
               <div className="bodytext">
-                <p>
+                <p className="footer">
                   Sorry, there are no offers available. But someone could make
                   one.. 🤔
                 </p>

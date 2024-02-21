@@ -5,9 +5,13 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import CloseButton from "react-bootstrap/CloseButton";
 import Spinner from "react-bootstrap/Spinner";
+import Card from "react-bootstrap/Card";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import Form from "react-bootstrap/Form";
 
-//import Reviews from "./PostModalAddons/DGReview/Reviews"; //DGR Integration
-//import RatingSummary from "./PostModalAddons/DGReview/RatingSummary";
+import Reviews from "../5-NearBy/PostModalAddons/DGReview/Reviews";
+import RatingSummary from "../5-NearBy/PostModalAddons/DGReview/RatingSummary";
 
 import Dash from "dash";
 
@@ -21,6 +25,7 @@ class OfferModal extends React.Component {
     super(props);
     this.state = {
       copiedName: false,
+      copiedtoMeHandle: false,
       LoadingDGR: true,
 
       SearchedReviews: [],
@@ -29,6 +34,8 @@ class OfferModal extends React.Component {
 
       SearchDGR1: false,
       SearchDGR2: false,
+
+      calcInput: 0,
     };
   }
 
@@ -41,6 +48,15 @@ class OfferModal extends React.Component {
     this.setState({
       copiedName: true,
     });
+  };
+
+  handleFiatDisplay = (fiatInt) => {
+    //Convert to 2 decimal places.
+    let numToString = fiatInt.toString();
+    let strLength = numToString.length;
+    let firstPart = numToString.slice(0, strLength - 2);
+    let secPart = numToString.slice(strLength - 2, strLength);
+    return `${firstPart}.${secPart}`;
   };
 
   formatDate(theCreatedAt, today, yesterday) {
@@ -254,9 +270,50 @@ class OfferModal extends React.Component {
       })
       .finally(() => client.disconnect());
   };
+  onChange = (event) => {
+    // console.log(event.target.value);
+    //console.log(`id = ${event.target.id}`);
+
+    if (event.target.id === "formCalc") {
+      event.preventDefault();
+      event.stopPropagation();
+      this.calcValidate(event.target.value);
+    }
+  };
+
+  calcValidate = (numberInput) => {
+    //console.log(this.props.accountBalance);
+
+    let regex = /^\d{0,10}[.]\d{3}$/;
+
+    //let regex = /(^[0-9]+[.,]{0,1}[0-9]{0,5}$)|(^[.,][0-9]{1,5}$)/;
+    //CHANGED TO LIMIT TO minimum mDash possible
+    //let regex = /(^[0-9]+[.,]{0,1}[0-9]*$)|(^[.,][0-9]+$)/;
+
+    let valid = regex.test(numberInput);
+
+    //MAX SPENDABLE IS 10000 DASH
+    if (valid) {
+      this.setState({
+        calcInput: numberInput.replace(/[.,]/g, ""),
+      });
+    } else {
+      this.setState({
+        calcInput: 0,
+      });
+    }
+  };
+
+  onSubmit = () => {};
 
   componentDidMount() {
-    this.getSearchReviews(this.props.selectedSearchedPostNameDoc.$ownerId);
+    if (this.props.selectedSearchedOffer.$ownerId !== "4h5j6j") {
+      this.getSearchReviews(this.props.selectedSearchedOfferNameDoc.$ownerId);
+    } else {
+      this.setState({
+        LoadingDGR: false,
+      });
+    }
   }
 
   render() {
@@ -281,6 +338,24 @@ class OfferModal extends React.Component {
       );
     }
 
+    let cardBkg;
+    let cardText;
+
+    if (this.props.mode === "primary") {
+      cardBkg = "white";
+      cardText = "dark";
+    } else {
+      cardBkg = "dark";
+      cardText = "white";
+    }
+
+    let calcAmt = (
+      this.state.calcInput *
+      this.props.selectedSearchedOffer.exRate *
+      0.00001
+    ) //.001 for Dash conversion and .01 for fiat conversion
+      .toFixed(2);
+
     return (
       <Modal
         show={this.props.isModalShowing}
@@ -293,7 +368,7 @@ class OfferModal extends React.Component {
 
         {/* <Modal.Title>
           <h3>
-               <b>Selected Post</b>
+               <b>Selected Offer</b>
                </h3>
                </Modal.Title>  */}
 
@@ -304,18 +379,57 @@ class OfferModal extends React.Component {
           </div>
 
           <div className="locationTitle" style={{ marginBottom: ".5rem" }}>
-            <Badge bg="primary" style={{ marginRight: ".5rem" }}>
-              {this.props.selectedSearchedPost.toMe} via{" "}
-              {this.props.selectedSearchedPost.toMeVia}
-            </Badge>
-            <span>(You send)</span>
+            <h5>
+              {" "}
+              <b>Send</b>{" "}
+              <Badge bg="primary" style={{ marginRight: ".5rem" }}>
+                {this.props.selectedSearchedOffer.toMe} via{" "}
+                {this.props.selectedSearchedOffer.toMeVia}
+              </Badge>
+            </h5>
           </div>
+
+          <div className="cardCenterTitle">
+            <h5>
+              <b>Send to </b>
+              <b style={{ color: "#008de4" }}>
+                {this.props.selectedSearchedOffer.toMeHandle}
+              </b>
+            </h5>
+            {this.state.copiedtoMeHandle ? <span>✅</span> : <></>}
+            <Button
+              variant="primary"
+              onClick={() => {
+                navigator.clipboard.writeText(
+                  this.props.selectedSearchedOffer.toMeHandle
+                );
+                this.setState({
+                  copiedtoMeHandle: true,
+                });
+              }}
+            >
+              <b>Copy Handle</b>
+            </Button>
+          </div>
+          <p></p>
           <div className="locationTitle" style={{ marginBottom: ".5rem" }}>
-            <Badge bg="primary" style={{ marginRight: ".5rem" }}>
-              {this.props.selectedSearchedPost.toU} via{" "}
-              {this.props.selectedSearchedPost.toUVia}
-            </Badge>
-            <span>(You receive)</span>
+            <h5>
+              <b>Receive</b>{" "}
+              {this.props.selectedSearchedOffer.toU === "Dash" ? (
+                <>
+                  <Badge bg="primary" style={{ marginRight: ".5rem" }}>
+                    {this.props.selectedSearchedOffer.toU}
+                  </Badge>
+                </>
+              ) : (
+                <>
+                  <Badge bg="primary" style={{ marginRight: ".5rem" }}>
+                    {this.props.selectedSearchedOffer.toU} via{" "}
+                    {this.props.selectedSearchedOffer.toUVia}
+                  </Badge>
+                </>
+              )}
+            </h5>
           </div>
           <p></p>
           <div className="cardTitle">
@@ -323,11 +437,11 @@ class OfferModal extends React.Component {
               style={{ color: "#008de4" }}
               onClick={() =>
                 this.handleNameClick(
-                  this.props.selectedSearchedPostNameDoc.label
+                  this.props.selectedSearchedOfferNameDoc.label
                 )
               }
             >
-              {this.props.selectedSearchedPostNameDoc.label}
+              {this.props.selectedSearchedOfferNameDoc.label}
             </h4>
 
             {/* <span onClick={() => this.handleNameClick()}>
@@ -337,34 +451,80 @@ class OfferModal extends React.Component {
 
             <span className="textsmaller">
               {this.formatDate(
-                this.props.selectedSearchedPost.$updatedAt,
+                this.props.selectedSearchedOffer.$updatedAt,
                 today,
                 yesterday
               )}
             </span>
           </div>
           <div>
-            <h5 style={{ color: "#008de3" }}>
+            <p></p>
+            <h5 style={{ textAlign: "center" }}>Exchange Rate(Fiat/Dash)</h5>
+            <h4 style={{ textAlign: "center", color: "#008de3" }}>
               <b>
-                {this.handleFiatDisplay(this.props.selectedSearchedPost.exRate)}{" "}
-                (Fiat/Dash)
+                {this.handleFiatDisplay(
+                  this.props.selectedSearchedOffer.exRate
+                )}
               </b>
-            </h5>
+            </h4>
+            <p></p>
           </div>
-          <p>toMeHandle and click to copy..</p>
-          <p>Calculator</p>
 
-          <p>
-            Minimum (Fiat):{" "}
-            {this.handleFiatDisplay(this.props.selectedSearchedPost.minAmt)}
-          </p>
-          <p>
-            Maximum (Fiat):{" "}
-            {this.handleFiatDisplay(this.props.selectedSearchedPost.maxAmt)}
+          <p style={{ textAlign: "center", marginBottom: "0rem" }}>
+            <b>Min - Max (Fiat):</b>{" "}
+            <b>
+              {this.handleFiatDisplay(this.props.selectedSearchedOffer.minAmt)}{" "}
+              -{" "}
+              {this.handleFiatDisplay(this.props.selectedSearchedOffer.maxAmt)}
+            </b>
           </p>
 
+          <p></p>
+
+          <Card
+            bg={cardBkg}
+            text={cardText}
+            style={{ border: "solid 2px white", padding: ".2rem" }}
+          >
+            <Form noValidate onChange={this.onChange} onSubmit={this.onSubmit}>
+              <Form.Group className="mb-1" controlId="formCalc">
+                <Form.Label>
+                  <h5 style={{ marginTop: ".2rem", marginBottom: "0rem" }}>
+                    Exchange Calculator
+                  </h5>
+                </Form.Label>
+                <Row>
+                  <Col>
+                    <Form.Control
+                      type="number"
+                      placeholder="Amount(Dash)"
+                      required
+                      //isValid={this.state.validminAmt}
+                      // isInvalid={!this.state.validminAmt}
+                    />
+                  </Col>
+                  <Col>
+                    <h5 className="mt-1">
+                      <b>Dash x Rate =</b>
+                    </h5>
+                  </Col>
+                </Row>
+              </Form.Group>
+            </Form>
+            <p className="smallertext">
+              (i.e. Must include 3 decimal precision)
+            </p>
+
+            <h5 style={{ paddingLeft: "2rem" }}>
+              <b> = {calcAmt} (fiat)</b>
+            </h5>
+          </Card>
+          <p></p>
+          <h6>
+            <b>Instructions</b>
+          </h6>
           <p style={{ whiteSpace: "pre-wrap" }}>
-            {this.props.selectedSearchedPost.instruction}
+            {this.props.selectedSearchedOffer.instruction}
           </p>
 
           <p></p>
@@ -393,7 +553,7 @@ class OfferModal extends React.Component {
 
           <RatingSummary
             SearchedReviews={this.state.SearchedReviews}
-            SearchedNameDoc={this.props.selectedSearchedPostNameDoc}
+            SearchedNameDoc={this.props.selectedSearchedOfferNameDoc}
             isLoadingSearch={this.state.LoadingDGR}
           />
 
@@ -404,7 +564,7 @@ class OfferModal extends React.Component {
                 SearchedReviews={this.state.SearchedReviews} // State
                 SearchedReviewNames={this.state.SearchedReviewNames} //State
                 SearchedReplies={this.state.SearchedReplies} //State
-                SearchedNameDoc={this.props.selectedSearchedPostNameDoc} //Props
+                SearchedNameDoc={this.props.selectedSearchedOfferNameDoc} //Props
               />
             </>
           ) : (

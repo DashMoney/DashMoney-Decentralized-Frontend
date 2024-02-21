@@ -3,27 +3,13 @@ import Badge from "react-bootstrap/Badge";
 import Card from "react-bootstrap/Card";
 
 class Offer extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      copiedName: false,
-    };
-  }
-
-  handleNameClick = (nameLabel) => {
-    navigator.clipboard.writeText(nameLabel);
-    this.setState({
-      copiedName: true,
-    });
-  };
-
   handleFiatDisplay = (fiatInt) => {
     //Convert to 2 decimal places.
     let numToString = fiatInt.toString();
     let strLength = numToString.length;
     let firstPart = numToString.slice(0, strLength - 2);
-    let secPart = numToString.slice(strLength - 1, strLength);
-    return { firstPart } + "." + { secPart };
+    let secPart = numToString.slice(strLength - 2, strLength);
+    return `${firstPart}.${secPart}`;
   };
 
   formatDate(theCreatedAt) {
@@ -69,54 +55,63 @@ class Offer extends React.Component {
             }
           >
             <div className="locationTitle" style={{ marginBottom: ".5rem" }}>
-              <Badge bg="primary" style={{ marginRight: ".5rem" }}>
-                {this.props.offer.toMe} via {this.props.offer.toMeVia}
-              </Badge>
-              <span>(You send)</span>
+              <h5>
+                <b>Send</b>{" "}
+                <Badge bg="primary" style={{ marginRight: ".5rem" }}>
+                  {this.props.offer.toMe} via {this.props.offer.toMeVia}
+                </Badge>
+              </h5>
             </div>
             <div className="locationTitle" style={{ marginBottom: ".5rem" }}>
-              <Badge bg="primary" style={{ marginRight: ".5rem" }}>
-                {this.props.offer.toU} via {this.props.offer.toUVia}
-              </Badge>
-              <span>(You receive)</span>
-            </div>
-            <Card.Title className="cardTitle">
-              {/* {this.handleName(this.props.post)} */}
-
-              <h5
-                style={{ color: "#008de3" }}
-                // onClick={() => this.handleNameClick(nameDocToPass.label)}
-              >
-                <b>
-                  {this.handleFiatDisplay(this.props.offer.exRate)} (Fiat/Dash)
-                </b>
+              <h5>
+                <b>Receive</b>{" "}
+                {this.props.offer.toU === "Dash" ? (
+                  <>
+                    <Badge bg="primary" style={{ marginRight: ".5rem" }}>
+                      {this.props.offer.toU}
+                    </Badge>
+                  </>
+                ) : (
+                  <>
+                    <Badge bg="primary" style={{ marginRight: ".5rem" }}>
+                      {this.props.offer.toU} via {this.props.offer.toUVia}
+                    </Badge>
+                  </>
+                )}
               </h5>
+            </div>
+            {/* <Card.Title className="cardTitle"> */}
+            {/* {this.handleName(this.props.post)} */}
+            <p></p>
+            <h5 style={{ textAlign: "center" }}>Exchange Rate(Fiat/Dash)</h5>
+            <h4 style={{ textAlign: "center", color: "#008de3" }}>
+              <b>{this.handleFiatDisplay(this.props.offer.exRate)}</b>
+            </h4>
+            <p></p>
 
-              {/* <span>
-    {this.state.copiedName?<span>✅</span>:<></>}
-    </span> */}
-            </Card.Title>
+            {/* </Card.Title> */}
             {/* <Card.Text style={{ whiteSpace: "pre-wrap" }}>
               {this.props.offer.instruction}
             </Card.Text> */}
-            <Card.Text>
-              <p>
-                Minimum (Fiat):{" "}
-                {this.handleFiatDisplay(this.props.offer.minAmt)}
-              </p>
-              <p>
-                Maximum (Fiat):{" "}
+            {/* <Card.Text> */}
+            <p style={{ textAlign: "center", marginBottom: "0rem" }}>
+              <b>Min - Max (Fiat):</b>{" "}
+              <b>
+                {this.handleFiatDisplay(this.props.offer.minAmt)} -{" "}
                 {this.handleFiatDisplay(this.props.offer.maxAmt)}
-              </p>
-            </Card.Text>
+              </b>
+            </p>
+            {/* </Card.Text> */}
 
-            <div className="locationTitle" style={{ marginBottom: ".5rem" }}>
+            {/* <div className="locationTitle" style={{ marginBottom: ".5rem" }}> */}
+            <p></p>
+            <div style={{ marginBottom: ".5rem", textAlign: "right" }}>
               {/* Created by: */}
 
               <span> Created by: {nameDocToPass.label}</span>
-              <span className="textsmaller">
+              {/* <span className="textsmaller">
                 {this.formatDate(this.props.offer.$updatedAt)}
-              </span>
+              </span> */}
             </div>
           </Card.Body>
         </Card>
@@ -125,4 +120,4 @@ class Offer extends React.Component {
   }
 }
 
-export default Post;
+export default Offer;

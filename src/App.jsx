@@ -85,6 +85,8 @@ import OrderMessageModal from "./Components/6-Shopping/ShoppingModals/OrderMessa
 
 import CreateOfferModal from "./Components/9-P2PExchange/CreateOfferModal";
 
+import OfferModal from "./Components/9-P2PExchange/OfferModal";
+
 import CreateReviewModal from "./Components/7-Reviews/ReviewModals/CreateReviewModal";
 import EditReviewModal from "./Components/7-Reviews/ReviewModals/EditReviewModal";
 import CreateReplyModal from "./Components/7-Reviews/ReviewModals/CreateReplyModal";
@@ -584,6 +586,34 @@ class App extends React.Component {
 
       isTooLongNameError_EXCHANGE: false, //Pass to form and add ->
 
+      SearchedOffers: [
+        {
+          $ownerId: "4h5j6j",
+          $id: "7ku98rj",
+          toMe: "USD",
+          toMeVia: "Venmo",
+          toMeHandle: "Alice-007",
+          toU: "Dash",
+          toUVia: "Address",
+          //toUHandle:"",
+          exRate: "3056",
+          instruction:
+            "***This is just a test offer.***\n\n     Please don't send me anything!",
+          minAmt: "100",
+          maxAmt: "10000",
+          active: true,
+
+          $updatedAt: Date.now() - 1000000,
+          $createdAt: Date.now() - 1000000,
+        },
+      ],
+      SearchedOffersNames: [
+        {
+          $ownerId: "4h5j6j",
+          label: "Alice",
+        },
+      ],
+
       YourOffers: [],
 
       offerToEdit: [], //use a function to find and pass to modal ->
@@ -777,7 +807,7 @@ class App extends React.Component {
       DataContractDGM: "4PUQmGdGLLWwTFntgwEDhJWzUKoKqbSKanjVGTi2Fbcj",
       DataContractDGP: "785cZo4ok3DgyCJKsg4NPwuFmdDdcbp1hZKBW5b4SZ97",
       DataContractDMIO: "931HGHM5fMrRegVe3998hHcBAft1p8d9sWynfGnKxkw2",
-      DataContractP2P: "",
+      DataContractP2P: "AouojPvPHY4PU3pUQfuopS6HCZ6MSyePJ3ryEE2hEMdB",
       DataContractDGR: "5C8ZwmirWwqsMk7EguTf2p2RHa1cD9z3hrR29quE92ug",
       DataContractPOD: "9umPSgjEukfYiygXCMW7zfUVuHTFJSm7VAzbX6rwJgT9",
       DataContractDPNS: "GWRSAVFMjXx8HpQFaNJMqBV7MBgMK4br5UESsB4S31Ec",
@@ -10754,7 +10784,7 @@ class App extends React.Component {
 
       return client.platform.documents.get("DGMContract.dgmaddress", {
         where: [["$ownerId", "in", arrayOfToIds]],
-        orderBy: [["$ownerId", "asc"]],
+        orderBy: [["$ownerId", "asc"]], //CHANGE TO CREATEDAT ->
       });
     };
 
@@ -11117,7 +11147,7 @@ class App extends React.Component {
 
       return client.platform.documents.get("DGPContract.dgpstore", {
         where: [["$ownerId", "in", arrayOfToIds]],
-        orderBy: [["$ownerId", "asc"]],
+        orderBy: [["$ownerId", "asc"]], // DOESN'T MATTER BC IS A GROUP OF THEM. SO IF THEY HAVE MULTIPLE THEN i HAVE AN ISSUE..
       });
     };
 
@@ -11229,11 +11259,11 @@ class App extends React.Component {
   handleExchangeTab = (eventKey) => {
     if (eventKey === "Search")
       this.setState({
-        whichOffersTab: "Search",
+        whichExchangeTab: "Search",
       });
     else {
       this.setState({
-        whichOffersTab: "Your Offers",
+        whichExchangeTab: "Your Offers",
       });
     }
   };
@@ -11243,6 +11273,17 @@ class App extends React.Component {
     this.setState({
       InitialPullExchange: false,
     });
+  };
+
+  handleYourOffer = (index) => {
+    this.setState(
+      {
+        selectedYourOffer: this.state.YourOffers[index],
+        //I also need the name <- NOT FOR MY POSTS
+        selectedYourOfferIndex: index, //<- Need this for the editingfunction!!
+      },
+      () => this.showModal("EditOfferModal")
+    );
   };
 
   handleSearchedOffer = (offer, nameDoc) => {
@@ -11990,7 +12031,9 @@ class App extends React.Component {
       .catch((e) => console.error("Something went wrong:\n", e))
       .finally(() => client.disconnect());
   };
-  //CHANGE BELOW ->
+  //
+  //CHANGE BELOW -> CONNECT TO QUERY ->
+  //
   constructQueryThenSearch_EXCHANGE = () => {
     //IF THE PULLED IS ALREADY DONE DONT PULL AGAIN -> THIS NEED TO CHECK THE PULL STATE BASED ON THE BUTTON
     if (
@@ -12053,20 +12096,135 @@ class App extends React.Component {
       ]); //push adds to end!
     }
 
-    let categoryIndex = whereArray.length;
+    //let categoryIndex = whereArray.length;
 
-    whereArray.push(["$updateAt", "<=", Date.now()]);
+    whereArray.push(["$updatedAt", "<=", Date.now()]);
 
     let queryObject = {
       where: whereArray,
-      orderBy: [["$updateAt", "desc"]],
+      orderBy: [["$updatedAt", "desc"]],
     };
 
     console.log(queryObject);
 
+    this.getOffers(queryObject);
+
     // this.getOffRent(queryObject, categoryIndex);
   };
 
+  getOffers = (queryObj) => {
+    //let queryOffRent = JSON.parse(JSON.stringify(queryObj));
+
+    //queryOffRent.where[cateIndex].push("offrent");
+
+    //This passed in parameter won't affect the other functions right?? => NO shallow and needs deep object copying..... => DONE
+
+    //console.log("Calling getOffers");
+
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      apps: {
+        P2PContract: {
+          contractId: this.state.DataContractP2P,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const getDocuments = async () => {
+      return client.platform.documents.get("P2PContract.offer", queryObj);
+    };
+
+    getDocuments()
+      .then((d) => {
+        if (d.length === 0) {
+          //console.log("There are no EXCHANGE POSTS");
+
+          this.setState({
+            SearchedOffers: [],
+            isLoadingExchangeSearch: false,
+            isLoadingExchangeForm: false,
+          });
+        } else {
+          let docArray = [];
+          //console.log("Getting getOffRent Posts");
+          for (const n of d) {
+            //console.log("Document:\n", n.toJSON());
+            docArray = [...docArray, n.toJSON()];
+          }
+          this.getOffersNames(docArray);
+        }
+      })
+      .catch((e) => console.error("Something went wrong:\n", e))
+      .finally(() => client.disconnect());
+  };
+
+  getOffersNames = (docArray) => {
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      apps: {
+        DPNS: {
+          contractId: this.state.DataContractDPNS,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+    //START OF NAME RETRIEVAL
+
+    let ownerarrayOfOwnerIds = docArray.map((doc) => {
+      return doc.$ownerId;
+    });
+
+    let setOfOwnerIds = [...new Set(ownerarrayOfOwnerIds)];
+
+    let arrayOfOwnerIds = [...setOfOwnerIds];
+
+    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+      Buffer.from(Identifier.from(item))
+    );
+
+    //console.log("Calling getNamesforDSOmsgs");
+
+    const getNameDocuments = async () => {
+      return client.platform.documents.get("DPNS.domain", {
+        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
+        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      });
+    };
+
+    getNameDocuments()
+      .then((d) => {
+        //WHAT IF THERE ARE NO NAMES? -> THEN THIS WON'T BE CALLED
+        if (d.length === 0) {
+          //console.log("No DPNS domain documents retrieved.");
+        }
+
+        let nameDocArray = [];
+
+        for (const n of d) {
+          //console.log("NameDoc:\n", n.toJSON());
+
+          nameDocArray = [n.toJSON(), ...nameDocArray];
+        }
+        //console.log(`DPNS Name Docs: ${nameDocArray}`);
+
+        this.setState({
+          SearchedOffersNames: nameDocArray,
+          SearchedOffers: docArray,
+          isLoadingExchangeSearch: false,
+          isLoadingExchangeForm: false,
+        });
+      })
+      .catch((e) => {
+        console.error("Something went wrong getting Exchange Names:\n", e);
+      })
+      .finally(() => client.disconnect());
+    //END OF NAME RETRIEVAL
+  };
+
+  //
+  // CONNECT TO PLATFORM ->
+  //
   createYourOffer = (offerObject) => {
     console.log("Called Create Offer");
 
@@ -12123,13 +12281,13 @@ class App extends React.Component {
       const p2pDocument = await platform.documents.create(
         "P2PContract.offer",
         identity,
-        postProperties
+        offerProperties
       );
 
       //############################################################
       //This below disconnects the document sending..***
 
-      // return p2pDocument;
+      //return p2pDocument;
 
       //This is to disconnect the Document Creation***
       //############################################################
@@ -12173,7 +12331,7 @@ class App extends React.Component {
         });
       })
       .catch((e) => {
-        console.error("Something went wrong with post creation:\n", e);
+        console.error("Something went wrong with offer creation:\n", e);
         this.setState({
           yourOfferError: true,
           isLoadingYourOffers: false,
@@ -14249,6 +14407,8 @@ class App extends React.Component {
                     showModal={this.showModal}
                     mode={this.state.mode}
                     isLoadingExchangeSearch={this.state.isLoadingExchangeSearch}
+                    SearchedOffers={this.state.SearchedOffers}
+                    SearchedOffersNames={this.state.SearchedOffersNames}
                     isLoadingYourOffers={this.state.isLoadingYourOffers}
                     nameToSearch_EXCHANGE={this.state.nameToSearch_EXCHANGE}
                     nameFormat_EXCHANGE={this.state.nameFormat_EXCHANGE}
@@ -14302,6 +14462,7 @@ class App extends React.Component {
                       this.state.selectedSearchedOfferNameDoc
                     }
                     handleSearchedOffer={this.handleSearchedOffer}
+                    handleYourOffer={this.handleYourOffer}
                   />
                 </>
               ) : (
@@ -14994,7 +15155,6 @@ class App extends React.Component {
             createYourOffer={this.createYourOffer}
             hideModal={this.hideModal}
             mode={this.state.mode}
-            closeTopNav={this.closeTopNav}
           />
         ) : (
           <></>
@@ -15008,29 +15168,28 @@ class App extends React.Component {
             isModalShowing={this.state.isModalShowing}
             hideModal={this.hideModal}
             mode={this.state.mode}
-            closeTopNav={this.closeTopNav}
           />
         ) : (
           <></>
         )} */}
 
-        {/* {this.state.isModalShowing &&
+        {this.state.isModalShowing &&
         this.state.presentModal === "OfferModal" ? (
           <OfferModal
             selectedSearchedOffer={this.state.selectedSearchedOffer}
-            selectedSearchedOfferNameDoc={this.state.selectedSearchedOfferNameDoc}
+            selectedSearchedOfferNameDoc={
+              this.state.selectedSearchedOfferNameDoc
+            }
             whichNetwork={this.state.whichNetwork}
             DataContractDGR={this.state.DataContractDGR}
             DataContractDPNS={this.state.DataContractDPNS}
-            //isLoggedIn={this.state.isLoggedIn}
             isModalShowing={this.state.isModalShowing}
             hideModal={this.hideModal}
             mode={this.state.mode}
-            closeTopNav={this.closeTopNav}
           />
         ) : (
           <></>
-        )} */}
+        )}
 
         {/* *   ################
          *      ###          ####

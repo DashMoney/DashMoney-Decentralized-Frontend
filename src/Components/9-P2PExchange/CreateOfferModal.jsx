@@ -926,7 +926,7 @@ class CreateOfferModal extends React.Component {
   minAmtValidate = (numberInput) => {
     //console.log(this.props.accountBalance);
 
-    let regex = /^\d{0,10}[.]\d{3}$/;
+    let regex = /^\d{0,10}[.,]\d{2}$/;
 
     //let regex = /(^[0-9]+[.,]{0,1}[0-9]{0,5}$)|(^[.,][0-9]{1,5}$)/;
     //CHANGED TO LIMIT TO minimum mDash possible
@@ -949,9 +949,8 @@ class CreateOfferModal extends React.Component {
   };
 
   maxAmtValidate = (numberInput) => {
-    //console.log(this.props.accountBalance);
-
-    let regex = /^\d{0,10}[.]\d{3}$/;
+    console.log(typeof numberInput);
+    let regex = /^\d{0,10}[.,]\d{2}$/;
 
     //let regex = /(^[0-9]+[.,]{0,1}[0-9]{0,5}$)|(^[.,][0-9]{1,5}$)/;
     //CHANGED TO LIMIT TO maximum mDash possible
@@ -1029,17 +1028,17 @@ class CreateOfferModal extends React.Component {
       toU: this.state.toU4Doc.toLocaleUpperCase(),
       toUVia: this.state.toUVia4Doc.toLocaleLowerCase(),
       // toUHandle  <- Not a thing
-      exRate: this.state.exRateInput,
+      exRate: Number(this.state.exRateInput),
       instruction: this.state.instructionInput,
-      minAmt: this.state.minAmtInput,
-      maxAmt: this.state.maxAmtInput,
+      minAmt: Number(this.state.minAmtInput),
+      maxAmt: Number(this.state.maxAmtInput),
       active: this.state.offerActive,
     };
 
-    console.log(newOffer);
+    // console.log(newOffer);
 
-    // this.props.createYourOffer(newOffer);
-    // this.props.hideModal();
+    this.props.createYourOffer(newOffer);
+    this.props.hideModal();
   };
 
   render() {
@@ -1559,14 +1558,8 @@ class CreateOfferModal extends React.Component {
                   </h4>
                 </Form.Label>
 
-                {/* <Form.Control
-                      type="number"
-                      placeholder={this.state.amountToSend}
-                     readOnly
-                    >  */}
-
                 <Form.Control
-                  type="number"
+                  type="text"
                   placeholder="30.01 For example.."
                   required
                   isValid={this.state.validexRate}
@@ -1631,15 +1624,9 @@ class CreateOfferModal extends React.Component {
                   </h6>
                 </Form.Label>
 
-                {/* <Form.Control
-                      type="number"
-                      placeholder={this.state.amountToSend}
-                     readOnly
-                    >  */}
-
                 <Form.Control
-                  type="number"
-                  placeholder="0.010 For example.."
+                  type="text"
+                  placeholder="1.00 For example.."
                   required
                   isValid={this.state.validminAmt}
                   //isInvalid={!this.state.validminAmt}
@@ -1658,15 +1645,9 @@ class CreateOfferModal extends React.Component {
                   </h6>
                 </Form.Label>
 
-                {/* <Form.Control
-                      type="number"
-                      placeholder={this.state.amountToSend}
-                     readOnly
-                    >  */}
-
                 <Form.Control
-                  type="number"
-                  placeholder="10.000 For example.."
+                  type="text"
+                  placeholder="1000.00 For example.."
                   required
                   isValid={this.state.validmaxAmt}
                   // isInvalid={!this.state.validmaxAmt}
@@ -1708,11 +1689,10 @@ class CreateOfferModal extends React.Component {
                 <p></p>
                 Instructions can include things like:
                 <ul>
-                  <li>Send (DM) Message prior to pay.</li>
-                  <li>
-                    Check out Group (GroupName) to ask you questions, or Go to
-                    my store and place order.
-                  </li>
+                  <li>Send (DM) Message to me prior to pay.</li>
+                  <li>Check out Group (GroupName) to ask you questions.</li>
+                  {/* , or Go to
+                    my store and place order */}
                   <li>
                     IMPORTANT: Ensure you spell your receiving handle correctly
                     if you are getting fiat.
@@ -1726,8 +1706,7 @@ class CreateOfferModal extends React.Component {
                 </ul>
                 {this.state.tooLongDescriptionError ? (
                   <Form.Control.Feedback className="floatLeft" type="invalid">
-                    Sorry, this is too long! Please use less than 500
-                    characters.
+                    Sorry, this is too long.
                   </Form.Control.Feedback>
                 ) : (
                   <></>

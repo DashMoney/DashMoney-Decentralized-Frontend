@@ -92,6 +92,12 @@ html {
   justify-content: flex-end;
 }
 
+.TwoButtons {
+  padding-bottom: 0.2rem;
+  display: flex;
+  justify-content: space-between;
+}
+
 .BottomBorder {
   border-bottom: 0.05rem solid white;
 }

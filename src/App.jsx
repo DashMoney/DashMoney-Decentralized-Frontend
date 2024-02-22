@@ -679,6 +679,9 @@ class App extends React.Component {
       nameToSearch: "",
       nameFormat: false,
 
+      SearchedNameDoc_EXCHANGE: [],
+      SearchedNameOffers_EXCHANGE: [],
+
       isTooLongNameError: false, //Pass to form and add ->
 
       YourReviews1: false,
@@ -9504,6 +9507,13 @@ class App extends React.Component {
         document.set("address", postObject.address);
       }
 
+      // if ( //THIS FAILS -> I DON'T THINK YOU CAN ADD .. <=
+      //   this.state.yourPostsToDisplay[this.state.selectedYourPostIndex]
+      //     .address === undefined
+      // ) {
+      //   document.set("address", postObject.address);
+      // }
+
       if (
         this.state.yourPostsToDisplay[this.state.selectedYourPostIndex]
           .active !== postObject.active
@@ -11405,7 +11415,7 @@ class App extends React.Component {
 
     this.setState({
       isLoadingExchangeSearch: true,
-      SearchedOffers: [], //This is not the same I think
+      SearchedNameOffers_EXCHANGE: [],
     });
 
     const client = new Dash.Client(this.state.whichNetwork);
@@ -11423,26 +11433,81 @@ class App extends React.Component {
         if (d === null) {
           console.log("No DPNS Document for this Name.");
           this.setState({
-            SearchedNameDoc_EXCHANGE: "No NameDoc", //Handle if name fails ->
+            SearchedNameDoc_EXCHANGE: [],
             isLoadingExchangeSearch: false,
           });
         } else {
           let nameDoc = d.toJSON();
           console.log("Name retrieved:\n", nameDoc);
 
-          this.startSearch_EXCHANGE(nameDoc.$ownerId);
-
-          this.setState({
-            SearchedNameDoc_EXCHANGE: nameDoc,
-          });
+          this.setState(
+            {
+              //MOVE THIS TO THE NEXT FUNCTION -> namedoc NOT identityId
+              SearchedNameDoc_EXCHANGE: [nameDoc],
+            },
+            () => this.getOffersFromNameSearch(nameDoc.$ownerId)
+          );
         }
       })
       .catch((e) => {
         this.setState({
-          SearchedNameDoc_EXCHANGE: "No NameDoc",
+          SearchedNameDoc_EXCHANGE: [],
           isLoadingExchangeSearch: false,
         });
         console.error("Something went wrong:\n", e);
+      })
+      .finally(() => client.disconnect());
+  };
+
+  getOffersFromNameSearch = (theIdentity) => {
+    //Issue -> there should only be one possible return not a list ->
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      apps: {
+        P2PContract: {
+          contractId: this.state.DataContractP2P,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const getDocuments = async () => {
+      console.log("Called Get P2P offers from NameSearch");
+
+      return client.platform.documents.get("P2PContract.offer", {
+        where: [["$ownerId", "==", theIdentity]],
+        orderBy: [["$createdAt", "desc"]],
+      });
+    };
+
+    getDocuments()
+      .then((d) => {
+        let docArray = [];
+
+        if (d.length === 0) {
+          this.setState({
+            SearchedNameOffers_EXCHANGE: [],
+            isLoadingExchangeSearch: false,
+            isLoadingExchangeForm: false,
+          });
+        } else {
+          for (const n of d) {
+            //console.log("Store:\n", n.toJSON());
+            docArray = [...docArray, n.toJSON()];
+          }
+          this.setState({
+            SearchedNameOffers_EXCHANGE: docArray,
+            isLoadingExchangeSearch: false,
+            isLoadingExchangeForm: false,
+          });
+        } //Ends the else
+      })
+      .catch((e) => {
+        console.error("Something went wrong:\n", e);
+        this.setState({
+          isLoadingExchangeSearch: false,
+          isLoadingExchangeForm: false,
+        });
       })
       .finally(() => client.disconnect());
   };
@@ -14482,6 +14547,12 @@ class App extends React.Component {
                       this.state.isTooLongNameError_EXCHANGE
                     }
                     searchName_EXCHANGE={this.searchName_EXCHANGE}
+                    SearchedNameDoc_EXCHANGE={
+                      this.state.SearchedNameDoc_EXCHANGE
+                    }
+                    SearchedNameOffers_EXCHANGE={
+                      this.state.SearchedNameOffers_EXCHANGE
+                    }
                     handleExchangeNameSearchOnChangeValidation={
                       this.handleExchangeNameSearchOnChangeValidation
                     }

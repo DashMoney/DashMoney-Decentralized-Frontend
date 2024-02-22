@@ -209,6 +209,12 @@ class ExchangePage extends React.Component {
                         identity={this.props.identity}
                         uniqueName={this.props.uniqueName}
                         whichOffersName={this.props.whichOffersName}
+                        SearchedNameDoc_EXCHANGE={
+                          this.props.SearchedNameDoc_EXCHANGE
+                        }
+                        SearchedNameOffers_EXCHANGE={
+                          this.props.SearchedNameOffers_EXCHANGE
+                        }
                         handleSearchedOffer={this.props.handleSearchedOffer}
                         SearchedOffers={this.props.SearchedOffers}
                         SearchedOffersNames={this.props.SearchedOffersNames}
@@ -432,6 +438,10 @@ class ExchangePage extends React.Component {
                   identity={this.props.identity}
                   uniqueName={this.props.uniqueName}
                   whichOffersName={this.props.whichOffersName}
+                  SearchedNameDoc_EXCHANGE={this.props.SearchedNameDoc_EXCHANGE}
+                  SearchedNameOffers_EXCHANGE={
+                    this.props.SearchedNameOffers_EXCHANGE
+                  }
                   handleSearchedOffer={this.props.handleSearchedOffer}
                   SearchedOffers={this.props.SearchedOffers}
                   SearchedOffersNames={this.props.SearchedOffersNames}

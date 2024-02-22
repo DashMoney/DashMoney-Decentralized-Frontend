@@ -1033,6 +1033,7 @@ class CreateOfferModal extends React.Component {
       minAmt: Number(this.state.minAmtInput),
       maxAmt: Number(this.state.maxAmtInput),
       active: this.state.offerActive,
+      myStore: false,
     };
 
     // console.log(newOffer);

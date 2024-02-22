@@ -463,7 +463,7 @@ class Group extends React.Component {
               <IoMdArrowRoundBack size={28} />
             </Button>
 
-            <h3>
+            <h3 style={{ textAlign: "center" }}>
               {this.props.mode === "primary" ? (
                 <b className="lightMode">{this.props.selectedGroup}</b>
               ) : (
@@ -483,9 +483,12 @@ class Group extends React.Component {
           {this.state.groupMsgs.length === 0 &&
           !this.state.LoadingMsgs &&
           msgsToAdd.length === 0 ? (
-            <div className="bodytext">
-              <p>There are no messages available for this group.</p>
-            </div>
+            <>
+              <p></p>
+              <div className="bodytext">
+                <p>There are no messages available for this group.</p>
+              </div>
+            </>
           ) : (
             <></>
           )}

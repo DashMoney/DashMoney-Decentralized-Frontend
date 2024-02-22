@@ -326,7 +326,7 @@ class EditEventModal extends React.Component {
   };
 
   addressValidate = (address) => {
-    let regex = /^[\S\s]{0,100}$/;
+    let regex = /^[\S\s]{0,150}$/;
     let valid = regex.test(address);
 
     if (valid) {
@@ -336,7 +336,7 @@ class EditEventModal extends React.Component {
         validAddress: true,
       });
     } else {
-      if (address.length > 100) {
+      if (address.length > 150) {
         this.setState({
           addressInput: address,
           tooLongAddressError: true,
@@ -407,8 +407,6 @@ class EditEventModal extends React.Component {
     event.preventDefault();
     //console.log(event.target.ControlTextarea1.value);
 
-    //CHANGE TO NEWPOST AND SET THE LOWERCASE HERE!
-
     let newEvent = {
       city: this.state.cityInput.toLocaleLowerCase(),
       region: this.state.regionInput.toLocaleLowerCase(),
@@ -422,12 +420,12 @@ class EditEventModal extends React.Component {
       // dgp: this.state.postDGP,
 
       group: this.state.groupInput,
-      //address: this.state.addressInput, //use this in DGP also
+      address: this.state.addressInput,
       date: this.state.dateInput,
-      // time: this.state.timeInput,
+      time: this.state.timeInput,
     };
 
-    this.props.editYourEvent(newEvent); //Pass the function to here ->
+    this.props.editYourEvent(newEvent);
     this.props.hideModal();
   };
 
@@ -715,9 +713,8 @@ class EditEventModal extends React.Component {
                 <></>
               )}
               {/* Time FORM BELOW */}
-              {/* {this.state.selectedCategory === "events" ? (
+              {this.state.selectedCategory === "events" ? (
                 <>
-                  
                   <Form.Group className="mb-3" controlId="formTime">
                     <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
                       <b>Time of Event</b>
@@ -725,6 +722,7 @@ class EditEventModal extends React.Component {
                     <Form.Control
                       type="text"
                       placeholder="Enter time (Optional)"
+                      defaultValue={this.props.selectedYourPost.time}
                       required
                       isInvalid={this.state.tooLongTimeError}
                       isValid={this.state.validTime}
@@ -733,12 +731,11 @@ class EditEventModal extends React.Component {
                     <Form.Control.Feedback type="invalid">
                       Time is too long.
                     </Form.Control.Feedback>
-                    
                   </Form.Group>
                 </>
               ) : (
                 <></>
-              )} */}
+              )}
 
               {/* LINKS FORM BELOW */}
 
@@ -750,6 +747,7 @@ class EditEventModal extends React.Component {
                 <Form.Control
                   type="text"
                   defaultValue={this.props.selectedYourPost.link}
+                  placeholder="Enter a URL (Optional)"
                   required
                   isInvalid={this.state.tooLongLinkError}
                   isValid={this.state.validLink}
@@ -764,13 +762,15 @@ class EditEventModal extends React.Component {
               </Form.Group>
 
               {/* ADDRESS FORM BELOW */}
-
-              {/* <Form.Group className="mb-3" controlId="formAddress">
+              <Form.Group className="mb-3" controlId="formAddress">
                 <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
                   Address
                 </h5>
                 <Form.Control
-                  type="text"
+                  //onChange={this.onChange}
+                  as="textarea"
+                  rows={2}
+                  defaultValue={this.props.selectedYourPost.address}
                   placeholder="Enter address(Optional)"
                   required
                   isInvalid={this.state.tooLongAddressError}
@@ -780,8 +780,7 @@ class EditEventModal extends React.Component {
                 <Form.Control.Feedback type="invalid">
                   Address is too long.
                 </Form.Control.Feedback>
-                
-              </Form.Group> */}
+              </Form.Group>
 
               <Form.Group className="mb-3" id="formGridCheckbox">
                 {/* <Form.Label>
@@ -834,10 +833,10 @@ class EditEventModal extends React.Component {
                 this.state.validCountry &&
                 this.state.validDescription &&
                 this.state.validLink &&
-                this.state.validGroup && //&&
-                // this.state.validAddress
-                this.state.validDate ? ( // &&
-                  // this.state.validTime
+                this.state.validGroup &&
+                this.state.validAddress &&
+                this.state.validDate &&
+                this.state.validTime ? (
                   <Button variant="primary" type="submit">
                     <b>Edit Event</b>
                   </Button>

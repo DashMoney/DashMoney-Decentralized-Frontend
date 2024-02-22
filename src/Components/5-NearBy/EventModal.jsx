@@ -151,6 +151,26 @@ class EventModal extends React.Component {
           ) : (
             <></>
           )}
+          {this.props.selectedSearchedEvent.time !== undefined &&
+          this.props.selectedSearchedEvent.time !== "" ? (
+            <p>
+              Time: <b>{this.props.selectedSearchedEvent.time}</b>
+            </p>
+          ) : (
+            <></>
+          )}
+
+          <p></p>
+          {this.props.selectedSearchedEvent.address !== undefined &&
+          this.props.selectedSearchedEvent.address !== "" ? (
+            <>
+              <p style={{ whiteSpace: "pre-wrap" }}>
+                {this.props.selectedSearchedEvent.address}
+              </p>
+            </>
+          ) : (
+            <></>
+          )}
 
           {this.props.selectedSearchedEvent.link !== undefined &&
           this.props.selectedSearchedEvent.link !== "" ? (

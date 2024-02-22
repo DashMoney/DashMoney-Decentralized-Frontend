@@ -9278,8 +9278,9 @@ class App extends React.Component {
 
           description: postObject.description,
           category: postObject.category,
+
           link: postObject.link,
-          // address: postObject.addressInput, //RECONNECT ->
+          address: postObject.address,
 
           active: postObject.active,
           dgp: postObject.dgp,
@@ -9298,9 +9299,9 @@ class App extends React.Component {
           dgp: false, // postObject.dgp,
           //EVENTS
           group: postObject.group,
-          // address: postObject.address,
+          address: postObject.address,
           date: postObject.date,
-          //time: postObject.time,
+          time: postObject.time,
         };
       }
       console.log("Post to Create: ", postProperties);
@@ -9347,7 +9348,7 @@ class App extends React.Component {
             description: postObject.description,
             category: postObject.category,
             link: postObject.link,
-            // address: postObject.addressInput, //RECONNECT ->
+            address: postObject.addressInput,
 
             active: postObject.active,
             dgp: postObject.dgp,
@@ -9370,9 +9371,9 @@ class App extends React.Component {
             dgp: false, // postObject.dgp,
             //EVENTS
             group: postObject.group,
-            // address: postObject.address,
+            address: postObject.address,
             date: postObject.date,
-            //time: postObject.time,
+            time: postObject.time,
           };
         }
 
@@ -9446,7 +9447,9 @@ class App extends React.Component {
 
       description: postObject.description,
       category: postObject.category,
+
       link: postObject.link,
+      address:postObject.address,
       
       active: postObject.active,
       dgp: postObject.dgp,
@@ -9496,6 +9499,13 @@ class App extends React.Component {
 
       if (
         this.state.yourPostsToDisplay[this.state.selectedYourPostIndex]
+          .address !== postObject.address
+      ) {
+        document.set("address", postObject.address);
+      }
+
+      if (
+        this.state.yourPostsToDisplay[this.state.selectedYourPostIndex]
           .active !== postObject.active
       ) {
         document.set("active", postObject.active);
@@ -9537,7 +9547,9 @@ class App extends React.Component {
 
           description: postObject.description,
           category: postObject.category,
+
           link: postObject.link,
+          address: postObject.address,
 
           active: postObject.active,
           dgp: postObject.dgp,
@@ -9566,7 +9578,6 @@ class App extends React.Component {
   };
 
   editYourEvent = (postObject) => {
-    //Finish this.
     console.log("Called Edit Event");
 
     this.setState({
@@ -9649,27 +9660,77 @@ class App extends React.Component {
       ) {
         document.set("description", postObject.description);
       }
-      //Group and DAte
+      //Group Date Address Time
       if (
         this.state.yourPostsToDisplay[this.state.selectedYourPostIndex]
-          .group !== postObject.group
+          .group !== undefined
       ) {
-        document.set("group", postObject.group);
+        if (
+          this.state.yourPostsToDisplay[this.state.selectedYourPostIndex]
+            .group !== postObject.group
+        ) {
+          document.set("group", postObject.group);
+        }
+      }
+      if (
+        this.state.yourPostsToDisplay[this.state.selectedYourPostIndex].date !==
+        undefined
+      ) {
+        if (
+          this.state.yourPostsToDisplay[this.state.selectedYourPostIndex]
+            .date !== postObject.date
+        ) {
+          document.set("date", postObject.date);
+        }
       }
 
       if (
-        this.state.yourPostsToDisplay[this.state.selectedYourPostIndex].date !==
-        postObject.date
+        this.state.yourPostsToDisplay[this.state.selectedYourPostIndex]
+          .address !== undefined
       ) {
-        document.set("date", postObject.date);
+        if (
+          this.state.yourPostsToDisplay[this.state.selectedYourPostIndex]
+            .address !== postObject.address
+        ) {
+          document.set("address", postObject.address);
+        }
+      }
+
+      if (
+        this.state.yourPostsToDisplay[this.state.selectedYourPostIndex].time !==
+        undefined
+      ) {
+        if (
+          this.state.yourPostsToDisplay[this.state.selectedYourPostIndex]
+            .time !== postObject.time
+        ) {
+          document.set("time", postObject.time);
+        }
       }
 
       if (
         this.state.yourPostsToDisplay[this.state.selectedYourPostIndex].link !==
-        postObject.link
+        undefined
       ) {
-        document.set("link", postObject.link);
+        if (
+          this.state.yourPostsToDisplay[this.state.selectedYourPostIndex]
+            .link !== postObject.link
+        ) {
+          document.set("link", postObject.link);
+        }
       }
+
+      // if (
+      //   this.state.yourPostsToDisplay[this.state.selectedYourPostIndex].dgp !==
+      //   undefined
+      // ) {
+      //   if (
+      //     this.state.yourPostsToDisplay[this.state.selectedYourPostIndex]
+      //       .dgp !== postObject.dgp
+      //   ) {
+      //     document.set("dgp", postObject.dgp);
+      //   }
+      // }
 
       if (
         this.state.yourPostsToDisplay[this.state.selectedYourPostIndex]
@@ -9678,14 +9739,6 @@ class App extends React.Component {
         document.set("active", postObject.active);
       }
 
-      // if (
-      //   this.state.yourPostsToDisplay[this.state.selectedYourPostIndex].dgp !==
-      //   postObject.dgp
-      // ) {
-      //   document.set("dgp", postObject.dgp);
-      // }
-
-      //TEST ->
       await platform.documents.broadcast({ replace: [document] }, identity);
       return document;
 
@@ -9718,6 +9771,9 @@ class App extends React.Component {
 
           group: postObject.group,
           date: postObject.date,
+
+          address: postObject.address,
+          time: postObject.time,
 
           active: postObject.active,
           dgp: false,

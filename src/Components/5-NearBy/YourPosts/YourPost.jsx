@@ -176,6 +176,30 @@ class YourPost extends React.Component {
               <></>
             )}
 
+            {this.props.post.time !== undefined &&
+            this.props.post.time !== "" ? (
+              <>
+                <p>
+                  Time: <b>{this.props.post.time}</b>
+                </p>
+              </>
+            ) : (
+              <></>
+            )}
+
+            <p></p>
+            {this.props.post.address !== undefined &&
+            this.props.post.address !== "" ? (
+              <>
+                <p style={{ whiteSpace: "pre-wrap" }}>
+                  {this.props.post.address}
+                </p>
+              </>
+            ) : (
+              <></>
+            )}
+            <p></p>
+
             {this.props.post.link !== undefined &&
             this.props.post.link !== "" ? (
               <>

@@ -86,6 +86,23 @@ class Event extends React.Component {
             <Card.Text style={{ whiteSpace: "pre-wrap" }}>
               {this.props.event.description}
             </Card.Text>
+            {this.props.event.date !== undefined &&
+            this.props.event.date !== "" ? (
+              <p>
+                Date: <b>{this.props.event.date}</b>
+              </p>
+            ) : (
+              <></>
+            )}
+
+            {this.props.event.time !== undefined &&
+            this.props.event.time !== "" ? (
+              <p>
+                Time: <b>{this.props.event.time}</b>
+              </p>
+            ) : (
+              <></>
+            )}
             <p className="textsmaller" style={{ textAlign: "right" }}>
               Created by: {nameDocToPass.label}
             </p>

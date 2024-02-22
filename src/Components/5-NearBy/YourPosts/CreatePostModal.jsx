@@ -107,15 +107,15 @@ class CreatePostModal extends React.Component {
       tooLongGroupError: false,
 
       addressInput: "",
-      validAddress: false,
+      validAddress: true,
       tooLongAddressError: false,
 
       dateInput: "",
-      validDate: false,
+      validDate: true,
       tooLongDateError: false,
 
       timeInput: "",
-      validTime: false,
+      validTime: true,
       tooLongTimeError: false,
 
       postActive: true,
@@ -439,7 +439,7 @@ class CreatePostModal extends React.Component {
   };
   //  EVENT VALIDATION
   // group: maxLength: 32,
-  // address: maxLength: 100,
+  // address: maxLength: 150,
   // date: maxLength: 32,
   // time: maxLength: 32,
   groupValidate = (group) => {
@@ -495,7 +495,7 @@ class CreatePostModal extends React.Component {
   };
 
   dateValidate = (date) => {
-    let regex = /^[\S\s]{1,32}$/;
+    let regex = /^[\S\s]{0,32}$/;
     let valid = regex.test(date);
 
     if (valid) {
@@ -567,9 +567,9 @@ class CreatePostModal extends React.Component {
         dgp: false, //use this in Events also? -> ? maybe
 
         group: this.state.groupInput,
-        // address: this.state.addressInput, //use this in DGP also
+        address: this.state.addressInput,
         date: this.state.dateInput,
-        // time: this.state.timeInput,
+        time: this.state.timeInput,
       };
     } else {
       newPost = {
@@ -580,7 +580,7 @@ class CreatePostModal extends React.Component {
         description: this.state.descriptionInput,
         category: this.state.selectedCategory,
         link: this.state.linkInput,
-        // address: this.state.addressInput, //use this in DGP also
+        address: this.state.addressInput,
 
         active: this.state.postActive,
         dgp: this.state.postDGP,
@@ -855,9 +855,6 @@ class CreatePostModal extends React.Component {
                     <Form.Control.Feedback type="invalid">
                       State/Province name is too long.
                     </Form.Control.Feedback>
-                    {/* <Form.Control.Feedback type="valid">
-              State/Province name is acceptable!
-            </Form.Control.Feedback> */}
                   </Form.Group>
 
                   {/* COUNTRY FORM BELOW */}
@@ -876,9 +873,6 @@ class CreatePostModal extends React.Component {
                     <Form.Control.Feedback type="invalid">
                       Country name is too long.
                     </Form.Control.Feedback>
-                    {/* <Form.Control.Feedback type="valid">
-              Country name is acceptable!
-            </Form.Control.Feedback> */}
                   </Form.Group>
 
                   {this.state.selectedCategory === "events" ? (
@@ -901,9 +895,6 @@ class CreatePostModal extends React.Component {
                         <Form.Control.Feedback type="invalid">
                           Event/Group name is too long.
                         </Form.Control.Feedback>
-                        {/* <Form.Control.Feedback type="valid">
-              City/Town name is acceptable!
-            </Form.Control.Feedback> */}
                       </Form.Group>
                     </>
                   ) : (
@@ -920,7 +911,7 @@ class CreatePostModal extends React.Component {
                     </Form.Label>
 
                     <Form.Control
-                      onChange={this.onChange}
+                      // onChange={this.onChange}
                       as="textarea"
                       rows={2}
                       placeholder="Put description here.."
@@ -965,9 +956,6 @@ class CreatePostModal extends React.Component {
                         <Form.Control.Feedback type="invalid">
                           Date info is too long.
                         </Form.Control.Feedback>
-                        {/* <Form.Control.Feedback type="valid">
-              City/Town name is acceptable!
-            </Form.Control.Feedback> */}
                       </Form.Group>
                     </>
                   ) : (
@@ -976,30 +964,30 @@ class CreatePostModal extends React.Component {
 
                   {/* Time FORM BELOW */}
 
-                  {/* {this.state.selectedCategory === "events" ? (
-                <>
-                  
-                  <Form.Group className="mb-3" controlId="formTime">
-                    <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
-                      <b>Time of Event</b>
-                    </h5>
-                    <Form.Control
-                      type="text"
-                      placeholder="Enter time (Optional)"
-                      required
-                      isInvalid={this.state.tooLongTimeError}
-                      isValid={this.state.validTime}
-                    />
-                    <p></p>
-                    <Form.Control.Feedback type="invalid">
-                      Time info is too long.
-                    </Form.Control.Feedback>
-                   
-                  </Form.Group>
-                </>
-              ) : (
-                <></>
-              )} */}
+                  {this.state.selectedCategory === "events" ? (
+                    <>
+                      <Form.Group className="mb-3" controlId="formTime">
+                        <h5
+                          style={{ marginTop: ".2rem", marginBottom: ".2rem" }}
+                        >
+                          <b>Time of Event</b>
+                        </h5>
+                        <Form.Control
+                          type="text"
+                          placeholder="Enter time (Optional)"
+                          required
+                          isInvalid={this.state.tooLongTimeError}
+                          isValid={this.state.validTime}
+                        />
+                        <p></p>
+                        <Form.Control.Feedback type="invalid">
+                          Time info is too long.
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                    </>
+                  ) : (
+                    <></>
+                  )}
 
                   {/* LINKS FORM BELOW */}
 
@@ -1019,29 +1007,27 @@ class CreatePostModal extends React.Component {
                     <Form.Control.Feedback type="invalid">
                       Link is too long.
                     </Form.Control.Feedback>
-                    {/* <Form.Control.Feedback type="valid">
-              Link is acceptable!
-            </Form.Control.Feedback> */}
                   </Form.Group>
 
                   {/* ADDRESS FORM BELOW */}
-                  {/* <Form.Group className="mb-3" controlId="formAddress">
-                <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
-                  Address
-                </h5>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter address(Optional)"
-                  required
-                  isInvalid={this.state.tooLongAddressError}
-                  isValid={this.state.validAddress}
-                />
-                <p></p>
-                <Form.Control.Feedback type="invalid">
-                  Address is too long.
-                </Form.Control.Feedback>
-                
-              </Form.Group> */}
+                  <Form.Group className="mb-3" controlId="formAddress">
+                    <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
+                      Address
+                    </h5>
+                    <Form.Control
+                      //onChange={this.onChange}
+                      as="textarea"
+                      rows={2}
+                      placeholder="Enter address(Optional)"
+                      required
+                      isInvalid={this.state.tooLongAddressError}
+                      isValid={this.state.validAddress}
+                    />
+                    <p></p>
+                    <Form.Control.Feedback type="invalid">
+                      Address is too long.
+                    </Form.Control.Feedback>
+                  </Form.Group>
 
                   <Form.Group className="mb-3" id="formGridCheckbox">
                     {/* <Form.Label>
@@ -1098,14 +1084,10 @@ class CreatePostModal extends React.Component {
                         this.state.validDescription &&
                         this.state.validLink &&
                         this.state.validGroup &&
-                        // this.state.validAddress &&
-                        this.state.validDate ? ( //&&
-                          //  this.state.validTime
-                          <Button
-                            variant="primary"
-                            type="submit" // <-RECONNECT
-                            //disabled
-                          >
+                        this.state.validAddress &&
+                        this.state.validDate &&
+                        this.state.validTime ? (
+                          <Button variant="primary" type="submit">
                             <b>Create Event</b>
                           </Button>
                         ) : (
@@ -1120,8 +1102,8 @@ class CreatePostModal extends React.Component {
                         this.state.validRegion &&
                         this.state.validCountry &&
                         this.state.validDescription &&
-                        this.state.validLink ? ( //&&
-                          // this.state.validAddress
+                        this.state.validLink &&
+                        this.state.validAddress ? (
                           <Button variant="primary" type="submit">
                             <b>Create Post</b>
                           </Button>

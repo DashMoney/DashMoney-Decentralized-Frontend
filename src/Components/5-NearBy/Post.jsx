@@ -121,6 +121,24 @@ class Post extends React.Component {
             <Card.Text style={{ whiteSpace: "pre-wrap" }}>
               {this.props.post.description}
             </Card.Text>
+
+            {this.props.post.date !== undefined &&
+            this.props.post.date !== "" ? (
+              <p>
+                Date: <b>{this.props.post.date}</b>
+              </p>
+            ) : (
+              <></>
+            )}
+
+            {this.props.post.time !== undefined &&
+            this.props.post.time !== "" ? (
+              <p>
+                Time: <b>{this.props.post.time}</b>
+              </p>
+            ) : (
+              <></>
+            )}
           </Card.Body>
         </Card>
       </>

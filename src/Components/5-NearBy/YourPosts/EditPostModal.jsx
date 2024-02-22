@@ -261,7 +261,7 @@ class EditPostModal extends React.Component {
   };
 
   addressValidate = (address) => {
-    let regex = /^[\S\s]{0,100}$/;
+    let regex = /^[\S\s]{0,150}$/;
     let valid = regex.test(address);
 
     if (valid) {
@@ -271,7 +271,7 @@ class EditPostModal extends React.Component {
         validAddress: true,
       });
     } else {
-      if (address.length > 100) {
+      if (address.length > 150) {
         this.setState({
           addressInput: address,
           tooLongAddressError: true,
@@ -299,15 +299,15 @@ class EditPostModal extends React.Component {
 
       description: this.state.descriptionInput,
       category: this.state.selectedCategory,
+
       link: this.state.linkInput,
+      address: this.state.addressInput,
 
       active: this.state.postActive,
       dgp: this.state.postDGP,
-
-      // address: this.state.addressInput,
     };
 
-    this.props.editYourPost(newPost); //Pass the function to here ->
+    this.props.editYourPost(newPost);
     this.props.hideModal();
   };
 
@@ -543,9 +543,6 @@ class EditPostModal extends React.Component {
                 <Form.Control.Feedback type="invalid">
                   State/Province name is too long.
                 </Form.Control.Feedback>
-                {/* <Form.Control.Feedback type="valid">
-              State/Province name is acceptable!
-            </Form.Control.Feedback> */}
               </Form.Group>
 
               {/* COUNTRY FORM BELOW */}
@@ -564,9 +561,6 @@ class EditPostModal extends React.Component {
                 <Form.Control.Feedback type="invalid">
                   Country name is too long.
                 </Form.Control.Feedback>
-                {/* <Form.Control.Feedback type="valid">
-              Country name is acceptable!
-            </Form.Control.Feedback> */}
               </Form.Group>
 
               {/* POST DESCRIPTION FORM BELOW */}
@@ -608,6 +602,7 @@ class EditPostModal extends React.Component {
                 <Form.Control
                   type="text"
                   defaultValue={this.props.selectedYourPost.link}
+                  placeholder="Enter a URL (Optional)"
                   required
                   isInvalid={this.state.tooLongLinkError}
                   isValid={this.state.validLink}
@@ -616,18 +611,18 @@ class EditPostModal extends React.Component {
                 <Form.Control.Feedback type="invalid">
                   Link is too long.
                 </Form.Control.Feedback>
-                {/* <Form.Control.Feedback type="valid">
-              Link is acceptable!
-            </Form.Control.Feedback> */}
               </Form.Group>
 
               {/* ADDRESS FORM BELOW */}
-              {/* <Form.Group className="mb-3" controlId="formAddress">
+              <Form.Group className="mb-3" controlId="formAddress">
                 <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
                   Address
                 </h5>
                 <Form.Control
-                  type="text"
+                  //onChange={this.onChange}
+                  as="textarea"
+                  rows={2}
+                  defaultValue={this.props.selectedYourPost.address}
                   placeholder="Enter address(Optional)"
                   required
                   isInvalid={this.state.tooLongAddressError}
@@ -637,8 +632,7 @@ class EditPostModal extends React.Component {
                 <Form.Control.Feedback type="invalid">
                   Address is too long.
                 </Form.Control.Feedback>
-            
-              </Form.Group> */}
+              </Form.Group>
 
               <Form.Group className="mb-3" id="formGridCheckbox">
                 {/* <Form.Label>
@@ -690,8 +684,8 @@ class EditPostModal extends React.Component {
                 this.state.validRegion &&
                 this.state.validCountry &&
                 this.state.validDescription &&
-                this.state.validLink ? ( //&&
-                  //this.state.validAddress
+                this.state.validLink &&
+                this.state.validAddress ? (
                   <Button variant="primary" type="submit">
                     Edit Post
                   </Button>

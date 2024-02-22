@@ -60,6 +60,7 @@ class PostModal extends React.Component {
     super(props);
     this.state = {
       copiedName: false,
+      copiedAddress: false,
       whichDSODGR: "DSO",
       LoadingDGR: true,
       LoadingDSO: true, // => Move DSO to app so can load entire time and pop alert that it sent?
@@ -659,6 +660,17 @@ class PostModal extends React.Component {
               >
                 <b>{this.props.selectedSearchedPost.link}</b>
               </a>
+            </>
+          ) : (
+            <></>
+          )}
+          <p></p>
+          {this.props.selectedSearchedPost.address !== undefined &&
+          this.props.selectedSearchedPost.address !== "" ? (
+            <>
+              <p style={{ whiteSpace: "pre-wrap" }}>
+                {this.props.selectedSearchedPost.address}
+              </p>
             </>
           ) : (
             <></>

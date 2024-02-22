@@ -691,7 +691,7 @@ class App extends React.Component {
       //^^ Doesn't need names because they are only your replies.. -> yes
 
       SearchedNameDoc: {
-        $ownerId: "E98BXqGj6hNENCCnDmvXzCzmTCSgkBzEU3R18tfW1v2x",
+        $ownerId: "JAdeE9whiXXdxzSrz7Rd1i8aHC3XFh5AvuV7cpxcYYmN",
         label: "BurgerJoint",
       },
 
@@ -715,7 +715,7 @@ class App extends React.Component {
 
       SearchedReplies: [
         {
-          $ownerId: "E98BXqGj6hNENCCnDmvXzCzmTCSgkBzEU3R18tfW1v2x",
+          $ownerId: "JAdeE9whiXXdxzSrz7Rd1i8aHC3XFh5AvuV7cpxcYYmN",
           $id: "klsui4312",
           reply: "Thanks Alice",
           reviewId: "7ku98rj",
@@ -799,17 +799,17 @@ class App extends React.Component {
       platformLogin: false, //Will this be used? -> check ->
       LocalForageKeys: [],
 
-      skipSynchronizationBeforeHeight: 905000,
-      mostRecentBlockHeight: 905000,
+      skipSynchronizationBeforeHeight: 974000,
+      mostRecentBlockHeight: 974000,
 
-      DataContractDSO: "3djpLuabDgYeXY7RhT6by5VuvrLtn8wnNQTF3J4wz4fn",
-      DataContractDGT: "6QYmp57F2HabntpDmufjL3yxRwiGLusASN1LdSHFjSF8",
-      DataContractDGM: "4PUQmGdGLLWwTFntgwEDhJWzUKoKqbSKanjVGTi2Fbcj",
-      DataContractDGP: "785cZo4ok3DgyCJKsg4NPwuFmdDdcbp1hZKBW5b4SZ97",
-      DataContractDMIO: "931HGHM5fMrRegVe3998hHcBAft1p8d9sWynfGnKxkw2",
-      DataContractP2P: "AouojPvPHY4PU3pUQfuopS6HCZ6MSyePJ3ryEE2hEMdB",
-      DataContractDGR: "5C8ZwmirWwqsMk7EguTf2p2RHa1cD9z3hrR29quE92ug",
-      DataContractPOD: "9umPSgjEukfYiygXCMW7zfUVuHTFJSm7VAzbX6rwJgT9",
+      DataContractDSO: "5UFe5yoixK7BPs1FGoAoryP2PCpF2MD3EjGPGeiC5htJ",
+      DataContractDGT: "Po1uVkjb7V5WyzqdXvosa7LZ9SvXbyaWUV8jfnPUew3",
+      DataContractDGM: "Hiq9SJL3HjGci8XU7mHGhY1wgkVLG7HhijAjVwv6ozau",
+      DataContractDGP: "5qkpWiZmfSgnmwusByRVpmLFdRyxuuV8s5KxNxh6bW7n",
+      DataContractDMIO: "7YYHis22sL45AhD8FHXopGSqeKLFNtRBvcXCFmVtypi2",
+      DataContractP2P: "3KhmjY3vVKU8r5nuzdfifJ49TdS6heasFaFG13vLgX5G",
+      DataContractDGR: "8jB2zPwsnhydCXrWk3QMMENhYbgh7M5F28oZhC4AnMFV",
+      DataContractPOD: "Hn9LJMPA3mrWUQ7nzKhyT6TiiTzejwVXH8hoV7oV7qqP",
       DataContractDPNS: "GWRSAVFMjXx8HpQFaNJMqBV7MBgMK4br5UESsB4S31Ec",
 
       expandedTopNav: false,
@@ -1425,17 +1425,8 @@ class App extends React.Component {
         platformLogin: false, //Will this be used? -> check ->
         LocalForageKeys: [],
 
-        skipSynchronizationBeforeHeight: 905000,
-        mostRecentBlockHeight: 905000,
-
-        DataContractDSO: "3djpLuabDgYeXY7RhT6by5VuvrLtn8wnNQTF3J4wz4fn",
-        DataContractDGM: "4PUQmGdGLLWwTFntgwEDhJWzUKoKqbSKanjVGTi2Fbcj",
-        DataContractDGP: "785cZo4ok3DgyCJKsg4NPwuFmdDdcbp1hZKBW5b4SZ97",
-        DataContractDMIO: "931HGHM5fMrRegVe3998hHcBAft1p8d9sWynfGnKxkw2",
-
-        DataContractDGR: "5C8ZwmirWwqsMk7EguTf2p2RHa1cD9z3hrR29quE92ug",
-        DataContractPOD: "9umPSgjEukfYiygXCMW7zfUVuHTFJSm7VAzbX6rwJgT9",
-        DataContractDPNS: "GWRSAVFMjXx8HpQFaNJMqBV7MBgMK4br5UESsB4S31Ec",
+        skipSynchronizationBeforeHeight: 974000,
+        mostRecentBlockHeight: 974000,
 
         expandedTopNav: false,
       },
@@ -4264,7 +4255,11 @@ class App extends React.Component {
     //DGTInvite Query
     const getDocuments = async () => {
       return client.platform.documents.get("DGTContract.dgtinvite", {
-        where: [["toId", "==", this.state.identity]],
+        where: [
+          ["toId", "==", this.state.identity],
+          //["$createdAt", "<=", Date.now()],
+        ],
+        orderBy: [["$createdAt", "desc"]],
       });
     };
 
@@ -4323,7 +4318,11 @@ class App extends React.Component {
     //DGTInvite Query
     const getDocuments = async () => {
       return client.platform.documents.get("DGTContract.dgtinvite", {
-        where: [["toId", "==", theIdentity]],
+        where: [
+          ["toId", "==", theIdentity],
+          //["$createdAt", "<=", Date.now()],
+        ],
+        orderBy: [["$createdAt", "desc"]],
       });
     };
 
@@ -7237,6 +7236,7 @@ class App extends React.Component {
     this.setState({
       isLoadingOrdersYOURSTORE: true,
       isLoadingStoreYOURSTORE: true,
+      isLoadingButtons_WALLET: true, //ADDED TO ENSURE DONT CALL TWICE
     });
 
     const clientOpts = {
@@ -7375,6 +7375,7 @@ class App extends React.Component {
             DGPStore: [store],
             isLoadingOrdersYOURSTORE: false,
             isLoadingStoreYOURSTORE: false,
+            isLoadingButtons_WALLET: false, //ADDED TO ENSURE DONT CALL TWICE
           });
         } else {
           //Have to handle that may come back in any order.
@@ -7416,6 +7417,7 @@ class App extends React.Component {
             DGPStore: [store],
             isLoadingOrdersYOURSTORE: false,
             isLoadingStoreYOURSTORE: false,
+            isLoadingButtons_WALLET: false, //ADDED TO ENSURE DONT CALL TWICE
           });
         }
       })
@@ -7425,6 +7427,7 @@ class App extends React.Component {
           storeError: true,
           isLoadingOrdersYOURSTORE: false,
           isLoadingStoreYOURSTORE: false,
+          isLoadingButtons_WALLET: false, //ADDED TO ENSURE DONT CALL TWICE
         });
       })
       .finally(() => client.disconnect());
@@ -7550,11 +7553,13 @@ class App extends React.Component {
   };
 
   RegisterDGMAddress = () => {
+    //IS THIS DOING ANYTHING? -> REMOVE-> ? ->
     //This by itself just in case I need to fix it...
     console.log("Called Register DGM Address");
     this.setState({
       isLoadingConfirmation: true,
       isLoadingButtons: true,
+      isLoadingButtons_WALLET: true, //ADDED TO ENSURE DONT CALL TWICE
     });
     const clientOpts = {
       network: this.state.whichNetwork,
@@ -7607,6 +7612,7 @@ class App extends React.Component {
           dgmDocuments: [returnedDoc],
           isLoadingConfirmation: false,
           isLoadingButtons: false,
+          isLoadingButtons_WALLET: false, //ADDED TO ENSURE DONT CALL TWICE
         });
       })
       .catch((e) => {
@@ -7615,6 +7621,7 @@ class App extends React.Component {
           dgmDocuments: "Document Error",
           isLoadingConfirmation: false,
           isLoadingButtons: false,
+          isLoadingButtons_WALLET: false, //ADDED TO ENSURE DONT CALL TWICE
         });
       })
       .finally(() => client.disconnect());
@@ -12273,6 +12280,7 @@ class App extends React.Component {
         minAmt: offerObject.minAmt,
         maxAmt: offerObject.maxAmt,
         active: offerObject.active,
+        myStore: false,
       };
 
       //console.log('Offer to Create: ', offerProperties);
@@ -12323,6 +12331,7 @@ class App extends React.Component {
           minAmt: offerObject.minAmt,
           maxAmt: offerObject.maxAmt,
           active: offerObject.active,
+          myStore: false,
         };
 
         this.setState({
@@ -12507,6 +12516,7 @@ class App extends React.Component {
           minAmt: offerObject.minAmt,
           maxAmt: offerObject.maxAmt,
           active: offerObject.active,
+          myStore: false,
         };
 
         let editedOffers = this.state.YourOffers;

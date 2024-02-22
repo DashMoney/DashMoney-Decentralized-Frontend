@@ -480,7 +480,9 @@ class Group extends React.Component {
         </Navbar>
 
         <div>
-          {this.state.groupMsgs.length === 0 && !this.state.LoadingMsgs ? (
+          {this.state.groupMsgs.length === 0 &&
+          !this.state.LoadingMsgs &&
+          msgsToAdd.length === 0 ? (
             <div className="bodytext">
               <p>There are no messages available for this group.</p>
             </div>

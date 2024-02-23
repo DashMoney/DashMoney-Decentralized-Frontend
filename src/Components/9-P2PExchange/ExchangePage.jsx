@@ -416,41 +416,43 @@ class ExchangePage extends React.Component {
                 />
               </>
             )}
+            <div className="footer">
+              {this.props.isLoadingExchangeSearch ? (
+                <>
+                  <p></p>
+                  <div id="spinner">
+                    <Spinner animation="border" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                  </div>
+                  <p></p>
+                </>
+              ) : (
+                <></>
+              )}
 
-            {this.props.isLoadingExchangeSearch ? (
-              <>
-                <p></p>
-                <div className="footer" id="spinner">
-                  <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                  </Spinner>
-                </div>
-                <p></p>
-              </>
-            ) : (
-              <></>
-            )}
-
-            {!this.props.isLoadingExchangeSearch ? (
-              <>
-                <Offers
-                  mode={this.props.mode}
-                  identity={this.props.identity}
-                  uniqueName={this.props.uniqueName}
-                  whichOffersName={this.props.whichOffersName}
-                  SearchedNameDoc_EXCHANGE={this.props.SearchedNameDoc_EXCHANGE}
-                  SearchedNameOffers_EXCHANGE={
-                    this.props.SearchedNameOffers_EXCHANGE
-                  }
-                  handleSearchedOffer={this.props.handleSearchedOffer}
-                  SearchedOffers={this.props.SearchedOffers}
-                  SearchedOffersNames={this.props.SearchedOffersNames}
-                />
-              </>
-            ) : (
-              <></>
-            )}
-
+              {!this.props.isLoadingExchangeSearch ? (
+                <>
+                  <Offers
+                    mode={this.props.mode}
+                    identity={this.props.identity}
+                    uniqueName={this.props.uniqueName}
+                    whichOffersName={this.props.whichOffersName}
+                    SearchedNameDoc_EXCHANGE={
+                      this.props.SearchedNameDoc_EXCHANGE
+                    }
+                    SearchedNameOffers_EXCHANGE={
+                      this.props.SearchedNameOffers_EXCHANGE
+                    }
+                    handleSearchedOffer={this.props.handleSearchedOffer}
+                    SearchedOffers={this.props.SearchedOffers}
+                    SearchedOffersNames={this.props.SearchedOffersNames}
+                  />
+                </>
+              ) : (
+                <></>
+              )}
+            </div>
             {/* {this.props.SearchedOffers.length === 0 &&
             !this.props.isLoadingExchangeSearch ? (
               <div className="bodytext">

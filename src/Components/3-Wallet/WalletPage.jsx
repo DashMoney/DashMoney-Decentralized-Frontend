@@ -686,7 +686,8 @@ class WalletPage extends React.Component {
                       )}
                     </Form.Group>
 
-                    {this.state.isLoadingVerify ? (
+                    {this.state.isLoadingVerify ||
+                    this.props.isLoadingForm_WALLET ? (
                       <>
                         <p> </p>
                         <div id="spinner">
@@ -699,8 +700,8 @@ class WalletPage extends React.Component {
                     ) : (
                       <>
                         {(this.state.nameFormat || this.state.addrFormat) &&
-                        this.state.numberQuantity &&
-                        !this.props.isLoadingForm_WALLET ? (
+                        this.state.numberQuantity ? ( //&&
+                          //!this.props.isLoadingForm_WALLET
                           <>
                             <p> </p>
                             <Button variant="primary" type="submit">

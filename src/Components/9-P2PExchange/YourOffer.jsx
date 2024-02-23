@@ -234,13 +234,12 @@ class YourOffer extends React.Component {
               {this.props.offer.instruction}
             </p>
 
-
             <p></p>
 
             <div className="TwoButtons">
               <Button
                 variant="primary"
-                //onClick={() => this.props.handleYourOffer(this.props.index)}
+                //onClick={() => this.props.handleDeleteYourOffer(this.props.index)}
               >
                 <b>Delete Offer</b>
               </Button>

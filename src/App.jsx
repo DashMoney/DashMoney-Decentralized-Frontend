@@ -84,7 +84,7 @@ import PlaceOrderModal from "./Components/6-Shopping/ShoppingModals/PlaceOrderMo
 import OrderMessageModal from "./Components/6-Shopping/ShoppingModals/OrderMessageModal";
 
 import CreateOfferModal from "./Components/9-P2PExchange/CreateOfferModal";
-
+import EditOfferModal from "./Components/9-P2PExchange/EditOfferModal";
 import OfferModal from "./Components/9-P2PExchange/OfferModal";
 
 import CreateReviewModal from "./Components/7-Reviews/ReviewModals/CreateReviewModal";
@@ -590,11 +590,11 @@ class App extends React.Component {
         {
           $ownerId: "4h5j6j",
           $id: "7ku98rj",
-          toMe: "USD",
-          toMeVia: "Venmo",
-          toMeHandle: "Alice-007",
-          toU: "Dash",
-          toUVia: "Address",
+          toMe: "DASH",
+          toMeVia: "paytoname",
+          toMeHandle: "Alice", //'Alice-007'
+          toU: "EUR",
+          toUVia: "paypal",
           //toUHandle:"",
           exRate: "3056",
           instruction:
@@ -15297,7 +15297,7 @@ class App extends React.Component {
           <></>
         )}
 
-        {/* {this.state.isModalShowing &&
+        {this.state.isModalShowing &&
         this.state.presentModal === "EditOfferModal" ? (
           <EditOfferModal
             selectedYourOffer={this.state.selectedYourOffer}
@@ -15308,7 +15308,7 @@ class App extends React.Component {
           />
         ) : (
           <></>
-        )} */}
+        )}
 
         {this.state.isModalShowing &&
         this.state.presentModal === "OfferModal" ? (

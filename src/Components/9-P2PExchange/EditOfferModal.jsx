@@ -60,6 +60,15 @@ class EditOfferModal extends React.Component {
     }
   };
 
+  handleFiatDisplay = (fiatInt) => {
+    //Convert to 2 decimal places.
+    let numToString = fiatInt.toString();
+    let strLength = numToString.length;
+    let firstPart = numToString.slice(0, strLength - 2);
+    let secPart = numToString.slice(strLength - 2, strLength);
+    return `${firstPart}.${secPart}`;
+  };
+
   onChange = (event) => {
     // console.log(event.target.value);
     //console.log(`id = ${event.target.id}`);
@@ -250,23 +259,24 @@ class EditOfferModal extends React.Component {
 
     newOffer = {
       toMe: this.props.selectedYourOffer.toMe,
-      //CHANGE ALL THE BELOW
-      toMeVia: this.state.toMeVia4Doc.toLocaleLowerCase(),
-      toMeHandle: this.state.toMeHandle4Doc,
-      toU: this.state.toU4Doc.toLocaleUpperCase(),
-      toUVia: this.state.toUVia4Doc.toLocaleLowerCase(),
+
+      toMeVia: this.props.selectedYourOffer.toMeVia4Doc,
+      toMeHandle: this.props.selectedYourOffer.toMeHandle4Doc,
+      toU: this.props.selectedYourOffer.toU4Doc,
+      toUVia: this.props.selectedYourOffer.toUVia4Doc,
       // toUHandle  <- Not a thing
       exRate: this.state.exRateInput,
       instruction: this.state.instructionInput,
       minAmt: this.state.minAmtInput,
       maxAmt: this.state.maxAmtInput,
       active: this.state.offerActive,
+      myStore: false,
     };
 
     console.log(newOffer);
 
-    // this.props.createYourOffer(newOffer);
-    // this.props.hideModal();
+    this.props.editYourOffer(newOffer);
+    this.props.hideModal();
   };
 
   render() {
@@ -325,9 +335,9 @@ class EditOfferModal extends React.Component {
           {/* <div className="BottomBorder" style={{ paddingTop: ".5rem" }}></div> */}
 
           <Modal.Body>
-            <h4 style={{ marginBottom: ".5rem" }}>
+            {/* <h4 style={{ marginBottom: ".5rem" }}>
               <b>Offer Originator(You):</b>
-            </h4>
+            </h4> */}
 
             <Form
               noValidate
@@ -335,9 +345,9 @@ class EditOfferModal extends React.Component {
               onChange={this.onChange}
             >
               {/* THIS WILL PROBABLY BE THE SAME AS WHAT IS DISPLAYED I THE POST MODAL OR THE POST <= */}
-              <h4 style={{ marginBottom: ".5rem", marginTop: ".5rem" }}>
+              {/* <h4 style={{ marginBottom: ".5rem", marginTop: ".5rem" }}>
                 <b>Offer Receipient:</b>
-              </h4>
+              </h4> */}
               {/* THIS WILL PROBABLY BE THE SAME AS WHAT IS DISPLAYED I THE POST MODAL OR THE POST <= */}
 
               {/*  EXRATE FORM BELOW */}
@@ -358,6 +368,9 @@ class EditOfferModal extends React.Component {
                 <Form.Control
                   type="number"
                   placeholder="30.01 For example.."
+                  defaultValue={this.handleFiatDisplay(
+                    this.props.selectedYourOffer.exRate
+                  )}
                   required
                   isValid={this.state.validexRate}
                   //isInvalid={!this.state.validexRate}
@@ -366,51 +379,6 @@ class EditOfferModal extends React.Component {
                   (i.e. Must include 2 decimal precision)
                 </p>
               </Form.Group>
-              {/*  */}
-              {/* {this.state.validexRate ? (
-                <>
-                  <Card
-                    bg={cardBkg}
-                    text={cardText}
-                    style={{ border: "solid 2px white", padding: ".2rem" }}
-                  >
-                    <Form.Group className="mb-1" controlId="formCalc">
-                      <Form.Label>
-                        <h5
-                          style={{ marginTop: ".2rem", marginBottom: "0rem" }}
-                        >
-                          Rate Calculator
-                        </h5>
-                      </Form.Label>
-                      <Row>
-                        <Col>
-                          <Form.Control
-                            type="number"
-                            placeholder="Amount(Dash)"
-                            required
-                            //isValid={this.state.validminAmt}
-                            // isInvalid={!this.state.validminAmt}
-                          />
-                        </Col>
-                        <Col>
-                          <h5 className="mt-1">
-                            <b>Dash x Rate =</b>
-                          </h5>
-                        </Col>
-                      </Row>
-                    </Form.Group>
-                    <p className="smallertext">
-                      (i.e. Must include 3 decimal precision)
-                    </p>
-
-                    <h5 style={{ paddingLeft: "2rem" }}>
-                      <b> = {calcAmt} (fiat)</b>
-                    </h5>
-                  </Card>
-                </>
-              ) : (
-                <></>
-              )} */}
 
               {/*  MINAMT FORM BELOW */}
 
@@ -430,6 +398,9 @@ class EditOfferModal extends React.Component {
                 <Form.Control
                   type="number"
                   placeholder="0.010 For example.."
+                  defaultValue={this.handleFiatDisplay(
+                    this.props.selectedYourOffer.minAmt
+                  )}
                   required
                   isValid={this.state.validminAmt}
                   //isInvalid={!this.state.validminAmt}
@@ -448,15 +419,12 @@ class EditOfferModal extends React.Component {
                   </h6>
                 </Form.Label>
 
-                {/* <Form.Control
-                      type="number"
-                      placeholder={this.state.amountToSend}
-                     readOnly
-                    >  */}
-
                 <Form.Control
                   type="number"
                   placeholder="10.000 For example.."
+                  defaultValue={this.handleFiatDisplay(
+                    this.props.selectedYourOffer.maxAmt
+                  )}
                   required
                   isValid={this.state.validmaxAmt}
                   // isInvalid={!this.state.validmaxAmt}
@@ -487,9 +455,10 @@ class EditOfferModal extends React.Component {
                 </Form.Label>
                 <Form.Control
                   style={{ whiteSpace: "pre-wrap" }}
-                  onChange={this.onChange}
+                  //onChange={this.onChange}
                   as="textarea"
                   rows={3}
+                  defaultValue={this.props.selectedYourOffer.instruction}
                   placeholder="Put instructions here.."
                   required
                   isInvalid={this.state.tooLonginstructionError}

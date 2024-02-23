@@ -12,6 +12,67 @@ class Offer extends React.Component {
     return `${firstPart}.${secPart}`;
   };
 
+  formatToMe = (toMePassed) => {
+    switch (toMePassed) {
+      case "USD":
+        return "Dollar(USD)";
+        break;
+      case "EUR":
+        return "Euro(EUR)";
+        break;
+      case "DASH":
+        return "Dash";
+        break;
+      default:
+        return toMePassed;
+      // console.log(toMePassed);
+    }
+  };
+
+  formatToMeVia = (toMeViaPassed, toMePassed) => {
+    if (toMePassed !== "DASH") {
+      return ` via ${toMeViaPassed
+        .charAt(0)
+        .toUpperCase()}${toMeViaPassed.slice(1)}`;
+    } else {
+      switch (toMeViaPassed) {
+        case "paytoname":
+          return " via Pay-to-Name";
+          break;
+        case "address":
+          return " via Address";
+          break;
+        default:
+          return ` via ${toMeViaPassed}`;
+      }
+    }
+  };
+
+  formatToU = (toUPassed) => {
+    switch (toUPassed) {
+      case "USD":
+        return "Dollar(USD)";
+        break;
+      case "EUR":
+        return "Euro(EUR)";
+        break;
+      case "DASH":
+        return "Dash";
+        break;
+      default:
+        return toUPassed;
+      // console.log(toUPassed);
+    }
+  };
+
+  formatToUVia = (toUViaPassed, toUPassed) => {
+    if (toUPassed !== "DASH") {
+      return ` via ${toUViaPassed.charAt(0).toUpperCase()}${toUViaPassed.slice(
+        1
+      )}`;
+    }
+  };
+
   formatDate(theCreatedAt) {
     let CreatedAt = new Date(theCreatedAt);
 
@@ -55,30 +116,32 @@ class Offer extends React.Component {
             }
           >
             <div className="locationTitle" style={{ marginBottom: ".5rem" }}>
-              <h5>
+              <h4>
                 <b>Send</b>{" "}
+              </h4>
+              <h4>
                 <Badge bg="primary" style={{ marginRight: ".5rem" }}>
-                  {this.props.offer.toMe} via {this.props.offer.toMeVia}
+                  {this.formatToMe(this.props.offer.toMe)}
+                  {this.formatToMeVia(
+                    this.props.offer.toMeVia,
+                    this.props.offer.toMe
+                  )}
                 </Badge>
-              </h5>
+              </h4>
             </div>
             <div className="locationTitle" style={{ marginBottom: ".5rem" }}>
-              <h5>
+              <h4>
                 <b>Receive</b>{" "}
-                {this.props.offer.toU === "Dash" ? (
-                  <>
-                    <Badge bg="primary" style={{ marginRight: ".5rem" }}>
-                      {this.props.offer.toU}
-                    </Badge>
-                  </>
-                ) : (
-                  <>
-                    <Badge bg="primary" style={{ marginRight: ".5rem" }}>
-                      {this.props.offer.toU} via {this.props.offer.toUVia}
-                    </Badge>
-                  </>
-                )}
-              </h5>
+              </h4>
+              <h4>
+                <Badge bg="primary" style={{ marginRight: ".5rem" }}>
+                  {this.formatToU(this.props.offer.toU)}
+                  {this.formatToUVia(
+                    this.props.offer.toUVia,
+                    this.props.offer.toU
+                  )}
+                </Badge>
+              </h4>
             </div>
             {/* <Card.Title className="cardTitle"> */}
             {/* {this.handleName(this.props.post)} */}

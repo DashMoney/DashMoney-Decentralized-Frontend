@@ -59,6 +59,67 @@ class OfferModal extends React.Component {
     return `${firstPart}.${secPart}`;
   };
 
+  formatToMe = (toMePassed) => {
+    switch (toMePassed) {
+      case "USD":
+        return "Dollar(USD)";
+        break;
+      case "EUR":
+        return "Euro(EUR)";
+        break;
+      case "DASH":
+        return "Dash";
+        break;
+      default:
+        return toMePassed;
+      // console.log(toMePassed);
+    }
+  };
+
+  formatToMeVia = (toMeViaPassed, toMePassed) => {
+    if (toMePassed !== "DASH") {
+      return ` via ${toMeViaPassed
+        .charAt(0)
+        .toUpperCase()}${toMeViaPassed.slice(1)}`;
+    } else {
+      switch (toMeViaPassed) {
+        case "paytoname":
+          return " via Pay-to-Name";
+          break;
+        case "address":
+          return " via Address";
+          break;
+        default:
+          return ` via ${toMeViaPassed}`;
+      }
+    }
+  };
+
+  formatToU = (toUPassed) => {
+    switch (toUPassed) {
+      case "USD":
+        return "Dollar(USD)";
+        break;
+      case "EUR":
+        return "Euro(EUR)";
+        break;
+      case "DASH":
+        return "Dash";
+        break;
+      default:
+        return toUPassed;
+      // console.log(toUPassed);
+    }
+  };
+
+  formatToUVia = (toUViaPassed, toUPassed) => {
+    if (toUPassed !== "DASH") {
+      return ` via ${toUViaPassed.charAt(0).toUpperCase()}${toUViaPassed.slice(
+        1
+      )}`;
+    }
+  };
+
   formatDate(theCreatedAt, today, yesterday) {
     let CreatedAt = new Date(theCreatedAt);
 
@@ -379,25 +440,30 @@ class OfferModal extends React.Component {
           </div>
 
           <div className="locationTitle" style={{ marginBottom: ".5rem" }}>
-            <h5>
-              {" "}
+            <h4>
               <b>Send</b>{" "}
+            </h4>
+            <h4>
               <Badge bg="primary" style={{ marginRight: ".5rem" }}>
-                {this.props.selectedSearchedOffer.toMe} via{" "}
-                {this.props.selectedSearchedOffer.toMeVia}
+                {this.formatToMe(this.props.selectedSearchedOffer.toMe)}
+                {this.formatToMeVia(
+                  this.props.selectedSearchedOffer.toMeVia,
+                  this.props.selectedSearchedOffer.toMe
+                )}
               </Badge>
-            </h5>
+            </h4>
           </div>
 
           <div className="cardCenterTitle">
-            <h5>
+            <h4>
               <b>Send to </b>
               <b style={{ color: "#008de4" }}>
                 {this.props.selectedSearchedOffer.toMeHandle}
               </b>
-            </h5>
+            </h4>
             {this.state.copiedtoMeHandle ? <span>✅</span> : <></>}
             <Button
+              style={{ whiteSpace: "nowrap" }}
               variant="primary"
               onClick={() => {
                 navigator.clipboard.writeText(
@@ -413,50 +479,20 @@ class OfferModal extends React.Component {
           </div>
           <p></p>
           <div className="locationTitle" style={{ marginBottom: ".5rem" }}>
-            <h5>
+            <h4>
               <b>Receive</b>{" "}
-              {this.props.selectedSearchedOffer.toU === "Dash" ? (
-                <>
-                  <Badge bg="primary" style={{ marginRight: ".5rem" }}>
-                    {this.props.selectedSearchedOffer.toU}
-                  </Badge>
-                </>
-              ) : (
-                <>
-                  <Badge bg="primary" style={{ marginRight: ".5rem" }}>
-                    {this.props.selectedSearchedOffer.toU} via{" "}
-                    {this.props.selectedSearchedOffer.toUVia}
-                  </Badge>
-                </>
-              )}
-            </h5>
+            </h4>
+            <h4>
+              <Badge bg="primary" style={{ marginRight: ".5rem" }}>
+                {this.formatToU(this.props.selectedSearchedOffer.toU)}
+                {this.formatToUVia(
+                  this.props.selectedSearchedOffer.toUVia,
+                  this.props.selectedSearchedOffer.toU
+                )}
+              </Badge>
+            </h4>
           </div>
           <p></p>
-          <div className="cardTitle">
-            <h4
-              style={{ color: "#008de4" }}
-              onClick={() =>
-                this.handleNameClick(
-                  this.props.selectedSearchedOfferNameDoc.label
-                )
-              }
-            >
-              {this.props.selectedSearchedOfferNameDoc.label}
-            </h4>
-
-            {/* <span onClick={() => this.handleNameClick()}>
-    {this.props.tuple[0]}
-  </span> */}
-            <span>{this.state.copiedName ? <span>✅</span> : <></>}</span>
-
-            <span className="textsmaller">
-              {this.formatDate(
-                this.props.selectedSearchedOffer.$updatedAt,
-                today,
-                yesterday
-              )}
-            </span>
-          </div>
           <div>
             <p></p>
             <h5 style={{ textAlign: "center" }}>Exchange Rate(Fiat/Dash)</h5>
@@ -520,9 +556,36 @@ class OfferModal extends React.Component {
             </h5>
           </Card>
           <p></p>
-          <h6>
+          <p style={{ fontSize: "smaller" }}>Created by</p>
+          <div className="cardTitle">
+            <h4
+              style={{ color: "#008de4", marginLeft: "1.5rem" }}
+              onClick={() =>
+                this.handleNameClick(
+                  this.props.selectedSearchedOfferNameDoc.label
+                )
+              }
+            >
+              <b>{this.props.selectedSearchedOfferNameDoc.label}</b>
+            </h4>
+
+            {/* <span onClick={() => this.handleNameClick()}>
+    {this.props.tuple[0]}
+  </span> */}
+            <span>{this.state.copiedName ? <span>✅</span> : <></>}</span>
+
+            <span className="textsmaller">
+              {this.formatDate(
+                this.props.selectedSearchedOffer.$updatedAt,
+                today,
+                yesterday
+              )}
+            </span>
+          </div>
+          <p></p>
+          <h5>
             <b>Instructions</b>
-          </h6>
+          </h5>
           <p style={{ whiteSpace: "pre-wrap" }}>
             {this.props.selectedSearchedOffer.instruction}
           </p>

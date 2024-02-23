@@ -1,5 +1,6 @@
 import React from "react";
 import Button from "react-bootstrap/Button";
+import Badge from "react-bootstrap/Badge";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
@@ -69,6 +70,67 @@ class EditOfferModal extends React.Component {
     return `${firstPart}.${secPart}`;
   };
 
+  formatToMe = (toMePassed) => {
+    switch (toMePassed) {
+      case "USD":
+        return "Dollar(USD)";
+        break;
+      case "EUR":
+        return "Euro(EUR)";
+        break;
+      case "DASH":
+        return "Dash";
+        break;
+      default:
+        return toMePassed;
+      // console.log(toMePassed);
+    }
+  };
+
+  formatToMeVia = (toMeViaPassed, toMePassed) => {
+    if (toMePassed !== "DASH") {
+      return ` via ${toMeViaPassed
+        .charAt(0)
+        .toUpperCase()}${toMeViaPassed.slice(1)}`;
+    } else {
+      switch (toMeViaPassed) {
+        case "paytoname":
+          return " via Pay-to-Name";
+          break;
+        case "address":
+          return " via Address";
+          break;
+        default:
+          return ` via ${toMeViaPassed}`;
+      }
+    }
+  };
+
+  formatToU = (toUPassed) => {
+    switch (toUPassed) {
+      case "USD":
+        return "Dollar(USD)";
+        break;
+      case "EUR":
+        return "Euro(EUR)";
+        break;
+      case "DASH":
+        return "Dash";
+        break;
+      default:
+        return toUPassed;
+      // console.log(toUPassed);
+    }
+  };
+
+  formatToUVia = (toUViaPassed, toUPassed) => {
+    if (toUPassed !== "DASH") {
+      return ` via ${toUViaPassed.charAt(0).toUpperCase()}${toUViaPassed.slice(
+        1
+      )}`;
+    }
+  };
+
   onChange = (event) => {
     // console.log(event.target.value);
     //console.log(`id = ${event.target.id}`);
@@ -77,12 +139,6 @@ class EditOfferModal extends React.Component {
       event.preventDefault();
       event.stopPropagation();
       this.exRateValidate(event.target.value);
-    }
-
-    if (event.target.id === "formCalc") {
-      event.preventDefault();
-      event.stopPropagation();
-      this.calcValidate(event.target.value);
     }
 
     if (event.target.id === "formminAmt") {
@@ -135,33 +191,10 @@ class EditOfferModal extends React.Component {
     }
   };
 
-  calcValidate = (numberInput) => {
-    //console.log(this.props.accountBalance);
-
-    let regex = /^\d{0,10}[.]\d{3}$/;
-
-    //let regex = /(^[0-9]+[.,]{0,1}[0-9]{0,5}$)|(^[.,][0-9]{1,5}$)/;
-    //CHANGED TO LIMIT TO minimum mDash possible
-    //let regex = /(^[0-9]+[.,]{0,1}[0-9]*$)|(^[.,][0-9]+$)/;
-
-    let valid = regex.test(numberInput);
-
-    //MAX SPENDABLE IS 10000 DASH
-    if (valid) {
-      this.setState({
-        calcInput: numberInput.replace(/[.,]/g, ""),
-      });
-    } else {
-      this.setState({
-        calcInput: 0,
-      });
-    }
-  };
-
   minAmtValidate = (numberInput) => {
     //console.log(this.props.accountBalance);
 
-    let regex = /^\d{0,10}[.]\d{3}$/;
+    let regex = /^\d{0,10}[,.]\d{2}$/;
 
     //let regex = /(^[0-9]+[.,]{0,1}[0-9]{0,5}$)|(^[.,][0-9]{1,5}$)/;
     //CHANGED TO LIMIT TO minimum mDash possible
@@ -186,7 +219,7 @@ class EditOfferModal extends React.Component {
   maxAmtValidate = (numberInput) => {
     //console.log(this.props.accountBalance);
 
-    let regex = /^\d{0,10}[.]\d{3}$/;
+    let regex = /^\d{0,10}[,.]\d{2}$/;
 
     //let regex = /(^[0-9]+[.,]{0,1}[0-9]{0,5}$)|(^[.,][0-9]{1,5}$)/;
     //CHANGED TO LIMIT TO maximum mDash possible
@@ -259,16 +292,16 @@ class EditOfferModal extends React.Component {
 
     newOffer = {
       toMe: this.props.selectedYourOffer.toMe,
-
       toMeVia: this.props.selectedYourOffer.toMeVia4Doc,
       toMeHandle: this.props.selectedYourOffer.toMeHandle4Doc,
+
       toU: this.props.selectedYourOffer.toU4Doc,
       toUVia: this.props.selectedYourOffer.toUVia4Doc,
       // toUHandle  <- Not a thing
-      exRate: this.state.exRateInput,
+      exRate: Number(this.state.exRateInput),
       instruction: this.state.instructionInput,
-      minAmt: this.state.minAmtInput,
-      maxAmt: this.state.maxAmtInput,
+      minAmt: Number(this.state.minAmtInput),
+      maxAmt: Number(this.state.maxAmtInput),
       active: this.state.offerActive,
       myStore: false,
     };
@@ -338,6 +371,46 @@ class EditOfferModal extends React.Component {
             {/* <h4 style={{ marginBottom: ".5rem" }}>
               <b>Offer Originator(You):</b>
             </h4> */}
+            <div className="locationTitle" style={{ marginBottom: ".5rem" }}>
+              <h4>
+                <b>Send</b>{" "}
+              </h4>
+              <h4>
+                <Badge bg="primary" style={{ marginRight: ".5rem" }}>
+                  {this.formatToMe(this.props.selectedYourOffer.toMe)}
+                  {this.formatToMeVia(
+                    this.props.selectedYourOffer.toMeVia,
+                    this.props.selectedYourOffer.toMe
+                  )}
+                </Badge>
+              </h4>
+            </div>
+            <p></p>
+            <div className="cardCenterTitle">
+              <h5>
+                <b>Send to </b>
+                <b style={{ color: "#008de4" }}>
+                  {this.props.selectedYourOffer.toMeHandle}
+                </b>
+              </h5>
+            </div>
+            <p></p>
+
+            <p></p>
+            <div className="locationTitle" style={{ marginBottom: ".5rem" }}>
+              <h4>
+                <b>Receive</b>{" "}
+              </h4>
+              <h4>
+                <Badge bg="primary" style={{ marginRight: ".5rem" }}>
+                  {this.formatToU(this.props.selectedYourOffer.toU)}
+                  {this.formatToUVia(
+                    this.props.selectedYourOffer.toUVia,
+                    this.props.selectedYourOffer.toU
+                  )}
+                </Badge>
+              </h4>
+            </div>
 
             <Form
               noValidate
@@ -397,7 +470,7 @@ class EditOfferModal extends React.Component {
 
                 <Form.Control
                   type="number"
-                  placeholder="0.010 For example.."
+                  placeholder="1.00 For example.."
                   defaultValue={this.handleFiatDisplay(
                     this.props.selectedYourOffer.minAmt
                   )}
@@ -421,7 +494,7 @@ class EditOfferModal extends React.Component {
 
                 <Form.Control
                   type="number"
-                  placeholder="10.000 For example.."
+                  placeholder="100.00 For example.."
                   defaultValue={this.handleFiatDisplay(
                     this.props.selectedYourOffer.maxAmt
                   )}

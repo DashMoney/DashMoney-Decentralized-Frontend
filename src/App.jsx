@@ -86,6 +86,7 @@ import OrderMessageModal from "./Components/6-Shopping/ShoppingModals/OrderMessa
 import CreateOfferModal from "./Components/9-P2PExchange/CreateOfferModal";
 import EditOfferModal from "./Components/9-P2PExchange/EditOfferModal";
 import OfferModal from "./Components/9-P2PExchange/OfferModal";
+import DeleteOfferModal from "./Components/9-P2PExchange/DeleteOfferModal";
 
 import CreateReviewModal from "./Components/7-Reviews/ReviewModals/CreateReviewModal";
 import EditReviewModal from "./Components/7-Reviews/ReviewModals/EditReviewModal";
@@ -11359,6 +11360,17 @@ class App extends React.Component {
     );
   };
 
+  handleDeleteYourOffer = (index) => {
+    this.setState(
+      {
+        selectedYourOffer: this.state.YourOffers[index],
+        //I also need the name <- NOT FOR MY POSTS
+        selectedYourOfferIndex: index, //<- Need this for the editingfunction!!
+      },
+      () => this.showModal("DeleteOfferModal")
+    );
+  };
+
   handleSearchedOffer = (offer, nameDoc) => {
     this.setState(
       {
@@ -12532,40 +12544,40 @@ class App extends React.Component {
           active: offerObject.active,
        */
 
-      if (
-        this.state.YourOffers[this.state.selectedYourOfferIndex].toMe !==
-        offerObject.toMe
-      ) {
-        document.set("toMe", offerObject.toMe);
-      }
+      // if (
+      //   this.state.YourOffers[this.state.selectedYourOfferIndex].toMe !==
+      //   offerObject.toMe
+      // ) {
+      //   document.set("toMe", offerObject.toMe);
+      // }
 
-      if (
-        this.state.YourOffers[this.state.selectedYourOfferIndex].toMeVia !==
-        offerObject.toMeVia
-      ) {
-        document.set("toMeVia", offerObject.toMeVia);
-      }
+      // if (
+      //   this.state.YourOffers[this.state.selectedYourOfferIndex].toMeVia !==
+      //   offerObject.toMeVia
+      // ) {
+      //   document.set("toMeVia", offerObject.toMeVia);
+      // }
 
-      if (
-        this.state.YourOffers[this.state.selectedYourOfferIndex].toMeHandle !==
-        offerObject.toMeHandle
-      ) {
-        document.set("toMeHandle", offerObject.toMeHandle);
-      }
+      // if (
+      //   this.state.YourOffers[this.state.selectedYourOfferIndex].toMeHandle !==
+      //   offerObject.toMeHandle
+      // ) {
+      //   document.set("toMeHandle", offerObject.toMeHandle);
+      // }
 
-      if (
-        this.state.YourOffers[this.state.selectedYourOfferIndex].toU !==
-        offerObject.toU
-      ) {
-        document.set("toU", offerObject.toU);
-      }
+      // if (
+      //   this.state.YourOffers[this.state.selectedYourOfferIndex].toU !==
+      //   offerObject.toU
+      // ) {
+      //   document.set("toU", offerObject.toU);
+      // }
 
-      if (
-        this.state.YourOffers[this.state.selectedYourOfferIndex].toUVia !==
-        offerObject.toUVia
-      ) {
-        document.set("toUVia", offerObject.toUVia);
-      }
+      // if (
+      //   this.state.YourOffers[this.state.selectedYourOfferIndex].toUVia !==
+      //   offerObject.toUVia
+      // ) {
+      //   document.set("toUVia", offerObject.toUVia);
+      // }
 
       if (
         this.state.YourOffers[this.state.selectedYourOfferIndex].exRate !==
@@ -12625,11 +12637,11 @@ class App extends React.Component {
           $createdAt: returnedDoc.$createdAt,
           $updatedAt: returnedDoc.$updatedAt,
 
-          toMe: offerObject.toMe, //.toLocaleLowerCase() <- done in modal
-          toMeVia: offerObject.toMeVia, //.toLocaleLowerCase() <- done in modal
-          toMeHandle: offerObject.toMeHandle,
-          toU: offerObject.toU, //.toLocaleLowerCase() <- done in modal
-          toUVia: offerObject.toUVia, //.toLocaleLowerCase() <- done in modal
+          toMe: returnedDoc.toMe, //.toLocaleLowerCase() <- done in modal
+          toMeVia: returnedDoc.toMeVia, //.toLocaleLowerCase() <- done in modal
+          toMeHandle: returnedDoc.toMeHandle,
+          toU: returnedDoc.toU, //.toLocaleLowerCase() <- done in modal
+          toUVia: returnedDoc.toUVia, //.toLocaleLowerCase() <- done in modal
 
           //toUHandle -> Not Data Contract
           exRate: offerObject.exRate,
@@ -12661,6 +12673,77 @@ class App extends React.Component {
       })
       .finally(() => client.disconnect());
   };
+
+  deleteYourOffer = () => {
+    console.log("Called Delete Offer");
+
+    this.setState({
+      isLoadingYourOffers: true,
+    });
+
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+      apps: {
+        P2PContract: {
+          contractId: this.state.DataContractP2P,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const deleteNoteDocument = async () => {
+      const { platform } = client;
+
+      let identity = "";
+      if (this.state.identityRaw !== "") {
+        identity = this.state.identityRaw;
+      } else {
+        identity = await platform.identities.get(this.state.identity);
+      }
+
+      const documentId = this.state.selectedYourOffer.$id;
+
+      // Retrieve the existing document
+
+      //JUST PUT IN THE DOCUMENT THAT i ALREADY HAVE... => Done
+      // Wrong ^^^ Can not use because changed to JSON
+
+      const [document] = await client.platform.documents.get(
+        "P2PContract.offer",
+        { where: [["$id", "==", documentId]] }
+      );
+      //const document = this.state.selectedYourProof;
+
+      // Sign and submit the document delete transition
+      await platform.documents.broadcast({ delete: [document] }, identity);
+      return document;
+    };
+
+    deleteNoteDocument()
+      .then((d) => {
+        console.log("Document deleted:\n", d.toJSON());
+
+        let editedOffers = this.state.YourOffers;
+
+        editedOffers.splice(this.state.selectedYourOfferIndex, 1);
+
+        this.setState({
+          YourOffers: editedOffers,
+          isLoadingYourOffers: false,
+        });
+      })
+      .catch((e) => console.error("Something went wrong:\n", e))
+      .finally(() => client.disconnect());
+  };
+
   /*
    *EXCHANGE FUNCTIONS^^^^
    *                                 ################
@@ -14503,23 +14586,6 @@ class App extends React.Component {
               ) : (
                 <></>
               )}
-              {/* 
-              {this.state.selectedDapp === "Exchange" ? (
-                <>
-                  <div className="bodytext">
-                    <p>This will be a p2P exchange!</p>
-                    <CreateOfferModal
-                      isModalShowing={this.state.isModalShowing}
-                      createYourOffer={this.createYourOffer}
-                      hideModal={this.hideModal}
-                      mode={this.state.mode}
-                      closeTopNav={this.closeTopNav}
-                    />
-                  </div>
-                </>
-              ) : (
-                <></>
-              )} */}
 
               {this.state.selectedDapp === "P2P Exchange" ? (
                 <>
@@ -14600,6 +14666,7 @@ class App extends React.Component {
                     }
                     handleSearchedOffer={this.handleSearchedOffer}
                     handleYourOffer={this.handleYourOffer}
+                    handleDeleteYourOffer={this.handleDeleteYourOffer}
                   />
                 </>
               ) : (
@@ -15320,6 +15387,20 @@ class App extends React.Component {
             whichNetwork={this.state.whichNetwork}
             DataContractDGR={this.state.DataContractDGR}
             DataContractDPNS={this.state.DataContractDPNS}
+            isModalShowing={this.state.isModalShowing}
+            hideModal={this.hideModal}
+            mode={this.state.mode}
+          />
+        ) : (
+          <></>
+        )}
+
+        {this.state.isModalShowing &&
+        this.state.presentModal === "DeleteOfferModal" ? (
+          <DeleteOfferModal
+            selectedYourOffer={this.state.selectedYourOffer}
+            uniqueName={this.state.uniqueName}
+            deleteYourOffer={this.deleteYourOffer}
             isModalShowing={this.state.isModalShowing}
             hideModal={this.hideModal}
             mode={this.state.mode}

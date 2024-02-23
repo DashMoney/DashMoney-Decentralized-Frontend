@@ -258,6 +258,7 @@ class ExchangePage extends React.Component {
                     identity={this.props.identity}
                     uniqueName={this.props.uniqueName}
                     handleYourOffer={this.props.handleYourOffer}
+                    handleDeleteYourOffer={this.props.handleDeleteYourOffer}
                     mode={this.props.mode}
                     isLoadingYourOffers={this.props.isLoadingYourOffers}
                   />

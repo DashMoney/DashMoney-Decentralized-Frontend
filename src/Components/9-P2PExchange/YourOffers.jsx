@@ -16,6 +16,7 @@ class YourOffers extends React.Component {
           index={index}
           offer={offer}
           handleYourOffer={this.props.handleYourOffer}
+          handleDeleteYourOffer={this.props.handleDeleteYourOffer}
         />
       );
     });

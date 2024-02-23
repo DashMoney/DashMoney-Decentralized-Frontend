@@ -6,7 +6,7 @@ import Modal from "react-bootstrap/Modal";
 import CloseButton from "react-bootstrap/CloseButton";
 import Spinner from "react-bootstrap/Spinner";
 
-class OfferModal extends React.Component {
+class DeleteOfferModal extends React.Component {
   handleCloseClick = () => {
     this.props.hideModal();
   };
@@ -25,6 +25,67 @@ class OfferModal extends React.Component {
     let firstPart = numToString.slice(0, strLength - 2);
     let secPart = numToString.slice(strLength - 2, strLength);
     return `${firstPart}.${secPart}`;
+  };
+
+  formatToMe = (toMePassed) => {
+    switch (toMePassed) {
+      case "USD":
+        return "Dollar(USD)";
+        break;
+      case "EUR":
+        return "Euro(EUR)";
+        break;
+      case "DASH":
+        return "Dash";
+        break;
+      default:
+        return toMePassed;
+      // console.log(toMePassed);
+    }
+  };
+
+  formatToMeVia = (toMeViaPassed, toMePassed) => {
+    if (toMePassed !== "DASH") {
+      return ` via ${toMeViaPassed
+        .charAt(0)
+        .toUpperCase()}${toMeViaPassed.slice(1)}`;
+    } else {
+      switch (toMeViaPassed) {
+        case "paytoname":
+          return " via Pay-to-Name";
+          break;
+        case "address":
+          return " via Address";
+          break;
+        default:
+          return ` via ${toMeViaPassed}`;
+      }
+    }
+  };
+
+  formatToU = (toUPassed) => {
+    switch (toUPassed) {
+      case "USD":
+        return "Dollar(USD)";
+        break;
+      case "EUR":
+        return "Euro(EUR)";
+        break;
+      case "DASH":
+        return "Dash";
+        break;
+      default:
+        return toUPassed;
+      // console.log(toUPassed);
+    }
+  };
+
+  formatToUVia = (toUViaPassed, toUPassed) => {
+    if (toUPassed !== "DASH") {
+      return ` via ${toUViaPassed.charAt(0).toUpperCase()}${toUViaPassed.slice(
+        1
+      )}`;
+    }
   };
 
   formatDate(theCreatedAt, today, yesterday) {
@@ -80,92 +141,59 @@ class OfferModal extends React.Component {
           </div>
 
           <div className="locationTitle" style={{ marginBottom: ".5rem" }}>
-            <h5>
-              {" "}
+            <h4>
               <b>Send</b>{" "}
+            </h4>
+            <h4>
               <Badge bg="primary" style={{ marginRight: ".5rem" }}>
-                {this.props.selectedSearchedOffer.toMe} via{" "}
-                {this.props.selectedSearchedOffer.toMeVia}
+                {this.formatToMe(this.props.selectedYourOffer.toMe)}
+                {this.formatToMeVia(
+                  this.props.selectedYourOffer.toMeVia,
+                  this.props.selectedYourOffer.toMe
+                )}
               </Badge>
-            </h5>
+            </h4>
           </div>
-
+          <p></p>
           <div className="cardCenterTitle">
             <h5>
               <b>Send to </b>
               <b style={{ color: "#008de4" }}>
-                {this.props.selectedSearchedOffer.toMeHandle}
+                {this.props.selectedYourOffer.toMeHandle}
               </b>
             </h5>
-            {this.state.copiedtoMeHandle ? <span>✅</span> : <></>}
-            <Button
-              variant="primary"
-              onClick={() => {
-                navigator.clipboard.writeText(
-                  this.props.selectedSearchedOffer.toMeHandle
-                );
-                this.setState({
-                  copiedtoMeHandle: true,
-                });
-              }}
-            >
-              <b>Copy Handle</b>
-            </Button>
           </div>
           <p></p>
           <div className="locationTitle" style={{ marginBottom: ".5rem" }}>
-            <h5>
+            <h4>
               <b>Receive</b>{" "}
-              {this.props.selectedSearchedOffer.toU === "Dash" ? (
-                <>
-                  <Badge bg="primary" style={{ marginRight: ".5rem" }}>
-                    {this.props.selectedSearchedOffer.toU}
-                  </Badge>
-                </>
-              ) : (
-                <>
-                  <Badge bg="primary" style={{ marginRight: ".5rem" }}>
-                    {this.props.selectedSearchedOffer.toU} via{" "}
-                    {this.props.selectedSearchedOffer.toUVia}
-                  </Badge>
-                </>
-              )}
-            </h5>
+            </h4>
+            <h4>
+              <Badge bg="primary" style={{ marginRight: ".5rem" }}>
+                {this.formatToU(this.props.selectedYourOffer.toU)}
+                {this.formatToUVia(
+                  this.props.selectedYourOffer.toUVia,
+                  this.props.selectedYourOffer.toU
+                )}
+              </Badge>
+            </h4>
           </div>
           <p></p>
-          <div className="cardTitle">
-            <h4
-              style={{ color: "#008de4" }}
-              onClick={() =>
-                this.handleNameClick(
-                  this.props.selectedSearchedOfferNameDoc.label
-                )
-              }
-            >
-              {this.props.selectedSearchedOfferNameDoc.label}
-            </h4>
 
-            {/* <span onClick={() => this.handleNameClick()}>
-    {this.props.tuple[0]}
-  </span> */}
-            <span>{this.state.copiedName ? <span>✅</span> : <></>}</span>
+          <span style={{ textAlign: "right" }} className="textsmaller">
+            {this.formatDate(
+              this.props.selectedYourOffer.$updatedAt,
+              today,
+              yesterday
+            )}
+          </span>
 
-            <span className="textsmaller">
-              {this.formatDate(
-                this.props.selectedSearchedOffer.$updatedAt,
-                today,
-                yesterday
-              )}
-            </span>
-          </div>
           <div>
             <p></p>
             <h5 style={{ textAlign: "center" }}>Exchange Rate(Fiat/Dash)</h5>
             <h4 style={{ textAlign: "center", color: "#008de3" }}>
               <b>
-                {this.handleFiatDisplay(
-                  this.props.selectedSearchedOffer.exRate
-                )}
+                {this.handleFiatDisplay(this.props.selectedYourOffer.exRate)}
               </b>
             </h4>
             <p></p>
@@ -174,9 +202,8 @@ class OfferModal extends React.Component {
           <p style={{ textAlign: "center", marginBottom: "0rem" }}>
             <b>Min - Max (Fiat):</b>{" "}
             <b>
-              {this.handleFiatDisplay(this.props.selectedSearchedOffer.minAmt)}{" "}
-              -{" "}
-              {this.handleFiatDisplay(this.props.selectedSearchedOffer.maxAmt)}
+              {this.handleFiatDisplay(this.props.selectedYourOffer.minAmt)} -{" "}
+              {this.handleFiatDisplay(this.props.selectedYourOffer.maxAmt)}
             </b>
           </p>
 
@@ -184,23 +211,24 @@ class OfferModal extends React.Component {
             <b>Instructions</b>
           </h5>
           <p style={{ whiteSpace: "pre-wrap" }}>
-            {this.props.selectedSearchedOffer.instruction}
+            {this.props.selectedYourOffer.instruction}
           </p>
         </Modal.Body>
         <div className="TwoButtons">
           <Button
             variant="primary"
-            //onClick={() => this.props.deleteYourOffer(this.props.index)}
+            onClick={() => this.props.deleteYourOffer()}
           >
             <b>Delete Offer</b>
           </Button>
-          <Button variant="primary" onClick={() => this.handleCloseClick}>
+          <Button variant="primary" onClick={() => this.handleCloseClick()}>
             <b>Cancel</b>
           </Button>
         </div>
+        <p></p>
       </Modal>
     );
   }
 }
 
-export default OfferModal;
+export default DeleteOfferModal;

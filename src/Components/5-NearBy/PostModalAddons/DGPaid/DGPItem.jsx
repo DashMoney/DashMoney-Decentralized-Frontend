@@ -12,9 +12,10 @@ class DGPItem extends React.Component {
       );
     } else {
       return (
-        <span style={{ color: "#008de4" }}>
-          {(duffs / 100000).toFixed(2)} mDash
-        </span>
+        // <span style={{ color: "#008de4" }}>
+        //   {(duffs / 100000).toFixed(2)} mDash
+        // </span>
+        <span style={{ color: "#008de4" }}>{(duffs / 1000).toFixed(0)} kD</span>
       );
     }
   };

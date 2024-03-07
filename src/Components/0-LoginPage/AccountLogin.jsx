@@ -37,9 +37,10 @@ class AccountLogin extends React.Component {
       );
     } else {
       return (
-        <span style={{ color: "#008de4" }}>
-          {(duffs / 100000).toFixed(2)} mDash
-        </span>
+        // <span style={{ color: "#008de4" }}>
+        //   {(duffs / 100000).toFixed(2)} mDash
+        // </span>
+        <span style={{ color: "#008de4" }}>{(duffs / 1000).toFixed(0)} kD</span>
       );
     }
   };
@@ -48,7 +49,8 @@ class AccountLogin extends React.Component {
   //   if (duffs >= 1000000) {
   //     return <span>{(duffs / 100000000).toFixed(3)} Dash</span>;
   //   } else {
-  //     return <span>{(duffs / 100000).toFixed(2)} mDash</span>;
+  //    // return <span>{(duffs / 100000).toFixed(2)} mDash</span>;
+  //return <span>{(duffs / 1000).toFixed(0)} kD</span>;
   //   }
   // };
 

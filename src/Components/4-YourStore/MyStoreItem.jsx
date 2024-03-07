@@ -19,16 +19,25 @@ class MyStoreItem extends React.Component {
       );
     } else {
       return (
-        <span style={{ color: "#008de4" }}>
-          {(duffs / 100000).toFixed(2)} mDash
-        </span>
+        // <span style={{ color: "#008de4" }}>
+        //   {(duffs / 100000).toFixed(2)} mDash
+        // </span>
+        <span style={{ color: "#008de4" }}>{(duffs / 1000).toFixed(0)} kD</span>
       );
     }
   };
 
   handleAvail = () => {
     if (this.props.item.avail) {
-      return this.handleDenomDisplay(this.props.item.price);
+      if (Number(this.props.item.price) === 0) {
+        return (
+          <span style={{ color: "#008de4" }}>
+            <b>Tracking Only</b>
+          </span>
+        );
+      } else {
+        return this.handleDenomDisplay(this.props.item.price);
+      }
     } else {
       return <span style={{ color: "#008de4" }}>Unavailable</span>;
     }
@@ -53,7 +62,7 @@ class MyStoreItem extends React.Component {
             <b>{this.props.item.name}</b>
             {this.handleAvail()}
 
-            {/* <span className="textsmaller text-muted">
+            {/* <span className="textsmaller">
               {this.getRelativeTimeAgo(this.props.tuple[1].$createdAt, this.props.date)}
             </span> */}
           </Card.Title>

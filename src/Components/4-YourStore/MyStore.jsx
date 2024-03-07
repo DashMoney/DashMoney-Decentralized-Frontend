@@ -150,6 +150,19 @@ class MyStore extends React.Component {
                     </Badge>
                   )}
                 </span>
+                <span>
+                  {this.props.DGPStore[0].payLater ? (
+                    <Badge variant="primary">
+                      {" "}
+                      <b>Pay Later</b>
+                    </Badge>
+                  ) : (
+                    <Badge variant="primary">
+                      {" "}
+                      <b>No Pay Later</b>
+                    </Badge>
+                  )}
+                </span>
                 <Button
                   variant="primary"
                   onClick={() => this.props.showModal("StoreStatusModal")}

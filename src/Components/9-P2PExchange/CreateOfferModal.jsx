@@ -207,11 +207,11 @@ class CreateOfferModal extends React.Component {
     }
     //THIS IS FOR THE USD AND EUR
     if (this.state.toMeInput !== "" && this.state.toMeInput !== "Other") {
-      // 3) USD AND EUR(Inside) -> Velle, Venmo, PayPal -> Handle
+      // 3) USD AND EUR(Inside) -> Zelle, Venmo, PayPal -> Handle
       if (
         this.state.toMeViaInput !== "" &&
         this.state.toMeViaInput !== "Other" &&
-        // (this.state.toMeVia === "Velle" ||
+        // (this.state.toMeVia === "Zelle" ||
         //   this.state.toMeVia === "PayPal" ||
         //   this.state.toMeVia === "Venmo") &&
         this.state.validtoMeHandle
@@ -241,7 +241,7 @@ class CreateOfferModal extends React.Component {
     //
     //THIS IS FOR THE Other ->
     if (this.state.toMeInput === "Other" && this.state.validtoMeOTHER) {
-      // 5) Other(Inside) -> Velle, Venmo, PayPal -> Handle
+      // 5) Other(Inside) -> Zelle, Venmo, PayPal, Cash App -> Handle
       if (
         this.state.toMeViaInput !== "" &&
         this.state.toMeViaInput !== "Other" &&
@@ -283,7 +283,7 @@ class CreateOfferModal extends React.Component {
     //
     //THIS IS FOR THE USD AND EUR
     if (this.state.toUInput !== "" && this.state.toUInput !== "Other") {
-      // 2) USD AND EUR(Inside) -> Velle, Venmo, PayPal
+      // 2) USD AND EUR(Inside) -> Zelle, Venmo, PayPal, Cash App
       if (this.state.toUViaInput !== "" && this.state.toUViaInput !== "Other") {
         this.setState({
           toUFinal: true,
@@ -305,7 +305,7 @@ class CreateOfferModal extends React.Component {
     //
     //THIS IS FOR THE Other ->
     if (this.state.toUInput === "Other" && this.state.validtoUOTHER) {
-      // 4) Other(Inside) -> Velle, Venmo, PayPal
+      // 4) Other(Inside) -> Zelle, Venmo, PayPal
       if (this.state.toUViaInput !== "" && this.state.toUViaInput !== "Other") {
         this.setState({
           toUFinal: true,
@@ -1211,8 +1211,9 @@ class CreateOfferModal extends React.Component {
                             >
                               <option value="">Options</option>
                               <option value="Venmo">Venmo</option>
-                              <option value="Velle">Velle</option>
+                              <option value="Zelle">Zelle</option>
                               <option value="Paypal">PayPal</option>
+                              <option value="Cashapp">Cash App</option>
                               <option value="Other">Other</option>
                             </Form.Select>
                           </Form.Group>
@@ -1464,8 +1465,9 @@ class CreateOfferModal extends React.Component {
                             >
                               <option value="">Options</option>
                               <option value="Venmo">Venmo</option>
-                              <option value="Velle">Velle</option>
+                              <option value="Zelle">Zelle</option>
                               <option value="Paypal">PayPal</option>
+                              <option value="CashApp">Cash App</option>
                               <option value="Other">Other</option>
                             </Form.Select>
                           </Form.Group>

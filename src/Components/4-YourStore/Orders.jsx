@@ -75,8 +75,11 @@ class Orders extends React.Component {
       );
     } else {
       return (
+        // <span style={{ color: "#008de4" }}>
+        //   {((duffs * qty) / 100000).toFixed(2)} mDash
+        // </span>
         <span style={{ color: "#008de4" }}>
-          {((duffs * qty) / 100000).toFixed(2)} mDash
+          {((duffs * qty) / 1000).toFixed(0)} kD
         </span>
       );
     }
@@ -115,8 +118,11 @@ class Orders extends React.Component {
       theTotal = Math.round(theTotal / 1000);
 
       return (
+        // <h4 className="indentMembers" style={{ color: "#008de4" }}>
+        //   <b>{(theTotal / 100).toFixed(2)} mDash</b>
+        // </h4>
         <h4 className="indentMembers" style={{ color: "#008de4" }}>
-          <b>{(theTotal / 100).toFixed(2)} mDash</b>
+          <b>{theTotal.toFixed(0)} kD</b>
         </h4>
       );
     }
@@ -125,11 +131,23 @@ class Orders extends React.Component {
   verifyPayment = (theItems, theOrder) => {
     //  console.log('An Order: ', theOrder);
 
-    // 1) make sure the createdAt and Updated AT are the same else there was an edit so it
-    if (theOrder.$createdAt !== theOrder.$updatedAt) {
-      console.log("Failed on Error 0");
-      return <Badge bg="danger">Fail</Badge>;
+    //NEW (26FEB24) PAYLATER
+    if (theOrder.txId === "payLater") {
+      //console.log("PayLater");
+      return <Badge bg="warning">Pay Later</Badge>;
     }
+
+    //NEW (26FEB24) TRACKING ONLY
+    if (theOrder.txId === "trackOrder") {
+      //console.log("Tracking Order");
+      return <Badge bg="primary">Tracking Only</Badge>;
+    }
+    //THERE MUST BE AN EDIT FOR THE PAYLATER (05MAR2024 - BELOW REMOVED)
+    // 1) make sure the createdAt and Updated AT are the same else there was an edit so it
+    // if (theOrder.$createdAt !== theOrder.$updatedAt) {
+    //   console.log("Failed on Error 0");
+    //   return <Badge bg="danger">Fail</Badge>;
+    // }
 
     //8) DID i handle the Self Pay or Self Order?? -> if toId and OwnerId of order match
     if (theOrder.toId === theOrder.$ownerId) {

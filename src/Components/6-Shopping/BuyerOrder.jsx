@@ -1,5 +1,7 @@
 import React from "react";
 //import Button from 'react-bootstrap/Button';
+
+import Badge from "react-bootstrap/Badge";
 import Card from "react-bootstrap/Card";
 
 class BuyerOrder extends React.Component {
@@ -17,16 +19,15 @@ class BuyerOrder extends React.Component {
     });
   };
 
-  getRelativeTimeAgo(messageTime, timeNow){
-
+  getRelativeTimeAgo(messageTime, timeNow) {
     let timeDifference = timeNow - messageTime;
-  
-    if(timeDifference >= 84600000){
+
+    if (timeDifference >= 84600000) {
       let longFormDate = new Date();
-       longFormDate.setTime(messageTime);
+      longFormDate.setTime(messageTime);
       return longFormDate.toLocaleDateString();
     }
-    
+
     /*
     Calculate milliseconds in a year
     const minute = 1000 * 60;
@@ -34,61 +35,61 @@ class BuyerOrder extends React.Component {
     const day = hour * 24;
     const year = day * 365;
     */
-  
-    if(timeDifference < 15000){
-      return "Just now"
-    }else if(timeDifference <44000){
-      return "A few moments ago"
-    }else if(timeDifference <90000){
-      return "1 minute ago"
-    }else if(timeDifference <150000){
-      return "2 minutes ago"
-    }else if(timeDifference <210000){
-      return "3 minutes ago"
-    }else if(timeDifference <270000){
-      return "4 minutes ago"
-    }else if(timeDifference <330000){
-      return "5 minutes ago"
-    }else if(timeDifference <390000){
-      return "6 minutes ago"
-    }else if(timeDifference <450000){
-      return "7 minutes ago"
-    }else if(timeDifference <510000){
-      return "8 minutes ago"  
-    }else if(timeDifference <570000){
-      return "9 minutes ago"  
-    }else if(timeDifference <660000){
-      return "10 minutes ago"
-    }else if(timeDifference <840000){
-      return "12 minutes ago"
-    }else if(timeDifference <1020000){
-      return "15 minutes ago"
-    }else if(timeDifference <1140000){
-      return "18 minutes ago"
-    }else if(timeDifference <1380000){
-      return "20 minutes ago"
-    }else if(timeDifference <1650000){
-      return "25 minutes ago"
-    }else if(timeDifference <1950000){
-      return "30 minutes ago"
-    }else if(timeDifference <2250000){
-      return "35 minutes ago"
-    }else if(timeDifference <2550000){
-      return "40 minutes ago"
-    }else if(timeDifference <3000000){
-      return "45 minutes ago"
-    }else if(timeDifference <5400000){
-      return "1 hour ago"
-    }else if(timeDifference <9000000){
-      return "2 hours ago"
-    }else if(timeDifference <12600000){
-      return "3 hours ago"
-    }else if(timeDifference <18000000){
-      return "5 hours ago"
-    }else if(timeDifference <43200000){
-      return "Many hours ago"
-    }else if(timeDifference <84600000){
-      return "Almost a day ago"
+
+    if (timeDifference < 15000) {
+      return "Just now";
+    } else if (timeDifference < 44000) {
+      return "A few moments ago";
+    } else if (timeDifference < 90000) {
+      return "1 minute ago";
+    } else if (timeDifference < 150000) {
+      return "2 minutes ago";
+    } else if (timeDifference < 210000) {
+      return "3 minutes ago";
+    } else if (timeDifference < 270000) {
+      return "4 minutes ago";
+    } else if (timeDifference < 330000) {
+      return "5 minutes ago";
+    } else if (timeDifference < 390000) {
+      return "6 minutes ago";
+    } else if (timeDifference < 450000) {
+      return "7 minutes ago";
+    } else if (timeDifference < 510000) {
+      return "8 minutes ago";
+    } else if (timeDifference < 570000) {
+      return "9 minutes ago";
+    } else if (timeDifference < 660000) {
+      return "10 minutes ago";
+    } else if (timeDifference < 840000) {
+      return "12 minutes ago";
+    } else if (timeDifference < 1020000) {
+      return "15 minutes ago";
+    } else if (timeDifference < 1140000) {
+      return "18 minutes ago";
+    } else if (timeDifference < 1380000) {
+      return "20 minutes ago";
+    } else if (timeDifference < 1650000) {
+      return "25 minutes ago";
+    } else if (timeDifference < 1950000) {
+      return "30 minutes ago";
+    } else if (timeDifference < 2250000) {
+      return "35 minutes ago";
+    } else if (timeDifference < 2550000) {
+      return "40 minutes ago";
+    } else if (timeDifference < 3000000) {
+      return "45 minutes ago";
+    } else if (timeDifference < 5400000) {
+      return "1 hour ago";
+    } else if (timeDifference < 9000000) {
+      return "2 hours ago";
+    } else if (timeDifference < 12600000) {
+      return "3 hours ago";
+    } else if (timeDifference < 18000000) {
+      return "5 hours ago";
+    } else if (timeDifference < 43200000) {
+      return "Many hours ago";
+    } else if (timeDifference < 84600000) {
+      return "Almost a day ago";
     }
   }
 
@@ -99,11 +100,9 @@ class BuyerOrder extends React.Component {
     if (this.props.mode === "primary") {
       cardBkg = "white";
       cardText = "dark";
-
     } else {
       cardBkg = "dark";
       cardText = "white";
-
     }
 
     return (
@@ -114,24 +113,30 @@ class BuyerOrder extends React.Component {
               <span style={{ color: "#008de4" }}>{this.props.tuple[0]}</span>
             ) : (
               <>
-              <span onClick={() => this.handleNameClick()}>
-                {this.props.tuple[0]}
-              </span>
-              <span>
-                {this.state.copiedName?<span>✅</span>:<></>}
+                <span onClick={() => this.handleNameClick()}>
+                  {this.props.tuple[0]}
                 </span>
-                </>
+                <span>{this.state.copiedName ? <span>✅</span> : <></>}</span>
+              </>
             )}
-            {/* 
-          
-          <Button variant="outline-primary" 
-          onClick={()=> this.handleNameClick()          
-          }
-          >Copy</Button>
-          {this.state.copiedName?<span>☑️🔵☑️</span>:<></>} */}
+
+            {/* {this.props.tuple[1].txID === "payLater" ? (
+              <Badge bg="warning">Pay Later</Badge>
+            ) : (
+              <></>
+            )}
+
+            {this.props.tuple[1].txID === "trackOrder" ? (
+              <Badge bg="Primary">Tracking</Badge>
+            ) : (
+              <></>
+            )} */}
 
             <span className="textsmaller text-muted">
-              {this.getRelativeTimeAgo(this.props.tuple[1].$createdAt, this.props.date)}
+              {this.getRelativeTimeAgo(
+                this.props.tuple[1].$createdAt,
+                this.props.date
+              )}
             </span>
           </Card.Title>
 

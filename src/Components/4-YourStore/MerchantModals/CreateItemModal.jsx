@@ -196,10 +196,17 @@ class CreateItemModal extends React.Component {
         validPrice: true,
       });
     } else {
-      this.setState({
-        priceInput: numberInput,
-        validPrice: false,
-      });
+      if (Number(numberInput) === 0 && numberInput !== "") {
+        this.setState({
+          priceInput: numberInput,
+          validPrice: true,
+        });
+      } else {
+        this.setState({
+          priceInput: numberInput,
+          validPrice: false,
+        });
+      }
     }
   };
 
@@ -323,6 +330,23 @@ class CreateItemModal extends React.Component {
                   isInvalid={!this.state.validPrice}
                 />
               </Form.Group>
+
+              {!this.state.validPrice ? (
+                <p style={{ marginTop: ".2rem" }}>
+                  Enter a price of 0 for the purposes of creating a{" "}
+                  <b>Tracking Only</b> item.
+                </p>
+              ) : (
+                <></>
+              )}
+
+              {Number(this.state.priceInput) === 0 && this.state.validPrice ? (
+                <p style={{ marginTop: ".2rem" }}>
+                  Item for <b>Tracking Only</b>
+                </p>
+              ) : (
+                <></>
+              )}
 
               {/* ITEM DESCRIPTION FORM BELOW */}
 

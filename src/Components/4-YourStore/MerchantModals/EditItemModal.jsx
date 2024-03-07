@@ -316,23 +316,37 @@ class EditItemModal extends React.Component {
 
                 {/* ITEM PRICE FORM BELOW */}
 
-                <Form.Group className="mb-3" controlId="formItemPrice">
-                  <Form.Label>Item Price (in Dash)</Form.Label>
+                {Number(this.props.selectedItem.price) !== 0 ? (
+                  <>
+                    <Form.Group className="mb-3" controlId="formItemPrice">
+                      <Form.Label>Item Price (in Dash)</Form.Label>
 
-                  {/* <Form.Control
+                      {/* <Form.Control
                       type="number"
                       placeholder={this.state.amountToSend}
                       readOnly
                     /> */}
 
-                  <Form.Control
-                    type="number"
-                    defaultValue={this.props.selectedItem.price / 100000000}
-                    required
-                    isValid={this.state.validPrice}
-                    isInvalid={!this.state.validPrice}
-                  />
-                </Form.Group>
+                      <Form.Control
+                        type="number"
+                        defaultValue={this.props.selectedItem.price / 100000000}
+                        required
+                        isValid={this.state.validPrice}
+                        isInvalid={!this.state.validPrice}
+                      />
+                    </Form.Group>
+                  </>
+                ) : (
+                  <>
+                    <Form.Group className="mb-3" controlId="formItemPrice">
+                      <Form.Label>Item Price (in Dash)</Form.Label>
+
+                      <p>
+                        Item for <b>Tracking Only</b>
+                      </p>
+                    </Form.Group>
+                  </>
+                )}
 
                 {/* ITEM DESCRIPTION FORM BELOW */}
               </Form.Group>

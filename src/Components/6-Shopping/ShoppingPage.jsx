@@ -325,6 +325,9 @@ class ShoppingPage extends React.Component {
               handleOrderMessageModalShow={
                 this.props.handleOrderMessageModalShow
               }
+              handlePayLaterPaymentModalShow={
+                this.props.handlePayLaterPaymentModalShow
+              }
               accountBalance={this.props.accountBalance}
               accountHistory={this.props.accountHistory}
               showModal={this.props.showModal}

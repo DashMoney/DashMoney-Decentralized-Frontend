@@ -130,8 +130,9 @@ class OffersSearchForm extends React.Component {
                         >
                           <option value="Optional">(Optional)</option>
                           <option value="Venmo">Venmo</option>
-                          <option value="Velle">Velle</option>
+                          <option value="Zelle">Zelle</option>
                           <option value="Paypal">PayPal</option>
+                          <option value="Cashapp">Cash App</option>
                           <option value="Other">Other</option>
                         </Form.Select>
                       </Form.Group>
@@ -283,8 +284,9 @@ class OffersSearchForm extends React.Component {
                         >
                           <option value="Optional">(Optional)</option>
                           <option value="Venmo">Venmo</option>
-                          <option value="Velle">Velle</option>
+                          <option value="Zelle">Zelle</option>
                           <option value="Paypal">PayPal</option>
+                          <option value="Cashapp">Cash App</option>
                           <option value="Other">Other</option>
                         </Form.Select>
                       </Form.Group>

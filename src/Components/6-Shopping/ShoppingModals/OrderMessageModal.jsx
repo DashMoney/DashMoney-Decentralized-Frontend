@@ -30,7 +30,7 @@ class OrderMessageModal extends React.Component {
   };
 
   orderCommentValidate = (comment) => {
-    let regex = /^.[\S\s]{0,200}$/;
+    let regex = /^[\S\s]{0,200}$/;
 
     let valid = regex.test(comment);
 
@@ -57,8 +57,10 @@ class OrderMessageModal extends React.Component {
   };
 
   handleSubmitClick = () => {
-    this.props.handleOrderMessageSubmit(this.state.commentInput);
-    this.props.hideModal();
+    if (this.state.validComment) {
+      this.props.handleOrderMessageSubmit(this.state.commentInput);
+      this.props.hideModal();
+    }
   };
 
   render() {
@@ -111,7 +113,7 @@ class OrderMessageModal extends React.Component {
 
               {this.state.tooLongError ? (
                 <Form.Control.Feedback className="floatLeft" type="invalid">
-                  Sorry, this is too long! Please use less than 250 characters.
+                  Sorry, this is too long!
                 </Form.Control.Feedback>
               ) : (
                 <></>

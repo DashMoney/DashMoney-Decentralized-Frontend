@@ -1,25 +1,41 @@
 import React from "react";
-import Button from 'react-bootstrap/Button';
+import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 
 class MerchantItem extends React.Component {
-
   handleDenomDisplay = (duffs) => {
-    if(duffs >= 1000000){
-      return <span style={{ color: "#008de4" }}>{(duffs/100000000).toFixed(3)} Dash</span>
+    if (duffs >= 1000000) {
+      return (
+        <span style={{ color: "#008de4" }}>
+          {(duffs / 100000000).toFixed(3)} Dash
+        </span>
+      );
     } else {
-      return <span style={{ color: "#008de4" }}>{(duffs/100000).toFixed(2)} mDash</span>
+      return (
+        // <span style={{ color: "#008de4" }}>
+        //   {(duffs / 100000).toFixed(2)} mDash
+        // </span>
+        <span style={{ color: "#008de4" }}>{(duffs / 1000).toFixed(0)} kD</span>
+      );
     }
-  }
+  };
 
   handleAvail = () => {
-    if(this.props.item.avail){
-      return this.handleDenomDisplay(this.props.item.price)
+    if (this.props.item.avail) {
+      if (Number(this.props.item.price) === 0) {
+        return (
+          <span style={{ color: "#008de4" }}>
+            <b>Tracking Only</b>
+          </span>
+        );
+      } else {
+        return this.handleDenomDisplay(this.props.item.price);
+      }
+      //return this.handleDenomDisplay(this.props.item.price)
     } else {
-      return <span style={{ color: "#008de4" }}>Unavailable</span>
+      return <span style={{ color: "#008de4" }}>Unavailable</span>;
     }
-  }
-
+  };
 
   render() {
     let cardBkg;
@@ -28,7 +44,6 @@ class MerchantItem extends React.Component {
     if (this.props.mode === "primary") {
       cardBkg = "white";
       cardText = "dark";
-
     } else {
       cardBkg = "dark";
       cardText = "white";
@@ -47,10 +62,11 @@ class MerchantItem extends React.Component {
           </Card.Title>
 
           <Card.Text>{this.props.item.description}</Card.Text>
-          <Button variant="primary"
-            onClick={()=> this.props.handleAddToCartModal(this.props.item)}
-             
-          >Add to Cart
+          <Button
+            variant="primary"
+            onClick={() => this.props.handleAddToCartModal(this.props.item)}
+          >
+            Add to Cart
           </Button>
         </Card.Body>
       </Card>

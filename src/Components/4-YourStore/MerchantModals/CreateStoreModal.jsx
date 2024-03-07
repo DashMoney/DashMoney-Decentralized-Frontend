@@ -25,6 +25,7 @@ class CreateStoreModal extends React.Component {
       descriptionInput: "",
       storeStatus: true,
       publicStatus: true,
+      payLaterStatus: false,
 
       validDescription: false,
       tooLongDescriptionError: false,
@@ -33,6 +34,18 @@ class CreateStoreModal extends React.Component {
 
   handleCloseClick = () => {
     this.props.hideModal();
+  };
+
+  handlePayLater = () => {
+    if (this.state.payLaterStatus) {
+      this.setState({
+        payLaterStatus: false,
+      });
+    } else {
+      this.setState({
+        payLaterStatus: true,
+      });
+    }
   };
 
   handleStatus = () => {
@@ -118,6 +131,7 @@ class CreateStoreModal extends React.Component {
       description: this.state.descriptionInput,
       public: this.state.publicStatus,
       open: this.state.storeStatus,
+      payLater: this.state.payLaterStatus,
     };
 
     this.props.createDGPStore(newStore);
@@ -180,6 +194,30 @@ class CreateStoreModal extends React.Component {
                 ) : (
                   <></>
                 )}
+              </Form.Group>
+
+              <Form.Group className="mb-3" id="formGridCheckbox">
+                <Form.Label>
+                  <b>Allow Pay Later or No Pay Later</b>
+                </Form.Label>
+                <Form.Check
+                  type="switch"
+                  id="custom-switch"
+                  label={
+                    this.state.payLaterStatus ? "Pay Later" : "No Pay Later"
+                  }
+                  onChange={() => this.handlePayLater()}
+                />
+
+                <p>
+                  <b>Pay Later</b> means people can submit orders without
+                  completing the payment. <b>No Pay Later</b> means they have to
+                  submit the payment with the order.
+                </p>
+                <p>
+                  This does not affect <b>Tracking Only</b> orders. Tracking
+                  Only orders involve items with 0.00 price.
+                </p>
               </Form.Group>
 
               <Form.Group className="mb-3" id="formGridCheckbox">

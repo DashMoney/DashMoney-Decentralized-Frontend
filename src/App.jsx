@@ -82,6 +82,7 @@ import AddItemToCartModal from "./Components/6-Shopping/ShoppingModals/AddItemTo
 import EditCartItemModal from "./Components/6-Shopping/ShoppingModals/EditCartItemModal";
 import PlaceOrderModal from "./Components/6-Shopping/ShoppingModals/PlaceOrderModal";
 import OrderMessageModal from "./Components/6-Shopping/ShoppingModals/OrderMessageModal";
+import PayLaterPaymentModal from "./Components/6-Shopping/ShoppingModals/PayLaterPaymentModal";
 
 import CreateOfferModal from "./Components/9-P2PExchange/CreateOfferModal";
 import EditOfferModal from "./Components/9-P2PExchange/EditOfferModal";
@@ -184,11 +185,22 @@ class App extends React.Component {
 
           $createdAt: Date.now() - 800000,
         },
+        {
+          $ownerId: "4h5j6j",
+          $id: "7ku98rj",
+          msg: 'Just click on the "1% of TopUp" in the Navigation menu.',
+          msgId: "7ku98rj",
+          $createdAt: Date.now() - 500000,
+        },
       ],
       EveryoneThreadsNames: [
         {
           $ownerId: "hw7o5fh4w",
           label: "Alice",
+        },
+        {
+          $ownerId: "4h5j6j",
+          label: "DashMoney",
         },
       ],
 
@@ -490,6 +502,12 @@ class App extends React.Component {
       messageOrderIdSHOPPING: "", //SHOPPING ->
       messageStoreOwnerNameSHOPPING: "", //SHOPPING ->
 
+      payLaterOrderSHOPPING: "",
+      payLaterCartItems: "",
+      payLaterDGMAddressSHOPPING: "",
+      payLaterNameDoc: "",
+      payLaterOrderIndex: "",
+
       //SHOPPING PAGE STATE^^^^^^
 
       //NEAR BY PAGE
@@ -597,7 +615,7 @@ class App extends React.Component {
           toU: "EUR",
           toUVia: "paypal",
           //toUHandle:"",
-          exRate: "3056",
+          exRate: "2856",
           instruction:
             "***This is just a test offer.***\n\n     Please don't send me anything!",
           minAmt: "100",
@@ -7287,7 +7305,7 @@ class App extends React.Component {
         open: storeObject.open,
 
         //NEW PROPERTIES - STILL NEED TO BE IMPLEMENTED
-        payLater: false,
+        payLater: storeObject.payLater,
         acceptCredits: false,
         acceptDash: true,
       };
@@ -7371,6 +7389,7 @@ class App extends React.Component {
             $ownerId: docArray[0].$ownerId,
             $id: docArray[0].$id,
             description: storeObject.description,
+            payLater: storeObject.payLater,
             public: storeObject.public,
             open: storeObject.open,
           };
@@ -7389,6 +7408,7 @@ class App extends React.Component {
             $ownerId: docArray[0].$ownerId,
             $id: docArray[0].$id,
             description: storeObject.description,
+            payLater: storeObject.payLater,
             public: storeObject.public,
             open: storeObject.open,
           };
@@ -7502,6 +7522,10 @@ class App extends React.Component {
       // Update document
       if (this.state.DGPStore[0].description !== storeObject.description) {
         document.set("description", storeObject.description);
+      }
+
+      if (this.state.DGPStore[0].payLater !== storeObject.payLater) {
+        document.set("payLater", storeObject.payLater);
       }
 
       if (this.state.DGPStore[0].public !== storeObject.public) {
@@ -9828,8 +9852,6 @@ class App extends React.Component {
    */
   //SHOPPING FUNCTIONS
 
-  //FROM DGP -> BUYERPAGES.JS
-
   pullInitialTriggerSHOPPING = () => {
     if (this.state.InitialPullSHOPPING) {
       this.getRecentOrders(this.state.identity);
@@ -10170,6 +10192,148 @@ class App extends React.Component {
   };
 
   //************* PLACE ORDER HANDLING ************* */
+  // txIdreplacement => 'payLater' OR 'trackOrder'
+  submitOrder = (theOrderComment, txIdreplacement) => {
+    //This submits the payLater OR trackOnly order
+    this.setState({
+      LoadingOrder: true,
+    });
+
+    console.log("Called Submit Order Doc");
+
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+      apps: {
+        DGPContract: {
+          contractId: this.state.DataContractDGP,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const submitNoteDocument = async () => {
+      const { platform } = client;
+
+      let identity = "";
+      if (this.state.identityRaw !== "") {
+        identity = this.state.identityRaw;
+      } else {
+        identity = await platform.identities.get(this.state.identity);
+      } // Your identity ID
+
+      // ### ###  ### ###  ### ###   ###   ####
+
+      let cartItemsForDocCreation = this.state.cartItems.map((tuple) => {
+        return [tuple[0].$id, tuple[1]];
+      });
+
+      cartItemsForDocCreation = JSON.stringify(cartItemsForDocCreation);
+
+      //console.log("cart items for doc creation", cartItemsForDocCreation);
+
+      // ### ###  ### ###  ### ###   ###   ####
+
+      let docProperties = {
+        comment: theOrderComment,
+        cart: cartItemsForDocCreation,
+        toId: this.state.identityIdMerchant,
+        txId: txIdreplacement,
+      };
+
+      //console.log("docProperties", docProperties);
+
+      // Create the note document
+      const dgpDocument = await platform.documents.create(
+        "DGPContract.dgporder",
+        identity,
+        docProperties
+      );
+
+      console.log("dgpDocument JSON", dgpDocument.toJSON());
+
+      //############################################################
+      //This below disconnects the document sending..***
+
+      //return dgpDocument;
+
+      //This is to disconnect the Document Creation***
+      //############################################################
+
+      const documentBatch = {
+        create: [dgpDocument], // Document(s) to create
+      };
+
+      //console.log(documentBatch);
+
+      await platform.documents.broadcast(documentBatch, identity);
+      return dgpDocument;
+    };
+
+    submitNoteDocument()
+      .then((d) => {
+        let returnedDoc = d.toJSON();
+        console.log("Document:\n", returnedDoc);
+
+        let order = {
+          $ownerId: returnedDoc.$ownerId,
+          $id: returnedDoc.$id,
+
+          cart: JSON.parse(returnedDoc.cart),
+          //Identifier.from(returnedDoc.cart[0], 'base64').toJSON() //OLD WAY
+
+          comment: returnedDoc.comment,
+          toId: this.state.identityIdMerchant, //jUST USE INSTEAD OF RETURN BECAUSE BASE64
+          txId: returnedDoc.txId,
+        };
+
+        console.log("Order:\n", order);
+
+        let name = {
+          $ownerId: this.state.identityIdMerchant,
+          label: this.state.merchantStoreName,
+        };
+
+        this.handleAddingNewOrder(
+          order,
+          name,
+          this.state.merchantStore[0],
+          this.state.merchantItems,
+          this.state.dgmDocumentForMerchant[0]
+        );
+
+        this.setState({
+          viewStore: false,
+
+          sendPaymentSuccess: false,
+          sendOrderSuccess: true,
+
+          LoadingOrder: false,
+
+          identityIdMerchant: "",
+          merchantStoreName: "staged name",
+          merchantStore: [],
+          dgmDocumentForMerchant: [],
+          merchantItems: [],
+          cartItems: [],
+        });
+      })
+      .catch((e) => {
+        console.error("Something went wrong:\n", e);
+        this.setState({
+          orderError: "Order Error",
+          LoadingOrder: false,
+        });
+      })
+      .finally(() => client.disconnect());
+  };
 
   placeOrder = (orderComment) => {
     this.setState({
@@ -10279,22 +10443,13 @@ class App extends React.Component {
 
       // ### ###  ### ###  ### ###   ###   ####
 
-      let docProperties;
+      let docProperties = {
+        comment: theOrderComment,
+        cart: cartItemsForDocCreation,
+        toId: this.state.identityIdMerchant,
+        txId: theTXid,
+      };
 
-      if (theOrderComment === "") {
-        docProperties = {
-          cart: cartItemsForDocCreation,
-          toId: this.state.identityIdMerchant,
-          txId: theTXid,
-        };
-      } else {
-        docProperties = {
-          comment: theOrderComment,
-          cart: cartItemsForDocCreation,
-          toId: this.state.identityIdMerchant,
-          txId: theTXid,
-        };
-      }
       //console.log("docProperties", docProperties);
 
       // Create the note document
@@ -10385,6 +10540,178 @@ class App extends React.Component {
     this.getWalletForNewOrder();
   };
 
+  // PayLaterModal sends to BELOW
+  // PAYLATER -> PMT AND ORDER DOC UPDATE ONLY
+  // NO ORDER COMMENT EITHER JUST SENDING PMT BC THERE MAY ALREADY BE A COMMENT. SO JUST SEND MSGS IF WANT TO SAY SOMETHING.
+
+  payPayLaterOrder = () => {
+    this.setState({
+      LoadingOrder: true,
+    });
+
+    const client = new Dash.Client({
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+    });
+
+    let theTotal = 0;
+
+    this.state.payLaterCartItems.forEach((tuple) => {
+      theTotal += tuple[1] * tuple[0].price;
+    });
+
+    const payToRecipient = async () => {
+      const account = await client.getWalletAccount();
+
+      console.log("sats sent in TX:", theTotal);
+
+      const transaction = account.createTransaction({
+        recipient: this.state.payLaterDGMAddressSHOPPING.address,
+        satoshis: theTotal, //Must be a string!!
+      });
+
+      //return transaction;  //Use to disable TX <- !!!
+
+      return account.broadcastTransaction(transaction);
+    };
+
+    payToRecipient()
+      .then((d) => {
+        console.log("Payment TX:\n", d);
+
+        this.setState(
+          {
+            sendPaymentSuccess: true,
+          },
+          () => this.updatePayLaterOrder(d)
+        );
+      })
+      .catch((e) => {
+        console.error("Something went wrong:\n", e);
+        this.setState({
+          LoadingOrder: false,
+          sendFailure: true,
+        });
+      });
+    //.finally(() => client.disconnect()); //TEST -> messed up DGM may be causing problem here as well
+  };
+
+  updatePayLaterOrder = (theTXid) => {
+    console.log("Called updatePayLaterOrder");
+
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+      apps: {
+        DGPContract: {
+          contractId: this.state.DataContractDGP,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const editOrderDocument = async () => {
+      const { platform } = client;
+
+      let identity = "";
+      if (this.state.identityRaw !== "") {
+        identity = this.state.identityRaw;
+      } else {
+        identity = await platform.identities.get(this.state.identity);
+      } // Your identity ID
+
+      // ### ###  ### ###  ### ###   ###   ####
+
+      const [document] = await client.platform.documents.get(
+        "DGPContract.order",
+        {
+          where: [
+            [
+              "$id",
+              "==",
+              this.state.recentOrders[this.state.payLaterOrderIndex].$id,
+            ],
+          ],
+        }
+      );
+
+      if (
+        this.state.recentOrders[this.state.payLaterOrderIndex].txId !== theTXid
+      ) {
+        document.set("txId", theTXid);
+      }
+
+      // ### ###  ### ###  ### ###   ###   ####
+
+      await platform.documents.broadcast({ replace: [document] }, identity);
+      return document;
+
+      //############################################################
+      //This below disconnects the document editing..***
+
+      //return document;
+
+      //This is to disconnect the Document editing***
+      //############################################################
+    };
+
+    editOrderDocument()
+      .then((d) => {
+        let returnedDoc = d.toJSON();
+        console.log("Edited Order Doc:\n", returnedDoc);
+
+        let order = {
+          $ownerId: returnedDoc.$ownerId,
+          $id: returnedDoc.$id,
+          $createdAt: returnedDoc.$createdAt,
+          $updatedAt: returnedDoc.$updatedAt,
+
+          cart: JSON.parse(returnedDoc.cart),
+
+          comment: returnedDoc.comment,
+          toId: this.state.payLaterDGMAddressSHOPPING.address,
+          txId: returnedDoc.txId, //new edited txId
+        };
+
+        let editedOrders = this.state.recentOrders;
+
+        editedOrders.splice(this.state.payLaterOrderIndex, 1, order);
+
+        this.setState({
+          sendPaymentSuccess: false,
+          sendOrderSuccess: true,
+          recentOrders: editedOrders,
+          LoadingOrder: false,
+        });
+      })
+      .catch((e) => {
+        console.error("Something went wrong:\n", e);
+        this.setState({
+          orderError: "Order Error", //What does this control
+          sendPaymentFailed: true, //Add this alert ->
+          LoadingOrder: false,
+        });
+      })
+      .finally(() => client.disconnect());
+
+    // Added BELOW to go retrieve the wallet after purchase so the wallet balance will update. Trying to maximize the time for order document creation but also load wallet at the same time. ->
+    this.getWalletForNewOrder();
+  };
+
   //************* FORM HANDLING ************* */
 
   onChangeSHOPPING = (event) => {
@@ -10442,6 +10769,28 @@ class App extends React.Component {
         messageStoreOwnerNameSHOPPING: ownerName,
       },
       () => this.showModal("OrderMessageModal")
+    );
+  };
+  //handlePayLaterPaymentModalShow(this.props.order,orderItemsAndQty, orderAddrDoc, orderNameDoc, index)
+  //
+  handlePayLaterPaymentModalShow = (
+    theOrder,
+    orderItemsAndQty,
+    storeDGMAddrDoc,
+    orderNameDoc,
+    theIndex // to pass for editing
+  ) => {
+    this.setState(
+      {
+        payLaterOrderSHOPPING: theOrder,
+        payLaterCartItems: orderItemsAndQty,
+        payLaterDGMAddressSHOPPING: storeDGMAddrDoc,
+        payLaterNameDoc: orderNameDoc,
+        // selectedYourPost: this.state.yourPostsToDisplay[index],
+        // THIS IS THE ORDER DOC THAT I AM PASSING DIRECTLY
+        payLaterOrderIndex: theIndex, //<- Need this for the editingfunction!!
+      },
+      () => this.showModal("PayLaterPaymentModal")
     );
   };
 
@@ -11591,7 +11940,7 @@ class App extends React.Component {
     //
     //THIS IS FOR THE USD AND EUR
     if (this.state.toMeInput !== "" && this.state.toMeInput !== "Other") {
-      // 2) USD AND EUR(Inside) -> Velle, Venmo, PayPal
+      // 2) USD AND EUR(Inside) -> Zelle, Venmo, PayPal
       if (
         this.state.toMeViaInput !== "" &&
         this.state.toMeViaInput !== "Other"
@@ -11615,7 +11964,7 @@ class App extends React.Component {
     //
     //THIS IS FOR THE Other ->
     if (this.state.toMeInput === "Other" && this.state.validtoMeOTHER) {
-      // 4) Other(Inside) -> Velle, Venmo, PayPal
+      // 4) Other(Inside) -> Zelle, Venmo, PayPal
       if (
         this.state.toMeViaInput !== "" &&
         this.state.toMeViaInput !== "Other"
@@ -11650,7 +11999,7 @@ class App extends React.Component {
     //
     //THIS IS FOR THE USD AND EUR
     if (this.state.toUInput !== "" && this.state.toUInput !== "Other") {
-      // 2) USD AND EUR(Inside) -> Velle, Venmo, PayPal
+      // 2) USD AND EUR(Inside) -> Zelle, Venmo, PayPal
       if (this.state.toUViaInput !== "" && this.state.toUViaInput !== "Other") {
         this.setState({
           toUFinal: true,
@@ -11672,7 +12021,7 @@ class App extends React.Component {
     //
     //THIS IS FOR THE Other ->
     if (this.state.toUInput === "Other" && this.state.validtoUOTHER) {
-      // 4) Other(Inside) -> Velle, Venmo, PayPal
+      // 4) Other(Inside) -> Zelle, Venmo, PayPal
       if (this.state.toUViaInput !== "" && this.state.toUViaInput !== "Other") {
         this.setState({
           toUFinal: true,
@@ -12529,8 +12878,8 @@ class App extends React.Component {
           ],
         }
       );
-      /**
-       *  toMe: offerObject.toMe, //.toLocaleUpperCase() <- done in modal
+      /*
+         toMe: offerObject.toMe, //.toLocaleUpperCase() <- done in modal
           toMeVia: offerObject.toMeVia, //.toLocaleLowerCase() <- done in modal
           toMeHandle: offerObject.toMeHandle,
           toU: offerObject.toU, //.toLocaleUpperCase() <- done in modal
@@ -14547,6 +14896,9 @@ class App extends React.Component {
                     handleOrderMessageModalShow={
                       this.handleOrderMessageModalShow
                     }
+                    handlePayLaterPaymentModalShow={
+                      this.handlePayLaterPaymentModalShow
+                    }
                     accountBalance={this.state.accountBalance}
                     accountHistory={this.state.accountHistory}
                     showModal={this.showModal}
@@ -15229,10 +15581,31 @@ class App extends React.Component {
           <PlaceOrderModal
             isLoadingWallet={this.state.isLoadingWallet}
             accountBalance={this.state.accountBalance}
+            store={this.state.merchantStore[0]} //ADDED FOR PAYLATER
             merchantStoreName={this.state.merchantStoreName}
             isModalShowing={this.state.isModalShowing}
             cartItems={this.state.cartItems}
             placeOrder={this.placeOrder}
+            submitOrder={this.submitOrder} //this is just the orderDoc FOR PAYLATER
+            hideModal={this.hideModal}
+            mode={this.state.mode}
+          />
+        ) : (
+          <></>
+        )}
+
+        {this.state.isModalShowing &&
+        this.state.presentModal === "PayLaterPaymentModal" ? (
+          <PayLaterPaymentModal
+            isLoadingWallet={this.state.isLoadingWallet}
+            accountBalance={this.state.accountBalance}
+            payLaterOrderSHOPPING={this.state.payLaterOrderSHOPPING}
+            payLaterCartItems={this.state.payLaterCartItems}
+            payLaterDGMAddressSHOPPING={this.state.payLaterDGMAddressSHOPPING}
+            payLaterNameDoc={this.state.payLaterNameDoc}
+            //payLaterOrderIndex={this.state.payLaterOrderIndex} //Already in state and used for editing order Doc after payment
+            isModalShowing={this.state.isModalShowing}
+            payPayLaterOrder={this.payPayLaterOrder}
             hideModal={this.hideModal}
             mode={this.state.mode}
           />

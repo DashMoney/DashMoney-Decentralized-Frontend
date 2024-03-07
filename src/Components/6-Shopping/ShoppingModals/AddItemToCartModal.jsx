@@ -32,8 +32,11 @@ class AddItemToCartModal extends React.Component {
       );
     } else {
       return (
+        // <span style={{ color: "#008de4" }}>
+        //   {((duffs * this.state.itemQuantity) / 100000).toFixed(2)} mDash
+        // </span>
         <span style={{ color: "#008de4" }}>
-          {((duffs * this.state.itemQuantity) / 100000).toFixed(2)} mDash
+          {((duffs * this.state.itemQuantity) / 1000).toFixed(0)} kD
         </span>
       );
     }

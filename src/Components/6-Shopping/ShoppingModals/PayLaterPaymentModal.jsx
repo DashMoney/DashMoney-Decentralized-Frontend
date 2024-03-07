@@ -9,7 +9,7 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 
-class PlaceOrderModal extends React.Component {
+class PayLaterPaymentModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -143,47 +143,6 @@ class PlaceOrderModal extends React.Component {
     }
   };
 
-  handleTotalNotForDisplay = () => {
-    let theTotal = 0;
-
-    this.props.cartItems.forEach((tuple) => {
-      theTotal += tuple[1] * tuple[0].price;
-      //console.log(theTotal);
-    });
-    return Number(theTotal);
-  };
-
-  handleOrderORPayment = () => {
-    let theTotal = 0;
-
-    this.props.cartItems.forEach((tuple) => {
-      theTotal += tuple[1] * tuple[0].price;
-      //console.log(theTotal);
-    });
-
-    if (Number(theTotal) !== 0) {
-      return (
-        <Button variant="primary" onClick={() => this.handleSubmitClick()}>
-          <b>Send Payment to {this.props.merchantStoreName}</b>
-        </Button>
-      );
-    } else {
-      return (
-        <>
-          <Button
-            variant="primary"
-            onClick={() => this.handleTrackOrderClick()}
-          >
-            <b>Submit Order to {this.props.merchantStoreName}</b>
-          </Button>
-          <p style={{ color: "#008de4" }}>
-            <b>Tracking Only Order</b>
-          </p>
-        </>
-      );
-    }
-  };
-
   onChange = (event) => {
     //console.log(event.target.id);
     //console.log(`id = ${event.target.id}`);
@@ -223,24 +182,12 @@ class PlaceOrderModal extends React.Component {
   };
 
   handleSubmitClick = () => {
-    if (this.state.validComment) {
-      this.props.placeOrder(this.state.commentInput);
-      this.props.hideModal();
-    }
-  };
-
-  handleTrackOrderClick = () => {
-    if (this.state.validComment) {
-      this.props.submitOrder(this.state.commentInput, "trackOrder");
-      this.props.hideModal();
-    }
-  };
-
-  handlePayLaterClick = () => {
-    if (this.state.validComment) {
-      this.props.submitOrder(this.state.commentInput, "payLater");
-      this.props.hideModal();
-    }
+    // if (this.state.validComment) {
+    // this.props.placeOrder(this.state.commentInput);
+    //PAYLATER DOES NOT PASS COMMENT, JUST PMT FOR DOC TXID UPDATE
+    this.props.payPayLaterOrder();
+    this.props.hideModal();
+    //}
   };
 
   render() {
@@ -331,11 +278,11 @@ class PlaceOrderModal extends React.Component {
               <Col xs={1} md={1}></Col>
             </Row>
             {/* <div className="cardTitle">
-           <h5>Item</h5> 
-           <h5>Qty</h5> 
-           <h5>Price</h5> 
-           
-           </div> */}
+         <h5>Item</h5> 
+         <h5>Qty</h5> 
+         <h5>Price</h5> 
+         
+         </div> */}
 
             <Container>{orderItems}</Container>
 
@@ -348,7 +295,38 @@ class PlaceOrderModal extends React.Component {
               {this.handleTotal()}
             </div>
 
-            <Form.Group className="mb-3" controlId="formOrderComment">
+            <div className="ButtonRightNoUnderline">
+              {!this.props.isLoadingWallet && this.verifySufficientFunds() ? (
+                <Button
+                  variant="primary"
+                  onClick={() => this.handleSubmitClick()}
+                >
+                  <b>
+                    Send Payment
+                    {/* to {this.props.merchantStoreName} */}
+                  </b>
+                </Button>
+              ) : (
+                <>
+                  {this.props.isLoadingWallet ? (
+                    <>
+                      {" "}
+                      <Button disabled variant="primary">
+                        <b>Wallet Loading..</b>
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button disabled variant="primary">
+                        <b>Insufficient Funds</b>
+                      </Button>
+                    </>
+                  )}
+                </>
+              )}
+            </div>
+
+            {/* <Form.Group className="mb-3" controlId="formOrderComment">
               <Form.Label>
                 <b>Additional Order Info</b>
               </Form.Label>
@@ -370,36 +348,7 @@ class PlaceOrderModal extends React.Component {
               ) : (
                 <></>
               )}
-            </Form.Group>
-
-            <div className="ButtonRightNoUnderline">
-              {!this.props.isLoadingWallet && this.verifySufficientFunds() ? (
-                // <Button
-                //   variant="primary"
-                //   onClick={() => this.handleSubmitClick()}
-                // >
-                //   <b>Send Payment to {this.props.merchantStoreName}</b>
-                // </Button>
-                <>{this.handleOrderORPayment()}</>
-              ) : (
-                <>
-                  {this.props.isLoadingWallet ? (
-                    <>
-                      {" "}
-                      <Button disabled variant="primary">
-                        <b>Wallet Loading..</b>
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <Button disabled variant="primary">
-                        <b>Insufficient Funds</b>
-                      </Button>
-                    </>
-                  )}
-                </>
-              )}
-            </div>
+            </Form.Group> */}
 
             {!this.props.isLoadingWallet && this.verifySufficientFunds() ? (
               <>
@@ -414,22 +363,6 @@ class PlaceOrderModal extends React.Component {
             ) : (
               <></>
             )}
-
-            {this.handleTotalNotForDisplay !== 0 &&
-            this.props.store.payLater ? (
-              <>
-                <div className="ButtonRightNoUnderline">
-                  <Button
-                    variant="primary"
-                    onClick={() => this.handlePayLaterClick()}
-                  >
-                    <b>Submit Order & Pay Later</b>
-                  </Button>
-                </div>
-              </>
-            ) : (
-              <></>
-            )}
           </Modal.Body>
         </Modal>
       </>
@@ -437,4 +370,4 @@ class PlaceOrderModal extends React.Component {
   }
 }
 
-export default PlaceOrderModal;
+export default PayLaterPaymentModal;

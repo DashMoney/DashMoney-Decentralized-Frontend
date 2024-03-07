@@ -110,8 +110,11 @@ class YourOrders extends React.Component {
       );
     } else {
       return (
+        // <span style={{ color: "#008de4" }}>
+        //   {((duffs * qty) / 100000).toFixed(2)} mDash
+        // </span>
         <span style={{ color: "#008de4" }}>
-          {((duffs * qty) / 100000).toFixed(2)} mDash
+          {((duffs * qty) / 1000).toFixed(0)} kD
         </span>
       );
     }
@@ -161,10 +164,38 @@ class YourOrders extends React.Component {
       theTotal = Math.round(theTotal / 1000);
 
       return (
+        // <h4 className="indentMembers" style={{ color: "#008de4" }}>
+        //   <b>{(theTotal / 100).toFixed(2)} mDash</b>
+        // </h4>
         <h4 className="indentMembers" style={{ color: "#008de4" }}>
-          <b>{(theTotal / 100).toFixed(2)} mDash</b>
+          <b>{theTotal.toFixed(0)} kD</b>
         </h4>
       );
+    }
+  };
+
+  verifySufficientFunds = (items) => {
+    //this.prop.cartItems AND this.props.merchantItems
+    let theTotal = 0;
+
+    items.forEach((tuple) => {
+      // this.props.merchantItems.find((item)=>{
+      //   return item.$id === tuple[0].$id
+      // })  //THE PRICE IS ALREADY IN THE ITEM!!! bUT MAYBE i CAN USE THIS TO CHECK THE ITEM IS FOR THE MERCHANT!!!
+
+      //console.log(tuple[0].price);
+      // console.log(tuple[1])
+
+      theTotal += tuple[1] * tuple[0].price;
+      //console.log(theTotal);
+    });
+
+    theTotal = this.props.accountBalance - theTotal;
+
+    if (theTotal > 0) {
+      return true;
+    } else {
+      return false;
     }
   };
 
@@ -199,6 +230,10 @@ class YourOrders extends React.Component {
         //console.log(order);
 
         let orderNameDoc = this.props.recentOrdersNames.find((doc) => {
+          return doc.$ownerId === order.toId;
+        });
+
+        let orderAddrDoc = this.props.recentOrdersDGMAddresses.find((doc) => {
           return doc.$ownerId === order.toId;
         });
 
@@ -271,6 +306,18 @@ class YourOrders extends React.Component {
 
                 {/* {this.verifyPayment(orderItemsAndQty, order)} */}
 
+                {order.txID === "payLater" ? (
+                  <Badge bg="warning">Pay Later</Badge>
+                ) : (
+                  <></>
+                )}
+
+                {order.txID === "trackOrder" ? (
+                  <Badge bg="Primary">Tracking</Badge>
+                ) : (
+                  <></>
+                )}
+
                 {/* {this.props.uniqueName === this.props.tuple[0] ? (
                     <span style={{ color: "#008de4" }}>{this.props.tuple[0]}</span>
                   ) : (
@@ -334,21 +381,60 @@ class YourOrders extends React.Component {
 
               {msgsToDisplay}
 
-              <div className="ButtonRightNoUnderline">
-                <Button
-                  variant="primary"
-                  onClick={() =>
-                    this.props.handleOrderMessageModalShow(
-                      order.$id,
-                      orderNameDoc.label
-                    )
-                  }
-                >
-                  <b>Add Message</b>
-                </Button>
-              </div>
-
-              <Card.Text></Card.Text>
+              {order.txID === "payLater" ? (
+                <div className="TwoButtons">
+                  <Button
+                    variant="primary"
+                    onClick={() =>
+                      this.props.handleOrderMessageModalShow(
+                        order.$id,
+                        orderNameDoc.label
+                      )
+                    }
+                  >
+                    <b>Add Message</b>
+                  </Button>
+                  {this.verifySufficientFunds(orderItemsAndQty) ? (
+                    <>
+                      {" "}
+                      <Button
+                        variant="primary"
+                        onClick={() =>
+                          this.props.handlePayLaterPaymentModalShow(
+                            order,
+                            orderItemsAndQty,
+                            orderAddrDoc,
+                            orderNameDoc,
+                            index
+                          )
+                        }
+                      >
+                        <b>Send Payment</b>
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button variant="primary" disabled>
+                        <b>Insufficient Funds</b>
+                      </Button>
+                    </>
+                  )}
+                </div>
+              ) : (
+                <div className="ButtonRightNoUnderline">
+                  <Button
+                    variant="primary"
+                    onClick={() =>
+                      this.props.handleOrderMessageModalShow(
+                        order.$id,
+                        orderNameDoc.label
+                      )
+                    }
+                  >
+                    <b>Add Message</b>
+                  </Button>
+                </div>
+              )}
             </Card.Body>
           </Card>
         );

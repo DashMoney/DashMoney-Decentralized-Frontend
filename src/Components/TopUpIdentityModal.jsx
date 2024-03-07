@@ -13,6 +13,19 @@ class TopUpIdentityModal extends React.Component {
     this.props.hideModal();
   };
 
+  verifySufficientFunds = () => {
+    //sufficientFunds
+    let theTotal = 0;
+
+    theTotal = this.props.accountBalance - 1000000;
+
+    if (theTotal >= 0) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   handleDenomDisplay = (duffs, qty) => {
     if (duffs >= 1000000) {
       return (
@@ -22,8 +35,11 @@ class TopUpIdentityModal extends React.Component {
       );
     } else {
       return (
+        // <span style={{ color: "#008de4" }}>
+        //   {((duffs * qty) / 100000).toFixed(2)} mDash
+        // </span>
         <span style={{ color: "#008de4" }}>
-          {((duffs * qty) / 100000).toFixed(2)} mDash
+          {((duffs * qty) / 1000).toFixed(0)} kD
         </span>
       );
     }
@@ -96,14 +112,28 @@ class TopUpIdentityModal extends React.Component {
           for many actions on Dash Platform.)
         </Modal.Body>
         <Modal.Footer>
+          {!this.props.isLoadingWallet && this.verifySufficientFunds() ? (
+            <Button variant="primary" onClick={this.handleTopUp}>
+              <b>Top Up Identity</b>
+            </Button>
+          ) : (
+            <></>
+          )}
+
           {this.props.isLoadingWallet ? (
             <Button variant="primary">
               <b>Wallet Loading..</b>
             </Button>
           ) : (
-            <Button variant="primary" onClick={this.handleTopUp}>
-              <b>Top Up Identity</b>
+            <></>
+          )}
+
+          {!this.props.isLoadingWallet && !this.verifySufficientFunds() ? (
+            <Button variant="primary" disabled>
+              <b>Insufficient Funds</b>
             </Button>
+          ) : (
+            <></>
           )}
         </Modal.Footer>
       </Modal>

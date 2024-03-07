@@ -55,8 +55,11 @@ class FindMerchant extends React.Component {
       theTotal = Math.round(theTotal / 1000);
 
       return (
+        // <h4 className="indentMembers" style={{ color: "#008de4" }}>
+        //   <b>{(theTotal / 100).toFixed(2)} mDash</b>
+        // </h4>
         <h4 className="indentMembers" style={{ color: "#008de4" }}>
-          <b>{(theTotal / 100).toFixed(2)} mDash</b>
+          <b>{theTotal.toFixed(0)} kD</b>
         </h4>
       );
     }

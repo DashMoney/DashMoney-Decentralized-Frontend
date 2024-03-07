@@ -24,6 +24,7 @@ class EditStoreModal extends React.Component {
       descriptionInput: this.props.DGPStore[0].description,
       storeStatus: this.props.DGPStore[0].open,
       publicStatus: this.props.DGPStore[0].public,
+      payLaterStatus: this.props.DGPStore[0].payLater,
 
       validDescription: true,
       tooLongDescriptionError: false,
@@ -54,6 +55,18 @@ class EditStoreModal extends React.Component {
     } else {
       this.setState({
         publicStatus: true,
+      });
+    }
+  };
+
+  handlePayLater = () => {
+    if (this.state.payLaterStatus) {
+      this.setState({
+        payLaterStatus: false,
+      });
+    } else {
+      this.setState({
+        payLaterStatus: true,
       });
     }
   };
@@ -125,6 +138,7 @@ class EditStoreModal extends React.Component {
       description: this.state.descriptionInput,
       public: this.state.publicStatus,
       open: this.state.storeStatus,
+      payLater: this.state.payLaterStatus,
     };
 
     this.props.editDGPStore(editStore);
@@ -187,6 +201,30 @@ class EditStoreModal extends React.Component {
                 ) : (
                   <></>
                 )}
+              </Form.Group>
+
+              <Form.Group className="mb-3" id="formGridCheckbox">
+                <Form.Label>
+                  <b>Allow Pay Later or No Pay Later</b>
+                </Form.Label>
+                <Form.Check
+                  type="switch"
+                  id="custom-switch"
+                  label={
+                    this.state.payLaterStatus ? "Pay Later" : "No Pay Later"
+                  }
+                  onChange={() => this.handlePayLater()}
+                />
+
+                <p>
+                  <b>Pay Later</b> means people can submit orders without
+                  completing the payment. <b>No Pay Later</b> means they have to
+                  submit the payment with the order.
+                </p>
+                <p>
+                  This does not affect <b>Tracking Only</b> orders. Tracking
+                  Only orders involve items with 0.00 price.
+                </p>
               </Form.Group>
 
               <Form.Group className="mb-3" id="formGridCheckbox">

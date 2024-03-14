@@ -5,6 +5,7 @@ import Modal from "react-bootstrap/Modal";
 import Spinner from "react-bootstrap/Spinner";
 import Badge from "react-bootstrap/Badge";
 import CloseButton from "react-bootstrap/CloseButton";
+import handleDenomDisplay from "../../UnitDisplay";
 
 class AddItemToCartModal extends React.Component {
   constructor(props) {
@@ -23,24 +24,7 @@ class AddItemToCartModal extends React.Component {
       itemQuantity: this.state.itemQuantity + input,
     });
   };
-  handleDenomDisplay = (duffs) => {
-    if (duffs >= 1000000) {
-      return (
-        <span style={{ color: "#008de4" }}>
-          {((duffs * this.state.itemQuantity) / 100000000).toFixed(3)} Dash
-        </span>
-      );
-    } else {
-      return (
-        // <span style={{ color: "#008de4" }}>
-        //   {((duffs * this.state.itemQuantity) / 100000).toFixed(2)} mDash
-        // </span>
-        <span style={{ color: "#008de4" }}>
-          {((duffs * this.state.itemQuantity) / 1000).toFixed(0)} kD
-        </span>
-      );
-    }
-  };
+  
 
   handleSubmitClick = () => {
     if (this.state.itemQuantity > 0) {
@@ -123,8 +107,8 @@ class AddItemToCartModal extends React.Component {
             <p>{this.props.selectedItem.description}</p>
 
             {this.state.itemQuantity > 0 ? (
-              <h5 className="PriceRight">
-                <b>{this.handleDenomDisplay(this.props.selectedItem.price)}</b>
+              <h5 className="PriceRight" style={{ color: "#008de4" }}>
+                <b>{handleDenomDisplay(this.props.selectedItem.price)}</b>
               </h5>
             ) : (
               <p></p>

@@ -7,8 +7,6 @@ import Button from "react-bootstrap/Button";
 import DashBkgd from "./Images/dash_digital-cash_logo_2018_rgb_for_screens.png";
 
 import Spinner from "react-bootstrap/Spinner";
-//import Form from "react-bootstrap/Form";
-//import Alert from "react-bootstrap/Alert";
 
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -39,6 +37,12 @@ import ReviewsPage from "./Components/7-Reviews/ReviewsPage";
 
 import ProofsPage from "./Components/8-ProofOfFunds/ProofsPage";
 
+//const ProofsPage = React.lazy(() =>
+// import("./Components/8-ProofOfFunds/ProofsPage")
+//);
+//Lazy Loading doesn't really make a difference. Each Dapp's Components Tree is between 20 - 60 kB AND bundle is 36,000 kB
+//UPDATE -> bundle went from 36mB to 16mB !!
+
 import TopUpIdentityModal from "./Components/TopUpIdentityModal";
 import FrontEndFeeExplaination from "./Components/FrontEndFeeExplaination";
 
@@ -67,6 +71,12 @@ import WalletTXModal from "./Components/WalletTXModal";
 import CreateStoreModal from "./Components/4-YourStore/MerchantModals/CreateStoreModal";
 import StoreStatusModal from "./Components/4-YourStore/MerchantModals/StoreStatusModal";
 import EditStoreModal from "./Components/4-YourStore/MerchantModals/EditStoreModal";
+
+// const EditStoreModal = React.lazy(() =>
+//   import("./Components/4-YourStore/MerchantModals/EditStoreModal")
+// );
+//Lazy Loading doesn't really make a difference. Each Modal is between 5 - 15 kB AND bundle is 36,000 kB  And there are like 50 modals, still just a small amount comparatively.
+//UPDATE -> bundle went from 36mB to 16mB !!
 
 import CreateItemModal from "./Components/4-YourStore/MerchantModals/CreateItemModal";
 import EditItemModal from "./Components/4-YourStore/MerchantModals/EditItemModal";
@@ -127,6 +137,8 @@ class App extends React.Component {
       isLoadingAlias: true,
 
       isLoadingWallet: true, //For wallet for topup
+
+      isIdentityControlShowing: false,
 
       identityError: false,
       idInfoError: false,
@@ -810,28 +822,30 @@ class App extends React.Component {
       accountBalance: "",
       accountHistory: "",
       accountAddress: "",
+      walletId: "",
 
       //BELOW IS OTHERS ADDRESSES
 
       WALLET_addresses: [],
       WALLET_addressesNames: [],
 
-      walletId: "",
-      mostRecentLogin: false,
-      platformLogin: false, //Will this be used? -> check ->
-      LocalForageKeys: [],
+      //mostRecentLogin: false,
+      platformLogin: false, //Will this be used? -> check -> i think yes. but do I need it?
+      //
+      //LocalForageKeys: [],
+      DashMoneyLFKeys: [],
 
       skipSynchronizationBeforeHeight: 974000,
       mostRecentBlockHeight: 974000,
 
-      DataContractDSO: "5UFe5yoixK7BPs1FGoAoryP2PCpF2MD3EjGPGeiC5htJ",
-      DataContractDGT: "Po1uVkjb7V5WyzqdXvosa7LZ9SvXbyaWUV8jfnPUew3",
-      DataContractDGM: "Hiq9SJL3HjGci8XU7mHGhY1wgkVLG7HhijAjVwv6ozau",
-      DataContractDGP: "5qkpWiZmfSgnmwusByRVpmLFdRyxuuV8s5KxNxh6bW7n",
-      DataContractDMIO: "7YYHis22sL45AhD8FHXopGSqeKLFNtRBvcXCFmVtypi2",
-      DataContractP2P: "3KhmjY3vVKU8r5nuzdfifJ49TdS6heasFaFG13vLgX5G",
-      DataContractDGR: "8jB2zPwsnhydCXrWk3QMMENhYbgh7M5F28oZhC4AnMFV",
-      DataContractPOD: "Hn9LJMPA3mrWUQ7nzKhyT6TiiTzejwVXH8hoV7oV7qqP",
+      DataContractDSO: "6QrXXZo34rUr3wHju7M9Xtf5qHXxcHqbW7ADMDeAk7iF",
+      DataContractDGT: "2qKAVujNhak66cQE37kurXBF7ya1QLJRpjnn5656zy2Y",
+      DataContractDGM: "G2ZKi8BLqsf6offuNtNyxZ63e2gcmx4Bhvden8wLX2YH",
+      DataContractDGP: "C9K3YGD8bCq7C7NSUmsHfWCcWcZ23ktBeForQjDfJRGW",
+      DataContractDMIO: "2fehzP9CycaaLpgmA3BrTTFHC2Be2WYDAYpjxXxFvDYj",
+      DataContractP2P: "AeUyZnyWAtJUPnix5D8saqQyRYbecrk1RjkvxEqicNJ9",
+      DataContractDGR: "7DWv9R1FBUSzgNMUxo13JEffsnDMq5VvWKmJtfKsh8V1",
+      DataContractPOD: "D1eseFa9VrM6www9oVFMn4LXsCHTcicE6G1CBBizGocM",
       DataContractDPNS: "GWRSAVFMjXx8HpQFaNJMqBV7MBgMK4br5UESsB4S31Ec",
 
       expandedTopNav: false,
@@ -905,6 +919,18 @@ class App extends React.Component {
       .catch((err) => {
         console.error("Something went wrong setting to localForage:\n", err);
       });
+  };
+
+  hideIdentityControlPage = () => {
+    this.setState({
+      isIdentityControlShowing: false,
+    });
+  };
+
+  showIdentityControlPage = () => {
+    this.setState({
+      isIdentityControlShowing: true,
+    });
   };
 
   handleLogout = () => {
@@ -1445,7 +1471,8 @@ class App extends React.Component {
         walletId: "",
         mostRecentLogin: false,
         platformLogin: false, //Will this be used? -> check ->
-        LocalForageKeys: [],
+        //LocalForageKeys: [],
+        DashMoneyLFKeys: [],
 
         skipSynchronizationBeforeHeight: 974000,
         mostRecentBlockHeight: 974000,
@@ -1455,49 +1482,75 @@ class App extends React.Component {
       () => this.componentDidMount()
     );
   };
-
+  //FIX THIS *** BELOW
   componentDidMount() {
-    //this.getInitialPosts(); // Move to onDapp select because now that there is a post in all the categories there are names that are pulled and this has doubled the queries and cause slowing ->
-    //
     //1) GET WALLETID KEYS For New Wallet Login and Wallet Sync
-    //I don't need any of this because the wallet login handles it itself..
+    //  ///  ///  ///  ///
+    //**** I don't need any of this because the wallet login handles it itself..   ****
+    //  \\\  \\\  \\\  \\\
     // True^^^ - but using to determine if first time loading so can let know that this may take up to a minute for first time logging in.
-    LocalForage.config({
-      name: "dashevo-wallet-lib",
-    });
-    let dashevo = LocalForage.createInstance({
-      name: "dashevo-wallet-lib",
-    });
-    dashevo
-      .keys()
-      .then((keys) => {
-        this.setState({
-          LocalForageKeys: keys,
-        });
-        console.log(keys);
-      })
-      .catch(function (err) {
-        console.log(err);
-      });
-    //****************************** */
-    //2) GET WALLETID KEYS FOR OBTAINING IDENTITY
-    //  WHEN I INTRODUCE THIS FEATURE GET THE DGM VERSION IT IS DOING WHAT I WANT <- !!!!!!!!!!!!!!!!!!!!! ->
+    //
     // LocalForage.config({
-    //   name: "dashmoney-platform-login",
+    //   name: "dashevo-wallet-lib",
     // });
-    // let DashMoneyLF = LocalForage.createInstance({
-    //   name: "dashmoney-platform-login",
+    // let dashevo = LocalForage.createInstance({
+    //   name: "dashevo-wallet-lib",
     // });
-    // DashMoneyLF.keys()
+    // dashevo
+    //   .keys()
     //   .then((keys) => {
     //     this.setState({
-    //       DashMoneyLFKeys: keys,
+    //       LocalForageKeys: keys,
+    // *** //WAS USING THIS FOR NOTICE THAT "LOGIN CAN TAKE UP TO A MINUTE FOR FIRST LOGIN." ***
     //     });
     //     console.log(keys);
     //   })
     //   .catch(function (err) {
     //     console.log(err);
     //   });
+    //
+    //****************************** */
+    //
+    // SO IF I DON'T COMBINE THAN I WILL HAVE TO SEPARATE INTO 2 DIFFERENT CONFIGS AND SWITCH BETWEEN THEM, THIS SLOWS STUFF DOWN AND ADDS COMPLEXITY
+    // IF I DO COMBINE THEN I NEED TO SET LENGTH TO > 1 INSTEAD OF 0 OR DO LIKE A MINUS THE KEY THAT GOES TO THE MODE.
+    //
+    LocalForage.config({
+      name: "dash-frontend",
+    });
+    let DashFrontend = LocalForage.createInstance({
+      name: "dash-frontend",
+    });
+    DashFrontend.getItem("mode")
+      .then((modeVal) => {
+        if (modeVal !== null) {
+          this.setState({
+            mode: modeVal,
+          });
+        }
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
+    //
+    //2) GET WALLETID KEYS FOR OBTAINING IDENTITY
+    //
+    LocalForage.config({
+      name: "dashmoney-platform-login",
+    });
+    let DashMoneyLF = LocalForage.createInstance({
+      name: "dashmoney-platform-login",
+    });
+
+    DashMoneyLF.keys()
+      .then((keys) => {
+        this.setState({
+          DashMoneyLFKeys: keys,
+        });
+        console.log(keys);
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
     //****************************** */
     //3) GET MOST RECENT BLOCK HEIGHT FOR NEW WALLET LOGIN
     // const clientOpts = {
@@ -1521,29 +1574,13 @@ class App extends React.Component {
     //   })
     //   .finally(() => client.disconnect());
     //FIX THIS^^^
-    LocalForage.config({
-      name: "dash-frontend",
-    });
-    let DashFrontend = LocalForage.createInstance({
-      name: "dash-frontend",
-    });
-    DashFrontend.getItem("mode")
-      .then((modeVal) => {
-        if (modeVal !== null) {
-          this.setState({
-            mode: modeVal,
-          });
-        }
-        // this.setState({
-        //   DashMoneyLFKeys: keys,
-        // });
-        // console.log(keys);
-      })
-      .catch(function (err) {
-        console.log(err);
-      });
+    //
+
+    //
+    //BELOW, YEAH DO THAT ->  ->  vvvv
+    //
     this.getDSOEveryoneDocs(); //WHY NOT MOVE TO ONSELECT LIKE OTHERS ->
-  } //FIX THIS^^^
+  }
 
   //ACCOUNT LOGIN FUNCTIONS => SIMPLE LOGIN FIRST
   triggerNameLoading = () => {
@@ -1570,20 +1607,152 @@ class App extends React.Component {
     });
   };
 
-  //TRIGGER THE LOGIN PROCESS ->Simplest no LF setup
+  //TRIGGER THE LOGIN PROCESS ->Simplest no LF setup <- CHANGING ->
   handleAccountLogin = (theMnemonic) => {
-    this.getWalletAndIdentitywithMnem(theMnemonic);
+    if (this.state.DashMoneyLFKeys.length === 0) {
+      this.setState(
+        {
+          isLoggedIn: true,
+          mnemonic: theMnemonic,
+        },
+        () => this.getWalletAndIdentitywithMnem(theMnemonic)
+      );
+    } else {
+      this.setState(
+        {
+          isLoggedIn: true,
+          mnemonic: theMnemonic,
+        },
+        () => this.checkPlatformOnlyLogin(theMnemonic)
+      );
+    }
 
-    this.setState({
-      mnemonic: theMnemonic,
-      isLoggedIn: true,
-    });
+    //OLD WAY - BELOW
+    // this.getWalletAndIdentitywithMnem(theMnemonic);
+
+    // this.setState({
+    //   mnemonic: theMnemonic,
+    //   isLoggedIn: true,
+    // });
+  };
+
+  //BELOW -> CHANGE -> THERE IS NOT MOST RECENT THAT IS ONLY THE LIST TO PULL FROM AND THAT IS IT.
+
+  checkPlatformOnlyLogin = (theMnemonic) => {
+    console.log("Called Check Platform Login");
+
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: theMnemonic,
+        offlineMode: true,
+      },
+    };
+
+    const client = new Dash.Client(clientOpts);
+
+    const getWalletId = async () => {
+      const account = await client.getWalletAccount();
+
+      //console.log("walletIdToTry:", walletIdToTry);
+
+      return account.walletId;
+    };
+
+    getWalletId()
+      .then((walletIdToTry) => {
+        let isKeyAvail = this.state.DashMoneyLFKeys.includes(walletIdToTry);
+        // console.log(`DashMoneyLF Test -> ${isKeyAvail}`);
+
+        if (isKeyAvail) {
+          console.log("This here is a login skip!!");
+          //************* */
+          let DashMoneyLF = LocalForage.createInstance({
+            name: "dashmoney-platform-login",
+          });
+
+          DashMoneyLF.getItem(walletIdToTry)
+            .then((val) => {
+              //  console.log("Value Retrieved", val);
+              if (
+                val !== null ||
+                typeof val.identity !== "string" ||
+                val.identity === "" ||
+                val.name === "" ||
+                typeof val.name !== "string"
+              ) {
+                // console.log(val.identity);
+                this.setState(
+                  {
+                    platformLogin: true,
+                    identity: val.identity,
+                    uniqueName: val.name,
+                    walletId: walletIdToTry,
+                    isLoadingName: false,
+                    isLoadingIdentity: false,
+                  },
+                  () => this.handlePlatformLoginSeq(val.identity, theMnemonic)
+                );
+              } else {
+                console.log("platform login FROM LF failed");
+                //JUST DO NORMAL FULL LOGIN
+                //IF LF FAILS FOR SOME REASON JUST DOES NORMAL LOGIN
+                this.setState(
+                  {
+                    platformLogin: false,
+                    identity: "",
+                    uniqueName: "",
+                    walletId: walletIdToTry,
+                  },
+                  () => this.getWalletAndIdentitywithMnem(theMnemonic)
+                );
+              }
+            })
+            .catch((err) => {
+              console.error(
+                "Something went wrong getting from DashMoneyLF:\n",
+                err
+              );
+            });
+        } else {
+          console.log("platform login FROM LF failed");
+          //JUST DO NORMAL FULL LOGIN
+          //FOR LOGIN WITH NEW MNEN BUT NOT IN LF
+          this.setState(
+            {
+              platformLogin: false,
+              walletId: walletIdToTry,
+            },
+            () => this.getWalletAndIdentitywithMnem(theMnemonic)
+          );
+        }
+      })
+      .catch((e) => console.error("Something went wrong:\n", e))
+      .finally(() => client.disconnect());
+  };
+
+  handlePlatformLoginSeq = (theIdentity, theMnemonic) => {
+    //
+    this.getIdentityInfo(theIdentity);
+    this.getWalletPlatformLogin(theMnemonic);
+    // this.getNamefromIdentity(theIdentity); DONT NEED <=
+    this.getAliasfromIdentity(theIdentity);
+    //
+    // ----   ----   ----   ----   ----    ----   ----
+    //
+    //After(Identity/Name) -> trigger added to 2 Functions ABOVE
+    // ForYou(Messages)
+    this.startMessagesQuerySeq(theIdentity);
+    // DGM msgs(to&from) && //DGM AddressesFromWallet!
+    this.handleLoginQueries_WALLET(theIdentity);
   };
 
   handleAccountRetry = () => {
     this.getWalletAndIdentitywithMnem(this.state.mnemonic);
   };
-
+  //
+  //
+  // BELOW STANDARD LOGIN
   getWalletAndIdentitywithMnem = (theMnemonic) => {
     //gOT FROM DGM
     const client = new Dash.Client({
@@ -1609,6 +1778,7 @@ class App extends React.Component {
         accountBalance: account.getTotalBalance(),
         accountAddress: account.getUnusedAddress().address,
         accountHistory: account.getTransactionHistory(),
+        walletId: account.walletId,
       });
 
       return account.identities.getIdentityIds();
@@ -1628,6 +1798,7 @@ class App extends React.Component {
             isLoadingName: false,
 
             identity: "no identity",
+            //uniqueName: '', //Kicks out of platform login if identity is disabled but LF still retains.
           });
         } else {
           this.setState(
@@ -1653,7 +1824,6 @@ class App extends React.Component {
       })
       .finally(() => client.disconnect());
   };
-
   conductFullLogin = (theIdentity) => {
     // <= Called from above func..
     // if (!this.state.platformLogin) { //Disconnected bc no platformlogin for now
@@ -1662,9 +1832,81 @@ class App extends React.Component {
 
     //THIS SHOULD CALL IDINFO, NAMES, AND ALIASES
     this.getIdentityInfo(theIdentity);
-    this.getNamesfromIdentity(theIdentity);
+    this.getNamefromIdentity(theIdentity);
     this.getAliasfromIdentity(theIdentity);
   }; //Many LF, mostRecent and other functions have not been incorporated yet
+  //
+  //
+  // BELOW PLATFORM LOGIN - WALLET PART
+  getWalletPlatformLogin = (theMnemonic) => {
+    const client = new Dash.Client({
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: theMnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+    });
+
+    const retrieveIdentityIds = async () => {
+      const account = await client.getWalletAccount();
+
+      //console.log(account.getTotalBalance());
+      // console.log(account.getUnusedAddress().address);
+      //console.log(account.getTransactionHistory());
+
+      this.setState({
+        accountBalance: account.getTotalBalance(),
+        accountAddress: account.getUnusedAddress().address,
+        accountHistory: account.getTransactionHistory(),
+        //walletId: account.walletId,
+      });
+
+      return account.identities.getIdentityIds();
+    };
+
+    retrieveIdentityIds()
+      .then((d) => {
+        //  console.log("Mnemonic identities:\n", d);
+        //if (d.length === 0) {
+        // NEED TO HANDLE IF RETURN IS EMPTY BUT I HAVE A KEY IN LF.
+        // SHOULD I JUST NOT RETURN IDENTITY? OR
+        // NEED ENTIRE NEW FUNCTION TO HANDLE CHANGING OF LF
+        //   this.setState({
+        //     isLoadingIdentity: false,
+        //     isLoadingWallet: false,
+
+        //     //These are not called so end loading
+        //     isLoadingIdInfo: false,
+        //     isLoadingAlias: false,
+        //     isLoadingName: false,
+
+        //     identity: "no identity",
+        //     uniqueName: "", //Kicks out of platform login if identity is disabled but LF still retains.
+        //   });
+        // }
+        if (this.state.identity === d[0]) {
+          //SHOULD IT NOT EVEN WORRY ABOUT THE IDENTITY?
+          this.setState(
+            {
+              identity: d[0],
+              isLoadingIdentity: false,
+              isLoadingWallet: false,
+            },
+            () => this.getAddresses_WALLET()
+            //  CALL -> this.getAddresses_WALLET();
+            // BC REQUIRES -> this.state.accountHistory
+          );
+        }
+      })
+      .catch((e) => {
+        console.error("Something went wrong getWalletPlatformLogin:\n", e);
+      })
+      .finally(() => client.disconnect());
+  };
 
   getIdentityInfo = (theIdentity) => {
     console.log("Called get identity info");
@@ -1717,6 +1959,7 @@ class App extends React.Component {
   };
 
   handleName = (nameToAdd) => {
+    //From Name Purchase
     this.setState(
       {
         uniqueName: nameToAdd,
@@ -1724,9 +1967,28 @@ class App extends React.Component {
       },
       () => this.LOGINCOMPLETEQueryTrigger(this.state.identity)
     );
+    //ADDS IDENTITY/NAME TO LF AFTER PURCHASE OF NAME
+    //  //******************** */
+    let DashMoneyLF = LocalForage.createInstance({
+      name: "dashmoney-platform-login",
+    });
+    let lfObject = {
+      identity: this.state.identity,
+      name: nameToAdd,
+    };
+
+    DashMoneyLF.setItem(this.state.walletId, lfObject)
+      .then((d) => {
+        //return DashMoneyLF.getItem(walletId);
+        console.log("Return from LF setitem:", d);
+      })
+      .catch((err) => {
+        console.error("Something went wrong setting to DashMoneyLF:\n", err);
+      });
+    // //******************** */
   };
 
-  getNamesfromIdentity = (theIdentity) => {
+  getNamefromIdentity = (theIdentity) => {
     const client = new Dash.Client({ network: this.state.whichNetwork });
 
     const retrieveNameByRecord = async () => {
@@ -1748,6 +2010,31 @@ class App extends React.Component {
           });
         } else {
           let nameRetrieved = d[0].toJSON();
+          //
+          //  //******************** */
+          //ADDS IDENTITY/NAME TO LF AFTER NORMAL LOGIN IF WALLETID IS NOT IN LF
+          if (!this.state.platformLogin) {
+            let DashMoneyLF = LocalForage.createInstance({
+              name: "dashmoney-platform-login",
+            });
+            let lfObject = {
+              identity: theIdentity,
+              name: nameRetrieved.label,
+            };
+
+            DashMoneyLF.setItem(this.state.walletId, lfObject)
+              .then((d) => {
+                //return DashMoneyLF.getItem(walletId);
+                //   console.log("Return from LF setitem:", d);
+              })
+              .catch((err) => {
+                console.error(
+                  "Something went wrong setting to DashMoneyLF:\n",
+                  err
+                );
+              });
+          }
+          //******************** */
           console.log("Name retrieved:\n", nameRetrieved);
           this.setState(
             {
@@ -1776,7 +2063,10 @@ class App extends React.Component {
 
     // DGM msgs(to&from) && //DGM AddressesFromWallet!
     this.handleLoginQueries_WALLET(theIdentity);
-    this.getAddresses_WALLET();
+    //
+    //if(this.state.platformLogin){}
+    this.getAddresses_WALLET(); //REQUIRES -> this.state.accountHistory
+    // NEED TO CALL ^^^ AFTER THE WALLET IS PULLED <=
   };
 
   getAliasfromIdentity = (theIdentity) => {
@@ -1858,27 +2148,6 @@ class App extends React.Component {
           isLoadingIdInfo: false,
           accountBalance: this.state.accountBalance - 1000000,
         });
-
-        // if(!this.state.platformLogin){
-        //   //CREATE AN OBJECT AND PUT IT IN THERE!!!
-        //   let lfObject = {
-        //    identity: idInfo.id,
-        //  };
-
-        //  let DashMoneyLF = LocalForage.createInstance({
-        //    name: "dashmoney-platform-login",
-        //  });
-        //  //This is where I save to localForage if walletId is not there.
-        //  DashMoneyLF.setItem(this.state.walletId, lfObject)
-        //    .then((d) => {
-        //      //return LocalForage.getItem(walletId);
-        //      console.log("Return from LF setitem:", d);
-        //    })
-        //    .catch((err) => {
-        //      console.error("Something went wrong setting to localForage:\n", err);
-        //    });
-        //  //******************** */
-        //  }
       })
       .catch((e) => {
         console.error("Something went wrong:\n", e);
@@ -2031,7 +2300,7 @@ class App extends React.Component {
         isLoadingEveryone: false,
         isLoadingRefresh: false,
       });
-      setInterval(() => this.autoUpdateEveryoneHelper(), 50000);
+      setInterval(() => this.autoUpdateEveryoneHelper(), 100000);
     }
   };
 
@@ -2299,7 +2568,7 @@ class App extends React.Component {
         isLoadingRefresh: false,
       });
 
-      setInterval(() => this.autoUpdateForYouHelper(), 40000);
+      setInterval(() => this.autoUpdateForYouHelper(), 100000);
     }
   };
 
@@ -7258,7 +7527,7 @@ class App extends React.Component {
     this.setState({
       isLoadingOrdersYOURSTORE: true,
       isLoadingStoreYOURSTORE: true,
-      isLoadingButtons_WALLET: true, //ADDED TO ENSURE DONT CALL TWICE
+      // isLoadingButtons_WALLET: true, //ADDED TO ENSURE DONT CALL TWICE -> Removed bc separating dgmAddr and DGP Store Creation
     });
 
     const clientOpts = {
@@ -7272,9 +7541,6 @@ class App extends React.Component {
         },
       },
       apps: {
-        DGMContract: {
-          contractId: this.state.DataContractDGM,
-        },
         DGPContract: {
           contractId: this.state.DataContractDGP,
         },
@@ -7282,13 +7548,7 @@ class App extends React.Component {
     };
     const client = new Dash.Client(clientOpts);
 
-    //let docsToCreate = []; // MOVE OUT SO CAN USE IN RETURN LOGIC
-
-    let DGPStoreDoc = [];
-
-    let DGMAddrDoc = [];
-
-    const submitStoreDocs = async () => {
+    const submitStoreDoc = async () => {
       const { platform } = client;
       // const identity = await platform.identities.get(this.state.identity); // Your identity ID
 
@@ -7304,8 +7564,8 @@ class App extends React.Component {
         public: storeObject.public,
         open: storeObject.open,
 
-        //NEW PROPERTIES - STILL NEED TO BE IMPLEMENTED
         payLater: storeObject.payLater,
+        //NEW PROPERTIES - STILL NEED TO BE IMPLEMENTED
         acceptCredits: false,
         acceptDash: true,
       };
@@ -7316,134 +7576,42 @@ class App extends React.Component {
         storeDocProperties
       );
 
-      DGPStoreDoc.push(dgpDocument);
-
-      if (this.state.DGMAddress === "No Address") {
-        const docProperties = {
-          address: this.state.accountAddress,
-        };
-        // Create the address document
-        const dgmDocument = await platform.documents.create(
-          "DGMContract.dgmaddress",
-          identity,
-          docProperties
-        );
-
-        DGMAddrDoc.push(dgmDocument);
-      }
-
       //############################################################
       //This below disconnects the document sending..***
 
-      // return docsToCreate;
+      // return dgpDocument;
 
       //This is to disconnect the Document Creation***
       //############################################################
 
-      //CAN I SUBMIT DOCS TO 2 DIFFERENT DATA CONTRACTS? -> TEST ->
-      let addrBatch;
-
       const storeBatch = {
-        create: DGPStoreDoc, // Document(s) to create
+        create: [dgpDocument], // Document(s) to create
       };
 
-      if (DGMAddrDoc.length !== 0) {
-        addrBatch = {
-          create: DGMAddrDoc, // Document(s) to create
-        };
-      }
-
       await platform.documents.broadcast(storeBatch, identity);
-
-      if (DGMAddrDoc.length !== 0) {
-        await platform.documents.broadcast(addrBatch, identity);
-      }
-
-      if (DGMAddrDoc.length !== 0) {
-        return [...DGPStoreDoc, ...DGMAddrDoc];
-      } else {
-        return [DGPStoreDoc];
-      }
+      return dgpDocument;
     };
 
-    submitStoreDocs()
+    submitStoreDoc()
       .then((d) => {
-        //handle if nothing returned?? ->
-        //INTERESTING -> IF ONLY ONE ITEM THEN IT DOESN'T RETURN AN ARRAY!! -> NO IT IS NEVER ANY ARRAY -> THE DOCUMENT SIMPLY HAS TRANSITIONS AND THAT THIS THE ARRAY!!!!! <-
+        let store = d.toJSON();
+        console.log("Store Documents JSON:\n", store);
 
-        // let returnedDoc = d.toJSON();
-        // console.log("Store Documents JSON:\n", returnedDoc);
+        // store = {
+        //   $ownerId: docArray[0].$ownerId,
+        //   $id: docArray[0].$id,
+        //   description: storeObject.description,
+        //   payLater: storeObject.payLater,
+        //   public: storeObject.public,
+        //   open: storeObject.open,
+        // };
 
-        let docArray = [];
-        for (const n of d) {
-          console.log("Submitted Doc:\n", n.toJSON());
-          docArray = [...docArray, n.toJSON()];
-        }
-
-        let store;
-        let address;
-
-        //Single Document will be the Store
-        if (docArray.length === 1) {
-          store = {
-            $ownerId: docArray[0].$ownerId,
-            $id: docArray[0].$id,
-            description: storeObject.description,
-            payLater: storeObject.payLater,
-            public: storeObject.public,
-            open: storeObject.open,
-          };
-
-          this.setState({
-            DGPStore: [store],
-            isLoadingOrdersYOURSTORE: false,
-            isLoadingStoreYOURSTORE: false,
-            isLoadingButtons_WALLET: false, //ADDED TO ENSURE DONT CALL TWICE
-          });
-        } else {
-          //Have to handle that may come back in any order.
-          //Still may do some assuming
-
-          store = {
-            $ownerId: docArray[0].$ownerId,
-            $id: docArray[0].$id,
-            description: storeObject.description,
-            payLater: storeObject.payLater,
-            public: storeObject.public,
-            open: storeObject.open,
-          };
-
-          address = {
-            $ownerId: docArray[1].$ownerId,
-            $id: docArray[1].$id,
-            address: this.state.accountAddress,
-          };
-
-          //   if(returnedDoc.transitions[1].$type === 'dgmaddress'){
-          //     address ={
-          //      $ownerId: returnedDoc.ownerId,
-          //      $id: returnedDoc.transitions[1].$id,
-          //      address: this.state.accountAddress,
-          //    }
-          //  } else {
-          //    store = {
-          //      $ownerId: returnedDoc.ownerId,
-          //      $id: returnedDoc.transitions[1].$id,
-          //      description: storeObject.description,
-          //      public: storeObject.public,
-          //      open: storeObject.open,
-          //    }
-          //  }
-
-          this.setState({
-            DGMAddress: [address],
-            dgmDocuments: [address],
-            DGPStore: [store],
-            isLoadingOrdersYOURSTORE: false,
-            isLoadingStoreYOURSTORE: false,
-            isLoadingButtons_WALLET: false, //ADDED TO ENSURE DONT CALL TWICE
-          });
-        }
+        this.setState({
+          DGPStore: [store],
+          isLoadingOrdersYOURSTORE: false,
+          isLoadingStoreYOURSTORE: false,
+          //isLoadingButtons_WALLET: false, //ADDED TO ENSURE DONT CALL TWICE -> Removed bc separating dgmAddr and DGP Store Creation
+        });
       })
       .catch((e) => {
         console.error("Something went wrong during store creation:\n", e);
@@ -7451,7 +7619,6 @@ class App extends React.Component {
           storeError: true,
           isLoadingOrdersYOURSTORE: false,
           isLoadingStoreYOURSTORE: false,
-          isLoadingButtons_WALLET: false, //ADDED TO ENSURE DONT CALL TWICE
         });
       })
       .finally(() => client.disconnect());
@@ -7580,80 +7747,80 @@ class App extends React.Component {
       .finally(() => client.disconnect());
   };
 
-  RegisterDGMAddress = () => {
-    //IS THIS DOING ANYTHING? -> REMOVE-> ? ->
-    //This by itself just in case I need to fix it...
-    console.log("Called Register DGM Address");
-    this.setState({
-      isLoadingConfirmation: true,
-      isLoadingButtons: true,
-      isLoadingButtons_WALLET: true, //ADDED TO ENSURE DONT CALL TWICE
-    });
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DGMContract: {
-          contractId: this.state.DataContractDGM,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+  // RegisterDGMAddress = () => {
+  //   //IS THIS DOING ANYTHING? -> REMOVE-> ? ->
+  //   //This by itself just in case I need to fix it...
+  //   console.log("Called Register DGM Address");
+  //   this.setState({
+  //     isLoadingConfirmation: true,
+  //     isLoadingButtons: true,
+  //     isLoadingButtons_WALLET: true, //ADDED TO ENSURE DONT CALL TWICE
+  //   });
+  //   const clientOpts = {
+  //     network: this.state.whichNetwork,
+  //     wallet: {
+  //       mnemonic: this.state.mnemonic,
+  //       adapter: LocalForage.createInstance,
+  //       unsafeOptions: {
+  //         skipSynchronizationBeforeHeight:
+  //           this.state.skipSynchronizationBeforeHeight,
+  //       },
+  //     },
+  //     apps: {
+  //       DGMContract: {
+  //         contractId: this.state.DataContractDGM,
+  //       },
+  //     },
+  //   };
+  //   const client = new Dash.Client(clientOpts);
 
-    const submitNoteDocument = async () => {
-      const { platform } = client;
-      const identity = await platform.identities.get(this.state.identity); // Your identity ID
+  //   const submitNoteDocument = async () => {
+  //     const { platform } = client;
+  //     const identity = await platform.identities.get(this.state.identity); // Your identity ID
 
-      const docProperties = {
-        address: this.state.accountAddress,
-      };
+  //     const docProperties = {
+  //       address: this.state.accountAddress,
+  //     };
 
-      // Create the note document
-      const dgmDocument = await platform.documents.create(
-        "DGMContract.dgmaddress", /// I changed .note TO .dgmaddress***
-        identity,
-        docProperties
-      );
+  //     // Create the note document
+  //     const dgmDocument = await platform.documents.create(
+  //       "DGMContract.dgmaddress", /// I changed .note TO .dgmaddress***
+  //       identity,
+  //       docProperties
+  //     );
 
-      const documentBatch = {
-        create: [dgmDocument], // Document(s) to create
-        replace: [], // Document(s) to update
-        delete: [], // Document(s) to delete
-      };
-      // Sign and submit the document(s)
-      return platform.documents.broadcast(documentBatch, identity);
-    };
+  //     const documentBatch = {
+  //       create: [dgmDocument], // Document(s) to create
+  //       replace: [], // Document(s) to update
+  //       delete: [], // Document(s) to delete
+  //     };
+  //     // Sign and submit the document(s)
+  //     return platform.documents.broadcast(documentBatch, identity);
+  //   };
 
-    submitNoteDocument()
-      .then((d) => {
-        let returnedDoc = d.toJSON();
-        console.log("Document:\n", returnedDoc);
+  //   submitNoteDocument()
+  //     .then((d) => {
+  //       let returnedDoc = d.toJSON();
+  //       console.log("Document:\n", returnedDoc);
 
-        this.setState({
-          dgmDocuments: [returnedDoc],
-          isLoadingConfirmation: false,
-          isLoadingButtons: false,
-          isLoadingButtons_WALLET: false, //ADDED TO ENSURE DONT CALL TWICE
-        });
-      })
-      .catch((e) => {
-        console.error("Something went wrong:\n", e);
-        this.setState({
-          dgmDocuments: "Document Error",
-          isLoadingConfirmation: false,
-          isLoadingButtons: false,
-          isLoadingButtons_WALLET: false, //ADDED TO ENSURE DONT CALL TWICE
-        });
-      })
-      .finally(() => client.disconnect());
-  };
+  //       this.setState({
+  //         dgmDocuments: [returnedDoc],
+  //         isLoadingConfirmation: false,
+  //         isLoadingButtons: false,
+  //         isLoadingButtons_WALLET: false, //ADDED TO ENSURE DONT CALL TWICE
+  //       });
+  //     })
+  //     .catch((e) => {
+  //       console.error("Something went wrong:\n", e);
+  //       this.setState({
+  //         dgmDocuments: "Document Error",
+  //         isLoadingConfirmation: false,
+  //         isLoadingButtons: false,
+  //         isLoadingButtons_WALLET: false, //ADDED TO ENSURE DONT CALL TWICE
+  //       });
+  //     })
+  //     .finally(() => client.disconnect());
+  // };
 
   createDGPItem = (itemObject) => {
     console.log("Called Create DGP Item");
@@ -14431,6 +14598,7 @@ class App extends React.Component {
       identityInfo: "", //bC THIS IS WHAT CONTROLS THE TOPUP CREDITS AND WILL THAT MESS WITH THE FUNCTION BELOW ?
     });
     console.log(this.state.identityInfo.balance);
+
     const clientOpts = {
       network: this.state.whichNetwork,
       wallet: {
@@ -14518,6 +14686,78 @@ class App extends React.Component {
       .finally(() => client.disconnect());
   };
 
+  disableIdentityKey = () => {
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const updateIdentityDisableKey = async () => {
+      const identityId = "an identity ID goes here";
+      const keyId = "a public key ID goes here"; // One of the identity's public key IDs
+
+      // Retrieve the identity to be updated and the public key to disable
+      const existingIdentity = await client.platform.identities.get(identityId);
+      const publicKeyToDisable = existingIdentity.getPublicKeyById(keyId);
+
+      const updateDisable = {
+        disable: [publicKeyToDisable],
+      };
+
+      await client.platform.identities.update(existingIdentity, updateDisable);
+      return client.platform.identities.get(identityId);
+    };
+
+    updateIdentityDisableKey()
+      .then((d) => console.log("Identity updated:\n", d.toJSON()))
+      .catch((e) => console.error("Something went wrong:\n", e))
+      .finally(() => client.disconnect());
+  };
+
+  breakIdentity = () => {
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const updateIdentityDisableKey = async () => {
+      const identityId = "an identity ID goes here";
+      const keyId = "a public key ID goes here"; // One of the identity's public key IDs
+
+      // Retrieve the identity to be updated and the public key to disable
+      const existingIdentity = await client.platform.identities.get(identityId);
+      const publicKeyToDisable = existingIdentity.getPublicKeyById(keyId);
+
+      const updateDisable = {
+        disable: [publicKeyToDisable],
+      };
+
+      await client.platform.identities.update(existingIdentity, updateDisable);
+      return client.platform.identities.get(identityId);
+    };
+
+    updateIdentityDisableKey()
+      .then((d) => console.log("Identity updated:\n", d.toJSON()))
+      .catch((e) => console.error("Something went wrong:\n", e))
+      .finally(() => client.disconnect());
+  };
+
   render() {
     this.state.mode === "primary"
       ? (document.body.style.backgroundColor = "rgb(280,280,280)")
@@ -14557,13 +14797,24 @@ class App extends React.Component {
                     <>
                       <LoginForm
                         handleAccountLogin={this.handleAccountLogin}
-                        LocalForageKeys={this.state.LocalForageKeys}
+                        DashMoneyLFKeys={this.state.DashMoneyLFKeys}
                         showModal={this.showModal}
                         mode={this.state.mode}
                       />
                     </>
                   ) : (
                     <>
+                      {/* {this.state.isIdentityControlShowing ? (
+                      <>
+<IdentityControlPage 
+breakIdentity={this.breakIdentity}
+identity={this.state.identity}
+                        identityRaw={this.state.identityRaw}
+                        identityInfo={this.state.identityInfo}
+                        mode={this.state.mode}
+/>
+                      </>
+                      ):(<></>)} */}
                       <AccountLogin
                         isLoginComplete={isLoginComplete}
                         mnemonic={this.state.mnemonic}
@@ -14582,6 +14833,7 @@ class App extends React.Component {
                         aliasList={this.state.aliasList}
                         accountBalance={this.state.accountBalance}
                         mode={this.state.mode}
+                        showIdentityControlPage={this.showIdentityControlPage}
                       />
                     </>
                   )}
@@ -14798,6 +15050,10 @@ class App extends React.Component {
                     handleMerchantOrderMsgModalShow={
                       this.handleMerchantOrderMsgModalShow
                     }
+                    //BELOW -> DGMAddr and Store Separation
+                    dgmDocuments={this.state.dgmDocuments}
+                    WALLET_Login7={this.state.WALLET_Login7}
+                    isLoadingButtons_WALLET={this.state.isLoadingButtons_WALLET}
                   />
                 </>
               ) : (

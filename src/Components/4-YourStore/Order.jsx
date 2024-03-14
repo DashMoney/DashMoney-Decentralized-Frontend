@@ -5,6 +5,7 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Badge from "react-bootstrap/Badge";
+import handleDenomDisplay from "../UnitDisplay";
 
 class Order extends React.Component {
   constructor(props) {
@@ -56,25 +57,6 @@ class Order extends React.Component {
     return dateReturn;
   }
 
-  handleDenomDisplay = (duffs, qty) => {
-    if (duffs >= 1000000) {
-      return (
-        <span style={{ color: "#008de4" }}>
-          {((duffs * qty) / 100000000).toFixed(3)} Dash
-        </span>
-      );
-    } else {
-      return (
-        // <span style={{ color: "#008de4" }}>
-        //   {((duffs * qty) / 100000).toFixed(2)} mDash
-        // </span>
-        <span style={{ color: "#008de4" }}>
-          {((duffs * qty) / 1000).toFixed(0)} kD
-        </span>
-      );
-    }
-  };
-
   handleTotalItems = (items) => {
     let numOfItems = 0;
     items.forEach((tuple) => {
@@ -96,26 +78,10 @@ class Order extends React.Component {
       //console.log(theTotal);
     });
 
-    if (theTotal >= 1000000) {
-      theTotal = Math.round(theTotal / 100000);
-
-      return (
-        <h4 className="indentMembers" style={{ color: "#008de4" }}>
-          <b>{(theTotal / 1000).toFixed(3)} Dash</b>
-        </h4>
-      );
-    } else {
-      theTotal = Math.round(theTotal / 1000);
-
-      return (
-        // <h4 className="indentMembers" style={{ color: "#008de4" }}>
-        //   <b>{(theTotal / 100).toFixed(2)} mDash</b>
-        // </h4>
-        <h4 className="indentMembers" style={{ color: "#008de4" }}>
-          <b>{theTotal.toFixed(0)} kD</b>
-        </h4>
-      );
-    }
+  return <h4 className="indentMembers" style={{ color: "#008de4" }}>
+        <b>{handleDenomDisplay(theTotal)}</b>
+       </h4>;
+    
   };
 
   verifyPayment = (theItems, theOrder) => {

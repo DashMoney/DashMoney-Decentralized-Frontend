@@ -7,6 +7,7 @@ import Row from "react-bootstrap/Row";
 import Badge from "react-bootstrap/Badge";
 
 import Order from "./Order";
+import handleDenomDisplay from "../UnitDisplay";
 
 import Dash from "dash";
 
@@ -66,25 +67,6 @@ class Orders extends React.Component {
     return "None Found";
   };
 
-  handleDenomDisplay = (duffs, qty) => {
-    if (duffs >= 1000000) {
-      return (
-        <span style={{ color: "#008de4" }}>
-          {((duffs * qty) / 100000000).toFixed(3)} Dash
-        </span>
-      );
-    } else {
-      return (
-        // <span style={{ color: "#008de4" }}>
-        //   {((duffs * qty) / 100000).toFixed(2)} mDash
-        // </span>
-        <span style={{ color: "#008de4" }}>
-          {((duffs * qty) / 1000).toFixed(0)} kD
-        </span>
-      );
-    }
-  };
-
   handleTotalItems = (items) => {
     let numOfItems = 0;
     items.forEach((tuple) => {
@@ -106,26 +88,10 @@ class Orders extends React.Component {
       //console.log(theTotal);
     });
 
-    if (theTotal >= 1000000) {
-      theTotal = Math.round(theTotal / 100000);
+    return <h4 className="indentMembers" style={{ color: "#008de4" }}>
+        <b>{handleDenomDisplay(theTotal)}</b>
+       </h4>;
 
-      return (
-        <h4 className="indentMembers" style={{ color: "#008de4" }}>
-          <b>{(theTotal / 1000).toFixed(3)} Dash</b>
-        </h4>
-      );
-    } else {
-      theTotal = Math.round(theTotal / 1000);
-
-      return (
-        // <h4 className="indentMembers" style={{ color: "#008de4" }}>
-        //   <b>{(theTotal / 100).toFixed(2)} mDash</b>
-        // </h4>
-        <h4 className="indentMembers" style={{ color: "#008de4" }}>
-          <b>{theTotal.toFixed(0)} kD</b>
-        </h4>
-      );
-    }
   };
 
   verifyPayment = (theItems, theOrder) => {
@@ -306,20 +272,20 @@ class Orders extends React.Component {
             <div className="cardTitle" key={index}>
               <b>{item[0].name}</b>
               <b>{item[1]}</b>
-              <b>{this.handleDenomDisplay(item[0].price, item[1])}</b>
+              <b>{handleDenomDisplay(item[0].price, item[1])}</b>
             </div>
           );
 
           // return <Row key={index}>
           //   <Col xs={5} md={4}><b>{item[0].name}</b> </Col>
           //   <Col xs={1} md={4}><b>{item[1]}</b> </Col>
-          //   <Col xs={5} md={4}><b>{this.handleDenomDisplay(item[0].price, item[1])}</b></Col>
+          //   <Col xs={5} md={4}><b>{handleDenomDisplay(item[0].price, item[1])}</b></Col>
           //   </Row>
 
           //  return <div key={index} className="cardTitle">
           // <h5>{item[0].name}</h5>
           // <h5>{item[1]}</h5>
-          // <h5><b>{this.handleDenomDisplay(item[0].price, item[1])}</b></h5>
+          // <h5><b>{handleDenomDisplay(item[0].price, item[1])}</b></h5>
           // </div>
         });
 
@@ -390,9 +356,9 @@ class Orders extends React.Component {
                 <div className="cardTitle">
                   <div>
                     <b>Wallet Balance</b>
-                    <h4>
+                    <h4 style={{ color: "#008de4" }}>
                       <b>
-                        {this.handleDenomDisplay(this.props.accountBalance, 1)}
+                        {handleDenomDisplay(this.props.accountBalance, 1)}
                       </b>
                     </h4>
                   </div>
@@ -407,7 +373,43 @@ class Orders extends React.Component {
             </>
           )}
         </div>
-        {this.props.DGPStore === "No Store" &&
+
+        {this.props.dgmDocuments.length === 0 &&
+        this.props.WALLET_Login7 &&
+        !this.props.isLoadingButtons_WALLET ? (
+          <>
+            <div className="d-grid gap-2" style={{ margin: "1rem" }}>
+              <Button
+                variant="primary"
+                size="lg"
+                onClick={() => this.props.showModal("RegisterDGMModal")}
+              >
+                <b>Enable Pay-to-Name</b>
+              </Button>
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
+
+        {this.props.dgmDocuments.length === 0 &&
+        this.props.WALLET_Login7 &&
+        this.props.isLoadingButtons_WALLET ? (
+          <>
+            <div className="d-grid gap-2" style={{ margin: "1rem" }}>
+              <Button variant="primary" size="lg" disabled>
+                <b>Enable Pay-to-Name</b>
+              </Button>
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
+
+        {this.props.dgmDocuments.length !== 0 &&
+        this.props.WALLET_Login7 &&
+        //Added top 2 for Address create prior to Store Create
+        this.props.DGPStore === "No Store" &&
         !this.props.LoadingStore &&
         !this.props.LoadingOrders ? (
           <div className="d-grid gap-2" id="button-edge">
@@ -455,7 +457,10 @@ class Orders extends React.Component {
 
         {this.props.LoadingOrders ||
         this.props.isLoadingWallet ||
-        this.props.LoadingStore ? (
+        this.props.LoadingStore ||
+        !this.props.WALLET_Login7 ||
+        this.props.isLoadingButtons_WALLET ? (
+          // WALLET_Login7  && isLoadingButtons_WALLET added for the separation of DGM and Store Creation
           <>
             <p></p>
             <div id="spinner">

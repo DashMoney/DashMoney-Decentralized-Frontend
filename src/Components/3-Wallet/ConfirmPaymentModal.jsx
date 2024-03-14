@@ -3,6 +3,8 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import CloseButton from "react-bootstrap/CloseButton";
 
+import handleDenomDisplay from "../UnitDisplay";
+
 import "./ConfirmPaymentModal.css";
 
 class ConfirmPaymentModal extends React.Component {
@@ -15,24 +17,6 @@ class ConfirmPaymentModal extends React.Component {
     this.props.handleClearModalPostPmtConfirm();
     this.props.sendDashtoName();
     this.handleCloseClick();
-  };
-
-  handleDenomDisplay = (duffs) => {
-    if (duffs >= 1000000) {
-      return (
-        <span style={{ color: "#008de4" }}>
-          {(duffs / 100000000).toFixed(3)} Dash
-        </span>
-      );
-    } else {
-      return (
-        // <span style={{ color: "#008de4" }}>
-        //   {(duffs / 100000).toFixed(2)} mDash
-        // </span>
-
-        <span style={{ color: "#008de4" }}>{(duffs / 1000).toFixed(0)} kD</span>
-      );
-    }
   };
 
   render() {
@@ -65,7 +49,7 @@ class ConfirmPaymentModal extends React.Component {
           </Modal.Header>
           <Modal.Body>
             <h6>
-              Send <b>{this.handleDenomDisplay(this.props.amountToSend)}</b> to{" "}
+              Send <b>{handleDenomDisplay(this.props.amountToSend)}</b> to{" "}
               <b>{this.props.sendToName}</b>?
             </h6>
             {this.props.messageToSend !== "" ? (

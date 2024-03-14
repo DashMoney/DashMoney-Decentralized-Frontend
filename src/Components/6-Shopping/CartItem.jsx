@@ -1,30 +1,15 @@
 import React from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
+import handleDenomDisplay from "../UnitDisplay";
 
 class CartItem extends React.Component {
-  handleDenomDisplay = (duffs) => {
-    if (Number(duffs) === 0) {
-      return (
-        <span style={{ color: "#008de4" }}>
-          <b>Tracking Only</b>
-        </span>
-      );
-    } else if (duffs >= 1000000) {
-      return (
-        <span style={{ color: "#008de4" }}>
-          {((duffs * this.props.item[1]) / 100000000).toFixed(3)} Dash
-        </span>
-      );
+  handleDenomDisplayWithTracking = (duffs) => {
+    if (duffs === 0) {
+      //Removed ^^ Number()
+      return "Tracking Only";
     } else {
-      return (
-        // <span style={{ color: "#008de4" }}>
-        //   {((duffs * this.props.item[1]) / 100000).toFixed(2)} mDash
-        // </span>
-        <span style={{ color: "#008de4" }}>
-          {((duffs * this.props.item[1]) / 1000).toFixed(0)} kD
-        </span>
-      );
+      return handleDenomDisplay(duffs);
     }
   };
 
@@ -60,8 +45,10 @@ class CartItem extends React.Component {
             >
               Edit Item
             </Button>
-            <h4>
-              <b>{this.handleDenomDisplay(this.props.item[0].price)}</b>
+            <h4 style={{ color: "#008de4" }}>
+              <b>
+                {this.handleDenomDisplayWithTracking(this.props.item[0].price)}
+              </b>
             </h4>
           </div>
         </Card.Body>

@@ -2,6 +2,7 @@ import React from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import CloseButton from "react-bootstrap/CloseButton";
+import handleDenomDisplay from "../UnitDisplay";
 
 import "./ConfirmPaymentModal.css";
 
@@ -21,24 +22,6 @@ class ConfirmAddrPaymentModal extends React.Component {
     event.preventDefault();
     this.props.sendDashtoAddress();
     this.handleCloseClick();
-  };
-
-  handleDenomDisplay = (duffs) => {
-    if (duffs >= 1000000) {
-      return (
-        <span style={{ color: "#008de4" }}>
-          {(duffs / 100000000).toFixed(3)} Dash
-        </span>
-      );
-    } else {
-      return (
-        // <span style={{ color: "#008de4" }}>
-        //   {(duffs / 100000).toFixed(2)} mDash
-        // </span>
-
-        <span style={{ color: "#008de4" }}>{(duffs / 1000).toFixed(0)} kD</span>
-      );
-    }
   };
 
   render() {
@@ -71,8 +54,11 @@ class ConfirmAddrPaymentModal extends React.Component {
           </Modal.Header>
           <Modal.Body>
             <p>
-              Send <b>{this.handleDenomDisplay(this.props.amountToSend)}</b> to{" "}
-              <b>{this.props.sendToAddress}</b>?
+              Send{" "}
+              <b>
+                {handleDenomDisplay(this.props.amountToSend)}
+              </b>{" "}
+              to <b>{this.props.sendToAddress}</b>?
             </p>
           </Modal.Body>
           <Modal.Footer>

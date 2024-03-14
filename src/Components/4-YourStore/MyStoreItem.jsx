@@ -2,6 +2,8 @@ import React from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 
+import handleDenomDisplay from "../UnitDisplay";
+
 class MyStoreItem extends React.Component {
   constructor(props) {
     super(props);
@@ -9,23 +11,6 @@ class MyStoreItem extends React.Component {
       copiedName: false,
     };
   }
-
-  handleDenomDisplay = (duffs) => {
-    if (duffs >= 1000000) {
-      return (
-        <span style={{ color: "#008de4" }}>
-          {(duffs / 100000000).toFixed(3)} Dash
-        </span>
-      );
-    } else {
-      return (
-        // <span style={{ color: "#008de4" }}>
-        //   {(duffs / 100000).toFixed(2)} mDash
-        // </span>
-        <span style={{ color: "#008de4" }}>{(duffs / 1000).toFixed(0)} kD</span>
-      );
-    }
-  };
 
   handleAvail = () => {
     if (this.props.item.avail) {
@@ -36,7 +21,7 @@ class MyStoreItem extends React.Component {
           </span>
         );
       } else {
-        return this.handleDenomDisplay(this.props.item.price);
+        return <span style={{ color: "#008de4" }}>{handleDenomDisplay(this.props.item.price)}</span>;
       }
     } else {
       return <span style={{ color: "#008de4" }}>Unavailable</span>;

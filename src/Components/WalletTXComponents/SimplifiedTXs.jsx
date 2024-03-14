@@ -10,15 +10,6 @@ class SimplifiedTXs extends React.Component {
     return dashAmt2Display;
   };
 
-  // handleDenomDisplayNoStyle = (duffs) => {
-  //   if (duffs >= 1000000) {
-  //     return <span>{(duffs / 100000000).toFixed(3)} Dash</span>;
-  //   } else {
-  //    // return <span>{(duffs / 100000).toFixed(2)} mDash</span>;
-  //    return <span>{(duffs / 1000).toFixed(0)} kD</span>;
-  //   }
-  // };
-
   handleTimeToDate = (timeObject, timeNow) => {
     //TEST Far Future Bug-> Sat.
     let date = new Date(timeObject);

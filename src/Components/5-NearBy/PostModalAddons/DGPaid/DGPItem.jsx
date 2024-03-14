@@ -1,28 +1,22 @@
 import React from "react";
 //import Button from 'react-bootstrap/Button';
 import Card from "react-bootstrap/Card";
+import handleDenomDisplay from "../../../UnitDisplay";
 
 class DGPItem extends React.Component {
-  handleDenomDisplay = (duffs) => {
-    if (duffs >= 1000000) {
-      return (
-        <span style={{ color: "#008de4" }}>
-          {(duffs / 100000000).toFixed(3)} Dash
-        </span>
-      );
-    } else {
-      return (
-        // <span style={{ color: "#008de4" }}>
-        //   {(duffs / 100000).toFixed(2)} mDash
-        // </span>
-        <span style={{ color: "#008de4" }}>{(duffs / 1000).toFixed(0)} kD</span>
-      );
-    }
-  };
-
   handleAvail = () => {
     if (this.props.item.avail) {
-      return this.handleDenomDisplay(this.props.item.price);
+      //REPLACE WITH BELOW
+      if (this.props.item.price === 0) {
+        return <span style={{ color: "#008de4" }}>Tracking Only</span>;
+      } else {
+        return (
+          <span style={{ color: "#008de4" }}>
+            {handleDenomDisplay(this.props.item.price)}
+          </span>
+        );
+      }
+      // return <span style={{ color: "#008de4" }}>{handleDenomDisplay(this.props.item.price)}</span>;
     } else {
       return <span style={{ color: "#008de4" }}>Unavailable</span>;
     }

@@ -6,6 +6,7 @@ import Spinner from "react-bootstrap/Spinner";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
+import handleDenomDisplay from "../UnitDisplay";
 
 class YourOrders extends React.Component {
   handleName = (msgDoc) => {
@@ -100,25 +101,6 @@ class YourOrders extends React.Component {
       return "About a day ago";
     }
   }
-
-  handleDenomDisplay = (duffs, qty) => {
-    if (duffs >= 1000000) {
-      return (
-        <span style={{ color: "#008de4" }}>
-          {((duffs * qty) / 100000000).toFixed(3)} Dash
-        </span>
-      );
-    } else {
-      return (
-        // <span style={{ color: "#008de4" }}>
-        //   {((duffs * qty) / 100000).toFixed(2)} mDash
-        // </span>
-        <span style={{ color: "#008de4" }}>
-          {((duffs * qty) / 1000).toFixed(0)} kD
-        </span>
-      );
-    }
-  };
 
   handleTotalItems = (items) => {
     let numOfItems = 0;
@@ -283,14 +265,14 @@ class YourOrders extends React.Component {
             <div className="cardTitle" key={index}>
               <b>{item[0].name}</b>
               <b>{item[1]}</b>
-              <b>{this.handleDenomDisplay(item[0].price, item[1])}</b>
+              <b style={{ color: "#008de4" }}>{handleDenomDisplay(item[0].price, item[1])}</b>
             </div>
           );
 
           // return <Row key={index}>
           // <Col xs={6} md={4}><h5>{item[0].name}</h5> </Col>
           // <Col xs={1} md={4}><h5>{item[1]}</h5> </Col>
-          // <Col xs={5} md={4}><h5><b>{this.handleDenomDisplay(item[0].price, item[1])}</b></h5></Col>
+          // <Col xs={5} md={4}><h5><b>{handleDenomDisplay(item[0].price, item[1])}</b></h5></Col>
           // </Row>
         });
 
@@ -470,10 +452,8 @@ class YourOrders extends React.Component {
                 <div className="cardTitle">
                   <div>
                     <b>Wallet Balance</b>
-                    <h4>
-                      <b>
-                        {this.handleDenomDisplay(this.props.accountBalance, 1)}
-                      </b>
+                    <h4 style={{ color: "#008de4" }}>
+                      <b>{handleDenomDisplay(this.props.accountBalance, 1)}</b>
                     </h4>
                   </div>
                   <Button
@@ -487,37 +467,6 @@ class YourOrders extends React.Component {
             </>
           )}
         </div>
-        {/* {this.props.isLoadingWallet ? (
-          <>
-            {/* <p> </p>
-                  <div id="spinner">
-                    <Spinner animation="border" role="status">
-                      <span className="visually-hidden">Loading...</span>
-                    </Spinner>
-                  </div>
-                  <p> </p> 
-
-            <div className="paddingBadge">
-              <b>Dash Balance</b>
-
-              <h4>Loading..</h4>
-            </div>
-
-            <p></p>
-          </>
-        ) : (
-          <>
-            <div className="paddingBadge">
-              <b>Dash Balance</b>
-
-              <h4>
-                <b>{this.handleDenomDisplay(this.props.accountBalance, 1)}</b>
-              </h4>
-            </div>
-
-            <p></p>
-          </>
-        )} */}
 
         {this.props.isLoadingRecentOrders ? (
           //  && !this.props.isLoadingWallet

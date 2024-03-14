@@ -15,6 +15,8 @@ import ConfirmPaymentModal from "./ConfirmPaymentModal";
 
 import CreditsOnPage from "../CreditsOnPage";
 
+import handleDenomDisplay from "../UnitDisplay";
+
 import "./ConnectedWalletPage.css";
 
 import Dash from "dash";
@@ -355,34 +357,6 @@ class WalletPage extends React.Component {
     }
   };
 
-  handleDenomDisplay = (duffs) => {
-    if (duffs >= 1000000) {
-      return (
-        <span style={{ color: "#008de4" }}>
-          {(duffs / 100000000).toFixed(3)} Dash
-        </span>
-      );
-    } else {
-      return (
-        // <span style={{ color: "#008de4" }}>
-        //   {(duffs / 100000).toFixed(2)} mDash
-        // </span>
-        <span style={{ color: "#008de4" }}>
-          {(duffs / 1000).toFixed(0)} kD
-        </span>
-      );
-    }
-  };
-
-  handleDenomDisplayNoStyle = (duffs) => {
-    if (duffs >= 1000000) {
-      return <span>{(duffs / 100000000).toFixed(3)} Dash</span>;
-    } else {
-      //return <span>{(duffs / 100000).toFixed(2)} mDash</span>;
-      return <span>{(duffs / 1000).toFixed(0)} kD</span>;
-    }
-  };
-
   //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   render() {
@@ -436,10 +410,8 @@ class WalletPage extends React.Component {
                 <div className="cardTitle">
                   <div>
                     <b>Wallet Balance</b>
-                    <h4>
-                      <b>
-                        {this.handleDenomDisplay(this.props.accountBalance)}
-                      </b>
+                    <h4 style={{ color: "#008de4" }}>
+                      <b>{handleDenomDisplay(this.props.accountBalance)}</b>
                     </h4>
                   </div>
 
@@ -471,8 +443,8 @@ class WalletPage extends React.Component {
 
               {/* <div className="indentStuff">
                 <b>Wallet Balance</b>
-                <h4>
-                  <b>{this.handleDenomDisplay(this.props.accountBalance)}</b>
+                <h4 style={{ color: "#008de4" }}>
+                  <b>{handleDenomDisplay(this.props.accountBalance)}</b>
                 </h4>
               </div>
               <p></p> */}
@@ -535,7 +507,7 @@ class WalletPage extends React.Component {
                         <p>
                           You have successfully sent{" "}
                           <b>
-                            {this.handleDenomDisplayNoStyle(
+                            {handleDenomDisplay(
                               this.props.WALLET_amountToSend
                             )}
                           </b>{" "}
@@ -877,7 +849,7 @@ class WalletPage extends React.Component {
                         <p>
                           You have successfully sent{" "}
                           <b>
-                            {this.handleDenomDisplayNoStyle(
+                            {handleDenomDisplay(
                               this.props.WALLET_amountToSend
                             )}
                           </b>{" "}
@@ -915,7 +887,7 @@ class WalletPage extends React.Component {
                         <p>
                           You have successfully sent{" "}
                           <b>
-                            {this.handleDenomDisplayNoStyle(
+                            {handleDenomDisplay(
                               this.props.WALLET_amountToSend
                             )}
                           </b>{" "}

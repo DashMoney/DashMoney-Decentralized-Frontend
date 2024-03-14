@@ -3,6 +3,8 @@ import Badge from "react-bootstrap/Badge";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 
+import handleDenomDisplay from "../UnitDisplay";
+
 class AccountLogin extends React.Component {
   constructor(props) {
     super(props);
@@ -27,32 +29,6 @@ class AccountLogin extends React.Component {
     let topUpAmt = (this.props.identityInfo.balance / 1000000000).toFixed(2);
     return topUpAmt;
   };
-
-  handleDenomDisplay = (duffs) => {
-    if (duffs >= 1000000) {
-      return (
-        <span style={{ color: "#008de4" }}>
-          {(duffs / 100000000).toFixed(3)} Dash
-        </span>
-      );
-    } else {
-      return (
-        // <span style={{ color: "#008de4" }}>
-        //   {(duffs / 100000).toFixed(2)} mDash
-        // </span>
-        <span style={{ color: "#008de4" }}>{(duffs / 1000).toFixed(0)} kD</span>
-      );
-    }
-  };
-
-  // handleDenomDisplayNoStyle = (duffs) => {
-  //   if (duffs >= 1000000) {
-  //     return <span>{(duffs / 100000000).toFixed(3)} Dash</span>;
-  //   } else {
-  //    // return <span>{(duffs / 100000).toFixed(2)} mDash</span>;
-  //return <span>{(duffs / 1000).toFixed(0)} kD</span>;
-  //   }
-  // };
 
   render() {
     let buttonColor;
@@ -100,10 +76,8 @@ class AccountLogin extends React.Component {
                     <div className="cardTitle">
                       <div>
                         <b>Wallet Balance</b>
-                        <h4>
-                          <b>
-                            {this.handleDenomDisplay(this.props.accountBalance)}
-                          </b>
+                        <h4 style={{ color: "#008de4" }}>
+                          <b>{handleDenomDisplay(this.props.accountBalance)}</b>
                         </h4>
                       </div>
 
@@ -128,26 +102,6 @@ class AccountLogin extends React.Component {
                 </>
               )}
 
-              {/* {this.props.isLoadingWallet ? (
-                <>
-                  <div className="indentStuff">
-                    <b>Wallet Balance</b>
-
-                    <h4>Loading..</h4>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="indentStuff">
-                    <b>Wallet Balance</b>
-                    <h4>
-                      <b>
-                        {this.handleDenomDisplay(this.props.accountBalance)}
-                      </b>
-                    </h4>
-                  </div>
-                </>
-              )} */}
 
               {!this.props.isLoading &&
               !this.props.isLoadingWallet &&

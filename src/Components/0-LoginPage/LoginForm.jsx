@@ -174,12 +174,13 @@ class LoginForm extends React.Component {
                 <b>Create New Account</b>
               </Button>
             </div>
-            {this.props.LocalForageKeys.length === 0 ? (
+            {this.props.DashMoneyLFKeys.length === 0 ? (
               <>
                 <p></p>
                 <p>
-                  <b>First-Time</b> logins may take up to a minute, but all
-                  subsequent will be much faster. Thank you for your patience.
+                  <b>First-Time</b> logins may take up to a minute, but
+                  subsequent logins will be much faster. Thank you for your
+                  patience.
                 </p>
               </>
             ) : (

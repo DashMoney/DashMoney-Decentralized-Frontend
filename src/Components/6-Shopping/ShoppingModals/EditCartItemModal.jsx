@@ -4,6 +4,8 @@ import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Modal from "react-bootstrap/Modal";
 import CloseButton from "react-bootstrap/CloseButton";
 
+import handleDenomDisplay from "../../UnitDisplay";
+
 class EditCartItemModal extends React.Component {
   constructor(props) {
     super(props);
@@ -20,24 +22,6 @@ class EditCartItemModal extends React.Component {
     this.setState({
       itemQuantity: this.state.itemQuantity + input,
     });
-  };
-  handleDenomDisplay = (duffs) => {
-    if (duffs >= 1000000) {
-      return (
-        <span style={{ color: "#008de4" }}>
-          {((duffs * this.state.itemQuantity) / 100000000).toFixed(3)} Dash
-        </span>
-      );
-    } else {
-      return (
-        // <span style={{ color: "#008de4" }}>
-        //   {((duffs * this.state.itemQuantity) / 100000).toFixed(2)} mDash
-        // </span>
-        <span style={{ color: "#008de4" }}>
-          {((duffs * this.state.itemQuantity) / 1000).toFixed(0)} kD
-        </span>
-      );
-    }
   };
 
   handleSubmitClick = () => {
@@ -131,9 +115,9 @@ class EditCartItemModal extends React.Component {
             </p>
 
             {this.state.itemQuantity > 0 ? (
-              <h5 className="PriceRight">
+              <h5 className="PriceRight" style={{ color: "#008de4" }}>
                 <b>
-                  {this.handleDenomDisplay(
+                  {handleDenomDisplay(
                     this.props.cartItems[this.props.selectedCartItemIndex][0]
                       .price
                   )}

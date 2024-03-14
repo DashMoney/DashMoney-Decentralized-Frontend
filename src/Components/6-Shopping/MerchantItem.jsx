@@ -1,25 +1,9 @@
 import React from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
+import handleDenomDisplay from "../UnitDisplay";
 
 class MerchantItem extends React.Component {
-  handleDenomDisplay = (duffs) => {
-    if (duffs >= 1000000) {
-      return (
-        <span style={{ color: "#008de4" }}>
-          {(duffs / 100000000).toFixed(3)} Dash
-        </span>
-      );
-    } else {
-      return (
-        // <span style={{ color: "#008de4" }}>
-        //   {(duffs / 100000).toFixed(2)} mDash
-        // </span>
-        <span style={{ color: "#008de4" }}>{(duffs / 1000).toFixed(0)} kD</span>
-      );
-    }
-  };
-
   handleAvail = () => {
     if (this.props.item.avail) {
       if (Number(this.props.item.price) === 0) {
@@ -29,9 +13,12 @@ class MerchantItem extends React.Component {
           </span>
         );
       } else {
-        return this.handleDenomDisplay(this.props.item.price);
+        return (
+          <span style={{ color: "#008de4" }}>
+            {handleDenomDisplay(this.props.item.price)}
+          </span>
+        );
       }
-      //return this.handleDenomDisplay(this.props.item.price)
     } else {
       return <span style={{ color: "#008de4" }}>Unavailable</span>;
     }
@@ -55,10 +42,6 @@ class MerchantItem extends React.Component {
           <Card.Title className="cardTitle">
             <span>{this.props.item.name}</span>
             {this.handleAvail()}
-
-            {/* <span className="textsmaller text-muted">
-              {this.getRelativeTimeAgo(this.props.tuple[1].$createdAt, this.props.date)}
-            </span> */}
           </Card.Title>
 
           <Card.Text>{this.props.item.description}</Card.Text>

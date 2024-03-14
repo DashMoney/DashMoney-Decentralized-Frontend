@@ -86,7 +86,10 @@ class MyStore extends React.Component {
 
     return (
       <>
-        {this.props.LoadingStore ? (
+        {this.props.LoadingStore ||
+        !this.props.WALLET_Login7 ||
+        this.props.isLoadingButtons_WALLET ? (
+          // WALLET_Login7 && isLoadingButtons_WALLET added for the separation of DGM and Store Creation
           <>
             <p></p>
             <div id="spinner">
@@ -99,7 +102,10 @@ class MyStore extends React.Component {
           <></>
         )}
 
-        {/* {this.props.DGPStore.length === 0 ?
+        {/* 
+
+        
+        {this.props.DGPStore.length === 0 ?
 
 <div className="d-grid gap-2" id="button-edge">
           <Button
@@ -115,7 +121,47 @@ class MyStore extends React.Component {
         <></>
 } */}
 
-        {this.props.DGPStore === "No Store" && !this.props.LoadingStore ? (
+        {/* ADDED FOR ENABLE PAY-TO-NAME BELOW */}
+
+        {this.props.dgmDocuments.length === 0 &&
+        this.props.WALLET_Login7 &&
+        !this.props.isLoadingButtons_WALLET ? (
+          <>
+            <div className="d-grid gap-2" style={{ margin: "1rem" }}>
+              <Button
+                variant="primary"
+                size="lg"
+                onClick={() => this.props.showModal("RegisterDGMModal")}
+              >
+                <b>Enable Pay-to-Name</b>
+              </Button>
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
+
+        {this.props.dgmDocuments.length === 0 &&
+        this.props.WALLET_Login7 &&
+        this.props.isLoadingButtons_WALLET ? (
+          <>
+            <div className="d-grid gap-2" style={{ margin: "1rem" }}>
+              <Button variant="primary" size="lg" disabled>
+                <b>Enable Pay-to-Name</b>
+              </Button>
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
+
+        {/* ADDED FOR ENABLE PAY-TO-NAME ^^^ */}
+
+        {this.props.dgmDocuments.length !== 0 &&
+        this.props.WALLET_Login7 &&
+        //Added top 2 for Address create prior to Store Create
+        this.props.DGPStore === "No Store" &&
+        !this.props.LoadingStore ? (
           <div className="d-grid gap-2" id="button-edge">
             <Button
               variant="primary"

@@ -2,6 +2,7 @@ import React from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import CloseButton from "react-bootstrap/CloseButton";
+import handleDenomDisplay from "./UnitDisplay";
 
 class TopUpIdentityModal extends React.Component {
   handleCloseClick = () => {
@@ -23,25 +24,6 @@ class TopUpIdentityModal extends React.Component {
       return true;
     } else {
       return false;
-    }
-  };
-
-  handleDenomDisplay = (duffs, qty) => {
-    if (duffs >= 1000000) {
-      return (
-        <span style={{ color: "#008de4" }}>
-          {((duffs * qty) / 100000000).toFixed(3)} Dash
-        </span>
-      );
-    } else {
-      return (
-        // <span style={{ color: "#008de4" }}>
-        //   {((duffs * qty) / 100000).toFixed(2)} mDash
-        // </span>
-        <span style={{ color: "#008de4" }}>
-          {((duffs * qty) / 1000).toFixed(0)} kD
-        </span>
-      );
     }
   };
 
@@ -100,8 +82,8 @@ class TopUpIdentityModal extends React.Component {
               <div className="paddingBadge">
                 <b>Dash Balance</b>
 
-                <h4>
-                  <b>{this.handleDenomDisplay(this.props.accountBalance, 1)}</b>
+                <h4 style={{ color: "#008de4" }}>
+                  <b>{handleDenomDisplay(this.props.accountBalance, 1)}</b>
                 </h4>
               </div>
 

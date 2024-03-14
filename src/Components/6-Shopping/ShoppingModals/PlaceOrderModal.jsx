@@ -8,6 +8,7 @@ import CloseButton from "react-bootstrap/CloseButton";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
+import handleDenomDisplay from "../../UnitDisplay";
 
 class PlaceOrderModal extends React.Component {
   constructor(props) {
@@ -22,25 +23,6 @@ class PlaceOrderModal extends React.Component {
 
   handleCloseClick = () => {
     this.props.hideModal();
-  };
-
-  handleDenomDisplay = (duffs, qty) => {
-    if (duffs >= 1000000) {
-      return (
-        <span style={{ color: "#008de4" }}>
-          {((duffs * qty) / 100000000).toFixed(3)} Dash
-        </span>
-      );
-    } else {
-      return (
-        // <span style={{ color: "#008de4" }}>
-        //   {((duffs * qty) / 100000).toFixed(2)} mDash
-        // </span>
-        <span style={{ color: "#008de4" }}>
-          {((duffs * qty) / 1000).toFixed(0)} kD
-        </span>
-      );
-    }
   };
 
   handleTotalItems = () => {
@@ -91,26 +73,11 @@ class PlaceOrderModal extends React.Component {
 
     theTotal = this.props.accountBalance - theTotal;
 
-    if (theTotal >= 1000000) {
-      theTotal = Math.round(theTotal / 100000);
-
-      return (
-        <h4 className="indentMembers" style={{ color: "#008de4" }}>
-          <b>{(theTotal / 1000).toFixed(3)} Dash</b>
-        </h4>
-      );
-    } else {
-      theTotal = Math.round(theTotal / 1000);
-
-      return (
-        // <h4 className="indentMembers" style={{ color: "#008de4" }}>
-        //   <b>{(theTotal / 100).toFixed(2)} mDash</b>
-        // </h4>
-        <h4 className="indentMembers" style={{ color: "#008de4" }}>
-          <b>{theTotal.toFixed(0)} kD</b>
-        </h4>
-      );
-    }
+    return (
+      <h4 className="indentMembers" style={{ color: "#008de4" }}>
+        <b>{handleDenomDisplay(theTotal)}</b>
+      </h4>
+    );
   };
 
   handleTotal = () => {
@@ -121,26 +88,11 @@ class PlaceOrderModal extends React.Component {
       //console.log(theTotal);
     });
 
-    if (theTotal >= 1000000) {
-      theTotal = Math.round(theTotal / 100000);
-
-      return (
-        <h4 className="indentMembers" style={{ color: "#008de4" }}>
-          <b>{(theTotal / 1000).toFixed(3)} Dash</b>
-        </h4>
-      );
-    } else {
-      theTotal = Math.round(theTotal / 1000);
-
-      return (
-        // <h4 className="indentMembers" style={{ color: "#008de4" }}>
-        //   <b>{(theTotal / 100).toFixed(2)} mDash</b>
-        // </h4>
-        <h4 className="indentMembers" style={{ color: "#008de4" }}>
-          <b>{theTotal.toFixed(0)} kD</b>
-        </h4>
-      );
-    }
+    return (
+      <h4 className="indentMembers" style={{ color: "#008de4" }}>
+        <b>{handleDenomDisplay(theTotal)}</b>
+      </h4>
+    );
   };
 
   handleTotalNotForDisplay = () => {
@@ -270,8 +222,8 @@ class PlaceOrderModal extends React.Component {
             <h5>{item[1]}</h5>{" "}
           </Col>
           <Col xs={5} md={4}>
-            <h5>
-              <b>{this.handleDenomDisplay(item[0].price, item[1])}</b>
+            <h5 style={{ color: "#008de4" }}>
+              <b>{handleDenomDisplay(item[0].price, item[1])}</b>
             </h5>
           </Col>
         </Row>
@@ -280,7 +232,7 @@ class PlaceOrderModal extends React.Component {
       //  return <div key={index} className="cardTitle">
       // <h5>{item[0].name}</h5>
       // <h5>{item[1]}</h5>
-      // <h5><b>{this.handleDenomDisplay(item[0].price, item[1])}</b></h5>
+      // <h5><b>{handleDenomDisplay(item[0].price, item[1])}</b></h5>
       // </div>
     });
 
@@ -307,8 +259,8 @@ class PlaceOrderModal extends React.Component {
                 <h5 className="BalanceRightNoUnderline">
                   <b>Your Current Balance</b>
                 </h5>
-                <h5 className="BalanceRight">
-                  <b>{this.handleDenomDisplay(this.props.accountBalance, 1)}</b>
+                <h5 className="BalanceRight" style={{ color: "#008de4" }}>
+                  <b>{handleDenomDisplay(this.props.accountBalance, 1)}</b>
                 </h5>
 
                 <p></p>

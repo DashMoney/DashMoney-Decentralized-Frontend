@@ -42,8 +42,9 @@ class ExchangePage extends React.Component {
 
                   <div className="bodytext" style={{ textAlign: "center" }}>
                     {/* <h3>Peer-to-Peer Exchange or Marketplace of Exchanges.</h3> */}
-
-                    <h6>"Caveat Emptor" -DashMoney</h6>
+                    <h3>P2P Exchange Market</h3>
+                    <p></p>
+                    <h6>"Caveat Emptor"</h6>
                   </div>
 
                   {/* <h3>
@@ -269,9 +270,7 @@ class ExchangePage extends React.Component {
         ) : (
           <div className="bodytextnotop">
             <div className="bodytext" style={{ textAlign: "center" }}>
-              <h3>Peer-to-Peer Exchange</h3>
-              <h3>or</h3>
-              <h3>Marketplace of Exchanges</h3>
+              <h3>P2P Exchange Market</h3>
               {/* <h5>
                 “If ye love wealth better than liberty, the tranquility of
                 servitude better than the animating contest of freedom, go home
@@ -281,7 +280,7 @@ class ExchangePage extends React.Component {
                 -Samuel Adams
               </h5> */}
               <p></p>
-              <h6>"Caveat Emptor" -DashMoney</h6>
+              <h6>"Caveat Emptor"</h6>
             </div>
             {/* <p></p>
             <div className="d-grid gap-2">

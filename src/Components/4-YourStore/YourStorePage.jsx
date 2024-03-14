@@ -76,6 +76,9 @@ class YourStorePage extends React.Component {
                     showModal={this.props.showModal} //MOVE ALL THE MODALS TO APP.JS
                     handleSelectedItem={this.props.handleSelectedItem}
                     mode={this.props.mode}
+                    dgmDocuments={this.props.dgmDocuments}
+                    WALLET_Login7={this.props.WALLET_Login7}
+                    isLoadingButtons_WALLET={this.props.isLoadingButtons_WALLET}
                   />
                 ) : (
                   <>
@@ -120,6 +123,9 @@ class YourStorePage extends React.Component {
                     }
                     showModal={this.props.showModal}
                     mode={this.props.mode}
+                    dgmDocuments={this.props.dgmDocuments}
+                    WALLET_Login7={this.props.WALLET_Login7}
+                    isLoadingButtons_WALLET={this.props.isLoadingButtons_WALLET}
                   />
                 ) : (
                   <>

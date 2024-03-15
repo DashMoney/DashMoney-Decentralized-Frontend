@@ -78,20 +78,33 @@ class Order extends React.Component {
       //console.log(theTotal);
     });
 
-  return <h4 className="indentMembers" style={{ color: "#008de4" }}>
+    return (
+      <h4 className="indentMembers" style={{ color: "#008de4" }}>
         <b>{handleDenomDisplay(theTotal)}</b>
-       </h4>;
-    
+      </h4>
+    );
   };
 
   verifyPayment = (theItems, theOrder) => {
-    //  console.log('An Order: ', theOrder);
+    console.log("An Order: ", theOrder);
 
-    // 1) make sure the createdAt and Updated AT are the same else there was an edit so it
-    if (theOrder.$createdAt !== theOrder.$updatedAt) {
-      console.log("Failed on Error 0");
-      return <Badge bg="danger">Fail</Badge>;
+    //NEW (26FEB24) PAYLATER
+    if (theOrder.txId === "payLater") {
+      //console.log("PayLater");
+      return <Badge bg="warning">Pay Later</Badge>;
     }
+
+    //NEW (26FEB24) TRACKING ONLY
+    if (theOrder.txId === "trackOrder") {
+      //console.log("Tracking Order");
+      return <Badge bg="primary">Tracking Only</Badge>;
+    }
+    //THERE MUST BE AN EDIT FOR THE PAYLATER (05MAR2024 - BELOW REMOVED)
+    // 1) make sure the createdAt and Updated AT are the same else there was an edit so it
+    // if (theOrder.$createdAt !== theOrder.$updatedAt) {
+    //   console.log("Failed on Error 0");
+    //   return <Badge bg="danger">Fail</Badge>;
+    // }
 
     //8) DID i handle the Self Pay or Self Order?? -> if toId and OwnerId of order match
     if (theOrder.toId === theOrder.$ownerId) {

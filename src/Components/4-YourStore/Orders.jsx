@@ -5,6 +5,7 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Badge from "react-bootstrap/Badge";
+import Spinner from "react-bootstrap/Spinner";
 
 import Order from "./Order";
 import handleDenomDisplay from "../UnitDisplay";
@@ -88,105 +89,106 @@ class Orders extends React.Component {
       //console.log(theTotal);
     });
 
-    return <h4 className="indentMembers" style={{ color: "#008de4" }}>
+    return (
+      <h4 className="indentMembers" style={{ color: "#008de4" }}>
         <b>{handleDenomDisplay(theTotal)}</b>
-       </h4>;
-
+      </h4>
+    );
   };
 
-  verifyPayment = (theItems, theOrder) => {
-    //  console.log('An Order: ', theOrder);
+  // verifyPayment = (theItems, theOrder) => {
+  //   //console.log("An Order: ", theOrder);
 
-    //NEW (26FEB24) PAYLATER
-    if (theOrder.txId === "payLater") {
-      //console.log("PayLater");
-      return <Badge bg="warning">Pay Later</Badge>;
-    }
+  //   //NEW (26FEB24) PAYLATER
+  //   if (theOrder.txId === "payLater") {
+  //     //console.log("PayLater");
+  //     return <Badge bg="warning">Pay Later</Badge>;
+  //   }
 
-    //NEW (26FEB24) TRACKING ONLY
-    if (theOrder.txId === "trackOrder") {
-      //console.log("Tracking Order");
-      return <Badge bg="primary">Tracking Only</Badge>;
-    }
-    //THERE MUST BE AN EDIT FOR THE PAYLATER (05MAR2024 - BELOW REMOVED)
-    // 1) make sure the createdAt and Updated AT are the same else there was an edit so it
-    // if (theOrder.$createdAt !== theOrder.$updatedAt) {
-    //   console.log("Failed on Error 0");
-    //   return <Badge bg="danger">Fail</Badge>;
-    // }
+  //   //NEW (26FEB24) TRACKING ONLY
+  //   if (theOrder.txId === "trackOrder") {
+  //     //console.log("Tracking Order");
+  //     return <Badge bg="primary">Tracking Only</Badge>;
+  //   }
+  //   //THERE MUST BE AN EDIT FOR THE PAYLATER (05MAR2024 - BELOW REMOVED)
+  //   // 1) make sure the createdAt and Updated AT are the same else there was an edit so it
+  //   // if (theOrder.$createdAt !== theOrder.$updatedAt) {
+  //   //   console.log("Failed on Error 0");
+  //   //   return <Badge bg="danger">Fail</Badge>;
+  //   // }
 
-    //8) DID i handle the Self Pay or Self Order?? -> if toId and OwnerId of order match
-    if (theOrder.toId === theOrder.$ownerId) {
-      return <Badge bg="warning">Self Order</Badge>;
-    }
+  //   //8) DID i handle the Self Pay or Self Order?? -> if toId and OwnerId of order match
+  //   if (theOrder.toId === theOrder.$ownerId) {
+  //     return <Badge bg="warning">Self Order</Badge>;
+  //   }
 
-    // 2)Check for duplicated do a count on the order.txIds for all the orders
+  //   // 2)Check for duplicated do a count on the order.txIds for all the orders
 
-    let numOfOrdersWithTxId = this.props.DGPOrders.filter((order) => {
-      return order.txId === theOrder.txId;
-    });
-    if (numOfOrdersWithTxId.length !== 1) {
-      console.log("Failed on Error 1");
-      return <Badge bg="danger">Fail</Badge>;
-    }
+  //   let numOfOrdersWithTxId = this.props.DGPOrders.filter((order) => {
+  //     return order.txId === theOrder.txId;
+  //   });
+  //   if (numOfOrdersWithTxId.length !== 1) {
+  //     console.log("Failed on Error 1");
+  //     return <Badge bg="danger">Fail</Badge>;
+  //   }
 
-    //3) Make sure there is a wallet TX that matches order txId
+  //   //3) Make sure there is a wallet TX that matches order txId
 
-    let walletTx = this.props.accountHistory.find((tx) => {
-      //console.log('Wallet TX: ', tx);
-      return tx.txId === theOrder.txId;
-    });
-    if (walletTx === undefined) {
-      //This may be the issue that cause early fail ->
-      // Can I check instasend?
-      console.log("Failed on Error 2");
-      return <Badge bg="danger">Fail</Badge>;
-    }
-    //ADDED TO CHECK BC TIME DEFAULTS TO FUTURE IF NO INSTALOCK 9999999999000
-    //CURRENTLY THE INSTASEND LOCK IS NOT WORKING ON TESTNET
-    // if(!walletTx.isInstantLocked  ){
-    //   return <Badge bg="warning">Verifying..</Badge>;
-    // }
-    //
+  //   let walletTx = this.props.accountHistory.find((tx) => {
+  //     //console.log('Wallet TX: ', tx);
+  //     return tx.txId === theOrder.txId;
+  //   });
+  //   if (walletTx === undefined) {
+  //     //This may be the issue that cause early fail ->
+  //     // Can I check instasend?
+  //     console.log("Failed on Error 2");
+  //     return <Badge bg="danger">Fail</Badge>;
+  //   }
+  //   //ADDED TO CHECK BC TIME DEFAULTS TO FUTURE IF NO INSTALOCK 9999999999000
+  //   //CURRENTLY THE INSTASEND LOCK IS NOT WORKING ON TESTNET
+  //   // if(!walletTx.isInstantLocked  ){
+  //   //   return <Badge bg="warning">Verifying..</Badge>;
+  //   // }
+  //   //
 
-    // 4) check that the order createAT and tx time are within a few minutes
+  //   // 4) check that the order createAT and tx time are within a few minutes
 
-    let walletTxTime = new Date(walletTx.time);
-    //console.log('Wallet TX Time valueOf: ', walletTxTime.valueOf());
+  //   let walletTxTime = new Date(walletTx.time);
+  //   //console.log('Wallet TX Time valueOf: ', walletTxTime.valueOf());
 
-    if (walletTxTime.valueOf() - theOrder.$createdAt > 350000) {
-      //***This is added due to testnet lack of instasend lock */
-      if (walletTxTime.valueOf() > theOrder.$createdAt) {
-        return <Badge bg="primary">Paid</Badge>;
-      }
+  //   if (walletTxTime.valueOf() - theOrder.$createdAt > 350000) {
+  //     //***This is added due to testnet lack of instasend lock */
+  //     if (walletTxTime.valueOf() > theOrder.$createdAt) {
+  //       return <Badge bg="primary">Paid</Badge>;
+  //     }
 
-      //console.log(walletTxTime.valueOf() - theOrder.$createdAt)
-      console.log("Failed on Error 3"); //!!!!!!!!!!!!
-      console.log(this.props.accountHistory);
-      console.log(walletTxTime.valueOf());
-      return <Badge bg="danger">Fail</Badge>;
-    }
+  //     //console.log(walletTxTime.valueOf() - theOrder.$createdAt)
+  //     console.log("Failed on Error 3"); //!!!!!!!!!!!!
+  //     console.log(this.props.accountHistory);
+  //     console.log(walletTxTime.valueOf());
+  //     return <Badge bg="danger">Fail</Badge>;
+  //   }
 
-    //5) make sure the tx amt === order amt otherwise check if any items $updateAt changed more recently
+  //   //5) make sure the tx amt === order amt otherwise check if any items $updateAt changed more recently
 
-    let theTotal = 0;
-    theItems.forEach((tuple) => {
-      theTotal += tuple[1] * tuple[0].price;
-      //console.log(theTotal);
-    });
+  //   let theTotal = 0;
+  //   theItems.forEach((tuple) => {
+  //     theTotal += tuple[1] * tuple[0].price;
+  //     //console.log(theTotal);
+  //   });
 
-    if (theTotal === walletTx.satoshisBalanceImpact) {
-      return <Badge bg="primary">Paid</Badge>;
-    } else {
-      theItems.forEach((tuple) => {
-        if (tuple[0].$updatedAt > theOrder.$createdAt) {
-          return <Badge bg="warning">Old Price</Badge>;
-        }
-      });
-      console.log("Failed on Error 4");
-      return <Badge bg="danger">Fail</Badge>;
-    }
-  };
+  //   if (theTotal === walletTx.satoshisBalanceImpact) {
+  //     return <Badge bg="primary">Paid</Badge>;
+  //   } else {
+  //     theItems.forEach((tuple) => {
+  //       if (tuple[0].$updatedAt > theOrder.$createdAt) {
+  //         return <Badge bg="warning">Old Price</Badge>;
+  //       }
+  //     });
+  //     console.log("Failed on Error 4");
+  //     return <Badge bg="danger">Fail</Badge>;
+  //   }
+  // };
 
   render() {
     let cardBkg;
@@ -357,9 +359,7 @@ class Orders extends React.Component {
                   <div>
                     <b>Wallet Balance</b>
                     <h4 style={{ color: "#008de4" }}>
-                      <b>
-                        {handleDenomDisplay(this.props.accountBalance, 1)}
-                      </b>
+                      <b>{handleDenomDisplay(this.props.accountBalance, 1)}</b>
                     </h4>
                   </div>
                   <Button

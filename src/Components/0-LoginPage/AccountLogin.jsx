@@ -102,7 +102,6 @@ class AccountLogin extends React.Component {
                 </>
               )}
 
-
               {!this.props.isLoading &&
               !this.props.isLoadingWallet &&
               this.props.identity === "no identity" &&
@@ -487,11 +486,33 @@ class AccountLogin extends React.Component {
             <></>
           )}
 
+          {this.props.identityInfo !== "" &&
+          this.props.identity !== "no identity" ? (
+            <div
+              className="d-grid gap-2"
+              style={{
+                marginTop: "4rem",
+                paddingLeft: "3rem",
+                paddingRight: "3rem",
+              }}
+            >
+              <Button
+                variant="primary"
+                //size="lg"
+                onClick={() => this.props.showIdentityControlPage()}
+              >
+                <b>Identity Controls</b>
+              </Button>
+            </div>
+          ) : (
+            <></>
+          )}
+
           {this.props.mnemonic !== "" ? (
             <div
               className="d-grid gap-2"
               style={{
-                marginTop: "3rem",
+                marginTop: "1.5rem",
                 paddingLeft: "3rem",
                 paddingRight: "3rem",
               }}

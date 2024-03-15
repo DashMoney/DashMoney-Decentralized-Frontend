@@ -126,11 +126,11 @@ class PlaceOrderModal extends React.Component {
             variant="primary"
             onClick={() => this.handleTrackOrderClick()}
           >
-            <b>Submit Order to {this.props.merchantStoreName}</b>
+            <b>Submit Tracking Order to {this.props.merchantStoreName}</b>
           </Button>
-          <p style={{ color: "#008de4" }}>
+          {/* <p style={{ color: "#008de4" }}>
             <b>Tracking Only Order</b>
-          </p>
+          </p> */}
         </>
       );
     }
@@ -367,7 +367,7 @@ class PlaceOrderModal extends React.Component {
               <></>
             )}
 
-            {this.handleTotalNotForDisplay !== 0 &&
+            {this.handleTotalNotForDisplay() !== 0 &&
             this.props.store.payLater ? (
               <>
                 <div className="ButtonRightNoUnderline">

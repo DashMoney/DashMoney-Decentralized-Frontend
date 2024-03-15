@@ -260,9 +260,11 @@ class MyStore extends React.Component {
               <></>
             )}
 
-            {this.props.DGPItems.length === 0 ? (
+            {this.props.DGPItems.length === 0 && !this.props.LoadingItems ? (
               <>
-                <p>This is where your items will display.</p>
+                <p style={{ textAlign: "center" }}>
+                  This is where your items will display.
+                </p>
               </>
             ) : (
               <></>

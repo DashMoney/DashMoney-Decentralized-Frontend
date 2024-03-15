@@ -17,6 +17,7 @@ import TopNav from "./Components/TopNav/TopNav";
 import "./App.css";
 import LoginForm from "./Components/0-LoginPage/LoginForm";
 import AccountLogin from "./Components/0-LoginPage/AccountLogin";
+import IdentityControlPage from "./Components/0-LoginPage/IdentityControlPage";
 
 import MessagesPage from "./Components/1-Messages/MessagesPage";
 
@@ -1738,7 +1739,7 @@ class App extends React.Component {
     // this.getNamefromIdentity(theIdentity); DONT NEED <=
     this.getAliasfromIdentity(theIdentity);
     //
-    // ----   ----   ----   ----   ----    ----   ----
+    //  ----   ----   ----   ----   ----    ----   ----
     //
     //After(Identity/Name) -> trigger added to 2 Functions ABOVE
     // ForYou(Messages)
@@ -14803,18 +14804,11 @@ class App extends React.Component {
                       />
                     </>
                   ) : (
+                    <></>
+                  )}
+                  {this.state.isLoggedIn &&
+                  !this.state.isIdentityControlShowing ? (
                     <>
-                      {/* {this.state.isIdentityControlShowing ? (
-                      <>
-<IdentityControlPage 
-breakIdentity={this.breakIdentity}
-identity={this.state.identity}
-                        identityRaw={this.state.identityRaw}
-                        identityInfo={this.state.identityInfo}
-                        mode={this.state.mode}
-/>
-                      </>
-                      ):(<></>)} */}
                       <AccountLogin
                         isLoginComplete={isLoginComplete}
                         mnemonic={this.state.mnemonic}
@@ -14836,6 +14830,24 @@ identity={this.state.identity}
                         showIdentityControlPage={this.showIdentityControlPage}
                       />
                     </>
+                  ) : (
+                    <></>
+                  )}
+                  {/* IDENTITY CONTROL PAGE */}
+                  {this.state.isLoggedIn &&
+                  this.state.isIdentityControlShowing ? (
+                    <>
+                      <IdentityControlPage
+                        breakIdentity={this.breakIdentity}
+                        identity={this.state.identity}
+                        identityRaw={this.state.identityRaw}
+                        identityInfo={this.state.identityInfo}
+                        mode={this.state.mode}
+                        hideIdentityControlPage={this.hideIdentityControlPage}
+                      />
+                    </>
+                  ) : (
+                    <></>
                   )}
                 </>
               ) : (

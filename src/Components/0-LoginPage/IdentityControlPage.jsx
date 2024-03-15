@@ -58,23 +58,22 @@ class IdentityControlPage extends React.Component {
               <IoMdArrowRoundBack size={28} />
             </Button>
 
-            <h3 style={{ textAlign: "center" }}>
+            <h3
+              style={{
+                paddingRight: "3rem",
+              }}
+            >
               {this.props.mode === "primary" ? (
                 <b className="lightMode">Identity Controls</b>
               ) : (
                 <b>Identity Controls</b>
               )}
             </h3>
-            {/* <Button
-              variant="primary"
-              onClick={() => this.showModal("ViewMembersModal")}
-            >
-              <b>Members</b>
-            </Button> */}
+            <span> </span>
           </Container>
         </Navbar>
 
-        <div>
+        <div className="bodytext">
           {/* <div className="footer">{tuples}</div> */}
           <Alert variant="primary">
             <Alert.Heading>IdentityID</Alert.Heading>
@@ -93,8 +92,8 @@ class IdentityControlPage extends React.Component {
             {this.state.copiedIdentity ? <span>Copied!</span> : <></>}
           </Alert>
           <p>
-            Your identity ID can be used for setting up your own Decentralized
-            Frontend. Or for future dapps that allow usage of separate,
+            Your IdentityID can be used for setting up your own Decentralized
+            Frontend, or for future dapps that allow usage of separate,
             independent identities.
           </p>
           <p></p>

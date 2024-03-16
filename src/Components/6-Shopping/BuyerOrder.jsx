@@ -120,13 +120,13 @@ class BuyerOrder extends React.Component {
               </>
             )}
 
-            {/* {this.props.tuple[1].txID === "payLater" ? (
+            {/* {this.props.tuple[1].txId === "payLater" ? (
               <Badge bg="warning">Pay Later</Badge>
             ) : (
               <></>
             )}
 
-            {this.props.tuple[1].txID === "trackOrder" ? (
+            {this.props.tuple[1].txId === "trackOrder" ? (
               <Badge bg="Primary">Tracking</Badge>
             ) : (
               <></>

@@ -313,6 +313,7 @@ class ShoppingPage extends React.Component {
             <YourOrders
               isLoadingWallet={this.props.isLoadingWallet}
               isLoadingRecentOrders={this.props.isLoadingRecentOrders}
+              LoadingOrder={this.props.LoadingOrder}
               identity={this.props.identity}
               identityInfo={this.props.identityInfo}
               uniqueName={this.props.uniqueName}

@@ -103,26 +103,11 @@ class PayLaterPaymentModal extends React.Component {
       //console.log(theTotal);
     });
 
-    if (theTotal >= 1000000) {
-      theTotal = Math.round(theTotal / 100000);
-
-      return (
-        <h4 className="indentMembers" style={{ color: "#008de4" }}>
-          <b>{(theTotal / 1000).toFixed(3)} Dash</b>
-        </h4>
-      );
-    } else {
-      theTotal = Math.round(theTotal / 1000);
-
-      return (
-        // <h4 className="indentMembers" style={{ color: "#008de4" }}>
-        //   <b>{(theTotal / 100).toFixed(2)} mDash</b>
-        // </h4>
-        <h4 className="indentMembers" style={{ color: "#008de4" }}>
-          <b>{theTotal.toFixed(0)} kD</b>
-        </h4>
-      );
-    }
+    return (
+      <h4 className="indentMembers" style={{ color: "#008de4" }}>
+        <b>{handleDenomDisplay(theTotal)}</b>
+      </h4>
+    );
   };
 
   onChange = (event) => {
@@ -337,7 +322,7 @@ class PayLaterPaymentModal extends React.Component {
                 <h5 className="BalanceRightNoUnderline">
                   <b>Your Remaining Balance will be:</b>
                 </h5>
-                <h5 className="BalanceRight">
+                <h5 className="BalanceRightNoUnderline">
                   <b>{this.handleRemaining()}</b>
                 </h5>
                 <p></p>

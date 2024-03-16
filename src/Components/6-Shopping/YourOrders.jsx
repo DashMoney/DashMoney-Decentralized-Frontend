@@ -134,26 +134,11 @@ class YourOrders extends React.Component {
       //console.log(theTotal);
     });
 
-    if (theTotal >= 1000000) {
-      theTotal = Math.round(theTotal / 100000);
-
-      return (
-        <h4 className="indentMembers" style={{ color: "#008de4" }}>
-          <b>{(theTotal / 1000).toFixed(3)} Dash</b>
-        </h4>
-      );
-    } else {
-      theTotal = Math.round(theTotal / 1000);
-
-      return (
-        // <h4 className="indentMembers" style={{ color: "#008de4" }}>
-        //   <b>{(theTotal / 100).toFixed(2)} mDash</b>
-        // </h4>
-        <h4 className="indentMembers" style={{ color: "#008de4" }}>
-          <b>{theTotal.toFixed(0)} kD</b>
-        </h4>
-      );
-    }
+    return (
+      <h4 className="indentMembers" style={{ color: "#008de4" }}>
+        <b>{handleDenomDisplay(theTotal)}</b>
+      </h4>
+    );
   };
 
   verifySufficientFunds = (items) => {
@@ -215,6 +200,10 @@ class YourOrders extends React.Component {
           return doc.$ownerId === order.toId;
         });
 
+        if (orderNameDoc === undefined || orderNameDoc === "") {
+          orderNameDoc = "Name Unavail..";
+        }
+
         let orderAddrDoc = this.props.recentOrdersDGMAddresses.find((doc) => {
           return doc.$ownerId === order.toId;
         });
@@ -265,7 +254,9 @@ class YourOrders extends React.Component {
             <div className="cardTitle" key={index}>
               <b>{item[0].name}</b>
               <b>{item[1]}</b>
-              <b style={{ color: "#008de4" }}>{handleDenomDisplay(item[0].price, item[1])}</b>
+              <b style={{ color: "#008de4" }}>
+                {handleDenomDisplay(item[0].price, item[1])}
+              </b>
             </div>
           );
 
@@ -288,13 +279,13 @@ class YourOrders extends React.Component {
 
                 {/* {this.verifyPayment(orderItemsAndQty, order)} */}
 
-                {order.txID === "payLater" ? (
+                {order.txId === "payLater" ? (
                   <Badge bg="warning">Pay Later</Badge>
                 ) : (
                   <></>
                 )}
 
-                {order.txID === "trackOrder" ? (
+                {order.txId === "trackOrder" ? (
                   <Badge bg="Primary">Tracking</Badge>
                 ) : (
                   <></>
@@ -341,7 +332,7 @@ class YourOrders extends React.Component {
                 <h6>Order Messages</h6>
               </div>
 
-              {order.comment !== undefined ? (
+              {order.comment !== undefined && order.comment !== "" ? (
                 <>
                   <Card id="comment" bg={cardBkg} text={cardText}>
                     <Card.Body>
@@ -363,7 +354,7 @@ class YourOrders extends React.Component {
 
               {msgsToDisplay}
 
-              {order.txID === "payLater" ? (
+              {order.txId === "payLater" && !this.props.LoadingOrder ? (
                 <div className="TwoButtons">
                   <Button
                     variant="primary"
@@ -403,6 +394,34 @@ class YourOrders extends React.Component {
                   )}
                 </div>
               ) : (
+                <></>
+              )}
+
+              {order.txId === "payLater" && this.props.LoadingOrder ? (
+                <div className="TwoButtons">
+                  <Button variant="primary" disabled>
+                    <b>Add Message</b>
+                  </Button>
+                  {this.verifySufficientFunds(orderItemsAndQty) ? (
+                    <>
+                      {" "}
+                      <Button variant="primary" disabled>
+                        <b>Send Payment</b>
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button variant="primary" disabled>
+                        <b>Insufficient Funds</b>
+                      </Button>
+                    </>
+                  )}
+                </div>
+              ) : (
+                <></>
+              )}
+
+              {order.txId !== "payLater" ? (
                 <div className="ButtonRightNoUnderline">
                   <Button
                     variant="primary"
@@ -416,6 +435,8 @@ class YourOrders extends React.Component {
                     <b>Add Message</b>
                   </Button>
                 </div>
+              ) : (
+                <></>
               )}
             </Card.Body>
           </Card>
@@ -468,7 +489,7 @@ class YourOrders extends React.Component {
           )}
         </div>
 
-        {this.props.isLoadingRecentOrders ? (
+        {this.props.isLoadingRecentOrders || this.props.LoadingOrder ? (
           //  && !this.props.isLoadingWallet
           <>
             <p></p>

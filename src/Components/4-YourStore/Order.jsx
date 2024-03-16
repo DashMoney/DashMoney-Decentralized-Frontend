@@ -254,7 +254,7 @@ class Order extends React.Component {
               <h6>Order Messages</h6>
             </div>
 
-            {order.comment !== undefined ? (
+            {order.comment !== undefined && order.comment !== "" ? (
               <>
                 <Card id="comment" bg={cardBkg} text={cardText}>
                   <Card.Body>

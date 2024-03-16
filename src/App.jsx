@@ -93,6 +93,7 @@ import AddItemToCartModal from "./Components/6-Shopping/ShoppingModals/AddItemTo
 import EditCartItemModal from "./Components/6-Shopping/ShoppingModals/EditCartItemModal";
 import PlaceOrderModal from "./Components/6-Shopping/ShoppingModals/PlaceOrderModal";
 import OrderMessageModal from "./Components/6-Shopping/ShoppingModals/OrderMessageModal";
+
 import PayLaterPaymentModal from "./Components/6-Shopping/ShoppingModals/PayLaterPaymentModal";
 
 import CreateOfferModal from "./Components/9-P2PExchange/CreateOfferModal";
@@ -10802,27 +10803,29 @@ class App extends React.Component {
         identity = await platform.identities.get(this.state.identity);
       } // Your identity ID
 
+
       // ### ###  ### ###  ### ###   ###   ####
 
       const [document] = await client.platform.documents.get(
-        "DGPContract.order",
+        "DGPContract.dgporder",
         {
           where: [
             [
               "$id",
               "==",
               this.state.recentOrders[this.state.payLaterOrderIndex].$id,
+              //this.state.payLaterOrderSHOPPING.$id,
             ],
           ],
         }
       );
-
-      if (
-        this.state.recentOrders[this.state.payLaterOrderIndex].txId !== theTXid
-      ) {
-        document.set("txId", theTXid);
-      }
-
+      
+      // if (
+      //   this.state.recentOrders[this.state.payLaterOrderIndex].txId !== theTXid
+      // ) {
+      document.set("txId", theTXid);
+      //}
+      
       // ### ###  ### ###  ### ###   ###   ####
 
       await platform.documents.broadcast({ replace: [document] }, identity);
@@ -10851,7 +10854,7 @@ class App extends React.Component {
           cart: JSON.parse(returnedDoc.cart),
 
           comment: returnedDoc.comment,
-          toId: this.state.payLaterDGMAddressSHOPPING.address,
+          toId: this.state.payLaterOrderSHOPPING.toId,
           txId: returnedDoc.txId, //new edited txId
         };
 
@@ -15868,7 +15871,7 @@ class App extends React.Component {
             isLoadingWallet={this.state.isLoadingWallet}
             accountBalance={this.state.accountBalance}
             payLaterOrderSHOPPING={this.state.payLaterOrderSHOPPING}
-            payLaterCartItems={this.state.payLaterCartItems}
+            cartItems={this.state.payLaterCartItems}
             payLaterDGMAddressSHOPPING={this.state.payLaterDGMAddressSHOPPING}
             payLaterNameDoc={this.state.payLaterNameDoc}
             //payLaterOrderIndex={this.state.payLaterOrderIndex} //Already in state and used for editing order Doc after payment

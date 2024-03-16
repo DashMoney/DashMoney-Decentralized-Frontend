@@ -129,9 +129,10 @@ class YourOrders extends React.Component {
 
       //console.log(tuple[0].price);
       // console.log(tuple[1])
-
-      theTotal += tuple[1] * tuple[0].price;
-      //console.log(theTotal);
+      if (tuple[0].price !== 0) {
+        theTotal += tuple[1] * tuple[0].price;
+        //console.log(theTotal);
+      }
     });
 
     return (
@@ -152,9 +153,10 @@ class YourOrders extends React.Component {
 
       //console.log(tuple[0].price);
       // console.log(tuple[1])
-
-      theTotal += tuple[1] * tuple[0].price;
-      //console.log(theTotal);
+      if (tuple[0].price !== 0) {
+        theTotal += tuple[1] * tuple[0].price;
+        //console.log(theTotal);
+      }
     });
 
     theTotal = this.props.accountBalance - theTotal;
@@ -200,8 +202,8 @@ class YourOrders extends React.Component {
           return doc.$ownerId === order.toId;
         });
 
-        if (orderNameDoc === undefined || orderNameDoc === "") {
-          orderNameDoc = "Name Unavail..";
+        if (orderNameDoc === undefined) {
+          orderNameDoc = { label: "Name Unavail.." };
         }
 
         let orderAddrDoc = this.props.recentOrdersDGMAddresses.find((doc) => {

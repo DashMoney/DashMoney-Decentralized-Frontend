@@ -10523,7 +10523,9 @@ class App extends React.Component {
 
     let theTotal = 0;
     this.state.cartItems.forEach((tuple) => {
+      if (tuple[0].price !== 0) {
       theTotal += tuple[1] * tuple[0].price;
+      }
     });
 
     const payToRecipient = async () => {
@@ -10733,7 +10735,9 @@ class App extends React.Component {
     let theTotal = 0;
 
     this.state.payLaterCartItems.forEach((tuple) => {
+      if (tuple[0].price !== 0) {
       theTotal += tuple[1] * tuple[0].price;
+      }
     });
 
     const payToRecipient = async () => {

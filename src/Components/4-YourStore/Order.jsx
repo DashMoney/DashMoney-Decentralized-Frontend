@@ -74,8 +74,10 @@ class Order extends React.Component {
     let theTotal = 0;
 
     items.forEach((tuple) => {
-      theTotal += tuple[1] * tuple[0].price;
-      //console.log(theTotal);
+      if (tuple[0].price !== 0) {
+        theTotal += tuple[1] * tuple[0].price;
+        //console.log(theTotal);
+      }
     });
 
     return (
@@ -86,7 +88,7 @@ class Order extends React.Component {
   };
 
   verifyPayment = (theItems, theOrder) => {
-    console.log("An Order: ", theOrder);
+    // console.log("An Order: ", theOrder);
 
     //NEW (26FEB24) PAYLATER
     if (theOrder.txId === "payLater") {
@@ -162,8 +164,10 @@ class Order extends React.Component {
 
     let theTotal = 0;
     theItems.forEach((tuple) => {
-      theTotal += tuple[1] * tuple[0].price;
-      //console.log(theTotal);
+      if (tuple[0].price !== 0) {
+        theTotal += tuple[1] * tuple[0].price;
+        //console.log(theTotal);
+      }
     });
 
     if (theTotal === walletTx.satoshisBalanceImpact) {

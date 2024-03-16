@@ -41,8 +41,10 @@ class FindMerchant extends React.Component {
     let theTotal = 0;
 
     this.props.cartItems.forEach((tuple) => {
-      theTotal += tuple[1] * tuple[0].price;
-      //console.log(theTotal);
+      if (tuple[0].price !== 0) {
+        theTotal += tuple[1] * tuple[0].price;
+        //console.log(theTotal);
+      }
     });
 
     return (
@@ -50,7 +52,6 @@ class FindMerchant extends React.Component {
         <b>{handleDenomDisplay(theTotal)}</b>
       </h4>
     );
-
   };
 
   handleCategory = (category) => {

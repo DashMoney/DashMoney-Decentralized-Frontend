@@ -46,7 +46,9 @@ class PlaceOrderModal extends React.Component {
     let theTotal = 0;
 
     this.props.cartItems.forEach((tuple) => {
-      theTotal += tuple[1] * tuple[0].price;
+      if (tuple[0].price !== 0) {
+        theTotal += tuple[1] * tuple[0].price;
+      }
     });
 
     theTotal = this.props.accountBalance - theTotal;
@@ -68,7 +70,9 @@ class PlaceOrderModal extends React.Component {
     let theTotal = 0;
 
     this.props.cartItems.forEach((tuple) => {
-      theTotal += tuple[1] * tuple[0].price;
+      if (tuple[0].price !== 0) {
+        theTotal += tuple[1] * tuple[0].price;
+      }
     });
 
     theTotal = this.props.accountBalance - theTotal;
@@ -84,8 +88,10 @@ class PlaceOrderModal extends React.Component {
     let theTotal = 0;
 
     this.props.cartItems.forEach((tuple) => {
-      theTotal += tuple[1] * tuple[0].price;
-      //console.log(theTotal);
+      if (tuple[0].price !== 0) {
+        theTotal += tuple[1] * tuple[0].price;
+        //console.log(theTotal);
+      }
     });
 
     return (
@@ -99,8 +105,10 @@ class PlaceOrderModal extends React.Component {
     let theTotal = 0;
 
     this.props.cartItems.forEach((tuple) => {
-      theTotal += tuple[1] * tuple[0].price;
-      //console.log(theTotal);
+      if (tuple[0].price !== 0) {
+        theTotal += tuple[1] * tuple[0].price;
+        //console.log(theTotal);
+      }
     });
     return Number(theTotal);
   };
@@ -109,8 +117,10 @@ class PlaceOrderModal extends React.Component {
     let theTotal = 0;
 
     this.props.cartItems.forEach((tuple) => {
-      theTotal += tuple[1] * tuple[0].price;
-      //console.log(theTotal);
+      if (tuple[0].price !== 0) {
+        theTotal += tuple[1] * tuple[0].price;
+        //console.log(theTotal);
+      }
     });
 
     if (Number(theTotal) !== 0) {

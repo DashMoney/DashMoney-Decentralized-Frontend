@@ -85,8 +85,10 @@ class Orders extends React.Component {
     let theTotal = 0;
 
     items.forEach((tuple) => {
-      theTotal += tuple[1] * tuple[0].price;
-      //console.log(theTotal);
+      if (tuple[0].price !== 0) {
+        theTotal += tuple[1] * tuple[0].price;
+        //console.log(theTotal);
+      }
     });
 
     return (
@@ -136,6 +138,9 @@ class Orders extends React.Component {
           return doc.$ownerId === order.$ownerId;
         });
         // console.log(orderNameDoc);
+        if (orderNameDoc === undefined) {
+          orderNameDoc = { label: "Name Unavail.." };
+        }
 
         let orderMsgDocs = this.props.DGPOrdersMsgs.filter((doc) => {
           return doc.orderId === order.$id;

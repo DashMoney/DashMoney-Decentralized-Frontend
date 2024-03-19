@@ -122,7 +122,9 @@ class App extends React.Component {
     super(props);
     this.state = {
       isLoggedIn: false,
-      mode: "dark",
+      mode: import.meta.env.VITE_BKGD,
+      //mode: "dark", //from .env -> import.meta.env.VITE_BKGD
+
       unit: "base", //or 'micro', //or 'hecto', //μ OR hd, no.. hD  hecto-Duff yes
 
       feeAmountBaseNumber: 10000000 - Math.floor(Math.random() * 5000), //Needs to be determined by env var and needs a random part to vary the input so state transistion already in chain is not triggered.
@@ -837,17 +839,17 @@ class App extends React.Component {
       //LocalForageKeys: [],
       DashMoneyLFKeys: [],
 
-      skipSynchronizationBeforeHeight: 974000,
-      mostRecentBlockHeight: 974000,
+      skipSynchronizationBeforeHeight: 990000,
+      mostRecentBlockHeight: 990000,
 
-      DataContractDSO: "6QrXXZo34rUr3wHju7M9Xtf5qHXxcHqbW7ADMDeAk7iF",
-      DataContractDGT: "2qKAVujNhak66cQE37kurXBF7ya1QLJRpjnn5656zy2Y",
-      DataContractDGM: "G2ZKi8BLqsf6offuNtNyxZ63e2gcmx4Bhvden8wLX2YH",
-      DataContractDGP: "C9K3YGD8bCq7C7NSUmsHfWCcWcZ23ktBeForQjDfJRGW",
-      DataContractDMIO: "2fehzP9CycaaLpgmA3BrTTFHC2Be2WYDAYpjxXxFvDYj",
-      DataContractP2P: "AeUyZnyWAtJUPnix5D8saqQyRYbecrk1RjkvxEqicNJ9",
-      DataContractDGR: "7DWv9R1FBUSzgNMUxo13JEffsnDMq5VvWKmJtfKsh8V1",
-      DataContractPOD: "D1eseFa9VrM6www9oVFMn4LXsCHTcicE6G1CBBizGocM",
+      DataContractDSO: "GDb996LUPuAk1gj9oCdMF1MwbS8QyuM8TAWebpDiKWhG",
+      DataContractDGT: "J1rzMRxi2RqFZjpBCS93N3PSYtdMNaPNpNty9k3GtYRy",
+      DataContractDGM: "8dkewBFvXE8pqGLBdCoLrbyM1L5GUYxDWsg7Q2NauhNK",
+      DataContractDGP: "2hBeUCgJPvEcKZMMgUSJFC5JUTWKHjypxiXy48jF9sKb",
+      DataContractDMIO: "Cok5PUoGL3TuNP1mitL5H5NjEeRZhhcwhidCZFCniwNY",
+      DataContractP2P: "8rTqxHc3CfbsSxDcTkwHuYDo4eYBFqoAbtPqUgZZh2tn",
+      DataContractDGR: "GJjGKtJgtDhwWa9CmMTr37c4KPGecjLEyTJ8Q8vDKsJy",
+      DataContractPOD: "4G9fo2SFfVmZ26GyzgZpaQE5Y8ZWtAptkXCPDMAn5cPb",
       DataContractDPNS: "GWRSAVFMjXx8HpQFaNJMqBV7MBgMK4br5UESsB4S31Ec",
 
       expandedTopNav: false,
@@ -10524,7 +10526,7 @@ class App extends React.Component {
     let theTotal = 0;
     this.state.cartItems.forEach((tuple) => {
       if (tuple[0].price !== 0) {
-      theTotal += tuple[1] * tuple[0].price;
+        theTotal += tuple[1] * tuple[0].price;
       }
     });
 
@@ -10736,7 +10738,7 @@ class App extends React.Component {
 
     this.state.payLaterCartItems.forEach((tuple) => {
       if (tuple[0].price !== 0) {
-      theTotal += tuple[1] * tuple[0].price;
+        theTotal += tuple[1] * tuple[0].price;
       }
     });
 
@@ -10807,7 +10809,6 @@ class App extends React.Component {
         identity = await platform.identities.get(this.state.identity);
       } // Your identity ID
 
-
       // ### ###  ### ###  ### ###   ###   ####
 
       const [document] = await client.platform.documents.get(
@@ -10823,13 +10824,13 @@ class App extends React.Component {
           ],
         }
       );
-      
+
       // if (
       //   this.state.recentOrders[this.state.payLaterOrderIndex].txId !== theTXid
       // ) {
       document.set("txId", theTXid);
       //}
-      
+
       // ### ###  ### ###  ### ###   ###   ####
 
       await platform.documents.broadcast({ replace: [document] }, identity);
@@ -14595,6 +14596,33 @@ class App extends React.Component {
    * PROOF OF FUNDS FUNCTIONS^^^^
    */
 
+  handleFrontendFee = () => {
+    //This should be at the point of display
+    // should verify and return unit for display or no fee
+    if (
+      Number(import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP) >= 0 &&
+      Number(import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP) <= 10000
+    ) {
+      //Need to add a decimal or comma on the second from last
+      return true;
+    } else {
+      return "No Frontend fee";
+    }
+  };
+
+  verifyFrontendFee = () => {
+    //Verify number between 0 and 10000
+    // if not then 0 OR True false
+    if (
+      Number(import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP) >= 0 &&
+      Number(import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP) <= 10000
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   //https://github.com/dashpay/platform/blob/v1.0-dev/packages/js-dash-sdk/src/SDK/Client/Platform/methods/identities/creditTransfer.ts
   // see above ^^^
   sendFrontendFee = () => {
@@ -14619,6 +14647,8 @@ class App extends React.Component {
       },
     };
     const client = new Dash.Client(clientOpts);
+
+    //if(verifyFrontendFee()){}else{}
 
     const identityCreditTransfer = async () => {
       //const identity = this.state.identityRaw; //YourIdentity

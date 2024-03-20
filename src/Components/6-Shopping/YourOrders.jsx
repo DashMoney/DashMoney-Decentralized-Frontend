@@ -448,7 +448,7 @@ class YourOrders extends React.Component {
 
     //THE ABOVE IS ALL THE PER ORDER CREATION
 
-    //ordersForDisplay.reverse();
+    ordersForDisplay.reverse();
 
     return (
       <>

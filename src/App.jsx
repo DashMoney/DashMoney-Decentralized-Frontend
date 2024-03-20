@@ -127,7 +127,9 @@ class App extends React.Component {
 
       unit: "base", //or 'micro', //or 'hecto', //μ OR hd, no.. hD  hecto-Duff yes
 
-      feeAmountBaseNumber: 10000000 - Math.floor(Math.random() * 5000), //Needs to be determined by env var and needs a random part to vary the input so state transistion already in chain is not triggered.
+      //feeAmountBaseNumber: 10000000 - Math.floor(Math.random() * 5000), //CHANGED BY REMOVE 00 BC 100 = 1.00% NOW
+      //Needs to be determined by env var and needs a random part to vary the input so state transistion already in chain is not triggered.
+      feeAmountBaseNumber: 100000 - Math.floor(Math.random() * 5000),
 
       //isLoading: true, //For identity and name And not identityInfo that is handle on display component
       //^^^ IS THIS NOW HANDLED BY THE isLoginComplete render variable??
@@ -838,6 +840,8 @@ class App extends React.Component {
       //
       //LocalForageKeys: [],
       DashMoneyLFKeys: [],
+      FrontendFee: 100,
+      validFrontendFee: true,
 
       skipSynchronizationBeforeHeight: 990000,
       mostRecentBlockHeight: 990000,
@@ -1583,6 +1587,7 @@ class App extends React.Component {
     //
     //BELOW, YEAH DO THAT ->  ->  vvvv
     //
+    this.verifyFrontendFee();
     this.getDSOEveryoneDocs(); //WHY NOT MOVE TO ONSELECT LIKE OTHERS ->
   }
 
@@ -14600,27 +14605,53 @@ class App extends React.Component {
     //This should be at the point of display
     // should verify and return unit for display or no fee
     if (
-      Number(import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP) >= 0 &&
-      Number(import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP) <= 10000
+      this.state.validFrontendFee
+      // Number(import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP) > 0 &&
+      // Number(import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP) <= 10000 &&
+      // Number(import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP) !== NaN
     ) {
       //Need to add a decimal or comma on the second from last
-      return true;
+      return (this.state.FrontendFee / 100).toFixed(2);
     } else {
-      return "No Frontend fee";
+      return "No Frontend Fee";
     }
   };
 
   verifyFrontendFee = () => {
+    // RUN CompDidMount
+
+    let regex = /^[0-9]{1,4}$|^10000$/;
+
+    let valid = regex.test(
+      import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP
+    );
+
+    if (valid) {
+      this.setState(
+        {
+          FrontendFee: import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP,
+          validFrontendFee: true,
+        },
+        () => console.log(`Frontend Fee: ${this.state.FrontendFee}`)
+      );
+    } else {
+      this.setState({
+        FrontendFee: 0,
+        validFrontendFee: false,
+      });
+    }
     //Verify number between 0 and 10000
     // if not then 0 OR True false
-    if (
-      Number(import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP) >= 0 &&
-      Number(import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP) <= 10000
-    ) {
-      return true;
-    } else {
-      return false;
-    }
+    // if (
+    //   Number(import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP) > 0 &&
+    //   Number(import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP) <= 10000 &&
+    //   Number(import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP) !== NaN
+    // ) {
+    //   return true;
+    //   //setState({});
+    // } else {
+    //   return false;
+    // }
   };
 
   //https://github.com/dashpay/platform/blob/v1.0-dev/packages/js-dash-sdk/src/SDK/Client/Platform/methods/identities/creditTransfer.ts
@@ -14631,7 +14662,7 @@ class App extends React.Component {
 
       isLoadingCreditTransfer: true, // Add to state
 
-      identityInfo: "", //bC THIS IS WHAT CONTROLS THE TOPUP CREDITS AND WILL THAT MESS WITH THE FUNCTION BELOW ?
+      identityInfo: "", //bC THIS IS WHAT CONTROLS THE TOPUP CREDITS AND WILL THAT MESS WITH THE FUNCTION BELOW -> No
     });
     console.log(this.state.identityInfo.balance);
 
@@ -14648,20 +14679,20 @@ class App extends React.Component {
     };
     const client = new Dash.Client(clientOpts);
 
-    //if(verifyFrontendFee()){}else{}
-
     const identityCreditTransfer = async () => {
       //const identity = this.state.identityRaw; //YourIdentity
 
-      let identity = "";
-      if (this.state.identityRaw !== "") {
-        identity = this.state.identityRaw;
-      } else {
-        identity = await platform.identities.get(this.state.identity);
-      } // Your identity ID
+      // let identity = "";
+      // if (this.state.identityRaw !== "") {
+      //   identity = this.state.identityRaw;
+      // } else {
+      //   identity = await platform.identities.get(this.state.identity);
+      // } // Your identity ID
 
       // const identityId = 'identity ID of the sender goes here';
-      //const identity = await client.platform.identities.get(identityId);
+      const identity = await client.platform.identities.get(
+        this.state.identity
+      );
 
       const recipientId = import.meta.env.VITE_IDENTITY_TO_RECEIVE_FEE; //.env input
 
@@ -14670,28 +14701,34 @@ class App extends React.Component {
 
       //BUT WILL THE -1 CHANGE THE TRANSFER AMOUNT AFTER THE TOFIXED(0) SO THAT IT IS CHANGED IN THE STATE TRANSITION? I THINK YES..
 
-      const feeAmount = //100,000,000 duffs in a Dash * 1000 duffs to credits * .01 for % // Not .01 for % but .01 for TopUp(fixed amount) // actually, So TopUp and % are included in the calculation
-        // 100,000,000 duffs in a dash * 1000 credits in a duff = 100,000,000,000
-        // .01 topup is amt in dash -> 1,000,000,000
-        // .01 change to % -> 10,000,000
-        (
-          this.state.feeAmountBaseNumber *
-          import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP
-        ) //1 <=
-          .toFixed(0);
+      if (this.state.validFrontendFee) {
+        const feeAmount = //100,000,000 duffs in a Dash * 1000 duffs to credits * .01 for % // Not .01 for % but .01 for TopUp(fixed amount) // actually, So TopUp and % are included in the calculation
+          // 100,000,000 duffs in a dash * 1000 credits in a duff = 100,000,000,000
+          // .01 topup is amt in dash -> 1,000,000,000
+          // .01 change to % -> 10,000,000
+          //
+          // (NEW) -> feeAmt Change from 1 = 1% to 100 = 1.00%
+          //
+          (
+            this.state.feeAmountBaseNumber *
+            //import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP
+            this.state.FrontendFee
+          ) //1 <=
+            .toFixed(0);
 
-      console.log(feeAmount);
+        console.log(feeAmount);
 
-      // fee amount need to augment just a little.. I think it is using the logic just like the core so need to be different.
-      //So like have a fee amount in state aand subtract 1 from it each time.. <= ****
+        // fee amount need to augment just a little.. I think it is using the logic just like the core so need to be different.
+        //So like have a fee amount in state aand subtract 1 from it each time.. <= ****
 
-      await client.platform.identities.creditTransfer(
-        identity,
-        //Identifier.from(this.state.identity),
-        recipientId,
-        //Number(feeAmount)
-        feeAmount
-      );
+        await client.platform.identities.creditTransfer(
+          identity,
+          //Identifier.from(this.state.identity),
+          recipientId,
+          //Number(feeAmount)
+          feeAmount
+        );
+      } //End of If statement
       return client.platform.identities.get(this.state.identity);
     };
 
@@ -14822,6 +14859,8 @@ class App extends React.Component {
           handleSelectedDapp={this.handleSelectedDapp}
           uniqueName={this.state.uniqueName}
           identityInfo={this.state.identityInfo}
+          FrontendFee={this.state.FrontendFee}
+          validFrontendFee={this.state.validFrontendFee}
         />
 
         <Image fluid="true" id="dash-bkgd" src={DashBkgd} alt="Dash Logo" />
@@ -15454,6 +15493,8 @@ class App extends React.Component {
             identityInfo={this.state.identityInfo}
             uniqueName={this.state.uniqueName}
             showModal={this.state.showModal}
+            FrontendFee={this.state.FrontendFee}
+            validFrontendFee={this.state.validFrontendFee}
           />
         ) : (
           <></>

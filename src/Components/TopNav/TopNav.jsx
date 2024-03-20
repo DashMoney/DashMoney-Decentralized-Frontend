@@ -26,6 +26,18 @@ class TopNav extends React.Component {
     this.props.toggleTopNav();
   };
 
+  handleFrontendFee = () => {
+    // return unit for display or no fee
+    if (
+      this.props.validFrontendFee
+    ) {
+      //Need to add a decimal or comma on the second from last
+      return (this.props.FrontendFee / 100).toFixed(2);
+    } else {
+      return "No Frontend Fee";
+    }
+  };
+
   render() {
     let offCanvasBkgd;
     let closeButtonColor;
@@ -126,7 +138,7 @@ class TopNav extends React.Component {
                         this.props.showModal("FrontEndFeeExplaination")
                       }
                     >
-                      <b>1.00% of TopUp</b>
+                      <b>{this.handleFrontendFee()}% of TopUp</b>
                       {/* VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP
               {import.meta.env.VITE_FRONTEND_NAME} */}
                     </Badge>

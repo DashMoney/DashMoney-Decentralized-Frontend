@@ -9,6 +9,15 @@ class FrontEndFeeExplaination extends React.Component {
   handleCloseClick = () => {
     this.props.hideModal();
   };
+  handleFrontendFee = () => {
+    // return unit for display or no fee
+    if (this.props.validFrontendFee) {
+      //Need to add a decimal or comma on the second from last
+      return (this.props.FrontendFee / 100).toFixed(2);
+    } else {
+      return "No Frontend Fee";
+    }
+  };
   render() {
     let modalBkg = "";
     let closeButtonColor;
@@ -36,7 +45,7 @@ class FrontEndFeeExplaination extends React.Component {
           </Modal.Header>
           <Modal.Body>
             <h3>
-              What does <b>1% of TopUp</b> mean?
+              What does <b>{this.handleFrontendFee()}% of TopUp</b> mean?
               {/* VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP
               {import.meta.env.VITE_FRONTEND_NAME} */}
             </h3>

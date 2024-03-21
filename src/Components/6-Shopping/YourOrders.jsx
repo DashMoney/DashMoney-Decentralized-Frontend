@@ -28,78 +28,39 @@ class YourOrders extends React.Component {
     return "None Found";
   };
 
-  getRelativeTimeAgo(messageTime, timeNow) {
-    let timeDifference = timeNow - messageTime;
+  formatDate(theCreatedAt, today, yesterday) {
+    let CreatedAt = new Date(theCreatedAt);
 
-    if (timeDifference >= 84600000) {
-      let longFormDate = new Date();
-      longFormDate.setTime(messageTime);
-      return longFormDate.toLocaleDateString();
+    const timeOptions = {
+      hour: "numeric",
+      minute: "2-digit", //numeric?
+    };
+
+    function isSameDay(date1, date2) {
+      return (
+        date1.getDate() === date2.getDate() &&
+        date1.getMonth() === date2.getMonth() &&
+        date1.getFullYear() === date2.getFullYear()
+      );
     }
 
-    /*
-    Calculate milliseconds in a year
-    const minute = 1000 * 60;
-    const hour = minute * 60;
-    const day = hour * 24;
-    const year = day * 365;
-    */
-
-    if (timeDifference < 15000) {
-      return "Just now";
-    } else if (timeDifference < 44000) {
-      return "Few moments ago";
-    } else if (timeDifference < 90000) {
-      return "1 min ago";
-    } else if (timeDifference < 150000) {
-      return "2 min ago";
-    } else if (timeDifference < 210000) {
-      return "3 min ago";
-    } else if (timeDifference < 270000) {
-      return "4 min ago";
-    } else if (timeDifference < 330000) {
-      return "5 min ago";
-    } else if (timeDifference < 390000) {
-      return "6 min ago";
-    } else if (timeDifference < 450000) {
-      return "7 min ago";
-    } else if (timeDifference < 510000) {
-      return "8 min ago";
-    } else if (timeDifference < 570000) {
-      return "9 min ago";
-    } else if (timeDifference < 660000) {
-      return "10 min ago";
-    } else if (timeDifference < 840000) {
-      return "12 min ago";
-    } else if (timeDifference < 1020000) {
-      return "15 min ago";
-    } else if (timeDifference < 1140000) {
-      return "18 min ago";
-    } else if (timeDifference < 1380000) {
-      return "20 min ago";
-    } else if (timeDifference < 1650000) {
-      return "25 min ago";
-    } else if (timeDifference < 1950000) {
-      return "30 min ago";
-    } else if (timeDifference < 2250000) {
-      return "35 min ago";
-    } else if (timeDifference < 2550000) {
-      return "40 min ago";
-    } else if (timeDifference < 3000000) {
-      return "45 min ago";
-    } else if (timeDifference < 5400000) {
-      return "1 hr ago";
-    } else if (timeDifference < 9000000) {
-      return "2 hrs ago";
-    } else if (timeDifference < 12600000) {
-      return "3 hrs ago";
-    } else if (timeDifference < 18000000) {
-      return "5 hrs ago";
-    } else if (timeDifference < 43200000) {
-      return "Many hrs ago";
-    } else if (timeDifference < 84600000) {
-      return "About a day ago";
+    if (isSameDay(CreatedAt, today)) {
+      // it's today
+      return `Today at ${CreatedAt.toLocaleTimeString(undefined, timeOptions)}`;
     }
+
+    if (isSameDay(CreatedAt, yesterday)) {
+      // it was yesterday
+      return `Yesterday at ${CreatedAt.toLocaleTimeString(
+        undefined,
+        timeOptions
+      )}`;
+    }
+    let dateReturn = CreatedAt.toLocaleDateString().concat(
+      "  ",
+      CreatedAt.toLocaleTimeString(undefined, timeOptions)
+    );
+    return dateReturn;
   }
 
   handleTotalItems = (items) => {
@@ -169,7 +130,12 @@ class YourOrders extends React.Component {
   };
 
   render() {
-    let d = Date.now();
+    //let d = Date.now();
+
+    let today = new Date(); //Date.now(); <= Wrong
+    let yesterday = new Date(today);
+
+    yesterday.setDate(yesterday.getDate() - 1);
 
     let cardBkg;
     let cardText;
@@ -224,8 +190,11 @@ class YourOrders extends React.Component {
                 <Card.Body>
                   <Card.Title className="cardTitle">
                     <b style={{ color: "#008de4" }}>{this.handleName(msg)}</b>
-                    <span className="textsmaller">
+                    {/* <span className="textsmaller">
                       {this.getRelativeTimeAgo(msg.$createdAt, d)}
+                    </span> */}
+                    <span className="textsmaller">
+                      {this.formatDate(msg.$createdAt, today, yesterday)}
                     </span>
                   </Card.Title>
                   <Card.Text>{msg.msg}</Card.Text>
@@ -299,8 +268,11 @@ class YourOrders extends React.Component {
                     <span >{this.props.tuple[0]}</span>
                   )} //This is like a comment thing*/}
 
-                <span className="textsmaller">
+                {/* <span className="textsmaller">
                   {this.getRelativeTimeAgo(order.$createdAt, d)}
+                </span> */}
+                <span className="textsmaller">
+                  {this.formatDate(order.$createdAt, today, yesterday)}
                 </span>
               </Card.Title>
 
@@ -342,8 +314,12 @@ class YourOrders extends React.Component {
                         <b style={{ color: "#008de4" }}>
                           {this.props.uniqueName}
                         </b>
-                        <span className="textsmaller">
+
+                        {/* <span className="textsmaller">
                           {this.getRelativeTimeAgo(order.$createdAt, d)}
+                        </span> */}
+                        <span className="textsmaller">
+                          {this.formatDate(order.$createdAt, today, yesterday)}
                         </span>
                       </Card.Title>
                       <Card.Text>{order.comment}</Card.Text>

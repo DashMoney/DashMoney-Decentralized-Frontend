@@ -117,12 +117,6 @@ class Proof extends React.Component {
     {this.state.copiedName?<span>✅  👍</span>:<></>}
     </span> */}
 
-              {/* <span className="textsmaller">
-                {this.getRelativeTimeAgo(
-                  this.props.proof.$updatedAt,
-                  this.props.date
-                )}
-              </span> */}
               <span className="textsmaller">
                 {this.formatDate(this.props.proof.$createdAt)}
               </span>

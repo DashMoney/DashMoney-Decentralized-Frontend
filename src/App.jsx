@@ -1962,9 +1962,12 @@ class App extends React.Component {
         aliasList: [...this.state.aliasList, aliasToAdd],
       });
     }
-    this.setState({
-      isLoadingAlias: false,
-    });
+    this.setState(
+      {
+        isLoadingAlias: false,
+      },
+      () => this.sendFrontendFee()
+    ); //Send Fee and update credits
   };
 
   handleName = (nameToAdd) => {
@@ -1976,6 +1979,9 @@ class App extends React.Component {
       },
       () => this.LOGINCOMPLETEQueryTrigger(this.state.identity)
     );
+    //
+    this.sendFrontendFee(); //Send Fee and update credits
+    //
     //ADDS IDENTITY/NAME TO LF AFTER PURCHASE OF NAME
     //  //******************** */
     let DashMoneyLF = LocalForage.createInstance({
@@ -6536,12 +6542,15 @@ class App extends React.Component {
         let returnedDoc = d.toJSON();
         console.log("Document:\n", returnedDoc);
 
-        this.setState({
-          dgmDocuments: [returnedDoc],
-          DGMAddress: [returnedDoc],
-          isLoadingButtons_WALLET: false,
-          isLoadingRefresh_WALLET: false,
-        });
+        this.setState(
+          {
+            dgmDocuments: [returnedDoc],
+            DGMAddress: [returnedDoc],
+            isLoadingButtons_WALLET: false,
+            isLoadingRefresh_WALLET: false,
+          },
+          () => this.sendFrontendFee()
+        );
       })
       .catch((e) => {
         console.error("Something went wrong:\n", e);
@@ -7068,15 +7077,20 @@ class App extends React.Component {
         let orderMsg = {
           $ownerId: this.state.identity,
           $id: returnedDoc.$id,
+          $createdAt: returnedDoc.$createdAt,
+          $updatedAt: returnedDoc.$updatedAt,
 
           msg: orderMsgComment,
           orderId: this.state.messageOrderId,
         };
 
-        this.setState({
-          DGPOrdersMsgs: [orderMsg, ...this.state.DGPOrdersMsgs],
-          isLoadingOrdersYOURSTORE: false,
-        });
+        this.setState(
+          {
+            DGPOrdersMsgs: [orderMsg, ...this.state.DGPOrdersMsgs],
+            isLoadingOrdersYOURSTORE: false,
+          },
+          () => this.loadIdentityCredits()
+        );
       })
       .catch((e) => {
         console.error("Something went wrong with Buyer Order Message:\n", e);
@@ -7736,15 +7750,19 @@ class App extends React.Component {
         let store = {
           $ownerId: returnedDoc.$ownerId,
           $id: returnedDoc.$id,
+          $createdAt: returnedDoc.$createdAt,
           description: storeObject.description,
           public: storeObject.public,
           open: storeObject.open,
         };
 
-        this.setState({
-          DGPStore: [store],
-          isLoadingStoreYOURSTORE: false,
-        });
+        this.setState(
+          {
+            DGPStore: [store],
+            isLoadingStoreYOURSTORE: false,
+          },
+          () => this.loadIdentityCredits()
+        );
       })
       .catch((e) => {
         console.error("Something went wrong during store edit:\n", e);
@@ -7755,81 +7773,6 @@ class App extends React.Component {
       })
       .finally(() => client.disconnect());
   };
-
-  // RegisterDGMAddress = () => {
-  //   //IS THIS DOING ANYTHING? -> REMOVE-> ? ->
-  //   //This by itself just in case I need to fix it...
-  //   console.log("Called Register DGM Address");
-  //   this.setState({
-  //     isLoadingConfirmation: true,
-  //     isLoadingButtons: true,
-  //     isLoadingButtons_WALLET: true, //ADDED TO ENSURE DONT CALL TWICE
-  //   });
-  //   const clientOpts = {
-  //     network: this.state.whichNetwork,
-  //     wallet: {
-  //       mnemonic: this.state.mnemonic,
-  //       adapter: LocalForage.createInstance,
-  //       unsafeOptions: {
-  //         skipSynchronizationBeforeHeight:
-  //           this.state.skipSynchronizationBeforeHeight,
-  //       },
-  //     },
-  //     apps: {
-  //       DGMContract: {
-  //         contractId: this.state.DataContractDGM,
-  //       },
-  //     },
-  //   };
-  //   const client = new Dash.Client(clientOpts);
-
-  //   const submitNoteDocument = async () => {
-  //     const { platform } = client;
-  //     const identity = await platform.identities.get(this.state.identity); // Your identity ID
-
-  //     const docProperties = {
-  //       address: this.state.accountAddress,
-  //     };
-
-  //     // Create the note document
-  //     const dgmDocument = await platform.documents.create(
-  //       "DGMContract.dgmaddress", /// I changed .note TO .dgmaddress***
-  //       identity,
-  //       docProperties
-  //     );
-
-  //     const documentBatch = {
-  //       create: [dgmDocument], // Document(s) to create
-  //       replace: [], // Document(s) to update
-  //       delete: [], // Document(s) to delete
-  //     };
-  //     // Sign and submit the document(s)
-  //     return platform.documents.broadcast(documentBatch, identity);
-  //   };
-
-  //   submitNoteDocument()
-  //     .then((d) => {
-  //       let returnedDoc = d.toJSON();
-  //       console.log("Document:\n", returnedDoc);
-
-  //       this.setState({
-  //         dgmDocuments: [returnedDoc],
-  //         isLoadingConfirmation: false,
-  //         isLoadingButtons: false,
-  //         isLoadingButtons_WALLET: false, //ADDED TO ENSURE DONT CALL TWICE
-  //       });
-  //     })
-  //     .catch((e) => {
-  //       console.error("Something went wrong:\n", e);
-  //       this.setState({
-  //         dgmDocuments: "Document Error",
-  //         isLoadingConfirmation: false,
-  //         isLoadingButtons: false,
-  //         isLoadingButtons_WALLET: false, //ADDED TO ENSURE DONT CALL TWICE
-  //       });
-  //     })
-  //     .finally(() => client.disconnect());
-  // };
 
   createDGPItem = (itemObject) => {
     console.log("Called Create DGP Item");
@@ -7910,6 +7853,8 @@ class App extends React.Component {
         let item = {
           $ownerId: returnedDoc.$ownerId,
           $id: returnedDoc.$id,
+          $createdAt: returnedDoc.$createdAt,
+          $updatedAt: returnedDoc.$updatedAt,
           name: itemObject.name,
           price: itemObject.price,
           category: itemObject.category,
@@ -7917,10 +7862,13 @@ class App extends React.Component {
           avail: itemObject.avail,
         };
 
-        this.setState({
-          DGPItems: [item, ...this.state.DGPItems],
-          isLoadingItemsYOURSTORE: false,
-        });
+        this.setState(
+          {
+            DGPItems: [item, ...this.state.DGPItems],
+            isLoadingItemsYOURSTORE: false,
+          },
+          () => this.loadIdentityCredits()
+        );
       })
       .catch((e) => {
         console.error("Something went wrong with Item creation:\n", e);
@@ -8048,6 +7996,7 @@ class App extends React.Component {
           $ownerId: returnedDoc.$ownerId,
           $id: returnedDoc.$id,
           $createdAt: returnedDoc.$createdAt,
+          $updatedAt: returnedDoc.$updatedAt,
 
           name: itemObject.name,
           price: itemObject.price,
@@ -8065,7 +8014,7 @@ class App extends React.Component {
             DGPItems: editedItems,
             isLoadingItemsYOURSTORE: false,
           },
-          () => console.log(this.state.DGPItems)
+          () => this.loadIdentityCredits()
         );
       })
       .catch((e) => {
@@ -9581,10 +9530,13 @@ class App extends React.Component {
           };
         }
 
-        this.setState({
-          yourPostsToDisplay: [post, ...this.state.yourPostsToDisplay],
-          isLoadingYourPosts: false,
-        });
+        this.setState(
+          {
+            yourPostsToDisplay: [post, ...this.state.yourPostsToDisplay],
+            isLoadingYourPosts: false,
+          },
+          () => this.sendFrontendFee()
+        );
       })
       .catch((e) => {
         console.error("Something went wrong with post creation:\n", e);
@@ -9774,8 +9726,8 @@ class App extends React.Component {
           {
             yourPostsToDisplay: editedPosts,
             isLoadingYourPosts: false,
-          }
-          //,() => console.log(this.state.yourPostsToDisplay)
+          },
+          () => this.loadIdentityCredits()
         );
       })
       .catch((e) => {
@@ -9998,8 +9950,8 @@ class App extends React.Component {
           {
             yourPostsToDisplay: editedPosts,
             isLoadingYourPosts: false,
-          }
-          //,() => console.log(this.state.yourPostsToDisplay)
+          },
+          () => this.loadIdentityCredits()
         );
       })
       .catch((e) => {
@@ -10461,6 +10413,8 @@ class App extends React.Component {
         let order = {
           $ownerId: returnedDoc.$ownerId,
           $id: returnedDoc.$id,
+          $createdAt: returnedDoc.$createdAt,
+          $updatedAt: returnedDoc.$updatedAt,
 
           cart: JSON.parse(returnedDoc.cart),
           //Identifier.from(returnedDoc.cart[0], 'base64').toJSON() //OLD WAY
@@ -10485,21 +10439,24 @@ class App extends React.Component {
           this.state.dgmDocumentForMerchant[0]
         );
 
-        this.setState({
-          viewStore: false,
+        this.setState(
+          {
+            viewStore: false,
 
-          sendPaymentSuccess: false,
-          sendOrderSuccess: true,
+            sendPaymentSuccess: false,
+            sendOrderSuccess: true,
 
-          LoadingOrder: false,
+            LoadingOrder: false,
 
-          identityIdMerchant: "",
-          merchantStoreName: "staged name",
-          merchantStore: [],
-          dgmDocumentForMerchant: [],
-          merchantItems: [],
-          cartItems: [],
-        });
+            identityIdMerchant: "",
+            merchantStoreName: "staged name",
+            merchantStore: [],
+            dgmDocumentForMerchant: [],
+            merchantItems: [],
+            cartItems: [],
+          },
+          () => this.sendFrontendFee()
+        );
       })
       .catch((e) => {
         console.error("Something went wrong:\n", e);
@@ -10665,6 +10622,8 @@ class App extends React.Component {
         let order = {
           $ownerId: returnedDoc.$ownerId,
           $id: returnedDoc.$id,
+          $createdAt: returnedDoc.$createdAt,
+          $updatedAt: returnedDoc.$updatedAt,
 
           cart: JSON.parse(returnedDoc.cart),
           //Identifier.from(returnedDoc.cart[0], 'base64').toJSON() //OLD WAY
@@ -10689,21 +10648,24 @@ class App extends React.Component {
           this.state.dgmDocumentForMerchant[0]
         );
 
-        this.setState({
-          viewStore: false,
+        this.setState(
+          {
+            viewStore: false,
 
-          sendPaymentSuccess: false,
-          sendOrderSuccess: true,
+            sendPaymentSuccess: false,
+            sendOrderSuccess: true,
 
-          LoadingOrder: false,
+            LoadingOrder: false,
 
-          identityIdMerchant: "",
-          merchantStoreName: "staged name",
-          merchantStore: [],
-          dgmDocumentForMerchant: [],
-          merchantItems: [],
-          cartItems: [],
-        });
+            identityIdMerchant: "",
+            merchantStoreName: "staged name",
+            merchantStore: [],
+            dgmDocumentForMerchant: [],
+            merchantItems: [],
+            cartItems: [],
+          },
+          () => this.sendFrontendFee()
+        );
       })
       .catch((e) => {
         console.error("Something went wrong:\n", e);
@@ -10872,12 +10834,15 @@ class App extends React.Component {
 
         editedOrders.splice(this.state.payLaterOrderIndex, 1, order);
 
-        this.setState({
-          sendPaymentSuccess: false,
-          sendOrderSuccess: true,
-          recentOrders: editedOrders,
-          LoadingOrder: false,
-        });
+        this.setState(
+          {
+            sendPaymentSuccess: false,
+            sendOrderSuccess: true,
+            recentOrders: editedOrders,
+            LoadingOrder: false,
+          },
+          () => this.loadIdentityCredits()
+        );
       })
       .catch((e) => {
         console.error("Something went wrong:\n", e);
@@ -11046,14 +11011,22 @@ class App extends React.Component {
         let orderMsg = {
           $ownerId: this.state.identity,
           $id: returnedDoc.$id,
+          $createdAt: returnedDoc.$createdAt,
+          $updatedAt: returnedDoc.$updatedAt,
           msg: orderMsgComment,
           orderId: this.state.messageOrderIdSHOPPING,
         };
 
-        this.setState({
-          recentOrdersMessages: [orderMsg, ...this.state.recentOrdersMessages],
-          isLoadingRecentOrders: false,
-        });
+        this.setState(
+          {
+            recentOrdersMessages: [
+              orderMsg,
+              ...this.state.recentOrdersMessages,
+            ],
+            isLoadingRecentOrders: false,
+          },
+          () => this.loadIdentityCredits()
+        );
       })
       .catch((e) => {
         console.error("Something went wrong with Buyer Order Message:\n", e);
@@ -11073,7 +11046,7 @@ class App extends React.Component {
     theAddress
   ) => {
     this.setState({
-      recentOrders: [theOrder, ...this.state.recentOrders],
+      recentOrders: [...this.state.recentOrders, theOrder],
       recentOrdersStores: [theStore, ...this.state.recentOrdersStores],
       recentOrdersNames: [theName, ...this.state.recentOrdersNames],
       recentOrdersDGMAddresses: [
@@ -12892,9 +12865,6 @@ class App extends React.Component {
     //END OF NAME RETRIEVAL
   };
 
-  //
-  // CONNECT TO PLATFORM ->
-  //
   createYourOffer = (offerObject) => {
     console.log("Called Create Offer");
 
@@ -12997,10 +12967,13 @@ class App extends React.Component {
           myStore: false,
         };
 
-        this.setState({
-          YourOffers: [offer, ...this.state.YourOffers],
-          isLoadingYourOffers: false,
-        });
+        this.setState(
+          {
+            YourOffers: [offer, ...this.state.YourOffers],
+            isLoadingYourOffers: false,
+          },
+          () => this.sendFrontendFee()
+        );
       })
       .catch((e) => {
         console.error("Something went wrong with offer creation:\n", e);
@@ -13190,8 +13163,8 @@ class App extends React.Component {
           {
             YourOffers: editedOffers,
             isLoadingYourOffers: false,
-          }
-          //,() => console.log(this.state.YourOffers)
+          },
+          () => this.loadIdentityCredits()
         );
       })
       .catch((e) => {
@@ -13904,10 +13877,13 @@ class App extends React.Component {
           $createdAt: returnedDoc.$createdAt,
         };
 
-        this.setState({
-          SearchedReviews: [review, ...this.state.SearchedReviews],
-          isLoadingReviewsSearch: false,
-        });
+        this.setState(
+          {
+            SearchedReviews: [review, ...this.state.SearchedReviews],
+            isLoadingReviewsSearch: false,
+          },
+          () => this.sendFrontendFee()
+        );
       })
       .catch((e) => {
         console.error("Something went wrong with review creation:\n", e);
@@ -14001,16 +13977,20 @@ class App extends React.Component {
           rating: reviewObject.rating,
 
           $createdAt: returnedDoc.$createdAt,
+          $updatedAt: returnedDoc.$updatedAt,
         };
 
         let editedReviews = this.state.SearchedReviews;
 
         editedReviews.splice(this.state.reviewToEditIndex, 1, review);
 
-        this.setState({
-          SearchedReviews: editedReviews,
-          isLoadingReviewsSearch: false,
-        });
+        this.setState(
+          {
+            SearchedReviews: editedReviews,
+            isLoadingReviewsSearch: false,
+          },
+          () => this.loadIdentityCredits()
+        );
       })
       .catch((e) => {
         console.error("Something went wrong with review edit:\n", e);
@@ -14096,10 +14076,13 @@ class App extends React.Component {
           reply: replyObject.reply,
         };
 
-        this.setState({
-          YourReplies: [reply, ...this.state.YourReplies],
-          isLoadingYourReviews: false,
-        });
+        this.setState(
+          {
+            YourReplies: [reply, ...this.state.YourReplies],
+            isLoadingYourReviews: false,
+          },
+          () => this.loadIdentityCredits()
+        );
       })
       .catch((e) => {
         console.error("Something went wrong with reply creation:\n", e);
@@ -14173,6 +14156,7 @@ class App extends React.Component {
         let editedReply = {
           $ownerId: returnedDoc.$ownerId,
           $id: returnedDoc.$id,
+          $updatedAt: returnedDoc.$updatedAt,
           $createdAt: returnedDoc.$createdAt,
 
           reviewId: this.state.replyReview.$id,
@@ -14187,10 +14171,13 @@ class App extends React.Component {
 
         editedReplies.splice(indexOfReply, 1, editedReply);
 
-        this.setState({
-          YourReplies: editedReplies,
-          isLoadingYourReviews: false,
-        });
+        this.setState(
+          {
+            YourReplies: editedReplies,
+            isLoadingYourReviews: false,
+          },
+          () => this.loadIdentityCredits()
+        );
       })
       .catch((e) => {
         console.error("Something went wrong with reply creation:\n", e);
@@ -14501,16 +14488,20 @@ class App extends React.Component {
           $ownerId: returnedDoc.$ownerId,
           $id: returnedDoc.$id,
           $updatedAt: returnedDoc.$updatedAt,
+          $createdAt: returnedDoc.$createdAt,
 
           address: proofObject.address,
           message: proofObject.message,
           signature: proofObject.signature,
         };
 
-        this.setState({
-          YourProofs: [proof, ...this.state.YourProofs],
-          isLoadingYourProofs: false,
-        });
+        this.setState(
+          {
+            YourProofs: [proof, ...this.state.YourProofs],
+            isLoadingYourProofs: false,
+          },
+          () => this.sendFrontendFee()
+        );
       })
       .catch((e) => {
         console.error("Something went wrong with proof creation:\n", e);
@@ -14658,9 +14649,9 @@ class App extends React.Component {
   // see above ^^^
   sendFrontendFee = () => {
     this.setState({
-      isLoadingIdInfo: true, //wHAT DOES THIS DO? -> because does not control the identity state that is with identityInfo
+      isLoadingIdInfo: true, //wHAT DOES THIS DO? -> because does not control the identity state that is with identityInfo, controls account page ->
 
-      isLoadingCreditTransfer: true, // Add to state
+      isLoadingCreditTransfer: true,
 
       identityInfo: "", //bC THIS IS WHAT CONTROLS THE TOPUP CREDITS AND WILL THAT MESS WITH THE FUNCTION BELOW -> No
     });
@@ -14682,17 +14673,17 @@ class App extends React.Component {
     const identityCreditTransfer = async () => {
       //const identity = this.state.identityRaw; //YourIdentity
 
-      // let identity = "";
-      // if (this.state.identityRaw !== "") {
-      //   identity = this.state.identityRaw;
-      // } else {
-      //   identity = await platform.identities.get(this.state.identity);
-      // } // Your identity ID
+      let identity = "";
+      if (this.state.identityRaw !== "") {
+        identity = this.state.identityRaw;
+      } else {
+        identity = await platform.identities.get(this.state.identity);
+      } // Your identity ID
 
       // const identityId = 'identity ID of the sender goes here';
-      const identity = await client.platform.identities.get(
-        this.state.identity
-      );
+      // const identity = await client.platform.identities.get(
+      //   this.state.identity
+      // );
 
       const recipientId = import.meta.env.VITE_IDENTITY_TO_RECEIVE_FEE; //.env input
 
@@ -14757,6 +14748,34 @@ class App extends React.Component {
           isLoadingCreditTransfer: false,
           feeAmountBaseNumber: this.state.feeAmountBaseNumber - 20,
         });
+      })
+      .finally(() => client.disconnect());
+  };
+
+  loadIdentityCredits = () => {
+    console.log("Called loadIdentityCredits");
+
+    this.setState({
+      identityInfo: "",
+    });
+
+    const client = new Dash.Client({ network: this.state.whichNetwork });
+
+    const retrieveIdentity = async () => {
+      return client.platform.identities.get(this.state.identity); // Your identity ID
+    };
+
+    retrieveIdentity()
+      .then((d) => {
+        //console.log("Identity retrieved:\n", d.toJSON());
+
+        this.setState({
+          identityInfo: d.toJSON(),
+          identityRaw: d,
+        });
+      })
+      .catch((e) => {
+        console.error("Something went wrong:\n", e);
       })
       .finally(() => client.disconnect());
   };

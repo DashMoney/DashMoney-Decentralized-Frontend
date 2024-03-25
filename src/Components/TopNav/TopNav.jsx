@@ -28,9 +28,7 @@ class TopNav extends React.Component {
 
   handleFrontendFee = () => {
     // return unit for display or no fee
-    if (
-      this.props.validFrontendFee
-    ) {
+    if (this.props.validFrontendFee) {
       //Need to add a decimal or comma on the second from last
       return (this.props.FrontendFee / 100).toFixed(2);
     } else {
@@ -98,17 +96,25 @@ class TopNav extends React.Component {
                 </>
               )}
             </Navbar.Brand>
-
-            <div>
-              <Form>
-                <Form.Check
-                  type="switch"
-                  id="custom-switch"
-                  label=""
-                  onChange={() => this.props.handleMode()}
-                />
-              </Form>
-            </div>
+            <Form>
+              {this.props.mode === "primary" ? (
+                <div>
+                  <Form.Check
+                    type="switch"
+                    id="custom-switch"
+                    onChange={() => this.props.handleMode()}
+                  />
+                </div>
+              ) : (
+                <div>
+                  <Form.Check
+                    type="switch"
+                    id="custom-switch-dark"
+                    onChange={() => this.props.handleMode()}
+                  />
+                </div>
+              )}
+            </Form>
 
             <Navbar.Toggle
               //This needs to just switch itself or toggle self

@@ -1211,9 +1211,14 @@ class App extends React.Component {
   };
 
   handleAccountRetry = () => {
-    this.getWalletAndIdentitywithMnem(this.state.mnemonic);
+    this.setState(
+      {
+        isLoadingIdentity: true,
+        isLoadingWallet: true,
+      },
+      () => this.getWalletAndIdentitywithMnem(this.state.mnemonic)
+    );
   };
-  //
   //
   // BELOW STANDARD LOGIN
   getWalletAndIdentitywithMnem = (theMnemonic) => {
@@ -2716,6 +2721,7 @@ class App extends React.Component {
       };
 
       await platform.documents.broadcast(msgBatch, identity);
+      //RETURN ^^^ THIS AND JUST LET TAGS DO WHATEVER?
 
       // const tagBatch = { //Moved below for individual submission
       //   create: dsoTags, // Document(s) to create
@@ -2737,52 +2743,26 @@ class App extends React.Component {
 
             await platform.documents.broadcast(tagBatch, identity);
 
-            //return tagDoc;
+            return tagDoc; //UNCOMMENTED THIS IS IT NEEDED, A RETURN OF SOMETHING TO FILL THE MAP?
           })
         );
       }
 
-      return [dsoDocument];
+      return dsoDocument;
     };
 
     submitDocuments()
       .then((d) => {
-        //Returns array!!! ->
-        // let returnedDoc = d.toJSON();
+        let returnedDoc = d.toJSON();
         // console.log("MSG Documents JSON:\n", returnedDoc);
 
-        //SIMPLIFY JUST RECEIVE MSG BACK ->
-
-        let docArray = [];
-        for (const n of d) {
-          console.log("Submitted Doc:\n", n.toJSON());
-          docArray = [...docArray, n.toJSON()];
-        }
-
-        let message = {};
-
-        if (docArray.length === 1) {
-          message = {
-            $ownerId: docArray[0].$ownerId,
-            $id: docArray[0].$id, //$id: returnedDoc.transitions[0].$id,
-            sh: addedMessage.sh,
-            msg: addedMessage.msg,
-            $createdAt: docArray[0].$createdAt,
-          };
-        } else {
-          docArray.forEach((doc) => {
-            //OR I could do a find and it would be a bit faster ->
-            if (doc.$type === "dsomsg") {
-              message = {
-                $ownerId: doc.$ownerId,
-                $id: doc.$id,
-                sh: addedMessage.sh,
-                msg: addedMessage.msg,
-                $createdAt: doc.$createdAt,
-              };
-            }
-          });
-        }
+        let message = {
+          $ownerId: returnedDoc.$ownerId,
+          $id: returnedDoc.$id,
+          sh: addedMessage.sh,
+          msg: addedMessage.msg,
+          $createdAt: Date.now(),
+        };
 
         if (addedMessage.sh === "out") {
           this.setState(
@@ -2791,7 +2771,7 @@ class App extends React.Component {
               ByYouMsgs: [message, ...this.state.ByYouMsgs],
               isLoadingRefresh: false,
             },
-            () => this.updateIdentityInfo()
+            () => this.sendFrontendFee()
           );
         } else {
           this.setState(
@@ -14265,7 +14245,7 @@ class App extends React.Component {
     };
 
     updateIdentityDisableKey()
-      .then((d) => console.log("Identity updated:\n", d.toJSON()))
+      .then((d) => console.log("Identity disabled:\n", d.toJSON()))
       .catch((e) => console.error("Something went wrong:\n", e))
       .finally(() => client.disconnect());
   };

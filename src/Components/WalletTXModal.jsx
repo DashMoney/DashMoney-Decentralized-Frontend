@@ -358,7 +358,7 @@ class WalletTXModal extends React.Component {
 
             {this.state.whichTab === "Activity" ? (
               <>
-                <Container className="g-0">
+                <Container className="g-2">
                   <Row
                     className="justify-content-md-center"
                     style={{
@@ -368,7 +368,7 @@ class WalletTXModal extends React.Component {
                       marginRight: "0.2rem",
                     }}
                   >
-                    <Col xs={4}>
+                    <Col xs={4} style={{ marginLeft: ".2rem" }}>
                       <b>From/To</b>
                     </Col>
                     <Col>
@@ -381,6 +381,7 @@ class WalletTXModal extends React.Component {
                       <b>Date</b>
                     </Col>
                   </Row>
+
                   {SimplifiedTransactions}
                 </Container>
               </>

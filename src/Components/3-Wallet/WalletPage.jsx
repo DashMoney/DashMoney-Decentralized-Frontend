@@ -507,9 +507,7 @@ class WalletPage extends React.Component {
                         <p>
                           You have successfully sent{" "}
                           <b>
-                            {handleDenomDisplay(
-                              this.props.WALLET_amountToSend
-                            )}
+                            {handleDenomDisplay(this.props.WALLET_amountToSend)}
                           </b>{" "}
                           to{" "}
                           <b>
@@ -543,8 +541,7 @@ class WalletPage extends React.Component {
                         <Alert.Heading>Payment Failed</Alert.Heading>
                         <p>
                           You have run into a platform error or a repeated
-                          transaction error. If everything seems correct, please
-                          retry <b>Verify Payment</b> to try again.
+                          transaction error.
                         </p>
                       </Alert>
                     </>
@@ -774,10 +771,6 @@ class WalletPage extends React.Component {
                           The name {this.state.sendToName} is not owned by
                           anyone.
                         </p>
-                        <p>
-                          Or you may have run into a platform issue, please
-                          retry <b>Verify Payment</b> to try again.
-                        </p>
                       </Alert>
                     </>
                   ) : (
@@ -790,8 +783,8 @@ class WalletPage extends React.Component {
                         <Alert.Heading>Alert!</Alert.Heading>
                         <p>
                           You have run into a platform error. If everything
-                          seems correct, please retry <b>Verify Payment</b> to
-                          try again.
+                          seems correct, please retry <b>Send Dash</b> to try
+                          again.
                         </p>
                       </Alert>
                     </>
@@ -806,12 +799,8 @@ class WalletPage extends React.Component {
                         <Alert.Heading>Alert!</Alert.Heading>
                         <p>
                           <b>{this.state.sendToName}</b> has not yet enabled{" "}
-                          <b>Pay to Name</b> at <b>DashGetMoney</b>. Let them
-                          know on <b>DashShoutOut</b>.
-                        </p>
-                        <p>
-                          Or you may have run into a platform issue, please
-                          retry <b>Send Dash</b> to try again.
+                          <b>Pay-to-Name</b> in <b>Wallet</b>. Let them know on{" "}
+                          <b>Messages</b>.
                         </p>
                       </Alert>
                       <p></p>
@@ -825,9 +814,8 @@ class WalletPage extends React.Component {
                       <Alert variant="danger" dismissible>
                         <Alert.Heading>Alert!</Alert.Heading>
                         <p>
-                          You have run into a platform error. If everything
-                          seems correct, please retry <b>Verify Payment</b> to
-                          try again.
+                          You have run into a platform error relating to
+                          recipient's <b>Pay-to-Name</b>.
                         </p>
                       </Alert>
                       <p></p>
@@ -849,9 +837,7 @@ class WalletPage extends React.Component {
                         <p>
                           You have successfully sent{" "}
                           <b>
-                            {handleDenomDisplay(
-                              this.props.WALLET_amountToSend
-                            )}
+                            {handleDenomDisplay(this.props.WALLET_amountToSend)}
                           </b>{" "}
                           to{" "}
                           <b>
@@ -887,9 +873,7 @@ class WalletPage extends React.Component {
                         <p>
                           You have successfully sent{" "}
                           <b>
-                            {handleDenomDisplay(
-                              this.props.WALLET_amountToSend
-                            )}
+                            {handleDenomDisplay(this.props.WALLET_amountToSend)}
                           </b>{" "}
                           to{" "}
                           <b>
@@ -916,7 +900,7 @@ class WalletPage extends React.Component {
                         <Alert.Heading>Payment Failed</Alert.Heading>
                         <p>
                           Payment was not sent. If everything seems correct,
-                          please retry <b>Verify Payment</b> to try again.
+                          please retry <b>Send Dash</b> to try again.
                         </p>
                       </Alert>
                     </>
@@ -937,9 +921,10 @@ class WalletPage extends React.Component {
                         <p>
                           You have run into a platform error or insufficient
                           credits.
-                          <p>
-                            Go the <b>View TXs</b> to resend message.
-                          </p>
+                        </p>
+                        <p>
+                          Go the <b>View TXs</b> to resend message. This will be
+                          part of <b>Detailed</b> in the future.
                         </p>
                       </Alert>
                     </>

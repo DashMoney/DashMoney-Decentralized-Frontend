@@ -125,7 +125,7 @@ class SimplifiedTXs extends React.Component {
         <Row
           key={this.props.index} //className="justify-content-md-center"
         >
-          <Col xs={4}>
+          <Col xs={4} style={{ textAlign: "center" }}>
             <b>{this.handleTxOrderName(this.props.tx)}</b>
           </Col>
           <Col>

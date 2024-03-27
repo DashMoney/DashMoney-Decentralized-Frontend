@@ -15,25 +15,9 @@ img {
   background-color: #0d6efd;
   border-color: #fff;
 }
-/* #custom-switch:checked {
-  background-color: #fff;
-} */
-
-/* #custom-switch:indeterminate {
-  color: #0d6efd;
-  background-color: #fff;
-}
-#custom-switch:active {
-  background-color: #fff;
-  color: #0d6efd;
-}
-#custom-switch:hover {
-  background-color: #fff;
-  color: #0d6efd;
-} */
 
 #custom-switch-dark {
-  background-color: #0d6efd;
+  background-color: #008de4;
 }
 
 /* #custom-switch {

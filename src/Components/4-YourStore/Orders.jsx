@@ -348,8 +348,41 @@ class Orders extends React.Component {
         ) : (
           <></>
         )}
+        {/* THIS IS WHERE i ADD THE ABILITY TO RELOAD ORDERS */}
 
-        {!this.props.isLoadingWallet &&
+        {this.props.dgmDocuments.length !== 0 &&
+        this.props.DGPStore !== "No Store" &&
+        this.props.DGPStore.length !== 0 ? (
+          <>
+            {this.props.isMyStoreOrdersRefreshReady &&
+            !this.props.LoadingStore &&
+            !this.props.isLoadingWallet &&
+            !this.props.LoadingOrders ? (
+              <div className="d-grid gap-2" id="button-edge-noTop">
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    this.props.refreshMyStoreOrders();
+                  }}
+                >
+                  <b>Refresh Orders</b>
+                </Button>
+              </div>
+            ) : (
+              <>
+                <div className="d-grid gap-2" id="button-edge-noTop">
+                  <Button variant="primary" disabled>
+                    <b>Refresh Orders</b>
+                  </Button>
+                </div>
+              </>
+            )}
+          </>
+        ) : (
+          <></>
+        )}
+
+        {/* {!this.props.isLoadingWallet &&
         !this.props.LoadingOrders &&
         this.props.newOrderAvail ? (
           <div className="d-grid gap-2" id="button-edge">
@@ -364,7 +397,7 @@ class Orders extends React.Component {
           </div>
         ) : (
           <></>
-        )}
+        )} */}
 
         {this.props.LoadingOrders ||
         this.props.isLoadingWallet ||

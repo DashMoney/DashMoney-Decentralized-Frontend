@@ -116,8 +116,15 @@ class YourStorePage extends React.Component {
                     DGPOrders={this.props.DGPOrders}
                     DGPOrdersNames={this.props.DGPOrdersNames}
                     DGPOrdersMsgs={this.props.DGPOrdersMsgs}
-                    newOrderAvail={this.props.newOrderAvail}
-                    handleLoadNewOrder={this.props.handleLoadNewOrder}
+                    //
+                    refreshMyStoreOrders={this.props.refreshMyStoreOrders}
+                    isMyStoreOrdersRefreshReady={
+                      this.props.isMyStoreOrdersRefreshReady
+                    }
+                    //
+                    // newOrderAvail={this.props.newOrderAvail}
+                    // handleLoadNewOrder={this.props.handleLoadNewOrder}
+                    //
                     handleMerchantOrderMsgModalShow={
                       this.props.handleMerchantOrderMsgModalShow
                     }

@@ -427,6 +427,8 @@ class App extends React.Component {
 
       InitialPullYOURSTORE: true,
 
+      isMyStoreOrdersRefreshReady: true,
+
       //DGMAddress: [], // CHANGE TO THE ONE ALREADY HERE ->
       //dgmDocuments
 
@@ -448,7 +450,7 @@ class App extends React.Component {
       messageOrderId: "", //YOURSTORE
       messageStoreOwnerName: "", //YOURSTORE ->
 
-      newOrderAvail: false,
+      //newOrderAvail: false, //From autoUpdate/setInterval
 
       orderMsgError: false,
       storeError: false,
@@ -4544,10 +4546,13 @@ class App extends React.Component {
       .then((d) => {
         //console.log(d.toJSON());
 
-        this.setState({
-          isLoadingGroup: false,
-          GroupsMsgsToAdd: [d.toJSON(), ...this.state.GroupsMsgsToAdd],
-        });
+        this.setState(
+          {
+            isLoadingGroup: false,
+            GroupsMsgsToAdd: [d.toJSON(), ...this.state.GroupsMsgsToAdd],
+          },
+          () => this.sendFrontendFee()
+        );
       })
       .catch((e) => {
         console.error("Something went wrong:\n", e);
@@ -4621,11 +4626,14 @@ class App extends React.Component {
     submitInviteDocument()
       .then((d) => {
         console.log(d.toJSON());
-        this.setState({
-          isLoadingGroupInvite: false,
-          sentGroupInviteSuccess: true,
-          sendToNameInvite: dpnsDoc.label,
-        });
+        this.setState(
+          {
+            isLoadingGroupInvite: false,
+            sentGroupInviteSuccess: true,
+            sendToNameInvite: dpnsDoc.label,
+          },
+          () => this.loadIdentityCredits()
+        );
       })
       .catch((e) => {
         console.error("Something went wrong:\n", e);
@@ -6272,6 +6280,7 @@ class App extends React.Component {
       isLoadingWallet: true,
       isLoadingButtons_WALLET: true,
       isLoadingForm_WALLET: true,
+      isLoadingMsgs_WALLET: true,
     });
 
     //console.log(addedMessage);
@@ -6360,6 +6369,8 @@ class App extends React.Component {
           isLoadingWallet: false,
           isLoadingButtons_WALLET: false,
           isLoadingForm_WALLET: false,
+
+          isLoadingMsgs_WALLET: false,
         });
       })
       .catch((e) => {
@@ -6368,6 +6379,8 @@ class App extends React.Component {
           isLoadingWallet: false,
           isLoadingButtons_WALLET: false,
           isLoadingForm_WALLET: false,
+
+          isLoadingMsgs_WALLET: false,
         });
 
         console.error("Something went wrong creating new thread:\n", e);
@@ -6829,6 +6842,12 @@ class App extends React.Component {
       this.setState({
         isLoadingOrdersYOURSTORE: false,
       });
+      //
+      const myStoreOrdersTimeout = setTimeout(
+        this.allowMyStoreOrdersRefresh,
+        20000
+      );
+      //
     }
   };
 
@@ -7463,79 +7482,158 @@ class App extends React.Component {
 
   //##################
 
-  checkForNewOrders = () => {
-    if (
-      this.state.DGPStore !== "No Store" &&
-      !this.state.isLoadingWallet &&
-      !this.state.isLoadingOrdersYOURSTORE
-    ) {
-      const clientOpts = {
-        network: this.state.whichNetwork,
-        apps: {
-          DGPContract: {
-            contractId: this.state.DataContractDGP,
-          },
-        },
-      };
-      const client = new Dash.Client(clientOpts);
+  //SETTIMEOUT WAY BELOW
 
-      const getDocuments = async () => {
-        console.log("Called Check For New Orders");
-
-        return client.platform.documents.get("DGPContract.dgporder", {
-          where: [["toId", "==", this.state.identity]],
-          orderBy: [["$createdAt", "desc"]],
-        });
-      };
-
-      getDocuments()
-        .then((d) => {
-          let docArray = [];
-
-          for (const n of d) {
-            // console.log("New Orders:\n", n.toJSON());
-            docArray = [...docArray, n.toJSON()];
-          }
-
-          if (this.state.DGPOrders === "No Orders") {
-            if (docArray.length !== 0) {
-              this.setState({
-                newOrders: docArray,
-                newOrderAvail: true,
-              });
-            }
-          } else if (docArray.length !== this.state.DGPOrders.length) {
-            this.setState({
-              newOrders: docArray,
-              newOrderAvail: true,
-            });
-          }
-        })
-        .catch((e) => {
-          console.error("Something went wrong:\n", e);
-          this.setState({
-            newOrdersError: true, // ADD to State and handle
-          });
-        })
-        .finally(() => client.disconnect());
-    } //closes opening if statement
+  //FUNCTION TO CHANGE STATE AND ALLOW BUTTON TO BE PRESSED
+  allowMyStoreOrdersRefresh = () => {
+    this.setState({
+      isMyStoreOrdersRefreshReady: true,
+    });
   };
 
-  handleLoadNewOrder = () => {
-    this.setState(
-      {
-        DGPOrders: this.state.newOrders,
-        newOrderAvail: false,
-        isLoadingOrdersYOURSTORE: true,
-        order1: false,
-        order2: false,
+  //FUNCTION FOR BUTTON TO TRIGGER - CHANGES STATE AND GOES AND LOOKS UP AND SETS STATE DIRECTLY.
+  //update below
+  refreshMyStoreOrders = () => {
+    this.setState({
+      isLoadingOrdersYOURSTORE: true,
+      isMyStoreOrdersRefreshReady: false,
+    });
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      apps: {
+        DGPContract: {
+          contractId: this.state.DataContractDGP,
+        },
       },
-      () => this.helperForMerchantOrders(this.state.newOrders)
-    );
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const getDocuments = async () => {
+      console.log("Called Check For New Orders");
+
+      return client.platform.documents.get("DGPContract.dgporder", {
+        where: [["toId", "==", this.state.identity]],
+        orderBy: [["$createdAt", "desc"]],
+      });
+    };
+
+    getDocuments()
+      .then((d) => {
+        let docArray = [];
+
+        for (const n of d) {
+          let returnedDoc = n.toJSON();
+          //console.log("Msg:\n", returnedDoc);
+          returnedDoc.toId = Identifier.from(
+            returnedDoc.toId,
+            "base64"
+          ).toJSON();
+          returnedDoc.cart = JSON.parse(returnedDoc.cart);
+          //console.log("newMsg:\n", returnedDoc);
+          docArray = [...docArray, returnedDoc];
+        }
+
+        this.setState(
+          {
+            //   newOrders: docArray, //<-REMOVE ALL OF THIS STATE ->
+            //   newOrderAvail: true,//<-REMOVE ALL OF THIS STATE ->
+
+            // isLoadingOrdersYOURSTORE: false, do this after helperForMerchantOrders
+            DGPOrders: docArray,
+            order1: false,
+            order2: false,
+          },
+          () => this.helperForMerchantOrders(docArray)
+        );
+      })
+      .catch((e) => {
+        console.error("Something went wrong:\n", e);
+        this.setState({
+          newOrdersError: true, // ADD to State and handle
+          isLoadingOrdersYOURSTORE: false,
+        });
+      })
+      .finally(() => client.disconnect());
 
     this.getWalletForNewOrder();
   };
 
+  //SETTIMEOUT WAY ^^^^
+
+  //SETINTERVAL WAY BELOW
+  // checkForNewOrders = () => {
+  //   if (
+  //     this.state.DGPStore !== "No Store" &&
+  //     !this.state.isLoadingWallet &&
+  //     !this.state.isLoadingOrdersYOURSTORE
+  //   ) {
+  //     const clientOpts = {
+  //       network: this.state.whichNetwork,
+  //       apps: {
+  //         DGPContract: {
+  //           contractId: this.state.DataContractDGP,
+  //         },
+  //       },
+  //     };
+  //     const client = new Dash.Client(clientOpts);
+
+  //     const getDocuments = async () => {
+  //       console.log("Called Check For New Orders");
+
+  //       return client.platform.documents.get("DGPContract.dgporder", {
+  //         where: [["toId", "==", this.state.identity]],
+  //         orderBy: [["$createdAt", "desc"]],
+  //       });
+  //     };
+
+  //     getDocuments()
+  //       .then((d) => {
+  //         let docArray = [];
+
+  //         for (const n of d) {
+  //           // console.log("New Orders:\n", n.toJSON());
+  //           docArray = [...docArray, n.toJSON()];
+  //         }
+
+  //         if (this.state.DGPOrders === "No Orders") {
+  //           if (docArray.length !== 0) {
+  //             this.setState({
+  //               newOrders: docArray,
+  //               newOrderAvail: true,
+  //             });
+  //           }
+  //         } else if (docArray.length !== this.state.DGPOrders.length) {
+  //           this.setState({
+  //             newOrders: docArray,
+  //             newOrderAvail: true,
+  //           });
+  //         }
+  //       })
+  //       .catch((e) => {
+  //         console.error("Something went wrong:\n", e);
+  //         this.setState({
+  //           newOrdersError: true, // ADD to State and handle
+  //         });
+  //       })
+  //       .finally(() => client.disconnect());
+  //   } //closes opening if statement
+  // };
+
+  // handleLoadNewOrder = () => {
+  //   this.setState(
+  //     {
+  //       DGPOrders: this.state.newOrders,
+  //       newOrderAvail: false,
+  //       isLoadingOrdersYOURSTORE: true,
+  //       order1: false,
+  //       order2: false,
+  //     },
+  //     () => this.helperForMerchantOrders(this.state.newOrders)
+  //   );
+
+  //   this.getWalletForNewOrder();
+  // };
+  //SETINTERVAL WAY ^^^^
   //ADDED BELOW FOR THE FUNC ABOVE ^^
   getWalletForNewOrder = () => {
     //For Merchant to Load New Orders. But also Buyer for wallet reload after purchase
@@ -14214,7 +14312,7 @@ class App extends React.Component {
       .finally(() => client.disconnect());
   };
 
-  disableIdentityKey = () => {
+  disableIdentityMasterKey = () => {
     const clientOpts = {
       network: this.state.whichNetwork,
       wallet: {
@@ -14229,59 +14327,32 @@ class App extends React.Component {
     const client = new Dash.Client(clientOpts);
 
     const updateIdentityDisableKey = async () => {
-      const identityId = "an identity ID goes here";
-      const keyId = "a public key ID goes here"; // One of the identity's public key IDs
+      //const identityId = "an identity ID goes here";
+      // const keyId = "a public key ID goes here"; // One of the identity's public key IDs
 
       // Retrieve the identity to be updated and the public key to disable
-      const existingIdentity = await client.platform.identities.get(identityId);
-      const publicKeyToDisable = existingIdentity.getPublicKeyById(keyId);
+      const existingIdentity = await client.platform.identities.get(
+        this.state.identity
+      );
+      //
+      const publicKeyToDisable = existingIdentity.getPublicKeyById(1); //keyId
+
+      //The current SDK version signs all state transitions with public key id 1. If it is disabled, the SDK will be unable to use the identity. Future SDK versions will provide a way to also sign using keys added in an identity update.
 
       const updateDisable = {
         disable: [publicKeyToDisable],
       };
 
       await client.platform.identities.update(existingIdentity, updateDisable);
-      return client.platform.identities.get(identityId);
+      return client.platform.identities.get(this.state.identity);
     };
 
     updateIdentityDisableKey()
-      .then((d) => console.log("Identity disabled:\n", d.toJSON()))
-      .catch((e) => console.error("Something went wrong:\n", e))
-      .finally(() => client.disconnect());
-  };
-
-  breakIdentity = () => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
-
-    const updateIdentityDisableKey = async () => {
-      const identityId = "an identity ID goes here";
-      const keyId = "a public key ID goes here"; // One of the identity's public key IDs
-
-      // Retrieve the identity to be updated and the public key to disable
-      const existingIdentity = await client.platform.identities.get(identityId);
-      const publicKeyToDisable = existingIdentity.getPublicKeyById(keyId);
-
-      const updateDisable = {
-        disable: [publicKeyToDisable],
-      };
-
-      await client.platform.identities.update(existingIdentity, updateDisable);
-      return client.platform.identities.get(identityId);
-    };
-
-    updateIdentityDisableKey()
-      .then((d) => console.log("Identity updated:\n", d.toJSON()))
+      .then((d) => {
+        console.log("Identity disabled:\n", d.toJSON());
+        //Then logout
+        this.handleLogout();
+      })
       .catch((e) => console.error("Something went wrong:\n", e))
       .finally(() => client.disconnect());
   };
@@ -14367,7 +14438,7 @@ class App extends React.Component {
                   this.state.isIdentityControlShowing ? (
                     <>
                       <IdentityControlPage
-                        breakIdentity={this.breakIdentity}
+                        disableIdentityMasterKey={this.disableIdentityMasterKey}
                         identity={this.state.identity}
                         identityRaw={this.state.identityRaw}
                         identityInfo={this.state.identityInfo}
@@ -14586,8 +14657,13 @@ class App extends React.Component {
                     DGPOrders={this.state.DGPOrders}
                     DGPOrdersNames={this.state.DGPOrdersNames}
                     DGPOrdersMsgs={this.state.DGPOrdersMsgs}
-                    newOrderAvail={this.state.newOrderAvail}
-                    handleLoadNewOrder={this.handleLoadNewOrder}
+                    
+                    refreshMyStoreOrders={this.refreshMyStoreOrders}
+                    isMyStoreOrdersRefreshReady={
+                      this.state.isMyStoreOrdersRefreshReady
+                    }
+                    //newOrderAvail={this.state.newOrderAvail}
+                    // handleLoadNewOrder={this.handleLoadNewOrder}
                     handleMerchantOrderMsgModalShow={
                       this.handleMerchantOrderMsgModalShow
                     }

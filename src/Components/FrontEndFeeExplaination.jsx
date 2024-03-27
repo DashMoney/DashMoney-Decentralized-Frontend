@@ -86,8 +86,8 @@ class FrontEndFeeExplaination extends React.Component {
                   showModal={this.props.showModal}
                 />
                 <p>
-                  If you want to see just click below and sent some credits to
-                  DashMoney!
+                  If you want to see just click below and sent some credits to{" "}
+                  {import.meta.env.VITE_FRONTEND_NAME}!
                 </p>
                 <p></p>
                 <div className="d-grid gap-2">
@@ -119,8 +119,8 @@ class FrontEndFeeExplaination extends React.Component {
                 </div>
                 <p></p> */}
                 <p>
-                  If you want to see just click below and sent some credits to
-                  DashMoney!
+                  If you want to see just click below and sent some credits to{" "}
+                  {import.meta.env.VITE_FRONTEND_NAME}!
                 </p>
                 <p></p>
                 <div className="d-grid gap-2">

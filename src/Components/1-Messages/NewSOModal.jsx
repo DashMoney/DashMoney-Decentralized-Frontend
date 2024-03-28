@@ -114,6 +114,18 @@ class NewSOModal extends React.Component {
     //this is the message body!!!
 
     let taggedNames = this.taggedValidate(event.target.value);
+    //
+    //MUST RESET THE NAMES AND OWNERIDS IF TAGS ARE DELETED**
+    //
+    if (
+      taggedNames.length === 0 &&
+      this.state.retrievedNameLabelArray.length > 0
+    ) {
+      this.setState({
+        retrievedNameLabelArray: [],
+        ownerIdsfromTagsRetrieved: [],
+      });
+    }
 
     if (this.formValidate(event.target.value)) {
       if (taggedNames.length > 10) {
@@ -192,10 +204,23 @@ class NewSOModal extends React.Component {
           msg: `${event.target.ControlTextarea1.value}`,
         };
 
-        this.props.submitDSODocument(
-          newMessage,
-          this.state.ownerIdsfromTagsRetrieved
-        );
+        // this.props.submitDSODocument(
+        //   newMessage,
+        //   this.state.ownerIdsfromTagsRetrieved
+        // );
+
+        if (this.state.ownerIdsfromTagsRetrieved.length > 0) {
+          //SINGLE TAG CHANGE****
+          this.props.submitDSODocument(
+            newMessage,
+            [this.state.ownerIdsfromTagsRetrieved[0]] //SINGLE TAG CHANGE****
+          );
+        } else {
+          this.props.submitDSODocument(
+            newMessage,
+            this.state.ownerIdsfromTagsRetrieved
+          );
+        }
         this.props.hideModal();
       } else {
         //this part will be the retrieving the name labels..
@@ -319,10 +344,11 @@ class NewSOModal extends React.Component {
     //Fix the rendering of the names labels here
     let labelsToDisplay = "";
     if (this.state.retrievedNameLabelArray.length >= 1) {
-      labelsToDisplay = "";
-      this.state.retrievedNameLabelArray.forEach(
-        (label) => (labelsToDisplay += " " + label)
-      );
+      labelsToDisplay = this.state.retrievedNameLabelArray[0]; //SINGLE TAG CHANGE****
+      // labelsToDisplay = "";
+      // this.state.retrievedNameLabelArray.forEach(
+      //   (label) => (labelsToDisplay += " " + label)
+      // );
     }
 
     return (
@@ -412,6 +438,21 @@ class NewSOModal extends React.Component {
                   </>
                 )}
 
+                {/* SINGLE TAG CHANGE**** */}
+                {this.state.retrievedNameLabelArray.length > 1 ? (
+                  <p
+                    className="smallertext"
+                    style={{ color: "red", marginTop: ".2rem" }}
+                  >
+                    <b>
+                      Sorry, currently only single tag messages available for
+                      now.
+                    </b>
+                  </p>
+                ) : (
+                  <></>
+                )}
+
                 {this.state.isLoadingNames ? (
                   <>
                     <p></p>
@@ -429,7 +470,8 @@ class NewSOModal extends React.Component {
               {this.state.taggedArray.length -
                 this.state.retrievedNameLabelArray.length ===
                 0 && this.checkNamesVersusTags() ? (
-                this.state.validityCheck ? (
+                this.state.validityCheck &&
+                this.state.ownerIdsfromTagsRetrieved.length <= 1 ? ( //SINGLE TAG CHANGE**** the last one above
                   <Button variant="primary" type="submit">
                     Create Message
                   </Button>

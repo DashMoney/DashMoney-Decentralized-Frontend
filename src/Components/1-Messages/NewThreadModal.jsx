@@ -115,6 +115,19 @@ class NewThreadModal extends React.Component {
 
     let taggedNames = this.taggedValidate(event.target.value);
 
+    //
+    //MUST RESET THE NAMES AND OWNERIDS IF TAGS ARE DELETED**
+    //
+    if (
+      taggedNames.length === 0 &&
+      this.state.retrievedNameLabelArray.length > 0
+    ) {
+      this.setState({
+        retrievedNameLabelArray: [],
+        ownerIdsfromTagsRetrieved: [],
+      });
+    }
+
     if (this.formValidate(event.target.value)) {
       if (taggedNames.length > 10) {
         this.setState({
@@ -162,12 +175,24 @@ class NewThreadModal extends React.Component {
 
       //console.log(nameArray);
 
+      //base58
+
+      let base58NameArray = nameArray.map((name) => {
+        let base58Name = name.replace(/l/g, "1");
+        base58Name = base58Name.replace(/i/g, "1");
+        base58Name = base58Name.replace(/o/g, "0");
+
+        return base58Name;
+      });
+      console.log(base58NameArray);
+
       //$$$
 
       if (
         this.state.taggedArray.length -
           this.state.retrievedNameLabelArray.length ===
-        0
+          0 &&
+        this.checkNamesVersusTags()
       ) {
         let newMessage;
 
@@ -175,10 +200,22 @@ class NewThreadModal extends React.Component {
           msg: `${event.target.ControlTextarea1.value}`,
         };
 
-        this.props.submitDSOThread(
-          newMessage,
-          this.state.ownerIdsfromTagsRetrieved
-        );
+        // this.props.submitDSOThread(
+        //   newMessage,
+        //   this.state.ownerIdsfromTagsRetrieved
+        // );
+        if (this.state.ownerIdsfromTagsRetrieved.length > 0) {
+          //SINGLE TAG CHANGE****
+          this.props.submitDSOThread(
+            newMessage,
+            [this.state.ownerIdsfromTagsRetrieved[0]] //SINGLE TAG CHANGE****
+          );
+        } else {
+          this.props.submitDSOThread(
+            newMessage,
+            this.state.ownerIdsfromTagsRetrieved
+          );
+        }
         this.props.hideModal();
       } else {
         //this part will be the retrieving the name labels..
@@ -202,7 +239,7 @@ class NewThreadModal extends React.Component {
             where: [
               ["normalizedParentDomainName", "==", "dash"],
               // Return all matching names from the provided array
-              ["normalizedLabel", "in", nameArray],
+              ["normalizedLabel", "in", base58NameArray],
             ],
             orderBy: [["normalizedLabel", "asc"]],
           });
@@ -233,7 +270,7 @@ class NewThreadModal extends React.Component {
             });
 
             //console.log("Names of Tags!");
-            // console.log(retrievedNameLabels);
+            console.log(retrievedNameLabels);
 
             this.setState({
               retrievedNameLabelArray: retrievedNameLabels,
@@ -248,6 +285,28 @@ class NewThreadModal extends React.Component {
       }
     } else {
       console.log("Invalid Message");
+    }
+  };
+
+  checkNamesVersusTags = () => {
+    if (
+      this.state.taggedArray.length !== 0 &&
+      this.state.retrievedNameLabelArray.length !== 0
+    ) {
+      let lowerCaseRetrieved = this.state.retrievedNameLabelArray.map((name) =>
+        name.toLowerCase()
+      );
+
+      return this.state.taggedArray.every((tag) => {
+        let normalizedTag = tag.toLowerCase();
+        // normalizedTag = normalizedTag.replace(/l/g, '1');
+        // normalizedTag = normalizedTag.replace(/i/g, '1');
+        // normalizedTag = normalizedTag.replace(/o/g, '0');
+
+        return lowerCaseRetrieved.find((name) => name === normalizedTag);
+      });
+    } else {
+      return true;
     }
   };
 
@@ -278,10 +337,11 @@ class NewThreadModal extends React.Component {
     //Fix the rendering of the names labels here
     let labelsToDisplay = "";
     if (this.state.retrievedNameLabelArray.length >= 1) {
-      labelsToDisplay = "";
-      this.state.retrievedNameLabelArray.forEach(
-        (label) => (labelsToDisplay += " " + label)
-      );
+      labelsToDisplay = this.state.retrievedNameLabelArray[0]; //SINGLE TAG CHANGE****
+      // labelsToDisplay = "";
+      // this.state.retrievedNameLabelArray.forEach(
+      //   (label) => (labelsToDisplay += " " + label)
+      // );
     }
 
     return (
@@ -337,7 +397,7 @@ class NewThreadModal extends React.Component {
                   <></>
                 )}
 
-                {this.state.taggedArray !== 0 &&
+                {/* {this.state.taggedArray !== 0 &&
                 this.state.retrievedNameLabelArray.length !==
                   this.state.taggedArray.length ? (
                   <Form.Control.Feedback className="floatLeft" type="invalid">
@@ -346,7 +406,7 @@ class NewThreadModal extends React.Component {
                   </Form.Control.Feedback>
                 ) : (
                   <></>
-                )}
+                )} */}
 
                 {this.state.taggedArray.length < 1 ? (
                   <div>
@@ -372,6 +432,18 @@ class NewThreadModal extends React.Component {
                   </>
                 )}
 
+                {/* SINGLE TAG CHANGE**** */}
+                {this.state.retrievedNameLabelArray.length > 1 ? (
+                  <p
+                    className="smallertext"
+                    style={{ color: "red", marginTop: ".2rem" }}
+                  >
+                    <b>Sorry, currently only single tags available for now.</b>
+                  </p>
+                ) : (
+                  <></>
+                )}
+
                 {this.state.isLoadingNames ? (
                   <>
                     <p></p>
@@ -388,8 +460,9 @@ class NewThreadModal extends React.Component {
 
               {this.state.taggedArray.length -
                 this.state.retrievedNameLabelArray.length ===
-              0 ? (
-                this.state.validityCheck ? (
+                0 && this.checkNamesVersusTags() ? (
+                this.state.validityCheck &&
+                this.state.ownerIdsfromTagsRetrieved.length <= 1 ? ( //SINGLE TAG CHANGE**** the last one above
                   <Button variant="primary" type="submit">
                     Create Message
                   </Button>

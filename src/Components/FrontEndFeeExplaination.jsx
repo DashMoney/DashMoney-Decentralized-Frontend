@@ -52,13 +52,14 @@ class FrontEndFeeExplaination extends React.Component {
             <p>
               This is the amount of the fee you pay in Dash Platform credits to
               the frontend operator/host, when you write data to Dash Platform.
-              Reading from platform is free, but it costs to write to it,
-              because Platform saves your data.
+              This fee is in addition to the Dash Platform operation cost.
+              {/* Reading from platform is free, but it costs to write to it,
+              because Platform saves your data. */}
             </p>
             <h3>Why is there a fee?</h3>
             <p>
               The fee is for paying the frontend operator/host. This is to allow
-              the frontend(what you are currently using) to be decentralized
+              the frontend (what you are currently using) to be decentralized
               just like the backend(Dash Platform).
             </p>
             <h3>Do I have to pay a fee?</h3>

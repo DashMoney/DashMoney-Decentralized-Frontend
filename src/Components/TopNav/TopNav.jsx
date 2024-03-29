@@ -87,12 +87,20 @@ class TopNav extends React.Component {
                   <b className="lightMode">
                     {import.meta.env.VITE_FRONTEND_NAME}
                   </b>
-                  <span className="textsmaller">testnet</span>
+                  {this.props.whichNetwork === "testnet" ? (
+                    <span className="textsmallest">testnet</span>
+                  ) : (
+                    <></>
+                  )}
                 </>
               ) : (
                 <>
                   <b>{import.meta.env.VITE_FRONTEND_NAME}</b>
-                  <span className="textsmaller">testnet</span>
+                  {this.props.whichNetwork === "testnet" ? (
+                    <span className="textsmallest">testnet</span>
+                  ) : (
+                    <></>
+                  )}
                 </>
               )}
             </Navbar.Brand>

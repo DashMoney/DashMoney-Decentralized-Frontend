@@ -238,6 +238,12 @@ div {
   opacity: 0.7;
 }
 
+.textsmallest {
+  font-size: x-small;
+  text-align: right;
+  opacity: 0.7;
+}
+
 .postModalCloseButton {
   display: flex;
   justify-content: flex-end;

@@ -14224,7 +14224,7 @@ class App extends React.Component {
 
       //BUT WILL THE -1 CHANGE THE TRANSFER AMOUNT AFTER THE TOFIXED(0) SO THAT IT IS CHANGED IN THE STATE TRANSITION? I THINK YES..
 
-      if (this.state.validFrontendFee) {
+      if (this.state.validFrontendFee && this.state.FrontendFee > 0) {
         const feeAmount = //100,000,000 duffs in a Dash * 1000 duffs to credits * .01 for % // Not .01 for % but .01 for TopUp(fixed amount) // actually, So TopUp and % are included in the calculation
           // 100,000,000 duffs in a dash * 1000 credits in a duff = 100,000,000,000
           // .01 topup is amt in dash -> 1,000,000,000
@@ -14657,7 +14657,6 @@ class App extends React.Component {
                     DGPOrders={this.state.DGPOrders}
                     DGPOrdersNames={this.state.DGPOrdersNames}
                     DGPOrdersMsgs={this.state.DGPOrdersMsgs}
-                    
                     refreshMyStoreOrders={this.refreshMyStoreOrders}
                     isMyStoreOrdersRefreshReady={
                       this.state.isMyStoreOrdersRefreshReady

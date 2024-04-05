@@ -6,6 +6,8 @@ import Button from "react-bootstrap/Button";
 import Badge from "react-bootstrap/Badge";
 import Form from "react-bootstrap/Form";
 
+import Alert from "react-bootstrap/Alert";
+
 class LoginForm extends React.Component {
   constructor(props) {
     super(props);
@@ -87,6 +89,29 @@ class LoginForm extends React.Component {
             </b>
           </p>
         </div>
+
+        <p></p>
+        <Alert variant="warning">
+          <Alert.Heading>Testnet Updating - IN PROGRESS</Alert.Heading>
+
+          {/* <Button
+              variant="outline-primary"
+              onClick={() => {
+                navigator.clipboard.writeText(this.props.identity);
+                this.setState({
+                  copiedIdentity: true,
+                });
+              }}
+            >
+              <b>Copy</b>
+            </Button> */}
+          <p>
+            Once testnet nodes have successfully updated. The Data Contracts
+            will be recreated, and this site will be functional again. This
+            notice will be removed when that is complete.
+          </p>
+        </Alert>
+        <p></p>
 
         {/* <div className="heading-shift">
           <p>

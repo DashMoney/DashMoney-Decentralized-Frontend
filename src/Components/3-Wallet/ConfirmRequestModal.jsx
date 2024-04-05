@@ -7,7 +7,7 @@ import handleDenomDisplay from "../UnitDisplay";
 
 import "./ConfirmPaymentModal.css";
 
-class ConfirmPaymentModal extends React.Component {
+class ConfirmRequestModal extends React.Component {
   handleCloseClick = () => {
     this.props.hideModal();
   };
@@ -15,7 +15,8 @@ class ConfirmPaymentModal extends React.Component {
   handleSubmitClick = (event) => {
     event.preventDefault();
     this.props.handleClearModalPostPmtConfirm();
-    this.props.sendDashtoName();
+    // this.props.sendDashtoName();
+    this.props.requestDashfromName();
     this.handleCloseClick();
   };
 
@@ -44,13 +45,13 @@ class ConfirmPaymentModal extends React.Component {
           show={this.props.isModalShowing}
         >
           <Modal.Header>
-            <Modal.Title>Confirm Payment</Modal.Title>
+            <Modal.Title>Confirm Payment Request</Modal.Title>
             {closeButtonColor}
           </Modal.Header>
           <Modal.Body>
             <h6>
-              Send <b>{handleDenomDisplay(this.props.amountToSend)}</b> to{" "}
-              <b>{this.props.sendToName}</b>?
+              Request <b>{handleDenomDisplay(this.props.amountToSend)}</b> from{" "}
+              <b>{this.props.requestPmtNameDoc.label}</b>?
             </h6>
             <h6>
               Message:
@@ -60,26 +61,12 @@ class ConfirmPaymentModal extends React.Component {
                 <span>(No Message)</span>
               )}
             </h6>
-
             <p></p>
-            {this.props.messageToSend === "" ? (
-              <p>
-                Without a message, you will send the payment only, and no
-                platform document which informs the receipient who sent this
-                payment.
-              </p>
-            ) : (
-              <></>
-            )}
-            {/* <p>
-              Fun Fact: Dash Names are not case sensitive, so as long as the
-              spelling is correct, it will work.
-            </p> */}
           </Modal.Body>
           <Modal.Footer>
             <>
               <Button variant="primary" onClick={this.handleSubmitClick}>
-                Confirm Payment
+                Confirm Request
               </Button>
             </>
           </Modal.Footer>
@@ -89,4 +76,4 @@ class ConfirmPaymentModal extends React.Component {
   }
 }
 
-export default ConfirmPaymentModal;
+export default ConfirmRequestModal;

@@ -13,6 +13,7 @@ class EventModal extends React.Component {
     super(props);
     this.state = {
       copiedName: false,
+      copiedAddress: false,
     };
   }
 
@@ -167,6 +168,21 @@ class EventModal extends React.Component {
               <p style={{ whiteSpace: "pre-wrap" }}>
                 {this.props.selectedSearchedEvent.address}
               </p>
+              {/* ADD COPY HERE */}
+              <Button
+                variant="outline-primary"
+                onClick={() => {
+                  navigator.clipboard.writeText(
+                    this.props.selectedSearchedPost.address
+                  );
+                  this.setState({
+                    copiedAddress: true,
+                  });
+                }}
+              >
+                <b>Copy</b>
+              </Button>
+              {this.state.copiedAddress ? <span>Copied!</span> : <></>}
             </>
           ) : (
             <></>

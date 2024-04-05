@@ -671,6 +671,21 @@ class PostModal extends React.Component {
               <p style={{ whiteSpace: "pre-wrap" }}>
                 {this.props.selectedSearchedPost.address}
               </p>
+              {/* ADD COPY HERE */}
+              <Button
+                variant="outline-primary"
+                onClick={() => {
+                  navigator.clipboard.writeText(
+                    this.props.selectedSearchedPost.address
+                  );
+                  this.setState({
+                    copiedAddress: true,
+                  });
+                }}
+              >
+                <b>Copy</b>
+              </Button>
+              {this.state.copiedAddress ? <span>Copied!</span> : <></>}
             </>
           ) : (
             <></>

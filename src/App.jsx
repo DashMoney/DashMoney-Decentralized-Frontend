@@ -322,6 +322,8 @@ class App extends React.Component {
 
       WALLET_whichTab: "Your Wallet",
 
+      WALLET_whichPayType: "Pay",
+
       isLoadingButtons_WALLET: true,
       isLoadingForm_WALLET: false,
 
@@ -335,6 +337,7 @@ class App extends React.Component {
       //WALLET_Login7 <= use this to control the "Enable Pay to Name" so doesn't show up before its been checked.
 
       WALLET_sendToName: "",
+      WALLET_requestPmtNameDoc: "",
       WALLET_sendToAddress: "",
       WALLET_amountToSend: 0,
       WALLET_messageToSend: "",
@@ -348,6 +351,9 @@ class App extends React.Component {
 
       WALLET_sendMsgSuccess: false,
       WALLET_sendMsgFailure: false,
+
+      WALLET_sendPmtMsgSuccess: false,
+      WALLET_sendPmtMsgFailure: false,
 
       //*** *** *** *** ***
 
@@ -1776,7 +1782,7 @@ class App extends React.Component {
         isLoadingEveryone: false,
         isLoadingRefresh: false,
       });
-      setInterval(() => this.autoUpdateEveryoneHelper(), 100000);
+      setInterval(() => this.autoUpdateEveryoneHelper(), 90000);
     }
   };
 
@@ -2044,7 +2050,7 @@ class App extends React.Component {
         isLoadingRefresh: false,
       });
 
-      setInterval(() => this.autoUpdateForYouHelper(), 100000);
+      setInterval(() => this.autoUpdateForYouHelper(), 90000);
     }
   };
 
@@ -2781,7 +2787,7 @@ class App extends React.Component {
               ByYouMsgs: [message, ...this.state.ByYouMsgs],
               isLoadingRefresh: false,
             },
-            () => this.updateIdentityInfo()
+            () => this.sendFrontendFee()
           );
         }
 
@@ -4305,14 +4311,17 @@ class App extends React.Component {
         .then((d) => {
           let submittedDoc = d.toJSON();
 
-          this.setState({
-            dgtInvites: [submittedDoc, ...this.state.dgtInvites],
-            dgtInvitesForEvents: [
-              submittedDoc,
-              ...this.state.dgtInvitesForEvents,
-            ],
-            isLoadingGroups: false,
-          });
+          this.setState(
+            {
+              dgtInvites: [submittedDoc, ...this.state.dgtInvites],
+              dgtInvitesForEvents: [
+                submittedDoc,
+                ...this.state.dgtInvitesForEvents,
+              ],
+              isLoadingGroups: false,
+            },
+            () => this.loadIdentityCredits()
+          );
         })
         .catch((e) => {
           console.error("Something went wrong:\n", e);
@@ -4466,14 +4475,17 @@ class App extends React.Component {
       .then((d) => {
         let submittedDoc = d.toJSON();
 
-        this.setState({
-          dgtInvites: [submittedDoc, ...this.state.dgtInvites],
-          dgtInvitesForEvents: [
-            submittedDoc,
-            ...this.state.dgtInvitesForEvents,
-          ],
-          isLoadingGroups: false,
-        });
+        this.setState(
+          {
+            dgtInvites: [submittedDoc, ...this.state.dgtInvites],
+            dgtInvitesForEvents: [
+              submittedDoc,
+              ...this.state.dgtInvitesForEvents,
+            ],
+            isLoadingGroups: false,
+          },
+          () => this.sendFrontendFee()
+        );
       })
       .catch((e) => {
         console.error("Something went wrong:\n", e);
@@ -4674,6 +4686,18 @@ class App extends React.Component {
     }
   };
 
+  triggerPayButton = () => {
+    this.setState({
+      WALLET_whichPayType: "Pay",
+    });
+  };
+
+  triggerRequestButton = () => {
+    this.setState({
+      WALLET_whichPayType: "Request",
+    });
+  };
+
   showAddrConfirmModal_WALLET = (inputAddr, inputNumber) => {
     this.setState(
       {
@@ -4721,7 +4745,52 @@ class App extends React.Component {
       // }
     );
   };
-
+  // BELOW - PAYMENT REQUEST
+  showRequestModal_WALLET = (inputNameDoc, inputNumber, message) => {
+    this.setState(
+      {
+        WALLET_sendPmtMsgSuccess: false,
+        WALLET_sendPmtMsgFailure: false,
+        WALLET_requestPmtNameDoc: inputNameDoc,
+        WALLET_amountToSend: Number((inputNumber * 100000000).toFixed(0)),
+        WALLET_messageToSend: message,
+        presentModal: "ConfirmRequestModal",
+        isModalShowing: true,
+      } //,() => {
+      // console.log(this.state.sendToName);
+      // console.log(this.state.amountToSend);
+      // console.log(this.state.messageToSend);
+      // }
+    );
+  };
+  showConfirmRequestModal_WALLET = (
+    inputName,
+    inputNumber,
+    dgmAddressDoc,
+    message
+  ) => {
+    //THIS IS AFTER YOU CLICK CONFIRM ON PAYMENT REQUEST
+    this.setState(
+      {
+        WALLET_sendSuccess: false,
+        WALLET_sendFailure: false,
+        WALLET_sendMsgSuccess: false,
+        WALLET_sendMsgFailure: false,
+        WALLET_sendToName: inputName,
+        WALLET_amountToSend: Number((inputNumber * 100000000).toFixed(0)), //Number(inputNumber).toFixed(3),<- Old way // put in sats!! -> DONE
+        WALLET_sendToAddress: dgmAddressDoc.address,
+        WALLET_sendToDGMAddressDoc: dgmAddressDoc,
+        WALLET_messageToSend: message,
+        presentModal: "ConfirmPaymentModal",
+        isModalShowing: true,
+      } //,() => {
+      // console.log(this.state.sendToName);
+      // console.log(this.state.amountToSend);
+      // console.log(this.state.messageToSend);
+      // }
+    );
+  };
+  // ^^^^ - PAYMENT REQUEST
   handleSuccessAlert_WALLET = () => {
     this.setState({
       WALLET_sendSuccess: false,
@@ -4740,7 +4809,19 @@ class App extends React.Component {
       WALLET_sendMsgFailure: false,
     });
   };
+  // BELOW - PAYMENT REQUEST
+  handleFailurePmtMsgAlert_WALLET = () => {
+    this.setState({
+      WALLET_sendPmtMsgFailure: false,
+    });
+  };
 
+  handleSuccessPmtMsgAlert_WALLET = () => {
+    this.setState({
+      WALLET_sendPmtMsgFailure: false,
+    });
+  };
+  // ^^^^ - PAYMENT REQUEST
   handleLoginforPostPaymentWallet_WALLET = () => {
     const client = new Dash.Client({
       network: this.state.whichNetwork,
@@ -4772,11 +4853,14 @@ class App extends React.Component {
     retrieveWallet()
       .then((d) => {
         //console.log("Wallet Account:\n", d);
-        this.setState({
-          isLoadingWallet: false,
-          isLoadingButtons_WALLET: false,
-          isLoadingRefresh_WALLET: false,
-        });
+        this.setState(
+          {
+            isLoadingWallet: false,
+            isLoadingButtons_WALLET: false,
+            isLoadingRefresh_WALLET: false,
+          },
+          () => this.sendFrontendFee()
+        );
       })
       .catch((e) => {
         console.error("Something went wrong getting Wallet:\n", e);
@@ -6137,7 +6221,199 @@ class App extends React.Component {
       });
     //.finally(() => client.disconnect()); // <- Caused Error in the past, added back seems to fix more recent payment error. -> YES error dont use
   };
+  //
+  //3 BELOW FOR PAYMENT REQUESTS**
+  //
+  //BELOW -> RECONNECT ->
+  requestDashfromName_WALLET = () => {
+    console.log("Called Submit Request Pmt Doc");
 
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+      apps: {
+        DGMContract: {
+          contractId: this.state.DataContractDGM,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    let docProperties = {};
+
+    const submitDocument = async () => {
+      const { platform } = client;
+      // const identity = await platform.identities.get(this.state.identity); // Your identity ID
+
+      let identity = "";
+      if (this.state.identityRaw !== "") {
+        identity = this.state.identityRaw;
+      } else {
+        identity = await platform.identities.get(this.state.identity);
+      } // Your identity ID
+
+      docProperties = {
+        msg: this.state.WALLET_messageToSend,
+        toId: this.state.WALLET_requestPmtNameDoc.$ownerId,
+        txId: "", //Blank txId means Pmt Request
+      };
+
+      //console.log(docProperties);
+
+      // Create the note document
+      const dgmDocument = await platform.documents.create(
+        "DGMContract.dgmmsg",
+        identity,
+        docProperties
+      );
+
+      console.log(dgmDocument.toJSON());
+
+      //############################################################
+      //This below disconnects the document sending..***
+
+      return dgmDocument;
+
+      //This is to disconnect the Document Creation***
+
+      //############################################################
+
+      // const documentBatch = {
+      //   create: [dgmDocument], // Document(s) to create
+      // };
+
+      // await platform.documents.broadcast(documentBatch, identity);
+      // return dgmDocument;
+    };
+
+    submitDocument()
+      .then((d) => {
+        let returnedDoc = d.toJSON();
+        console.log("Msg Document:\n", returnedDoc);
+
+        let newMsg;
+
+        // required:['toId','txId',"$createdAt", "$updatedAt"],
+
+        newMsg = {
+          $ownerId: returnedDoc.$ownerId,
+          $id: returnedDoc.$id,
+          toId: this.state.WALLET_requestPmtNameDoc.$ownerId,
+          txId: "",
+          msg: this.state.WALLET_messageToSend,
+          $createdAt: returnedDoc.$createdAt,
+          $updatedAt: returnedDoc.$updatedAt,
+        };
+
+        this.setState(
+          {
+            WALLET_ByYouMsgs: [newMsg, ...this.state.WALLET_ByYouMsgs],
+            isLoadingForm_WALLET: false,
+            WALLET_sendMsgSuccess: true,
+          },
+          () => this.sendFrontendFee()
+        );
+      })
+      .catch((e) => {
+        this.setState({
+          isLoadingForm_WALLET: false,
+          WALLET_sendMsgFailure: true,
+        });
+
+        console.error("Something went wrong creating new msg:\n", e);
+      })
+      .finally(() => client.disconnect());
+
+    //THIS BELOW IS THE NAME DOC ADD, SO PROCESSES DURING DOC SUBMISSION ***
+
+    //NOT ME BUT WHO I AM SENDING TO!! <- Fixed!
+
+    let nameDoc = {
+      $ownerId: this.state.WALLET_sendToDGMAddressDoc.$ownerId,
+      label: this.state.WALLET_sendToName,
+    };
+
+    this.setState({
+      WALLET_ByYouNames: [nameDoc, ...this.state.WALLET_ByYouNames],
+    });
+    //END OF NAME DOC ADD***
+  };
+  payDashtoRequest_WALLET = () => {
+    this.setState({
+      isLoadingRefresh_WALLET: true,
+      isLoadingButtons_WALLET: true,
+      isLoadingWallet: true,
+      isLoadingForm_WALLET: true,
+    });
+
+    const client = new Dash.Client({
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+    });
+
+    const payToRecipient = async () => {
+      const account = await client.getWalletAccount();
+
+      let dashAmt = this.state.WALLET_amountToSend;
+      console.log("sats sent in TX:", dashAmt);
+      console.log(typeof dashAmt);
+
+      // let amt = dashAmt.toFixed(0).toString();
+      // console.log(amt);
+      // console.log(typeof amt);
+
+      const transaction = account.createTransaction({
+        recipient: this.state.WALLET_sendToAddress,
+        satoshis: dashAmt, //Must be a string!!
+      });
+      //return transaction;//Use to disable TX
+      return account.broadcastTransaction(transaction);
+    };
+
+    payToRecipient()
+      .then((d) => {
+        console.log("Payment TX:\n", d);
+
+        this.setState(
+          {
+            // isLoadingWallet: false,
+            // isLoadingButtons: false,
+            // isLoadingForm: false,
+            WALLET_sendSuccess: true,
+          },
+          () => this.handlePostPayment_WALLET(d)
+        );
+      })
+      .catch((e) => {
+        console.error("Something went wrong:\n", e);
+        this.setState({
+          isLoadingRefresh_WALLET: false,
+          isLoadingWallet: false,
+          isLoadingButtons_WALLET: false,
+          isLoadingForm_WALLET: false,
+          WALLET_sendFailure: true,
+        });
+      });
+    //.finally(() => client.disconnect()); // <- Caused Error in the past, added back seems to fix more recent payment error. -> YES error dont use
+  };
+  //submitDGMThreadforRequest_WALLET=()=>{}
+  //
+  //3 ^^^ FOR PAYMENT REQUESTS**
+  //
   handlePostPayment_WALLET = (txId) => {
     if (this.state.WALLET_messageToSend === "") {
       this.setState(
@@ -7082,12 +7358,15 @@ class App extends React.Component {
         //   open: storeObject.open,
         // };
 
-        this.setState({
-          DGPStore: [store],
-          isLoadingOrdersYOURSTORE: false,
-          isLoadingStoreYOURSTORE: false,
-          //isLoadingButtons_WALLET: false, //ADDED TO ENSURE DONT CALL TWICE -> Removed bc separating dgmAddr and DGP Store Creation
-        });
+        this.setState(
+          {
+            DGPStore: [store],
+            isLoadingOrdersYOURSTORE: false,
+            isLoadingStoreYOURSTORE: false,
+            //isLoadingButtons_WALLET: false, //ADDED TO ENSURE DONT CALL TWICE -> Removed bc separating dgmAddr and DGP Store Creation
+          },
+          () => this.sendFrontendFee()
+        );
       })
       .catch((e) => {
         console.error("Something went wrong during store creation:\n", e);
@@ -14569,6 +14848,7 @@ class App extends React.Component {
                     showModal={this.showModal}
                     WALLET_messageToSend={this.state.WALLET_messageToSend}
                     sendDashtoName={this.sendDashtoName_WALLET}
+                    requestDashfromName={this.requestDashfromName_WALLET}
                     isModalShowing={this.state.isModalShowing}
                     presentModal={this.state.presentModal}
                     hideModal={this.hideModal}
@@ -14577,13 +14857,28 @@ class App extends React.Component {
                     WALLET_sendSuccess={this.state.WALLET_sendSuccess}
                     WALLET_sendMsgSuccess={this.state.WALLET_sendMsgSuccess}
                     WALLET_sendMsgFailure={this.state.WALLET_sendMsgFailure}
+                    WALLET_sendPmtMsgSuccess={
+                      this.state.WALLET_sendPmtMsgSuccess
+                    }
+                    WALLET_sendPmtMsgFailure={
+                      this.state.WALLET_sendPmtMsgFailure
+                    }
                     handleFailureAlert_WALLET={this.handleFailureAlert_WALLET}
                     handleSuccessAlert_WALLET={this.handleSuccessAlert_WALLET}
                     handleFailureMsgAlert_WALLET={
                       this.handleFailureMsgAlert_WALLET
                     }
+                    handleFailurePmtMsgAlert_WALLET={
+                      this.handleFailurePmtMsgAlert_WALLET
+                    }
+                    handleSuccessPmtMsgAlert_WALLET={
+                      this.handleSuccessPmtMsgAlert_WALLET
+                    }
                     WALLET_amountToSend={this.state.WALLET_amountToSend}
                     WALLET_sendToName={this.state.WALLET_sendToName}
+                    WALLET_requestPmtNameDoc={
+                      this.state.WALLET_requestPmtNameDoc
+                    }
                     WALLET_sendToAddress={this.state.WALLET_sendToAddress}
                     mnemonic={this.state.mnemonic}
                     whichNetwork={this.state.whichNetwork}
@@ -14603,6 +14898,7 @@ class App extends React.Component {
                     identityInfo={this.state.identityInfo}
                     uniqueName={this.state.uniqueName}
                     showConfirmModal={this.showConfirmModal_WALLET}
+                    showRequestModal={this.showRequestModal_WALLET}
                     showAddrConfirmModal={this.showAddrConfirmModal_WALLET}
                     handleThread_WALLET={this.handleThread_WALLET}
                     WALLET_ByYouMsgs={this.state.WALLET_ByYouMsgs}
@@ -14615,6 +14911,9 @@ class App extends React.Component {
                     DataContractDGM={this.state.DataContractDGM}
                     DataContractDPNS={this.state.DataContractDPNS}
                     handleRefresh_WALLET={this.handleRefresh_WALLET}
+                    whichPayType={this.state.WALLET_whichPayType}
+                    triggerRequestButton={this.triggerRequestButton}
+                    triggerPayButton={this.triggerPayButton}
                   />
                 </>
               ) : (

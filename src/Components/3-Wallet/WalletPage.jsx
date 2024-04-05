@@ -9,11 +9,14 @@ import Alert from "react-bootstrap/Alert";
 import Nav from "react-bootstrap/Nav";
 
 import PaymentsTab from "./PaymentsTab";
+import PaymentsTabNEW from "./PaymentsTabNEW";
 import PaymentAddrComponent from "./PaymentAddrComponent";
 
 import ConfirmPaymentModal from "./ConfirmPaymentModal";
+import ConfirmRequestModal from "./ConfirmRequestModal";
 
 import CreditsOnPage from "../CreditsOnPage";
+import WalletPageFormTabs from "./WalletPageFormTabs";
 
 import handleDenomDisplay from "../UnitDisplay";
 
@@ -229,12 +232,25 @@ class WalletPage extends React.Component {
         } else {
           let nameDoc = d.toJSON();
           console.log("Name retrieved:\n", nameDoc.$ownerId);
-          this.setState(
-            {
-              identityIdReceipient: nameDoc.$ownerId,
-            },
-            () => this.queryDGMDocument()
-          );
+          //THIS IS WHERE THE PAYMENT REQUEST -> YES
+
+          if (this.props.whichPayType === "Pay") {
+            this.setState(
+              {
+                identityIdReceipient: nameDoc.$ownerId,
+              },
+              () => this.queryDGMDocument(nameDoc)
+            );
+          } else {
+            this.props.showRequestModal(
+              nameDoc, //Needs both name and OwnerId for doc creation
+              this.state.amountToSend,
+              this.state.messageToAdd
+            );
+            this.setState({
+              isLoadingVerify: false,
+            });
+          }
         }
       })
       .catch((e) => {
@@ -247,7 +263,7 @@ class WalletPage extends React.Component {
       .finally(() => client.disconnect());
   };
 
-  queryDGMDocument = () => {
+  queryDGMDocument = (theNameDoc) => {
     const clientOpts = {
       network: this.props.whichNetwork,
       wallet: {
@@ -290,11 +306,12 @@ class WalletPage extends React.Component {
           });
         } else {
           this.props.showConfirmModal(
-            this.state.sendToName,
+            theNameDoc.label, //this.state.sendToName,
             this.state.amountToSend,
             docArray[0],
             this.state.messageToAdd
           );
+          //THIS IS WHERE THE PAYMENT REQUEST -> NO, PAYMENT REQUEST DOESN'T NEED A DGM ADDR DOCUMENT
 
           this.setState({
             dgmDocumentsForReceipient: docArray,
@@ -337,7 +354,8 @@ class WalletPage extends React.Component {
       isLoadingVerify: true,
       formEventTarget: event.target,
     });
-
+    //
+    //if(this.props.whichPayType==="Pay"){
     if (this.state.nameFormat) {
       this.searchName(this.state.sendToName);
     } else if (this.state.addrFormat) {
@@ -355,11 +373,32 @@ class WalletPage extends React.Component {
         isLoadingVerify: false,
       });
     }
+    //}else{
+    //if (this.state.nameFormat) {
+    // this.searchName(this.state.sendToName);
+    //}
+    //}
+    //
   };
 
   //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   render() {
+    let formPlaceholder = "";
+    if (this.props.whichPayType === "Pay") {
+      formPlaceholder = "Enter name or address here...";
+    } else {
+      formPlaceholder = "Enter name here...";
+    }
+
+    let formMessagePlaceholder = "";
+    if (this.props.whichPayType === "Pay") {
+      formMessagePlaceholder =
+        "(Optional) Without message, receipient will not know who sent payment.";
+    } else {
+      formMessagePlaceholder = "(Optional)";
+    }
+
     return (
       <>
         <Nav
@@ -558,7 +597,26 @@ class WalletPage extends React.Component {
                     </div>
                   ) : (
                     <>
-                      <PaymentsTab
+                      {/* <PaymentsTab
+                        mode={this.props.mode}
+                        identity={this.props.identity}
+                        uniqueName={this.props.uniqueName}
+                        hideModal={this.hideModal}
+                        isModalShowing={this.state.isModalShowing}
+                        presentModal={this.state.presentModal}
+                        accountHistory={this.props.accountHistory}
+                        accountBalance={this.props.accountBalance}
+                        handleThread={this.props.handleThread_WALLET}
+                        ByYouMsgs={this.props.WALLET_ByYouMsgs}
+                        ByYouNames={this.props.WALLET_ByYouNames}
+                        ByYouThreads={this.props.WALLET_ByYouThreads}
+                        ToYouMsgs={this.props.WALLET_ToYouMsgs}
+                        ToYouNames={this.props.WALLET_ToYouNames}
+                        ToYouThreads={this.props.WALLET_ToYouThreads}
+
+                        //isLoadingMsgs_WALLET={this.props.isLoadingMsgs_WALLET}
+                      /> */}
+                      <PaymentsTabNEW
                         mode={this.props.mode}
                         identity={this.props.identity}
                         uniqueName={this.props.uniqueName}
@@ -586,6 +644,14 @@ class WalletPage extends React.Component {
 
               {this.props.WALLET_whichTab === "Your Wallet" ? (
                 <>
+                  {/* BELOW IS EXCHANGE FORM TABS -> CHANGE TO PAY AND REQUEST */}
+                  {/* <WalletPageFormTabs
+                    whichPayType={this.props.whichPayType} //Pay or Request
+                    triggerRequestButton={this.props.triggerRequestButton}
+                    triggerPayButton={this.props.triggerPayButton}
+                    //Need to Reset the form here as well
+                  /> */}
+
                   {/* Below is the Pay to a Name Stuff */}
                   {/*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/}
                   <Form
@@ -598,18 +664,30 @@ class WalletPage extends React.Component {
                       className="mb-3"
                       controlId="validationCustomName"
                     >
-                      {!this.state.addrFormat && !this.state.nameFormat ? (
+                      {/* ADD Request Dash From: */}
+                      {!this.state.addrFormat &&
+                      !this.state.nameFormat &&
+                      this.props.whichPayType === "Pay" ? (
                         <Form.Label>Send Dash to:</Form.Label>
                       ) : (
                         <></>
                       )}
-                      {!this.state.addrFormat && this.state.nameFormat ? (
+                      {!this.state.addrFormat &&
+                      this.state.nameFormat &&
+                      this.props.whichPayType === "Pay" ? (
                         <Form.Label>Send Dash to Name:</Form.Label>
                       ) : (
                         <></>
                       )}
-                      {this.state.addrFormat && !this.state.nameFormat ? (
+                      {this.state.addrFormat &&
+                      !this.state.nameFormat &&
+                      this.props.whichPayType === "Pay" ? (
                         <Form.Label>Send Dash to Address:</Form.Label>
+                      ) : (
+                        <></>
+                      )}
+                      {this.props.whichPayType === "Request" ? (
+                        <Form.Label>Request Dash from:</Form.Label>
                       ) : (
                         <></>
                       )}
@@ -626,7 +704,7 @@ class WalletPage extends React.Component {
                       ) : (
                         <Form.Control
                           type="text"
-                          placeholder="Enter name or address here..."
+                          placeholder={formPlaceholder}
                           defaultValue={this.state.sendToName}
                           required
                           isValid={
@@ -672,19 +750,39 @@ class WalletPage extends React.Component {
                       </>
                     ) : (
                       <>
-                        {(this.state.nameFormat || this.state.addrFormat) &&
-                        this.state.numberQuantity ? ( //&&
-                          //!this.props.isLoadingForm_WALLET
+                        {this.props.whichPayType === "Pay" ? (
                           <>
-                            <p> </p>
-                            <Button variant="primary" type="submit">
-                              Send Dash
-                            </Button>
+                            {(this.state.nameFormat || this.state.addrFormat) &&
+                            this.state.numberQuantity ? ( //&&
+                              //!this.props.isLoadingForm_WALLET
+                              <>
+                                <p> </p>
+                                <Button variant="primary" type="submit">
+                                  Send Dash
+                                </Button>
+                              </>
+                            ) : (
+                              <Button disabled variant="primary" type="submit">
+                                Send Dash
+                              </Button>
+                            )}
                           </>
                         ) : (
-                          <Button disabled variant="primary" type="submit">
-                            Send Dash
-                          </Button>
+                          <>
+                            {(this.state.nameFormat || this.state.addrFormat) &&
+                            this.state.numberQuantity ? (
+                              <>
+                                <p> </p>
+                                <Button variant="primary" type="submit">
+                                  Request Dash
+                                </Button>
+                              </>
+                            ) : (
+                              <Button disabled variant="primary" type="submit">
+                                Request Dash
+                              </Button>
+                            )}
+                          </>
                         )}
                       </>
                     )}
@@ -717,7 +815,7 @@ class WalletPage extends React.Component {
                               onChange={this.onChange}
                               as="textarea"
                               rows={2}
-                              placeholder="(Optional) Without a message, the receipient will not know who send the payment.."
+                              placeholder={formMessagePlaceholder}
                               defaultValue={this.state.messageToAdd}
                               required
                               isInvalid={this.state.tooLongMessageError}
@@ -974,13 +1072,41 @@ class WalletPage extends React.Component {
             ) : (
               <></>
             )}
+            <p></p>
+            {/* BELOW - Add the Payment Requests sent to you Here*/}
+            {/* {this.props.isLoadingMsgs_WALLET ? (
+                    <div id="spinner">
+                      <p></p>
+                      <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                      </Spinner>
+                    </div>
+                  ) : (
+                    <>
+                      <PaymentRequestComp
+                      //DO I NEED ALL OF THESE?
+                        mode={this.props.mode}
+                        identity={this.props.identity}
+                        uniqueName={this.props.uniqueName}
+                        hideModal={this.hideModal}
+                        isModalShowing={this.state.isModalShowing}
+                        presentModal={this.state.presentModal}
+                        accountHistory={this.props.accountHistory}
+                        accountBalance={this.props.accountBalance}
+                        handleThread={this.props.handleThread_WALLET}
+                        ByYouMsgs={this.props.WALLET_ByYouMsgs}
+                        ByYouNames={this.props.WALLET_ByYouNames}
+                        ByYouThreads={this.props.WALLET_ByYouThreads}
+                        ToYouMsgs={this.props.WALLET_ToYouMsgs}
+                        ToYouNames={this.props.WALLET_ToYouNames}
+                        ToYouThreads={this.props.WALLET_ToYouThreads}
 
-            {/* <TxHistoryComponent
-                  mode={this.state.mode}
-                  accountHistory={this.state.accountHistory}
-                  accountBalance={this.state.accountBalance}
-                /> */}
-            <div style={{ marginLeft: "1rem" }}>
+                        //isLoadingMsgs_WALLET={this.props.isLoadingMsgs_WALLET}
+                      />
+                    </>
+                  )} */}
+
+            <div style={{ marginLeft: "1rem", marginTop: "1rem" }}>
               <PaymentAddrComponent
                 mode={this.props.mode}
                 accountAddress={this.props.accountAddress}
@@ -998,6 +1124,25 @@ class WalletPage extends React.Component {
             amountToSend={this.props.WALLET_amountToSend}
             messageToSend={this.props.WALLET_messageToSend}
             sendDashtoName={this.props.sendDashtoName}
+            handleClearModalPostPmtConfirm={this.handleClearModalPostPmtConfirm}
+            isModalShowing={this.props.isModalShowing}
+            hideModal={this.props.hideModal}
+            mode={this.props.mode}
+            closeTopNav={this.props.closeTopNav}
+          />
+        ) : (
+          <></>
+        )}
+
+        {this.props.isModalShowing &&
+        this.props.presentModal === "ConfirmRequestModal" ? (
+          <ConfirmRequestModal
+            //sendToName={this.props.WALLET_sendToName}
+            requestPmtNameDoc={this.props.WALLET_requestPmtNameDoc}
+            amountToSend={this.props.WALLET_amountToSend}
+            messageToSend={this.props.WALLET_messageToSend}
+            //sendDashtoName={this.props.sendDashtoName}
+            requestDashfromName={this.props.requestDashfromName}
             handleClearModalPostPmtConfirm={this.handleClearModalPostPmtConfirm}
             isModalShowing={this.props.isModalShowing}
             hideModal={this.props.hideModal}

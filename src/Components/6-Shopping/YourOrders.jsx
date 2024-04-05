@@ -331,7 +331,7 @@ class YourOrders extends React.Component {
               )}
 
               {msgsToDisplay}
-
+              <p></p>
               {order.txId === "payLater" && !this.props.LoadingOrder ? (
                 <div className="TwoButtons">
                   <Button

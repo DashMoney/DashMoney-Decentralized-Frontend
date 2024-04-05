@@ -90,28 +90,18 @@ class LoginForm extends React.Component {
           </p>
         </div>
 
-        <p></p>
+        {/* <p></p>
         <Alert variant="warning">
           <Alert.Heading>Testnet Updating - IN PROGRESS</Alert.Heading>
 
-          {/* <Button
-              variant="outline-primary"
-              onClick={() => {
-                navigator.clipboard.writeText(this.props.identity);
-                this.setState({
-                  copiedIdentity: true,
-                });
-              }}
-            >
-              <b>Copy</b>
-            </Button> */}
+          
           <p>
             Once testnet nodes have successfully updated. The Data Contracts
             will be recreated, and this site will be functional again. This
             notice will be removed when that is complete.
           </p>
         </Alert>
-        <p></p>
+        <p></p> */}
 
         {/* <div className="heading-shift">
           <p>

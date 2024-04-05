@@ -562,7 +562,7 @@ class Group extends React.Component {
               )}
             </ButtonGroup>
           </div>
-
+          <p></p>
           <div className="footer">
             {messages}
             {msgsToAdd}

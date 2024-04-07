@@ -2,10 +2,10 @@ import React from "react";
 //import Badge from "react-bootstrap/Badge";
 //import Button from "react-bootstrap/Button";
 
-import PaymentsMsgs from "./PaymentsMsgs";
+import RequestMsgs from "./RequestMsgs";
 import P2PSequencerDisplay from "../P2PSequencerDisplay";
 
-class PaymentsTabNEW extends React.Component {
+class PaymentRequestsComp extends React.Component {
   render() {
     // *** *** *** *** *** ***
 
@@ -99,7 +99,8 @@ class PaymentsTabNEW extends React.Component {
 
     // ### ### ### ### ### ###
 
-    //let tupleThreads = [ ...this.props.replyThrs];
+    //let tupleThreads = [...this.props.replyThrs]; <-NO
+    let tupleThreads = [...this.props.ByYouThreads, ...this.props.ToYouThreads];
 
     // ### ### ### ### ### ###
 
@@ -146,7 +147,7 @@ class PaymentsTabNEW extends React.Component {
 
     let tuples = sortedTuples.map((tuple, index) => {
       return (
-        <PaymentsMsgs
+        <RequestMsgs
           key={index}
           mode={this.props.mode}
           index={index}
@@ -167,17 +168,20 @@ class PaymentsTabNEW extends React.Component {
     return (
       <>
         {sortedTuples.length < 1 ? (
-          <p className="paddingBadge">
-            Payment messages, you send or ones sent to you, will appear here.
+          <p className="bodytext" style={{ textAlign: "center" }}>
+            Payment requests sent to you, will appear here.
           </p>
         ) : (
           <></>
         )}
 
-        <div className="footer">{tuples}</div>
+        <div>
+          <p></p>
+          {tuples}
+        </div>
       </>
     );
   }
 }
 
-export default PaymentsTabNEW;
+export default PaymentRequestsComp;

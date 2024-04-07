@@ -119,10 +119,11 @@ class PaymentsMsgs extends React.Component {
             {this.props.identity === this.props.tuple[1].$ownerId ? (
               <>
                 <div>
-                  {/* <span>You Paid </span>{" "} */}
+                  <span style={{ color: "red" }}>To: </span>{" "}
                   {/* <span style={{ color: "#008de4" }}>{this.props.tuple[0]}</span> */}
                   <span
-                    style={{ color: "red" }}
+                    //style={{ color: "red" }}
+                    style={{ color: "#008de4" }}
                     onClick={() => this.handleNameClick()}
                   >
                     {this.props.tuple[0]}
@@ -133,9 +134,10 @@ class PaymentsMsgs extends React.Component {
             ) : (
               <>
                 <div>
+                  <span style={{ color: "green" }}>From: </span>{" "}
                   <span
-                    // style={{ color: "#008de4" }}
-                    style={{ color: "green" }}
+                    style={{ color: "#008de4" }}
+                    //style={{ color: "green" }}
                     onClick={() => this.handleNameClick()}
                   >
                     {this.props.tuple[0]}

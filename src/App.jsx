@@ -4818,7 +4818,7 @@ class App extends React.Component {
 
   handleSuccessPmtMsgAlert_WALLET = () => {
     this.setState({
-      WALLET_sendPmtMsgFailure: false,
+      WALLET_sendPmtMsgSuccess: false,
     });
   };
   // ^^^^ - PAYMENT REQUEST
@@ -6228,6 +6228,12 @@ class App extends React.Component {
   requestDashfromName_WALLET = () => {
     console.log("Called Submit Request Pmt Doc");
 
+    this.setState({
+      isLoadingRefresh_WALLET: true,
+      isLoadingButtons_WALLET: true,
+      isLoadingForm_WALLET: true,
+    });
+
     const clientOpts = {
       network: this.state.whichNetwork,
       wallet: {
@@ -6263,6 +6269,7 @@ class App extends React.Component {
         msg: this.state.WALLET_messageToSend,
         toId: this.state.WALLET_requestPmtNameDoc.$ownerId,
         txId: "", //Blank txId means Pmt Request
+        amt: this.state.WALLET_amountToSend,
       };
 
       //console.log(docProperties);
@@ -6279,18 +6286,18 @@ class App extends React.Component {
       //############################################################
       //This below disconnects the document sending..***
 
-      return dgmDocument;
+      //return dgmDocument;
 
       //This is to disconnect the Document Creation***
 
       //############################################################
 
-      // const documentBatch = {
-      //   create: [dgmDocument], // Document(s) to create
-      // };
+      const documentBatch = {
+        create: [dgmDocument], // Document(s) to create
+      };
 
-      // await platform.documents.broadcast(documentBatch, identity);
-      // return dgmDocument;
+      await platform.documents.broadcast(documentBatch, identity);
+      return dgmDocument;
     };
 
     submitDocument()
@@ -6308,6 +6315,7 @@ class App extends React.Component {
           toId: this.state.WALLET_requestPmtNameDoc.$ownerId,
           txId: "",
           msg: this.state.WALLET_messageToSend,
+          amt: returnedDoc.amt,
           $createdAt: returnedDoc.$createdAt,
           $updatedAt: returnedDoc.$updatedAt,
         };
@@ -6315,19 +6323,23 @@ class App extends React.Component {
         this.setState(
           {
             WALLET_ByYouMsgs: [newMsg, ...this.state.WALLET_ByYouMsgs],
+            isLoadingRefresh_WALLET: false,
+            isLoadingButtons_WALLET: false,
             isLoadingForm_WALLET: false,
-            WALLET_sendMsgSuccess: true,
+            WALLET_sendPmtMsgSuccess: true,
           },
           () => this.sendFrontendFee()
         );
       })
       .catch((e) => {
         this.setState({
+          isLoadingRefresh_WALLET: false,
+          isLoadingButtons_WALLET: false,
           isLoadingForm_WALLET: false,
-          WALLET_sendMsgFailure: true,
+          WALLET_sendPmtMsgFailure: true,
         });
 
-        console.error("Something went wrong creating new msg:\n", e);
+        console.error("Something went wrong creating new PmtReq:\n", e);
       })
       .finally(() => client.disconnect());
 
@@ -6345,6 +6357,7 @@ class App extends React.Component {
     });
     //END OF NAME DOC ADD***
   };
+
   payDashtoRequest_WALLET = () => {
     this.setState({
       isLoadingRefresh_WALLET: true,

@@ -50,9 +50,9 @@ export default function P2PSequencerDisplay(messages, threads) {
     );
     //CHECK AND MAKE SURE THAT THE TOID IS NOT HEX BUT TOJSON ->
     if (bool) {
-      paidOrRejPmtReqs.push(msg); //bc this goes to messages
+      paidOrRejPmtReqs.push(req); //bc this goes to messages
     } else {
-      notPaidPmtReqs.push(msg); // this goes to queue
+      notPaidPmtReqs.push(req); // this goes to queue
     }
   });
 

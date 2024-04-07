@@ -11,6 +11,7 @@ import Nav from "react-bootstrap/Nav";
 import PaymentsTab from "./PaymentsTab";
 import PaymentsTabNEW from "./PaymentsTabNEW";
 import PaymentAddrComponent from "./PaymentAddrComponent";
+import PaymentRequestsComp from "./PaymentRequestsComp";
 
 import ConfirmPaymentModal from "./ConfirmPaymentModal";
 import ConfirmRequestModal from "./ConfirmRequestModal";
@@ -231,7 +232,7 @@ class WalletPage extends React.Component {
           });
         } else {
           let nameDoc = d.toJSON();
-          console.log("Name retrieved:\n", nameDoc.$ownerId);
+          console.log("NameDoc retrieved:\n", nameDoc);
           //THIS IS WHERE THE PAYMENT REQUEST -> YES
 
           if (this.props.whichPayType === "Pay") {
@@ -419,7 +420,7 @@ class WalletPage extends React.Component {
           </Nav.Item>
         </Nav>
 
-        <div id="sidetext">
+        <div id="sidetextonlysides">
           {/* <h3>
             <Badge bg="primary">Your Connected Wallet</Badge>
           </h3> */}
@@ -489,17 +490,18 @@ class WalletPage extends React.Component {
               <p></p> */}
             </>
           )}
+        </div>
+        {/* **** ^^^^ LOADING SPINNERS ^^^^ **** */}
 
-          {/* **** ^^^^ LOADING SPINNERS ^^^^ **** */}
+        {/* ********** FORMS AND INFO ********** */}
 
-          {/* ********** FORMS AND INFO ********** */}
-
-          {this.props.identity !== "No Identity" &&
-          this.props.uniqueName !== "Er" &&
-          this.props.dgmDocuments !== "Document Error" &&
-          this.props.identityInfo !== "Load Failure" &&
-          this.props.accountBalance !== 0 ? (
-            <>
+        {this.props.identity !== "No Identity" &&
+        this.props.uniqueName !== "Er" &&
+        this.props.dgmDocuments !== "Document Error" &&
+        this.props.identityInfo !== "Load Failure" &&
+        this.props.accountBalance !== 0 ? (
+          <>
+            <div id="sidetextonlytop">
               <CreditsOnPage
                 identityInfo={this.props.identityInfo}
                 uniqueName={this.props.uniqueName}
@@ -529,9 +531,11 @@ class WalletPage extends React.Component {
               ) : (
                 <></>
               )}
+            </div>
 
-              {this.props.WALLET_whichTab === "Payments" ? (
-                <>
+            {this.props.WALLET_whichTab === "Payments" ? (
+              <>
+                <div id="sidetextonlysides">
                   {this.props.WALLET_sendSuccess &&
                   !this.props.WALLET_sendMsgSuccess &&
                   !this.props.WALLET_sendMsgFailure ? (
@@ -587,17 +591,17 @@ class WalletPage extends React.Component {
                   ) : (
                     <></>
                   )}
-
-                  {this.props.isLoadingMsgs_WALLET ? (
-                    <div id="spinner">
-                      <p></p>
-                      <Spinner animation="border" role="status">
-                        <span className="visually-hidden">Loading...</span>
-                      </Spinner>
-                    </div>
-                  ) : (
-                    <>
-                      {/* <PaymentsTab
+                </div>
+                {this.props.isLoadingMsgs_WALLET ? (
+                  <div id="spinner">
+                    <p></p>
+                    <Spinner animation="border" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                  </div>
+                ) : (
+                  <>
+                    {/* <PaymentsTab
                         mode={this.props.mode}
                         identity={this.props.identity}
                         uniqueName={this.props.uniqueName}
@@ -616,34 +620,35 @@ class WalletPage extends React.Component {
 
                         //isLoadingMsgs_WALLET={this.props.isLoadingMsgs_WALLET}
                       /> */}
-                      <PaymentsTabNEW
-                        mode={this.props.mode}
-                        identity={this.props.identity}
-                        uniqueName={this.props.uniqueName}
-                        hideModal={this.hideModal}
-                        isModalShowing={this.state.isModalShowing}
-                        presentModal={this.state.presentModal}
-                        accountHistory={this.props.accountHistory}
-                        accountBalance={this.props.accountBalance}
-                        handleThread={this.props.handleThread_WALLET}
-                        ByYouMsgs={this.props.WALLET_ByYouMsgs}
-                        ByYouNames={this.props.WALLET_ByYouNames}
-                        ByYouThreads={this.props.WALLET_ByYouThreads}
-                        ToYouMsgs={this.props.WALLET_ToYouMsgs}
-                        ToYouNames={this.props.WALLET_ToYouNames}
-                        ToYouThreads={this.props.WALLET_ToYouThreads}
+                    <PaymentsTabNEW
+                      mode={this.props.mode}
+                      identity={this.props.identity}
+                      uniqueName={this.props.uniqueName}
+                      hideModal={this.hideModal}
+                      isModalShowing={this.state.isModalShowing}
+                      presentModal={this.state.presentModal}
+                      accountHistory={this.props.accountHistory}
+                      accountBalance={this.props.accountBalance}
+                      handleThread={this.props.handleThread_WALLET}
+                      ByYouMsgs={this.props.WALLET_ByYouMsgs}
+                      ByYouNames={this.props.WALLET_ByYouNames}
+                      ByYouThreads={this.props.WALLET_ByYouThreads}
+                      ToYouMsgs={this.props.WALLET_ToYouMsgs}
+                      ToYouNames={this.props.WALLET_ToYouNames}
+                      ToYouThreads={this.props.WALLET_ToYouThreads}
 
-                        //isLoadingMsgs_WALLET={this.props.isLoadingMsgs_WALLET}
-                      />
-                    </>
-                  )}
-                </>
-              ) : (
-                <></>
-              )}
+                      //isLoadingMsgs_WALLET={this.props.isLoadingMsgs_WALLET}
+                    />
+                  </>
+                )}
+              </>
+            ) : (
+              <></>
+            )}
 
-              {this.props.WALLET_whichTab === "Your Wallet" ? (
-                <>
+            {this.props.WALLET_whichTab === "Your Wallet" ? (
+              <>
+                <div id="sidetextonlysides">
                   {/* BELOW IS EXCHANGE FORM TABS -> CHANGE TO PAY AND REQUEST */}
                   {/* <WalletPageFormTabs
                     whichPayType={this.props.whichPayType} //Pay or Request
@@ -1029,15 +1034,15 @@ class WalletPage extends React.Component {
                   ) : (
                     <></>
                   )}
-                </>
-              ) : (
-                <></>
-              )}
-            </>
-          ) : (
-            <></>
-          )}
-        </div>
+                </div>
+              </>
+            ) : (
+              <></>
+            )}
+          </>
+        ) : (
+          <></>
+        )}
 
         {this.props.WALLET_whichTab === "Your Wallet" ? (
           <>
@@ -1073,38 +1078,41 @@ class WalletPage extends React.Component {
               <></>
             )}
             <p></p>
+            <h5 className="indentStuff" style={{ marginTop: "1rem" }}>
+              <b>Payment Requests</b>
+            </h5>
             {/* BELOW - Add the Payment Requests sent to you Here*/}
             {/* {this.props.isLoadingMsgs_WALLET ? (
-                    <div id="spinner">
-                      <p></p>
-                      <Spinner animation="border" role="status">
-                        <span className="visually-hidden">Loading...</span>
-                      </Spinner>
-                    </div>
-                  ) : (
-                    <>
-                      <PaymentRequestComp
-                      //DO I NEED ALL OF THESE?
-                        mode={this.props.mode}
-                        identity={this.props.identity}
-                        uniqueName={this.props.uniqueName}
-                        hideModal={this.hideModal}
-                        isModalShowing={this.state.isModalShowing}
-                        presentModal={this.state.presentModal}
-                        accountHistory={this.props.accountHistory}
-                        accountBalance={this.props.accountBalance}
-                        handleThread={this.props.handleThread_WALLET}
-                        ByYouMsgs={this.props.WALLET_ByYouMsgs}
-                        ByYouNames={this.props.WALLET_ByYouNames}
-                        ByYouThreads={this.props.WALLET_ByYouThreads}
-                        ToYouMsgs={this.props.WALLET_ToYouMsgs}
-                        ToYouNames={this.props.WALLET_ToYouNames}
-                        ToYouThreads={this.props.WALLET_ToYouThreads}
+              <div id="spinner">
+                <p></p>
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </Spinner>
+              </div>
+            ) : (
+              <>
+                <PaymentRequestsComp
+                  //DO I NEED ALL OF THESE?
+                  mode={this.props.mode}
+                  identity={this.props.identity}
+                  uniqueName={this.props.uniqueName}
+                  hideModal={this.hideModal}
+                  isModalShowing={this.state.isModalShowing}
+                  presentModal={this.state.presentModal}
+                  accountHistory={this.props.accountHistory}
+                  accountBalance={this.props.accountBalance}
+                  handleThread={this.props.handleThread_WALLET}
+                  ByYouMsgs={this.props.WALLET_ByYouMsgs}
+                  ByYouNames={this.props.WALLET_ByYouNames}
+                  ByYouThreads={this.props.WALLET_ByYouThreads}
+                  ToYouMsgs={this.props.WALLET_ToYouMsgs}
+                  ToYouNames={this.props.WALLET_ToYouNames}
+                  ToYouThreads={this.props.WALLET_ToYouThreads}
 
-                        //isLoadingMsgs_WALLET={this.props.isLoadingMsgs_WALLET}
-                      />
-                    </>
-                  )} */}
+                  //isLoadingMsgs_WALLET={this.props.isLoadingMsgs_WALLET}
+                />
+              </>
+            )} */}
 
             <div style={{ marginLeft: "1rem", marginTop: "1rem" }}>
               <PaymentAddrComponent

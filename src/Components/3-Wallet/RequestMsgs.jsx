@@ -1,10 +1,12 @@
 import React from "react";
-//import Button from 'react-bootstrap/Button';
+import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
+
+import handleDenomDisplay from "../UnitDisplay";
 
 import Threads from "./Threads";
 
-class PaymentsMsgs extends React.Component {
+class RequestMsgs extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -116,13 +118,12 @@ class PaymentsMsgs extends React.Component {
       <Card id="card" key={this.props.index} bg={cardBkg} text={cardText}>
         <Card.Body>
           <Card.Title className="cardTitle">
-            {this.props.identity === this.props.tuple[1].$ownerId ? (
+            {/* {this.props.identity === this.props.tuple[1].$ownerId ? (
               <>
                 <div>
-                  {/* <span>You Paid </span>{" "} */}
-                  {/* <span style={{ color: "#008de4" }}>{this.props.tuple[0]}</span> */}
+                  <span style={{ color: "red" }}>To: </span>{" "}
                   <span
-                    style={{ color: "red" }}
+                    style={{ color: "#008de4" }}
                     onClick={() => this.handleNameClick()}
                   >
                     {this.props.tuple[0]}
@@ -133,29 +134,29 @@ class PaymentsMsgs extends React.Component {
             ) : (
               <>
                 <div>
+                  <span style={{ color: "green" }}>From: </span>{" "}
                   <span
-                    // style={{ color: "#008de4" }}
-                    style={{ color: "green" }}
+                    style={{ color: "#008de4" }}
                     onClick={() => this.handleNameClick()}
                   >
                     {this.props.tuple[0]}
                   </span>
-                  {/* {" "} */}
-                  {/* <span> Paid You</span> */}
+                 
                 </div>
                 <span>{this.state.copiedName ? <span>✅</span> : <></>}</span>
               </>
-            )}
+            )} */}
 
-            {/* 
-          
-          <Button variant="outline-primary" 
-          onClick={()=> this.handleNameClick()          
-          }
-          >Copy</Button>
-          {this.state.copiedName?<span>✅</span>:<></>} */}
+            <span
+              style={{ color: "#008de4" }}
+              onClick={() => this.handleNameClick()}
+            >
+              {this.props.tuple[0]}
+            </span>
 
-            <span className="textsmaller">
+            <span
+              className="textsmaller" //style={{textAlign:'right'}}
+            >
               {this.formatDate(
                 this.props.tuple[1].$createdAt,
                 this.props.today,
@@ -163,43 +164,72 @@ class PaymentsMsgs extends React.Component {
               )}
             </span>
           </Card.Title>
-
-          <Card.Text
+          {/* <h5>{this.props.tuple[0]}</h5> */}
+          <div
+            style={{
+              textAlign: "center",
+              marginTop: "1.5rem",
+              marginBottom: "1.5rem",
+            }}
+          >
+            <h5
+              //style={{ color: "green" }}
+              onClick={() => this.handleNameClick()}
+            >
+              <b style={{ color: "#008de4" }}>{this.props.tuple[0]}</b> requests{" "}
+              <b style={{ color: "#008de4" }}>
+                {handleDenomDisplay(this.props.tuple[1].amt)}
+              </b>
+            </h5>
+          </div>
+          {/* <Card.Text
           // onClick={() =>
           //   this.props.handleThread(
           //     this.props.tuple[1].$id,
           //     this.props.tuple[0]
           //   )
           // }
-          >
-            {this.props.tuple[1].msg}
-            <p></p>
+          > */}
 
-            <div className="TwoButtons">
-              <Button
-                variant="primary"
-                // onClick={() =>
-                //  this.props.handleDeleteYourOffer(this.props.index)
-                //}
-                //USE BELOW IN THE OTHER MODAL
-                // onClick={() =>
-                //   this.props.handleThread(
-                //     this.props.tuple[1].$id,
-                //     this.props.tuple[0]
-                //   )
-                // }
-              >
-                <b>Other</b>
-              </Button>
-              <Button
-                variant="primary"
-                //onClick={() => this.props.handleYourOffer(this.props.index)
-                // }
-              >
-                <b>Pay</b>
-              </Button>
-            </div>
-          </Card.Text>
+          <p style={{ marginTop: ".7rem", marginBottom: "2rem" }}>
+            {this.props.tuple[1].msg}
+          </p>
+
+          <div className="TwoButtons">
+            <Button
+              variant="primary"
+              style={{
+                fontSize: "larger",
+                paddingLeft: "1rem",
+                paddingRight: "1rem",
+              }}
+              // onClick={() =>
+              //  this.props.handleDeleteYourOffer(this.props.index)
+              //}
+              //USE BELOW IN THE OTHER MODAL
+              // onClick={() =>
+              //   this.props.handleThread(
+              //     this.props.tuple[1].$id,
+              //     this.props.tuple[0]
+              //   )
+              // }
+            >
+              <b>Other</b>
+            </Button>
+            <Button
+              variant="primary"
+              //onClick={() => this.props.handleYourOffer(this.props.index)
+              // }
+              style={{
+                fontSize: "larger",
+                paddingLeft: "2rem",
+                paddingRight: "2rem",
+              }}
+            >
+              <b>Pay</b>
+            </Button>
+          </div>
+          {/* </Card.Text> */}
           {threadsToDisplay}
         </Card.Body>
       </Card>
@@ -207,4 +237,4 @@ class PaymentsMsgs extends React.Component {
   }
 }
 
-export default PaymentsMsgs;
+export default RequestMsgs;

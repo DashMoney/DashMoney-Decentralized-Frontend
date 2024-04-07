@@ -71,7 +71,7 @@ class PaymentsTabNEW extends React.Component {
     //threads - [1] -> reply - for pmtMsgsReply AND reqReply -> msg Tab & queue
     //messages - [2] -> PmtMsgs -> this goes to messages Tab
     //messages - [3] -> PmtReqsPaidOrRej -> messages Tab
-    //messages - [4] -> PmtReqsNeitherPaidOrRej ->  this goes to queue
+    //messages - [4] -> PmtReqsNeitherPaidOrRej ->  this goes to queue <- WRONG
     //
     //ONLY THE BELOW FOR PAYMENTS TAB:
     //paidThrs={paidThrs} //-> messages Tab
@@ -89,7 +89,11 @@ class PaymentsTabNEW extends React.Component {
 
     let tupleByYouArray = [];
 
-    let ByYouMsgsPostSeq = [...paidOrRejPmtReqs_BYYOU, ...paymentMsgs_BYYOU];
+    let ByYouMsgsPostSeq = [
+      ...paidOrRejPmtReqs_BYYOU,
+      ...paymentMsgs_BYYOU,
+      ...notPaidPmtReqs_BYYOU,
+    ];
 
     tupleByYouArray = ByYouMsgsPostSeq.map((msg) => {
       let tuple = "";
@@ -127,16 +131,51 @@ class PaymentsTabNEW extends React.Component {
 
       return ["No Name Avail..", msg];
     });
+
+    let today = new Date();
+    let yesterday = new Date(today);
+
+    yesterday.setDate(yesterday.getDate() - 1);
+
     // *** *** *** *** *** ***
 
     // ### ### ### ### ### ###
 
     let tupleThreads = [...this.props.ByYouThreads, ...this.props.ToYouThreads];
 
-    //DO I NEED TO KEEP THIS SEPARATE? OR CAN I JUST USE THE ORIGINAL ABOVE THREADS?? -> I CHOOSE ABOVE
+    //DO I NEED TO KEEP THIS SEPARATE? OR CAN I JUST USE THE ORIGINAL ABOVE THREADS?? -> I CHOOSE ABOVE <- and I was wrong.. -> KEEP SEPARATE.
+
+    //PASS TO SentRequestMsgs and PaymentMsgs ->
 
     //let tupleThreads = [...this.props.paidThrs, ...this.props.replyThrs];
-    //OR I WOULD NEED SEPARATE TOYOU AND BYYOU OF THREADS
+    //OR I WOULD NEED SEPARATE TOYOU AND BYYOU OF THREADS -> YES ***
+
+    // paidThrs_BYYOU
+    // replyThrs_BYYOU
+
+    // let tuples_BYYOU  = tupleByYouArray.map((tuple, index) => {
+    //   return (
+    //     <SentRequestMsgs
+    //       key={index}
+    //       mode={this.props.mode}
+    //       index={index}
+    //       tuple={tuple}
+    //       today={today}
+    //       yesterday={yesterday}
+    //       identity={this.props.identity}
+    //       uniqueName={this.props.uniqueName}
+    //       showModal={this.props.showModal}
+    //       handleThread={this.props.handleThread} //???
+    // paidThrs ={paidThrs_BYYOU}
+    // replyThrs ={replyThrs_BYYOU}
+
+    //       //tupleThreads={tupleThreads}
+    //     />
+    //   );
+    // });
+
+    // paidThrs_TOYOU
+    // replyThrs_TOYOU
 
     // ### ### ### ### ### ###
 
@@ -175,11 +214,6 @@ class PaymentsTabNEW extends React.Component {
     });
 
     // console.log('Final Tuples!!', sortedTuples);
-
-    let today = new Date();
-    let yesterday = new Date(today);
-
-    yesterday.setDate(yesterday.getDate() - 1);
 
     let tuples = sortedTuples.map((tuple, index) => {
       return (

@@ -509,7 +509,8 @@ class WalletPage extends React.Component {
               />
 
               {this.props.isLoadingRefresh_WALLET &&
-              !this.props.isLoadingWallet ? (
+              !this.props.isLoadingWallet &&
+              this.props.WALLET_whichTab === "Payments" ? (
                 <div id="spinner">
                   <p></p>
                   <Spinner animation="border" role="status">
@@ -592,34 +593,28 @@ class WalletPage extends React.Component {
                     <></>
                   )}
                 </div>
-                {this.props.isLoadingMsgs_WALLET ? (
-                  <div id="spinner">
-                    <p></p>
-                    <Spinner animation="border" role="status">
-                      <span className="visually-hidden">Loading...</span>
-                    </Spinner>
-                  </div>
-                ) : (
+                {!this.props.isLoadingMsgs_WALLET &&
+                !this.props.isLoadingWallet ? (
                   <>
                     {/* <PaymentsTab
-                        mode={this.props.mode}
-                        identity={this.props.identity}
-                        uniqueName={this.props.uniqueName}
-                        hideModal={this.hideModal}
-                        isModalShowing={this.state.isModalShowing}
-                        presentModal={this.state.presentModal}
-                        accountHistory={this.props.accountHistory}
-                        accountBalance={this.props.accountBalance}
-                        handleThread={this.props.handleThread_WALLET}
-                        ByYouMsgs={this.props.WALLET_ByYouMsgs}
-                        ByYouNames={this.props.WALLET_ByYouNames}
-                        ByYouThreads={this.props.WALLET_ByYouThreads}
-                        ToYouMsgs={this.props.WALLET_ToYouMsgs}
-                        ToYouNames={this.props.WALLET_ToYouNames}
-                        ToYouThreads={this.props.WALLET_ToYouThreads}
+                    mode={this.props.mode}
+                    identity={this.props.identity}
+                    uniqueName={this.props.uniqueName}
+                    hideModal={this.hideModal}
+                    isModalShowing={this.state.isModalShowing}
+                    presentModal={this.state.presentModal}
+                    accountHistory={this.props.accountHistory}
+                    accountBalance={this.props.accountBalance}
+                    handleThread={this.props.handleThread_WALLET}
+                    ByYouMsgs={this.props.WALLET_ByYouMsgs}
+                    ByYouNames={this.props.WALLET_ByYouNames}
+                    ByYouThreads={this.props.WALLET_ByYouThreads}
+                    ToYouMsgs={this.props.WALLET_ToYouMsgs}
+                    ToYouNames={this.props.WALLET_ToYouNames}
+                    ToYouThreads={this.props.WALLET_ToYouThreads}
 
-                        //isLoadingMsgs_WALLET={this.props.isLoadingMsgs_WALLET}
-                      /> */}
+                    //isLoadingMsgs_WALLET={this.props.isLoadingMsgs_WALLET}
+                  /> */}
                     <PaymentsTabNEW
                       mode={this.props.mode}
                       identity={this.props.identity}
@@ -640,6 +635,13 @@ class WalletPage extends React.Component {
                       //isLoadingMsgs_WALLET={this.props.isLoadingMsgs_WALLET}
                     />
                   </>
+                ) : (
+                  <div id="spinner">
+                    <p></p>
+                    <Spinner animation="border" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                  </div>
                 )}
               </>
             ) : (
@@ -650,12 +652,18 @@ class WalletPage extends React.Component {
               <>
                 <div id="sidetextonlysides">
                   {/* BELOW IS EXCHANGE FORM TABS -> CHANGE TO PAY AND REQUEST */}
-                  {/* <WalletPageFormTabs
-                    whichPayType={this.props.whichPayType} //Pay or Request
-                    triggerRequestButton={this.props.triggerRequestButton}
-                    triggerPayButton={this.props.triggerPayButton}
-                    //Need to Reset the form here as well
-                  /> */}
+
+                  {this.props.dgmDocuments.length !== 0 &&
+                  this.props.WALLET_Login7 ? (
+                    <WalletPageFormTabs
+                      whichPayType={this.props.whichPayType} //Pay or Request
+                      triggerRequestButton={this.props.triggerRequestButton}
+                      triggerPayButton={this.props.triggerPayButton}
+                      //Need to Reset the form here as well
+                    />
+                  ) : (
+                    <></>
+                  )}
 
                   {/* Below is the Pay to a Name Stuff */}
                   {/*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/}
@@ -1034,6 +1042,51 @@ class WalletPage extends React.Component {
                   ) : (
                     <></>
                   )}
+
+                  {this.props.WALLET_sendPmtMsgFailure ? (
+                    <>
+                      <p></p>
+                      <Alert
+                        variant="danger"
+                        onClose={() =>
+                          this.props.handleFailurePmtMsgAlert_WALLET()
+                        }
+                        dismissible
+                      >
+                        <Alert.Heading>Message Failed</Alert.Heading>
+                        <p>
+                          You have run into a platform error or have
+                          insufficient credits.
+                        </p>
+                      </Alert>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+
+                  {this.props.WALLET_sendPmtMsgSuccess ? (
+                    <>
+                      <p></p>
+                      <Alert
+                        variant="success"
+                        onClose={() =>
+                          this.props.handleSuccessPmtMsgAlert_WALLET()
+                        }
+                        dismissible
+                      >
+                        <Alert.Heading>Payment Request Success!</Alert.Heading>
+                        <p>
+                          You have successfully requested{" "}
+                          <b>
+                            {handleDenomDisplay(this.props.WALLET_amountToSend)}
+                          </b>{" "}
+                          from <b>{this.props.WALLET_sendToName} !</b>
+                        </p>
+                      </Alert>
+                    </>
+                  ) : (
+                    <></>
+                  )}
                 </div>
               </>
             ) : (
@@ -1078,11 +1131,12 @@ class WalletPage extends React.Component {
               <></>
             )}
             <p></p>
-            <h5 className="indentStuff" style={{ marginTop: "1rem" }}>
+            <h5 className="indentStuff" style={{ marginTop: "1.8rem" }}>
               <b>Payment Requests</b>
             </h5>
             {/* BELOW - Add the Payment Requests sent to you Here*/}
-            {/* {this.props.isLoadingMsgs_WALLET ? (
+            {/* Dont need the wallet bc request and paidthrs just function on msgs */}
+            {this.props.isLoadingMsgs_WALLET ? (
               <div id="spinner">
                 <p></p>
                 <Spinner animation="border" role="status">
@@ -1092,15 +1146,19 @@ class WalletPage extends React.Component {
             ) : (
               <>
                 <PaymentRequestsComp
-                  //DO I NEED ALL OF THESE?
+                  //DO I NEED ALL OF THESE? ->
                   mode={this.props.mode}
                   identity={this.props.identity}
                   uniqueName={this.props.uniqueName}
-                  hideModal={this.hideModal}
-                  isModalShowing={this.state.isModalShowing}
-                  presentModal={this.state.presentModal}
+                  //hideModal={this.hideModal}
+                  //isModalShowing={this.state.isModalShowing}
+                  //presentModal={this.state.presentModal}
                   accountHistory={this.props.accountHistory}
                   accountBalance={this.props.accountBalance}
+                  showPayRequestModal={this.props.showPayRequestModal}
+                  showRejectReplyReqModal={
+                    this.props.showRejectReplyReqModal
+                  }
                   handleThread={this.props.handleThread_WALLET}
                   ByYouMsgs={this.props.WALLET_ByYouMsgs}
                   ByYouNames={this.props.WALLET_ByYouNames}
@@ -1112,7 +1170,7 @@ class WalletPage extends React.Component {
                   //isLoadingMsgs_WALLET={this.props.isLoadingMsgs_WALLET}
                 />
               </>
-            )} */}
+            )}
 
             <div style={{ marginLeft: "1rem", marginTop: "1rem" }}>
               <PaymentAddrComponent

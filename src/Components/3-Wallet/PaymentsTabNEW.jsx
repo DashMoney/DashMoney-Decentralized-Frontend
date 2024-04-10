@@ -16,6 +16,7 @@ import React from "react";
 
 import PaymentsMsgs from "./PaymentsMsgs";
 import P2PSequencerDisplay from "../P2PSequencerDisplay";
+import SentRequestMsgs from "./SentRequestMsgs";
 
 class PaymentsTabNEW extends React.Component {
   render() {
@@ -23,7 +24,7 @@ class PaymentsTabNEW extends React.Component {
     //
     //KEEP SEPARATE BC TUPLING OF NAMES <= ***
     //
-    // //COMBINE MSG & THREADS HERE ->
+    // //COMBINE MSG & THREADS HERE -> NO
     // let bothThreads = [
     //   ...this.props.WALLET_ByYouThreads,
     //   ...this.props.WALLET_ToYouThreads,
@@ -49,7 +50,7 @@ class PaymentsTabNEW extends React.Component {
 
     thrsAndMsgsArr_BYYOU = P2PSequencerDisplay(
       this.props.ByYouMsgs,
-      this.props.ByYouThreads
+      [...this.props.ByYouThreads, ...this.props.ToYouThreads] //MUST PASS BOTH THREADS THIS TAINTS THR OUTPUTS
     );
     paidThrs_BYYOU = thrsAndMsgsArr_BYYOU[0];
     replyThrs_BYYOU = thrsAndMsgsArr_BYYOU[1];
@@ -59,7 +60,7 @@ class PaymentsTabNEW extends React.Component {
 
     thrsAndMsgsArr_TOYOU = P2PSequencerDisplay(
       this.props.ToYouMsgs,
-      this.props.ToYouThreads
+      [...this.props.ToYouThreads, ...this.props.ByYouThreads] //MUST PASS BOTH THREADS THIS TAINTS THR OUTPUTS
     );
     paidThrs_TOYOU = thrsAndMsgsArr_TOYOU[0];
     replyThrs_TOYOU = thrsAndMsgsArr_TOYOU[1];
@@ -91,7 +92,7 @@ class PaymentsTabNEW extends React.Component {
 
     let ByYouMsgsPostSeq = [
       ...paidOrRejPmtReqs_BYYOU,
-      ...paymentMsgs_BYYOU,
+      // ...paymentMsgs_BYYOU,
       ...notPaidPmtReqs_BYYOU,
     ];
 
@@ -100,7 +101,8 @@ class PaymentsTabNEW extends React.Component {
 
       for (let nameDoc of this.props.ByYouNames) {
         if (nameDoc.$ownerId === msg.toId) {
-          tuple = [nameDoc.label, msg];
+          tuple = [nameDoc.label, msg, "req"];
+          //Add the truple part ^^^
           break;
         }
       }
@@ -108,20 +110,26 @@ class PaymentsTabNEW extends React.Component {
         return tuple;
       }
 
-      return ["No Name Avail..", msg];
+      return ["No Name Avail..", msg, "req"];
+      //Add the truple part ^^^
     });
     // *** *** *** *** *** ***
 
     let tupleToYouArray = [];
 
-    let ToYouMsgsPostSeq = [...paidOrRejPmtReqs_TOYOU, ...paymentMsgs_TOYOU];
+    let ToYouMsgsPostSeq = [
+      ...paidOrRejPmtReqs_TOYOU,
+      //...paymentMsgs_TOYOU,
+      //...notPaidPmtReqs_BYYOU //THIS IS ON THE WALLET PAGE
+    ];
 
     tupleToYouArray = ToYouMsgsPostSeq.map((msg) => {
       let tuple = "";
 
       for (let nameDoc of this.props.ToYouNames) {
         if (nameDoc.$ownerId === msg.$ownerId) {
-          tuple = [nameDoc.label, msg];
+          tuple = [nameDoc.label, msg, "req"];
+          //Add the truple part ^^^
           break;
         }
       }
@@ -129,57 +137,67 @@ class PaymentsTabNEW extends React.Component {
         return tuple;
       }
 
-      return ["No Name Avail..", msg];
+      return ["No Name Avail..", msg, "req"];
+      //Add the truple part ^^^
     });
 
-    let today = new Date();
-    let yesterday = new Date(today);
+    //have to tuple the pmt msgs separately like the request for !!!!!
 
-    yesterday.setDate(yesterday.getDate() - 1);
+    //let pmtMsgsPostSeq = [...paymentMsgs_BYYOU, ...paymentMsgs_TOYOU];
+    // Just everything not used by the other two except notPaidPmtReqs_BYYOU
+    //let combinedNames = [...this.props.ToYouNames, ...this.props.ByYouNames];
+    // WRONG ^^^
+
+    let tupleByYouPmtsArray = paymentMsgs_BYYOU.map((msg) => {
+      let tuple = "";
+
+      for (let nameDoc of this.props.ByYouNames) {
+        if (nameDoc.$ownerId === msg.toId) {
+          tuple = [nameDoc.label, msg, "pmt"];
+          //Add the truple part ^^^
+          break;
+        }
+      }
+      if (tuple !== "") {
+        return tuple;
+      }
+
+      return ["No Name Avail..", msg, "pmt"];
+      //Add the truple part ^^^
+    });
+
+    let tupleToYouPmtsArray = paymentMsgs_TOYOU.map((msg) => {
+      let tuple = "";
+
+      for (let nameDoc of this.props.ToYouNames) {
+        if (nameDoc.$ownerId === msg.$ownerId) {
+          tuple = [nameDoc.label, msg, "pmt"];
+          //Add the truple part ^^^
+          break;
+        }
+      }
+      if (tuple !== "") {
+        return tuple;
+      }
+
+      return ["No Name Avail..", msg, "pmt"];
+      //Add the truple part ^^^
+    });
 
     // *** *** *** *** *** ***
 
     // ### ### ### ### ### ###
 
-    let tupleThreads = [...this.props.ByYouThreads, ...this.props.ToYouThreads];
-
-    //DO I NEED TO KEEP THIS SEPARATE? OR CAN I JUST USE THE ORIGINAL ABOVE THREADS?? -> I CHOOSE ABOVE <- and I was wrong.. -> KEEP SEPARATE.
-
-    //PASS TO SentRequestMsgs and PaymentMsgs ->
-
-    //let tupleThreads = [...this.props.paidThrs, ...this.props.replyThrs];
-    //OR I WOULD NEED SEPARATE TOYOU AND BYYOU OF THREADS -> YES ***
-
-    // paidThrs_BYYOU
-    // replyThrs_BYYOU
-
-    // let tuples_BYYOU  = tupleByYouArray.map((tuple, index) => {
-    //   return (
-    //     <SentRequestMsgs
-    //       key={index}
-    //       mode={this.props.mode}
-    //       index={index}
-    //       tuple={tuple}
-    //       today={today}
-    //       yesterday={yesterday}
-    //       identity={this.props.identity}
-    //       uniqueName={this.props.uniqueName}
-    //       showModal={this.props.showModal}
-    //       handleThread={this.props.handleThread} //???
-    // paidThrs ={paidThrs_BYYOU}
-    // replyThrs ={replyThrs_BYYOU}
-
-    //       //tupleThreads={tupleThreads}
-    //     />
-    //   );
-    // });
-
-    // paidThrs_TOYOU
-    // replyThrs_TOYOU
+    // COMBINE   ALL   HERE -> AND ORDER BELOW
 
     // ### ### ### ### ### ###
 
-    let tupleArray = [...tupleByYouArray, ...tupleToYouArray];
+    let tupleArray = [
+      ...tupleByYouArray,
+      ...tupleToYouArray,
+      ...tupleByYouPmtsArray,
+      ...tupleToYouPmtsArray,
+    ];
 
     // Ensure Unique msgs*** START
     let arrayOfMsgIds = tupleArray.map((tuple) => {
@@ -215,29 +233,136 @@ class PaymentsTabNEW extends React.Component {
 
     // console.log('Final Tuples!!', sortedTuples);
 
-    let tuples = sortedTuples.map((tuple, index) => {
-      return (
-        <PaymentsMsgs
-          key={index}
-          mode={this.props.mode}
-          index={index}
-          tuple={tuple}
-          today={today}
-          yesterday={yesterday}
-          identity={this.props.identity}
-          uniqueName={this.props.uniqueName}
-          showModal={this.props.showModal}
-          handleThread={this.props.handleThread}
-          // ForYouThreads={ForYouThreads}
-          // ForYouThreadsNames={ForYouThreadsNames}
-          tupleThreads={tupleThreads}
-        />
-      );
+    //
+    //let tupleThreads = [...this.props.ByYouThreads, ...this.props.ToYouThreads]; Oldest
+    //let tupleThreads = [...this.props.paidThrs, ...this.props.replyThrs]; Old
+    //OR I WOULD NEED SEPARATE TOYOU AND BYYOU OF THREADS -> YES <- no***
+    //Msgs must be separate but the thread can be sorted in build <-
+
+    // let reqThreads = [
+    //   ...paidThrs_BYYOU,
+    //   ...replyThrs_BYYOU,
+    //   ...paidThrs_TOYOU,
+    //   ...replyThrs_TOYOU,
+    // ];
+    let reqThreads = [...paidThrs_BYYOU]; //, ...paidThrs_TOYOU //BC I PASS BOTH ABOVE ONLY NEED ONE BELOW @ HERE
+
+    let pmtThreads = [...replyThrs_BYYOU]; //, ...paidThrs_TOYOU //BC I PASS BOTH ABOVE ONLY NEED ONE BELOW @ HERE
+
+    let today = new Date();
+    let yesterday = new Date(today);
+
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    //PASS TO SentRequestMsgs and PaymentMsgs -> based on truple <-
+
+    let sortedMsgs = sortedTuples.map((tuple, index) => {
+      if (tuple[2] === "req") {
+        return (
+          <SentRequestMsgs
+            key={index}
+            mode={this.props.mode}
+            index={index}
+            tuple={tuple}
+            today={today}
+            yesterday={yesterday}
+            accountHistory={this.props.accountHistory}
+            identity={this.props.identity}
+            uniqueName={this.props.uniqueName}
+            showModal={this.props.showModal}
+            handleThread={this.props.handleThread} //???
+            paidThrs={reqThreads}
+            replyThrs={pmtThreads}
+          />
+        );
+      } else {
+        return (
+          <PaymentsMsgs
+            key={index}
+            mode={this.props.mode}
+            index={index}
+            tuple={tuple}
+            today={today}
+            yesterday={yesterday}
+            identity={this.props.identity}
+            uniqueName={this.props.uniqueName}
+            showModal={this.props.showModal}
+            handleThread={this.props.handleThread}
+            // ForYouThreads={ForYouThreads}
+            // ForYouThreadsNames={ForYouThreadsNames}
+            //tupleThreads={tupleThreads}
+            tupleThreads={pmtThreads}
+          />
+        );
+      }
     });
+
+    // let reqMsgs_BYYOU = tupleByYouArray.map((tuple, index) => {
+    //   return (
+    //     <SentRequestMsgs
+    //       key={index}
+    //       mode={this.props.mode}
+    //       index={index}
+    //       tuple={tuple}
+    //       today={today}
+    //       yesterday={yesterday}
+    //       accountHistory={this.props.accountHistory}
+    //       identity={this.props.identity}
+    //       uniqueName={this.props.uniqueName}
+    //       showModal={this.props.showModal}
+    //       handleThread={this.props.handleThread} //???
+    //       paidThrs={reqThreads}
+    //       replyThrs={pmtThreads}
+    //     />
+    //   );
+    // });
+
+    // paidThrs_TOYOU
+    // replyThrs_TOYOU
+
+    // let reqMsgs_TOYOU = tupleToYouArray.map((tuple, index) => {
+    //   return (
+    //     <SentRequestMsgs
+    //       key={index}
+    //       mode={this.props.mode}
+    //       index={index}
+    //       tuple={tuple}
+    //       today={today}
+    //       yesterday={yesterday}
+    //       accountHistory={this.props.accountHistory}
+    //       identity={this.props.identity}
+    //       uniqueName={this.props.uniqueName}
+    //       showModal={this.props.showModal}
+    //       handleThread={this.props.handleThread} //???
+    //       paidThrs={paidThrs_TOYOU}
+    //       replyThrs={replyThrs_TOYOU}
+    //     />
+    //   );
+    // });
+
+    // let tuples = sortedTuples.map((tuple, index) => {
+    //   return (
+    //     <PaymentsMsgs
+    //       key={index}
+    //       mode={this.props.mode}
+    //       index={index}
+    //       tuple={tuple}
+    //       today={today}
+    //       yesterday={yesterday}
+    //       identity={this.props.identity}
+    //       uniqueName={this.props.uniqueName}
+    //       showModal={this.props.showModal}
+    //       handleThread={this.props.handleThread}
+    //       // ForYouThreads={ForYouThreads}
+    //       // ForYouThreadsNames={ForYouThreadsNames}
+    //       tupleThreads={tupleThreads}
+    //     />
+    //   );
+    // });
 
     return (
       <>
-        {sortedTuples.length < 1 ? (
+        {sortedMsgs.length < 1 ? (
           <p className="paddingBadge">
             Payment messages, you send or ones sent to you, will appear here.
           </p>
@@ -245,7 +370,7 @@ class PaymentsTabNEW extends React.Component {
           <></>
         )}
 
-        <div className="footer">{tuples}</div>
+        <div className="footer">{sortedMsgs}</div>
       </>
     );
   }

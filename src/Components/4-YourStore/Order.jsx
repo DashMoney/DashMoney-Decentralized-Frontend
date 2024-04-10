@@ -147,11 +147,11 @@ class Order extends React.Component {
     let walletTxTime = new Date(walletTx.time);
     //console.log('Wallet TX Time valueOf: ', walletTxTime.valueOf());
 
-    if (walletTxTime.valueOf() - theOrder.$createdAt > 350000) {
+    if (walletTxTime.valueOf() - theOrder.$updatedAt > 350000) {
       //***This is added due to testnet lack of instasend lock */
-      if (walletTxTime.valueOf() > theOrder.$createdAt) {
+      if (walletTxTime.valueOf() > theOrder.$updatedAt) {
         return <Badge bg="primary">Paid</Badge>;
-      }
+      } //CHANGED THE ABOVE 2 $UPDATEDAT FROM $CREATEDAT -> IS THAT RIGHT? ->
 
       //console.log(walletTxTime.valueOf() - theOrder.$createdAt)
       console.log("Failed on Error 3"); //!!!!!!!!!!!!

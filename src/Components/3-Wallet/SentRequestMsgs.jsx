@@ -78,62 +78,46 @@ class SentRequestMsgs extends React.Component {
       return <Badge bg="success">Requested</Badge>;
     }
 
-    let requestStatus = "Status"; //This can be 'Requested'(unpaid), 'Rejected', 'Paid' , 'Error'
+    //This can be 'Requested'(unpaid), 'Rejected', 'Paid' , 'Error'
 
-    if (paidThrs.length !== 0) {
-      if (paidThrs > 1) {
-        requestStatus = "Error";
-      } else if (paidThrs[0].txId === "rej") {
-        requestStatus = "Rejected";
-      } else if (paidThrs[0].txId !== "") {
-        //CALL Verify Function -> if fails return Fail, or Paid if paid ->
-      }
-    } else {
-      requestStatus = "Requested";
-    }
-  };
-
-  verifyPayment = (theItems, theOrder) => {
-    // console.log("An Order: ", theOrder);
-
-    //NEW (26FEB24) PAYLATER
-    if (theOrder.txId === "payLater") {
-      //console.log("PayLater");
-      return <Badge bg="warning">Pay Later</Badge>;
+    if (paidThrs > 1) {
+      return <Badge bg="warning">Error</Badge>;
     }
 
-    //NEW (26FEB24) TRACKING ONLY
-    if (theOrder.txId === "trackOrder") {
-      //console.log("Tracking Order");
-      return <Badge bg="primary">Tracking Only</Badge>;
+    if (paidThrs[0].txId === "rej") {
+      return <Badge bg="secondary">Rejected</Badge>;
     }
-    //THERE MUST BE AN EDIT FOR THE PAYLATER (05MAR2024 - BELOW REMOVED)
-    // 1) make sure the createdAt and Updated AT are the same else there was an edit so it
-    // if (theOrder.$createdAt !== theOrder.$updatedAt) {
-    //   console.log("Failed on Error 0");
-    //   return <Badge bg="danger">Fail</Badge>;
+
+    // if (paidThrs[0].txId !== "") {
+    //   //CALL Verify Function -> if fails return Fail, or Paid if paid ->
     // }
-
+    //
     //8) DID i handle the Self Pay or Self Order?? -> if toId and OwnerId of order match
-    if (theOrder.toId === theOrder.$ownerId) {
-      return <Badge bg="warning">Self Order</Badge>;
-    }
+    // if (theOrder.toId === theOrder.$ownerId) {
+    //   return <Badge bg="warning">Self Order</Badge>;
+    // }
 
     // 2)Check for duplicated do a count on the order.txIds for all the orders
 
-    let numOfOrdersWithTxId = this.props.DGPOrders.filter((order) => {
-      return order.txId === theOrder.txId;
+    // paidThrs ={paidThrs_BYYOU}
+    // replyThrs ={replyThrs_BYYOU}
+
+    let numOfPaidThrWithTxId = this.props.paidThrs.filter((thr) => {
+      return thr.txId === paidThrs[0].txId; //because only paidThrs of length 1 should reach this point
     });
-    if (numOfOrdersWithTxId.length !== 1) {
+
+    if (numOfPaidThrWithTxId.length !== 1) {
       console.log("Failed on Error 1");
       return <Badge bg="danger">Fail</Badge>;
     }
 
-    //3) Make sure there is a wallet TX that matches order txId
+    //3) Make sure there is a wallet TX that matches  txId
+
+    //accountHistory={this.props.accountHistory}
 
     let walletTx = this.props.accountHistory.find((tx) => {
-      //console.log('Wallet TX: ', tx);
-      return tx.txId === theOrder.txId;
+      // console.log("Wallet TX: ", tx);
+      return tx.txId === paidThrs[0].txId;
     });
     if (walletTx === undefined) {
       //This may be the issue that cause early fail ->
@@ -150,43 +134,41 @@ class SentRequestMsgs extends React.Component {
 
     // 4) check that the order createAT and tx time are within a few minutes
 
-    let walletTxTime = new Date(walletTx.time);
-    //console.log('Wallet TX Time valueOf: ', walletTxTime.valueOf());
+    // let walletTxTime = new Date(walletTx.time);
+    // //console.log('Wallet TX Time valueOf: ', walletTxTime.valueOf());
 
-    if (walletTxTime.valueOf() - theOrder.$createdAt > 350000) {
-      //***This is added due to testnet lack of instasend lock */
-      if (walletTxTime.valueOf() > theOrder.$createdAt) {
+    // if (walletTxTime.valueOf() - theOrder.$updatedAt > 350000) {
+    //   //***This is added due to testnet lack of instasend lock */
+    //   if (walletTxTime.valueOf() > theOrder.$updatedAt) {
+    //     return <Badge bg="primary">Paid</Badge>;
+    //   }
+
+    //   //console.log(walletTxTime.valueOf() - theOrder.$createdAt)
+    //   console.log("Failed on Error 3"); //!!!!!!!!!!!!
+    //   console.log(this.props.accountHistory);
+    //   console.log(walletTxTime.valueOf());
+    //   return <Badge bg="danger">Fail</Badge>;
+    // }
+
+    //5) make sure the tx amt === request amt
+
+    if (this.props.tuple[1].$ownerId === this.props.identity) {
+      if (this.props.tuple[1].amt === walletTx.satoshisBalanceImpact) {
         return <Badge bg="primary">Paid</Badge>;
       }
-
-      //console.log(walletTxTime.valueOf() - theOrder.$createdAt)
-      console.log("Failed on Error 3"); //!!!!!!!!!!!!
-      console.log(this.props.accountHistory);
-      console.log(walletTxTime.valueOf());
-      return <Badge bg="danger">Fail</Badge>;
     }
-
-    //5) make sure the tx amt === order amt otherwise check if any items $updateAt changed more recently
-
-    let theTotal = 0;
-    theItems.forEach((tuple) => {
-      if (tuple[0].price !== 0) {
-        theTotal += tuple[1] * tuple[0].price;
-        //console.log(theTotal);
+    if (this.props.tuple[1].$ownerId !== this.props.identity) {
+      if (this.props.tuple[1].amt === -walletTx.satoshisBalanceImpact) {
+        return <Badge bg="primary">Paid</Badge>;
       }
-    });
-
-    if (theTotal === walletTx.satoshisBalanceImpact) {
-      return <Badge bg="primary">Paid</Badge>;
-    } else {
-      theItems.forEach((tuple) => {
-        if (tuple[0].$updatedAt > theOrder.$createdAt) {
-          return <Badge bg="warning">Old Price</Badge>;
-        }
-      });
-      console.log("Failed on Error 4");
-      return <Badge bg="danger">Fail</Badge>;
     }
+
+    // if (this.props.tuple[1].amt === walletTx.satoshisBalanceImpact) {
+    //   return <Badge bg="primary">Paid</Badge>;
+    // } else {
+    console.log("Failed on Error 4");
+    return <Badge bg="danger">Fail</Badge>;
+    // }
   };
 
   render() {
@@ -211,7 +193,7 @@ class SentRequestMsgs extends React.Component {
       return doc.msgId === this.props.tuple[1].$id;
     }); //This ^^^ makes sure threads are for the intended msg
 
-    let verifiedRequestStatus = this.verifyRequestStatus(paidThrDocs);
+    //let verifiedRequestStatus = this.verifyRequestStatus(paidThrDocs);
     //OKAY AFTER MORE THINKING -> ABOVE HANDLE STATUS/TAG BASED ON PAID THREADS
     //**** */
     //THEN BELOW JUST HANDLES ALL THE THREADS TOGETHER JUST AS REPLIES.
@@ -318,7 +300,7 @@ class SentRequestMsgs extends React.Component {
             {this.props.identity === this.props.tuple[1].$ownerId ? (
               <>
                 <div>
-                  <span style={{ color: "red" }}>To: </span>{" "}
+                  <span style={{ color: "green" }}>To: </span>{" "}
                   {/* <span style={{ color: "#008de4" }}>{this.props.tuple[0]}</span> */}
                   <span
                     //style={{ color: "red" }}
@@ -333,7 +315,7 @@ class SentRequestMsgs extends React.Component {
             ) : (
               <>
                 <div>
-                  <span style={{ color: "green" }}>From: </span>{" "}
+                  <span style={{ color: "red" }}>From: </span>{" "}
                   <span
                     style={{ color: "#008de4" }}
                     //style={{ color: "green" }}
@@ -347,6 +329,8 @@ class SentRequestMsgs extends React.Component {
                 <span>{this.state.copiedName ? <span>✅</span> : <></>}</span>
               </>
             )}
+
+            {this.verifyRequestStatus(paidThrDocs)}
 
             {/* 
           
@@ -364,6 +348,44 @@ class SentRequestMsgs extends React.Component {
               )}
             </span>
           </Card.Title>
+          <div
+            style={{
+              textAlign: "center",
+              marginTop: "1.5rem",
+              marginBottom: "1.5rem",
+            }}
+            onClick={() =>
+              this.props.handleThread(
+                this.props.tuple[1].$id,
+                this.props.tuple[0]
+              )
+            }
+          >
+            {/* THIS NEED TO SEPARATE BETWEEN REQUEST SENT TO YOU AND REQUESTS YOU SENT TO OTHER - JUST USE IF THE OWNERID OF THE TUPLE[1] IS === IDENTITY*/}
+            {this.props.tuple[1].$ownerId === this.props.identity ? (
+              <h5
+              //style={{ color: "green" }}
+              //onClick={() => this.handleNameClick()}
+              >
+                You requested{" "}
+                <b style={{ color: "#008de4" }}>
+                  {handleDenomDisplay(this.props.tuple[1].amt)}
+                </b>{" "}
+                from <b style={{ color: "#008de4" }}>{this.props.tuple[0]}</b>
+              </h5>
+            ) : (
+              <h5
+              //style={{ color: "green" }}
+              //onClick={() => this.handleNameClick()}
+              >
+                <b style={{ color: "#008de4" }}>{this.props.tuple[0]}</b>{" "}
+                requests{" "}
+                <b style={{ color: "#008de4" }}>
+                  {handleDenomDisplay(this.props.tuple[1].amt)}
+                </b>
+              </h5>
+            )}
+          </div>
 
           <Card.Text
             onClick={() =>

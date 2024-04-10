@@ -7,6 +7,7 @@ import P2PSequencerDisplay from "../P2PSequencerDisplay";
 
 class PaymentRequestsComp extends React.Component {
   render() {
+    // NAMEDOC HAS BEEN CHANGED TO PASS THE WHOLE DOC INSTEAD OF THE JUST LABEL SO CAN USE TO GET THE DGMADDR
     // *** *** *** *** *** ***
 
     // let thrsAndMsgsArr_BYYOU = [];
@@ -33,10 +34,10 @@ class PaymentRequestsComp extends React.Component {
     // paidOrRejPmtReqs_BYYOU = thrsAndMsgsArr_BYYOU[3];
     // notPaidPmtReqs_BYYOU = thrsAndMsgsArr_BYYOU[4];
 
-    thrsAndMsgsArr_TOYOU = P2PSequencerDisplay(
-      this.props.ToYouMsgs,
-      this.props.ToYouThreads
-    );
+    thrsAndMsgsArr_TOYOU = P2PSequencerDisplay(this.props.ToYouMsgs, [
+      ...this.props.ToYouThreads,
+      ...this.props.ByYouThreads,
+    ]);
     paidThrs_TOYOU = thrsAndMsgsArr_TOYOU[0]; //DONT NEED HERE
     replyThrs_TOYOU = thrsAndMsgsArr_TOYOU[1];
     paymentMsgs_TOYOU = thrsAndMsgsArr_TOYOU[2]; //DONT NEED HERE
@@ -85,7 +86,7 @@ class PaymentRequestsComp extends React.Component {
 
       for (let nameDoc of this.props.ToYouNames) {
         if (nameDoc.$ownerId === msg.$ownerId) {
-          tuple = [nameDoc.label, msg];
+          tuple = [nameDoc, msg]; //CHANGED nameDoc.label
           break;
         }
       }
@@ -151,13 +152,15 @@ class PaymentRequestsComp extends React.Component {
           key={index}
           mode={this.props.mode}
           index={index}
-          tuple={tuple}
+          tuple={tuple} //[nameLabel, reqMsg] -> [NameDoc, reqMsg]
           today={today}
           yesterday={yesterday}
           identity={this.props.identity}
           uniqueName={this.props.uniqueName}
-          showModal={this.props.showModal}
+          //showModal={this.props.showModal}
           handleThread={this.props.handleThread}
+          showPayRequestModal={this.props.showPayRequestModal}
+          showRejectReplyReqModal={this.props.showRejectReplyReqModal}
           //payRequest
           //rejectRequest
           tupleThreads={tupleThreads}

@@ -83,33 +83,39 @@ class Threads extends React.Component {
       // <Card id="thread" key={this.props.index} bg={cardBkg} text={cardText}>
       //   <Card.Body>
       <>
-        <div
-          className="ThreadBorder"
-          style={{ paddingTop: ".2rem", marginBottom: ".3rem" }}
-        ></div>
-        <Card.Title className="cardTitle">
-          {this.handleName(this.props.thr)}
+        {this.props.thr.msg === "" || this.props.thr.msg === undefined ? (
+          <></>
+        ) : (
+          <>
+            <div
+              className="ThreadBorder"
+              style={{ paddingTop: ".2rem", marginBottom: ".3rem" }}
+            ></div>
+            <Card.Title className="cardTitle">
+              {this.handleName(this.props.thr)}
 
-          <span>{this.state.copiedName ? <span>✅</span> : <></>}</span>
+              <span>{this.state.copiedName ? <span>✅</span> : <></>}</span>
 
-          <span className="textsmaller">
-            {this.formatDate(
-              this.props.thr.$createdAt,
-              this.props.today,
-              this.props.yesterday
-            )}
-          </span>
-        </Card.Title>
-        <Card.Text
-          onClick={() =>
-            this.props.handleThread(
-              this.props.tuple[1].$id,
-              this.props.tuple[0]
-            )
-          }
-        >
-          {this.props.thr.msg}
-        </Card.Text>
+              <span className="textsmaller">
+                {this.formatDate(
+                  this.props.thr.$createdAt,
+                  this.props.today,
+                  this.props.yesterday
+                )}
+              </span>
+            </Card.Title>
+            <Card.Text
+              onClick={() =>
+                this.props.handleThread(
+                  this.props.tuple[1].$id,
+                  this.props.tuple[0]
+                )
+              }
+            >
+              {this.props.thr.msg}
+            </Card.Text>
+          </>
+        )}
       </>
     );
   }

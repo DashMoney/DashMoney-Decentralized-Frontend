@@ -68,6 +68,8 @@ import ConfirmAddrPaymentModal from "./Components/3-Wallet/ConfirmAddrPaymentMod
 import RegisterDGMModal from "./Components/RegisterDGMModal";
 import ThreadModal_WALLET from "./Components/3-Wallet/ThreadModal_WALLET";
 import WalletTXModal from "./Components/WalletTXModal";
+import PayRequestModal from "./Components/3-Wallet/PayRequestModal";
+import RejectReqModal from "./Components/3-Wallet/RejectReqModal";
 
 import CreateStoreModal from "./Components/4-YourStore/MerchantModals/CreateStoreModal";
 import StoreStatusModal from "./Components/4-YourStore/MerchantModals/StoreStatusModal";
@@ -338,6 +340,7 @@ class App extends React.Component {
 
       WALLET_sendToName: "",
       WALLET_requestPmtNameDoc: "",
+      WALLET_requestPmtReqDoc: "",
       WALLET_sendToAddress: "",
       WALLET_amountToSend: 0,
       WALLET_messageToSend: "",
@@ -4752,6 +4755,7 @@ class App extends React.Component {
         WALLET_sendPmtMsgSuccess: false,
         WALLET_sendPmtMsgFailure: false,
         WALLET_requestPmtNameDoc: inputNameDoc,
+        WALLET_sendToName: inputNameDoc.label,
         WALLET_amountToSend: Number((inputNumber * 100000000).toFixed(0)),
         WALLET_messageToSend: message,
         presentModal: "ConfirmRequestModal",
@@ -4763,25 +4767,29 @@ class App extends React.Component {
       // }
     );
   };
-  showConfirmRequestModal_WALLET = (
-    inputName,
-    inputNumber,
-    dgmAddressDoc,
-    message
+
+  showPayRequestModal_WALLET = (
+    inputNameDoc, //name and OwnerId
+    reqMsgDoc //NEED FOR MSGID
+    //inputNumber //Should already be in duffs
   ) => {
-    //THIS IS AFTER YOU CLICK CONFIRM ON PAYMENT REQUEST
+    //THIS IS AFTER YOU CLICK PAY ON PAYMENT REQUEST
     this.setState(
       {
         WALLET_sendSuccess: false,
         WALLET_sendFailure: false,
         WALLET_sendMsgSuccess: false,
         WALLET_sendMsgFailure: false,
-        WALLET_sendToName: inputName,
-        WALLET_amountToSend: Number((inputNumber * 100000000).toFixed(0)), //Number(inputNumber).toFixed(3),<- Old way // put in sats!! -> DONE
-        WALLET_sendToAddress: dgmAddressDoc.address,
-        WALLET_sendToDGMAddressDoc: dgmAddressDoc,
-        WALLET_messageToSend: message,
-        presentModal: "ConfirmPaymentModal",
+        WALLET_sendPmtMsgSuccess: false,
+        WALLET_sendPmtMsgFailure: false,
+        WALLET_requestPmtNameDoc: inputNameDoc,
+        WALLET_requestPmtReqDoc: reqMsgDoc,
+        WALLET_sendToName: inputNameDoc.label,
+        WALLET_amountToSend: Number(reqMsgDoc.amt), //Number((inputNumber * 100000000).toFixed(0)), //Number(inputNumber).toFixed(3),<- Old way // put in sats!! -> DONE
+        // WALLET_sendToAddress: dgmAddressDoc.address,
+        // WALLET_sendToDGMAddressDoc: dgmAddressDoc,
+        // WALLET_messageToSend: message,
+        presentModal: "PayRequestModal",
         isModalShowing: true,
       } //,() => {
       // console.log(this.state.sendToName);
@@ -4790,6 +4798,36 @@ class App extends React.Component {
       // }
     );
   };
+  showRejectReplyReqModal_WALLET = (
+    inputNameDoc, //name and OwnerId
+    reqMsgDoc //NEED FOR MSGID***
+    //inputNumber //Should already be in duffs
+  ) => {
+    this.setState(
+      {
+        WALLET_sendSuccess: false,
+        WALLET_sendFailure: false,
+        WALLET_sendMsgSuccess: false,
+        WALLET_sendMsgFailure: false,
+        WALLET_sendPmtMsgSuccess: false,
+        WALLET_sendPmtMsgFailure: false,
+        WALLET_requestPmtNameDoc: inputNameDoc,
+        WALLET_requestPmtReqDoc: reqMsgDoc,
+        WALLET_sendToName: inputNameDoc.label,
+        WALLET_amountToSend: Number(reqMsgDoc.amt), //Number((inputNumber * 100000000).toFixed(0)), //Number(inputNumber).toFixed(3),<- Old way // put in sats!! -> DONE
+        // WALLET_sendToAddress: dgmAddressDoc.address,
+        // WALLET_sendToDGMAddressDoc: dgmAddressDoc,
+        // WALLET_messageToSend: message,
+        presentModal: "RejectReqModal",
+        isModalShowing: true,
+      } //,() => {
+      // console.log(this.state.sendToName);
+      // console.log(this.state.amountToSend);
+      // console.log(this.state.messageToSend);
+      // }
+    );
+  };
+
   // ^^^^ - PAYMENT REQUEST
   handleSuccessAlert_WALLET = () => {
     this.setState({
@@ -6013,6 +6051,7 @@ class App extends React.Component {
     this.setState({
       isLoadingButtons_WALLET: true,
       isLoadingRefresh_WALLET: true,
+      isLoadingForm_WALLET: true,
     });
     const clientOpts = {
       network: this.state.whichNetwork,
@@ -6074,6 +6113,7 @@ class App extends React.Component {
             DGMAddress: [returnedDoc],
             isLoadingButtons_WALLET: false,
             isLoadingRefresh_WALLET: false,
+            isLoadingForm_WALLET: false,
           },
           () => this.sendFrontendFee()
         );
@@ -6083,6 +6123,7 @@ class App extends React.Component {
         this.setState({
           isLoadingButtons_WALLET: false,
           isLoadingRefresh_WALLET: false,
+          isLoadingForm_WALLET: false,
         });
       })
       .finally(() => client.disconnect());
@@ -6223,8 +6264,9 @@ class App extends React.Component {
   };
   //
   //3 BELOW FOR PAYMENT REQUESTS**
+  //BELOW -> RECONNECT <-
   //
-  //BELOW -> RECONNECT ->
+
   requestDashfromName_WALLET = () => {
     console.log("Called Submit Request Pmt Doc");
 
@@ -6348,8 +6390,8 @@ class App extends React.Component {
     //NOT ME BUT WHO I AM SENDING TO!! <- Fixed!
 
     let nameDoc = {
-      $ownerId: this.state.WALLET_sendToDGMAddressDoc.$ownerId,
-      label: this.state.WALLET_sendToName,
+      $ownerId: this.state.WALLET_requestPmtNameDoc.$ownerId,
+      label: this.state.WALLET_requestPmtNameDoc.label,
     };
 
     this.setState({
@@ -6358,12 +6400,15 @@ class App extends React.Component {
     //END OF NAME DOC ADD***
   };
 
-  payDashtoRequest_WALLET = () => {
+  payDashtoRequest_WALLET = (theDGMAddr, addedMessage) => {
+    //console.log(theDGMAddr);
+    // console.log(addedMessage);
     this.setState({
       isLoadingRefresh_WALLET: true,
       isLoadingButtons_WALLET: true,
       isLoadingWallet: true,
       isLoadingForm_WALLET: true,
+      WALLET_messageToSend: "MSGFORpaidthr",
     });
 
     const client = new Dash.Client({
@@ -6390,10 +6435,10 @@ class App extends React.Component {
       // console.log(typeof amt);
 
       const transaction = account.createTransaction({
-        recipient: this.state.WALLET_sendToAddress,
+        recipient: theDGMAddr,
         satoshis: dashAmt, //Must be a string!!
       });
-      //return transaction;//Use to disable TX
+      //return transaction; //Use to disable TX
       return account.broadcastTransaction(transaction);
     };
 
@@ -6408,7 +6453,7 @@ class App extends React.Component {
             // isLoadingForm: false,
             WALLET_sendSuccess: true,
           },
-          () => this.handlePostPayment_WALLET(d)
+          () => this.submitDGMThreadforRequest_WALLET(d, addedMessage)
         );
       })
       .catch((e) => {
@@ -6423,9 +6468,273 @@ class App extends React.Component {
       });
     //.finally(() => client.disconnect()); // <- Caused Error in the past, added back seems to fix more recent payment error. -> YES error dont use
   };
-  //submitDGMThreadforRequest_WALLET=()=>{}
+  submitDGMThreadforRequest_WALLET = (theTxId, addedMessage) => {
+    this.setState({
+      isLoadingRefresh_WALLET: true,
+      isLoadingWallet: true,
+      isLoadingButtons_WALLET: true,
+      isLoadingForm_WALLET: true,
+      isLoadingMsgs_WALLET: true,
+    });
+
+    //console.log(addedMessage);
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+      apps: {
+        DGMContract: {
+          contractId: this.state.DataContractDGM, // Your contract ID
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    let docProperties = {};
+
+    const submitDocuments = async () => {
+      const { platform } = client;
+
+      let identity = "";
+      if (this.state.identityRaw !== "") {
+        identity = this.state.identityRaw;
+      } else {
+        identity = await platform.identities.get(this.state.identity);
+      } // Your identity ID
+
+      docProperties = {
+        msg: addedMessage,
+        msgId: this.state.WALLET_requestPmtReqDoc.$id,
+        txId: theTxId,
+      };
+
+      // Create the note document
+      const dgmDocument = await platform.documents.create(
+        "DGMContract.dgmthr",
+        identity,
+        docProperties
+      );
+
+      //console.log(dsoDocument.toJSON());
+
+      //############################################################
+      //This below disconnects the document sending..***
+
+      //return dgmDocument;
+
+      //This is to disconnect the Document Creation***
+
+      //############################################################
+
+      const documentBatch = {
+        create: [dgmDocument], // Document(s) to create
+      };
+
+      await platform.documents.broadcast(documentBatch, identity);
+      return dgmDocument;
+    };
+
+    submitDocuments()
+      .then((d) => {
+        let returnedDoc = d.toJSON();
+        console.log("Thread Documents:\n", returnedDoc);
+
+        let newThread;
+
+        // required: [' 'msg','msgId', "$createdAt", "$updatedAt"],
+
+        newThread = {
+          $ownerId: returnedDoc.$ownerId,
+          $id: returnedDoc.$id,
+          msgId: this.state.WALLET_requestPmtReqDoc.$id,
+          msg: addedMessage,
+          txId: theTxId,
+          $createdAt: returnedDoc.$createdAt,
+        };
+
+        this.setState(
+          {
+            WALLET_ByYouThreads: [newThread, ...this.state.WALLET_ByYouThreads],
+            //BELOW 3 are handle in the POSTPAYMENTWallet function.
+            //isLoadingRefresh_WALLET: false,
+            //isLoadingWallet: false,
+            //isLoadingButtons_WALLET: false,
+            isLoadingForm_WALLET: false,
+            WALLET_sendMsgSuccess: true,
+            isLoadingMsgs_WALLET: false,
+          },
+          () => this.handleLoginforPostPaymentWallet_WALLET()
+        );
+      })
+      .catch((e) => {
+        this.setState(
+          {
+            isLoadingRefresh_WALLET: false,
+            isLoadingWallet: false,
+            isLoadingButtons_WALLET: false,
+            isLoadingForm_WALLET: false,
+            WALLET_sendMsgFailure: true,
+            isLoadingMsgs_WALLET: false,
+          },
+          () => this.handleLoginforPostPaymentWallet_WALLET()
+        );
+
+        console.error("Something went wrong creating new thread:\n", e);
+      })
+      .finally(() => client.disconnect());
+    // THIS BELOW IS THE NAME DOC ADD, SO PROCESSES DURING DOC SUBMISSION ***
+
+    // NOT ME BUT WHO I AM SENDING TO!! <- Fixed!
+
+    let nameDoc = {
+      $ownerId: this.state.WALLET_requestPmtNameDoc.$ownerId,
+      label: this.state.WALLET_requestPmtNameDoc.label,
+    };
+
+    this.setState({
+      WALLET_ByYouNames: [nameDoc, ...this.state.WALLET_ByYouNames],
+    });
+    //END OF NAME DOC ADD***
+  };
+
+  rejectOrReplyRequestThread_WALLET = (addedMessage, ifReject) => {
+    this.setState({
+      isLoadingRefresh_WALLET: true,
+      isLoadingWallet: true,
+      isLoadingButtons_WALLET: true,
+      isLoadingForm_WALLET: true,
+      isLoadingMsgs_WALLET: true,
+    });
+
+    //console.log(addedMessage);
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+      apps: {
+        DGMContract: {
+          contractId: this.state.DataContractDGM, // Your contract ID
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    let docProperties = {};
+
+    const submitDocuments = async () => {
+      const { platform } = client;
+
+      let identity = "";
+      if (this.state.identityRaw !== "") {
+        identity = this.state.identityRaw;
+      } else {
+        identity = await platform.identities.get(this.state.identity);
+      } // Your identity ID
+      if (ifReject) {
+        docProperties = {
+          msg: addedMessage,
+          msgId: this.state.WALLET_requestPmtReqDoc.$id,
+          txId: "rej",
+        };
+      } else {
+        docProperties = {
+          msg: addedMessage,
+          msgId: this.state.WALLET_requestPmtReqDoc.$id,
+        };
+      }
+
+      // Create the note document
+      const dgmDocument = await platform.documents.create(
+        "DGMContract.dgmthr",
+        identity,
+        docProperties
+      );
+
+      //console.log(dsoDocument.toJSON());
+
+      //############################################################
+      //This below disconnects the document sending..***
+
+      // return dgmDocument;
+
+      //This is to disconnect the Document Creation***
+
+      //############################################################
+
+      const documentBatch = {
+        create: [dgmDocument], // Document(s) to create
+      };
+
+      await platform.documents.broadcast(documentBatch, identity);
+      return dgmDocument;
+    };
+
+    submitDocuments()
+      .then((d) => {
+        let returnedDoc = d.toJSON();
+        console.log("Thread Documents:\n", returnedDoc);
+
+        let newThread;
+
+        // required: [' 'msg','msgId', "$createdAt", "$updatedAt"],
+        if (ifReject) {
+          newThread = {
+            $ownerId: returnedDoc.$ownerId,
+            $id: returnedDoc.$id,
+            msgId: this.state.WALLET_requestPmtReqDoc.$id,
+            msg: addedMessage,
+            $createdAt: returnedDoc.$createdAt,
+            txId: "rej",
+          };
+        } else {
+          newThread = {
+            $ownerId: returnedDoc.$ownerId,
+            $id: returnedDoc.$id,
+            msgId: this.state.WALLET_requestPmtReqDoc.$id,
+            msg: addedMessage,
+            $createdAt: returnedDoc.$createdAt,
+          };
+        }
+
+        this.setState({
+          WALLET_ByYouThreads: [newThread, ...this.state.WALLET_ByYouThreads],
+
+          isLoadingRefresh_WALLET: false,
+          isLoadingWallet: false,
+          isLoadingButtons_WALLET: false,
+          isLoadingForm_WALLET: false,
+
+          isLoadingMsgs_WALLET: false,
+        });
+      })
+      .catch((e) => {
+        this.setState({
+          isLoadingRefresh_WALLET: false,
+          isLoadingWallet: false,
+          isLoadingButtons_WALLET: false,
+          isLoadingForm_WALLET: false,
+
+          isLoadingMsgs_WALLET: false,
+        });
+
+        console.error("Something went wrong creating new thread:\n", e);
+      })
+      .finally(() => client.disconnect());
+  };
   //
-  //3 ^^^ FOR PAYMENT REQUESTS**
+  // ^^^ FOR PAYMENT REQUESTS**
   //
   handlePostPayment_WALLET = (txId) => {
     if (this.state.WALLET_messageToSend === "") {
@@ -14678,9 +14987,7 @@ class App extends React.Component {
           FrontendFee={this.state.FrontendFee}
           validFrontendFee={this.state.validFrontendFee}
         />
-
         <Image fluid="true" id="dash-bkgd" src={DashBkgd} alt="Dash Logo" />
-
         <Container className="g-0">
           <Row className="justify-content-md-center">
             <Col md={9} lg={8} xl={7} xxl={6}>
@@ -14913,6 +15220,10 @@ class App extends React.Component {
                     showConfirmModal={this.showConfirmModal_WALLET}
                     showRequestModal={this.showRequestModal_WALLET}
                     showAddrConfirmModal={this.showAddrConfirmModal_WALLET}
+                    showPayRequestModal={this.showPayRequestModal_WALLET}
+                    showRejectReplyReqModal={
+                      this.showRejectReplyReqModal_WALLET
+                    }
                     handleThread_WALLET={this.handleThread_WALLET}
                     WALLET_ByYouMsgs={this.state.WALLET_ByYouMsgs}
                     WALLET_ByYouNames={this.state.WALLET_ByYouNames}
@@ -15278,9 +15589,7 @@ class App extends React.Component {
             </Col>
           </Row>
         </Container>
-
         {/* #####    BELOW ARE THE MODALS    #####    */}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "LogoutModal" ? (
           <LogoutModal
@@ -15293,7 +15602,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "CreateNewWalletModal" ? (
           <CreateNewWalletModal
@@ -15306,7 +15614,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "SendFundsModal" ? (
           <SendFundsModal
@@ -15320,7 +15627,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "FrontEndFeeExplaination" ? (
           <FrontEndFeeExplaination
@@ -15339,7 +15645,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "RegisterIdentityModal" ? (
           <RegisterIdentityModal
@@ -15356,7 +15661,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "TopUpIdentityModal" ? (
           <TopUpIdentityModal
@@ -15371,7 +15675,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {/* {this.state.isModalShowing &&
         this.state.presentModal === "SearchForNameModal" ? (
           <SearchForNameModal
@@ -15385,7 +15688,6 @@ class App extends React.Component {
         ) : (
           <></>
         )} */}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "RegisterNameModal" ? (
           <RegisterNameModal
@@ -15407,7 +15709,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "RegisterNameAliasModal" ? (
           <RegisterNameAliasModal
@@ -15429,7 +15730,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {/* /**
          *     ###     ###
          *    ## ##    ####
@@ -15452,7 +15752,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "NewDMModal" ? (
           <NewDMModal
@@ -15468,7 +15767,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "NewThreadModal" ? (
           <NewThreadModal
@@ -15492,7 +15790,6 @@ class App extends React.Component {
 *     ###     ########
 *     #####      ####
 *      ############# */}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "CreateGroupModal" ? (
           <CreateGroupModal
@@ -15504,7 +15801,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "DeleteGroupModal" ? (
           <DeleteGroupModal
@@ -15517,7 +15813,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "JoinGroupModal" ? (
           <JoinGroupModal
@@ -15533,13 +15828,11 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {/* ##      ###    ###
          *   ###    ####   ##
          *    ###  ## ## ###
          *     ## ##  ####
          *      ###   ### */}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "ConfirmAddrPaymentModal" ? (
           <ConfirmAddrPaymentModal
@@ -15554,7 +15847,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "RegisterDGMModal" ? (
           <RegisterDGMModal
@@ -15567,7 +15859,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "ThreadModal_WALLET" ? (
           <ThreadModal_WALLET
@@ -15583,6 +15874,43 @@ class App extends React.Component {
           <></>
         )}
 
+        {this.state.isModalShowing &&
+        this.state.presentModal === "PayRequestModal" ? (
+          <PayRequestModal
+            sendToName={this.state.WALLET_sendToName}
+            requestPmtNameDoc={this.state.WALLET_requestPmtNameDoc}
+            amountToSend={this.state.WALLET_amountToSend}
+            //messageToSend={this.state.WALLET_messageToSend}
+            DataContractDGM={this.state.DataContractDGM}
+            whichNetwork={this.state.whichNetwork}
+            //sendDashtoName={this.state.sendDashtoName}
+            payDashtoRequest={this.payDashtoRequest_WALLET}
+            //requestDashfromName={this.state.requestDashfromName}
+            //handleClearModalPostPmtConfirm={this.handleClearModalPostPmtConfirm}
+            isModalShowing={this.state.isModalShowing}
+            hideModal={this.hideModal}
+            mode={this.state.mode}
+          />
+        ) : (
+          <></>
+        )}
+        {this.state.isModalShowing &&
+        this.state.presentModal === "RejectReqModal" ? (
+          <RejectReqModal
+            uniqueName={this.state.uniqueName}
+            sendToName={this.state.WALLET_sendToName}
+            requestPmtNameDoc={this.state.WALLET_requestPmtNameDoc}
+            amountToSend={this.state.WALLET_amountToSend}
+            //submitDGMThread={this.submitDGMThread_WALLET}
+            rejectOrReplyRequestThread={this.rejectOrReplyRequestThread_WALLET}
+            messageToWhomName={this.state.WALLET_messageToWhomName}
+            isModalShowing={this.state.isModalShowing}
+            hideModal={this.hideModal}
+            mode={this.state.mode}
+          />
+        ) : (
+          <></>
+        )}
         {/* {this.state.isModalShowing &&
         this.state.presentModal === "WalletTXModal" ? (
           <WalletTXModal
@@ -15599,7 +15927,6 @@ class App extends React.Component {
           <></>
         )} */}
         {/* THIS ^^^^ WAS THE MY STORE ONE */}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "WalletTXModal" ? (
           <WalletTXModal
@@ -15639,14 +15966,12 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {/*  ###       ###
          *    ###     ###
          *      #######
          *        ###
          *        ###
          *        ### */}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "CreateStoreModal" ? (
           <CreateStoreModal
@@ -15661,7 +15986,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "EditStoreModal" ? (
           <EditStoreModal
@@ -15674,7 +15998,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "StoreStatusModal" ? (
           <StoreStatusModal
@@ -15688,7 +16011,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "CreateItemModal" ? (
           <CreateItemModal
@@ -15700,7 +16022,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "EditItemModal" ? (
           <EditItemModal
@@ -15713,7 +16034,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "MerchantOrderMsgModal" ? (
           <MerchantOrderMsgModal
@@ -15727,14 +16047,12 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {/*   #############
          *  ###
          *   #############
          *              ###
          *  #############
          */}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "AddItemToCartModal" ? (
           <AddItemToCartModal
@@ -15747,7 +16065,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "EditCartItemModal" ? (
           <EditCartItemModal
@@ -15761,7 +16078,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "PlaceOrderModal" ? (
           <PlaceOrderModal
@@ -15779,7 +16095,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "PayLaterPaymentModal" ? (
           <PayLaterPaymentModal
@@ -15798,7 +16113,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "OrderMessageModal" ? (
           <OrderMessageModal
@@ -15812,13 +16126,11 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {/* *         ###   ###
          *          ####   ##
          *         ## ## ###
          *        ##  ####
          *      ###   ### */}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "CreatePostModal" ? (
           <CreatePostModal
@@ -15831,7 +16143,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "EditPostModal" ? (
           <EditPostModal
@@ -15845,7 +16156,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "EditEventModal" ? (
           <EditEventModal
@@ -15859,7 +16169,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "PostModal" ? (
           <PostModal
@@ -15884,7 +16193,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "EventModal" ? (
           <EventModal
@@ -15910,7 +16218,6 @@ class App extends React.Component {
          *      ################
          *      ###
          *      ################            */}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "CreateOfferModal" ? (
           <CreateOfferModal
@@ -15922,7 +16229,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "EditOfferModal" ? (
           <EditOfferModal
@@ -15935,7 +16241,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "OfferModal" ? (
           <OfferModal
@@ -15953,7 +16258,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "DeleteOfferModal" ? (
           <DeleteOfferModal
@@ -15967,13 +16271,11 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {/* *   ################
          *      ###          ####
          *      ################
          *      ###          ####
          *      ###           #### */}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "CreateReviewModal" ? (
           <CreateReviewModal
@@ -15987,7 +16289,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "EditReviewModal" ? (
           <EditReviewModal
@@ -16002,7 +16303,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "CreateReplyModal" ? (
           <CreateReplyModal
@@ -16017,7 +16317,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "EditReplyModal" ? (
           <EditReplyModal
@@ -16033,14 +16332,12 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {/*  ################
          *   ###          ###
          *   ################
          *   ###
          *   ###
          */}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "CreateProofModal" ? (
           <CreateProofModal
@@ -16053,7 +16350,6 @@ class App extends React.Component {
         ) : (
           <></>
         )}
-
         {this.state.isModalShowing &&
         this.state.presentModal === "DeleteProofModal" ? (
           <DeleteProofModal

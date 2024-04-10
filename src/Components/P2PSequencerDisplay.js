@@ -2,6 +2,11 @@
 // ACTUALLY SEE BELOW !!
 //FOR PMT REQUEST THIS IS SIMPLE TO THE USER
 //BUT THIS COULD BE USED FOR THE RIDES/DRIVER AND RSRVS/APPT TO THE RIDEREQ&RESERVEPOST!!!
+
+//
+//
+// NEEDS ALL THE THREADS BECAUSE YOU PAY OTHER PERSON REQUEST. ->
+//
 //
 export default function P2PSequencerDisplay(messages, threads) {
   //May need to ensure unique/ no duplicates-> should be given
@@ -45,7 +50,9 @@ export default function P2PSequencerDisplay(messages, threads) {
     //WHAT?? -> okay, okay, for this one each pmtreq must be checked against the paidthrs
     let bool = paidThrs.some(
       //.every() OR .some()  I think it doesn't matter just make the logic cooperate
-      (thr) => thr.toId === req.$id && thr.txId !== "" && thr.txId !== undefined //&&
+      (thr) =>
+        //WAS thr.toID === req.$id BUT THAT WAS WRONG!!
+        thr.msgId === req.$id && thr.txId !== "" && thr.txId !== undefined //&&
       //thr.txId !== "rej" //This not needed here the display will handle warning tag with reject and paid if txId matches in wallet.
     );
     //CHECK AND MAKE SURE THAT THE TOID IS NOT HEX BUT TOJSON ->

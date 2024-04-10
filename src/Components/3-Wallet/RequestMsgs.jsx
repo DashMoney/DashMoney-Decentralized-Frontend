@@ -15,7 +15,7 @@ class RequestMsgs extends React.Component {
   }
 
   handleNameClick = () => {
-    navigator.clipboard.writeText(this.props.tuple[0]);
+    navigator.clipboard.writeText(this.props.tuple[0].label);
     this.setState({
       copiedName: true,
     });
@@ -126,7 +126,7 @@ class RequestMsgs extends React.Component {
                     style={{ color: "#008de4" }}
                     onClick={() => this.handleNameClick()}
                   >
-                    {this.props.tuple[0]}
+                    {this.props.tuple[0].label}
                   </span>
                 </div>
                 <span>{this.state.copiedName ? <span>✅</span> : <></>}</span>
@@ -139,7 +139,7 @@ class RequestMsgs extends React.Component {
                     style={{ color: "#008de4" }}
                     onClick={() => this.handleNameClick()}
                   >
-                    {this.props.tuple[0]}
+                    {this.props.tuple[0].label}
                   </span>
                  
                 </div>
@@ -151,7 +151,7 @@ class RequestMsgs extends React.Component {
               style={{ color: "#008de4" }}
               onClick={() => this.handleNameClick()}
             >
-              {this.props.tuple[0]}
+              {this.props.tuple[0].label}
             </span>
 
             <span
@@ -164,7 +164,7 @@ class RequestMsgs extends React.Component {
               )}
             </span>
           </Card.Title>
-          {/* <h5>{this.props.tuple[0]}</h5> */}
+          {/* <h5>{this.props.tuple[0].label}</h5> */}
           <div
             style={{
               textAlign: "center",
@@ -173,10 +173,11 @@ class RequestMsgs extends React.Component {
             }}
           >
             <h5
-              //style={{ color: "green" }}
-              onClick={() => this.handleNameClick()}
+            //style={{ color: "green" }}
+            //onClick={() => this.handleNameClick()}
             >
-              <b style={{ color: "#008de4" }}>{this.props.tuple[0]}</b> requests{" "}
+              <b style={{ color: "#008de4" }}>{this.props.tuple[0].label}</b>{" "}
+              requests{" "}
               <b style={{ color: "#008de4" }}>
                 {handleDenomDisplay(this.props.tuple[1].amt)}
               </b>
@@ -186,7 +187,7 @@ class RequestMsgs extends React.Component {
           // onClick={() =>
           //   this.props.handleThread(
           //     this.props.tuple[1].$id,
-          //     this.props.tuple[0]
+          //     this.props.tuple[0].label
           //   )
           // }
           > */}
@@ -203,23 +204,25 @@ class RequestMsgs extends React.Component {
                 paddingLeft: "1rem",
                 paddingRight: "1rem",
               }}
-              // onClick={() =>
-              //  this.props.handleDeleteYourOffer(this.props.index)
-              //}
-              //USE BELOW IN THE OTHER MODAL
-              // onClick={() =>
-              //   this.props.handleThread(
-              //     this.props.tuple[1].$id,
-              //     this.props.tuple[0]
-              //   )
-              // }
+              onClick={() =>
+                this.props.showRejectReplyReqModal(
+                  this.props.tuple[0],
+                  this.props.tuple[1] //Pass PmtReqmsg bc need for msgId
+                )
+              }
             >
               <b>Other</b>
             </Button>
             <Button
               variant="primary"
-              //onClick={() => this.props.handleYourOffer(this.props.index)
-              // }
+              onClick={() =>
+                this.props.showPayRequestModal(
+                  this.props.tuple[0],
+                  this.props.tuple[1] //Pass PmtReqmsg bc need for msgId
+                )
+              }
+              //inputNameDoc, //name and OwnerId
+              //inputNumber //Should already be in duffs
               style={{
                 fontSize: "larger",
                 paddingLeft: "2rem",
@@ -230,6 +233,7 @@ class RequestMsgs extends React.Component {
             </Button>
           </div>
           {/* </Card.Text> */}
+          <p></p>
           {threadsToDisplay}
         </Card.Body>
       </Card>

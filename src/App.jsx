@@ -5588,9 +5588,9 @@ class App extends React.Component {
 
     let arrayOfOwnerIds = [...setOfOwnerIds];
 
-    arrayOfOwnerIds = arrayOfOwnerIds.map((id) =>
-      Buffer.from(Identifier.from(id))
-    );
+    // arrayOfOwnerIds = arrayOfOwnerIds.map((id) =>
+    //   Buffer.from(Identifier.from(id))
+    // );
 
     //console.log("Calling getByYouNames");
 
@@ -5735,9 +5735,9 @@ class App extends React.Component {
 
     let arrayOfToIds = [...setOfToIds];
 
-    arrayOfToIds = arrayOfToIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
+    // arrayOfToIds = arrayOfToIds.map((item) =>
+    //   Buffer.from(Identifier.from(item))
+    // ); REMOVE ALL
 
     //console.log("Calling getByYouNames");
 
@@ -5752,7 +5752,7 @@ class App extends React.Component {
       .then((d) => {
         //WHAT IF THERE ARE NO NAMES? -> THEN THIS WON'T BE CALLED
         if (d.length === 0) {
-          //console.log("No DPNS domain documents retrieved.");
+         // console.log("No DPNS domain documents retrieved.getByYouNames");
         }
 
         let nameDocArray = [];
@@ -8589,9 +8589,9 @@ class App extends React.Component {
 
     let arrayOfOwnerIds = [...setOfOwnerIds];
 
-    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
+    // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+    //   Buffer.from(Identifier.from(item))
+    // );
 
     //console.log("Calling getNamesforDSOmsgs");
 
@@ -8906,9 +8906,9 @@ class App extends React.Component {
 
     let arrayOfOwnerIds = [...setOfOwnerIds];
 
-    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
+    // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+    //   Buffer.from(Identifier.from(item))
+    // );
 
     //console.log("Calling getNamesforDSOmsgs");
 
@@ -9026,9 +9026,9 @@ class App extends React.Component {
 
     let arrayOfOwnerIds = [...setOfOwnerIds];
 
-    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
+    // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+    //   Buffer.from(Identifier.from(item))
+    // );
 
     //console.log("Calling getOffBizNames");
 

@@ -135,7 +135,7 @@ class WalletPage extends React.Component {
     let validAddr = addrRegex.test(nameInput);
 
     if (valid) {
-      if (validAddr) {
+      if (validAddr && this.props.whichPayType === "Pay") {
         this.setState({
           sendToAddr: nameInput,
           addrFormat: true,
@@ -1156,9 +1156,7 @@ class WalletPage extends React.Component {
                   accountHistory={this.props.accountHistory}
                   accountBalance={this.props.accountBalance}
                   showPayRequestModal={this.props.showPayRequestModal}
-                  showRejectReplyReqModal={
-                    this.props.showRejectReplyReqModal
-                  }
+                  showRejectReplyReqModal={this.props.showRejectReplyReqModal}
                   handleThread={this.props.handleThread_WALLET}
                   ByYouMsgs={this.props.WALLET_ByYouMsgs}
                   ByYouNames={this.props.WALLET_ByYouNames}

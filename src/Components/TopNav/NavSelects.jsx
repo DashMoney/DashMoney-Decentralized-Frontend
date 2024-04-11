@@ -7,7 +7,10 @@ class NavSelects extends React.Component {
     return (
       <>
         {this.props.selectedDapp === this.props.selection ? (
-          <div className="d-grid gap-2" style={{ marginTop: "1rem" }}>
+          <div
+            className="d-grid gap-2"
+            style={{ marginTop: ".4rem", marginBottom: ".4rem" }}
+          >
             <Nav.Item
               className="canvasLink"
               onClick={() =>
@@ -20,7 +23,10 @@ class NavSelects extends React.Component {
             </Nav.Item>
           </div>
         ) : (
-          <div className="d-grid gap-2" style={{ marginTop: "1rem" }}>
+          <div
+            className="d-grid gap-2"
+            style={{ marginTop: ".4rem", marginBottom: ".4rem" }}
+          >
             <Nav.Item
               className="canvasLink"
               onClick={() =>

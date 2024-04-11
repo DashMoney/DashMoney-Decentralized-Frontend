@@ -19,15 +19,15 @@ class Threads extends React.Component {
 
   handleName = (msgDoc) => {
     if (msgDoc.$ownerId === this.props.identity) {
-      return <span style={{ color: "#008de4" }}>{this.props.uniqueName}</span>;
+      return <b style={{ color: "#008de4" }}>{this.props.uniqueName}</b>;
     } else {
       return (
-        <span
+        <b
           style={{ color: "#008de4" }}
           onClick={() => this.handleThreadNameClick(this.props.tuple[0])}
         >
           {this.props.tuple[0]}
-        </span>
+        </b>
       );
     }
   };

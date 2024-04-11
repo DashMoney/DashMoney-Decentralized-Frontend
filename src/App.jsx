@@ -5752,7 +5752,7 @@ class App extends React.Component {
       .then((d) => {
         //WHAT IF THERE ARE NO NAMES? -> THEN THIS WON'T BE CALLED
         if (d.length === 0) {
-         // console.log("No DPNS domain documents retrieved.getByYouNames");
+          // console.log("No DPNS domain documents retrieved.getByYouNames");
         }
 
         let nameDocArray = [];
@@ -15582,6 +15582,44 @@ class App extends React.Component {
                     YourProofs={this.state.YourProofs}
                     handleDeleteYourProof={this.handleDeleteYourProof}
                   />
+                </>
+              ) : (
+                <></>
+              )}
+              {this.state.selectedDapp === "Rides" ? (
+                <>
+                  <h1>I want ride!</h1>
+                  {/* <ProofsPage
+                    isLoginComplete={isLoginComplete}
+                    InitialPullProofs={this.state.InitialPullProofs}
+                    pullInitialTriggerPROOFS={this.pullInitialTriggerPROOFS}
+                    identityInfo={this.state.identityInfo}
+                    uniqueName={this.state.uniqueName}
+                    showModal={this.showModal}
+                    mode={this.state.mode}
+                    identity={this.state.identity}
+                    isLoadingSearch_POD={this.state.isLoadingSearch_POD}
+                    isLoadingYourProofs={this.state.isLoadingYourProofs}
+                    whichTab_POD={this.state.whichTab_POD}
+                    handleTab_POD={this.handleTab_POD}
+                    nameToSearch_POD={this.state.nameToSearch_POD}
+                    nameFormat_POD={this.state.nameFormat_POD}
+                    SearchedNameDoc_POD={this.state.SearchedNameDoc_POD}
+                    searchName_POD={this.searchName_POD}
+                    handleOnChangeValidation_POD={
+                      this.handleOnChangeValidation_POD
+                    }
+                    SearchedProofs={this.state.SearchedProofs}
+                    YourProofs={this.state.YourProofs}
+                    handleDeleteYourProof={this.handleDeleteYourProof}
+                  /> */}
+                </>
+              ) : (
+                <></>
+              )}
+              {this.state.selectedDapp === "Drivers" ? (
+                <>
+                  <h1>I am Driver</h1>
                 </>
               ) : (
                 <></>

@@ -74,8 +74,8 @@ class FrontEndFeeExplaination extends React.Component {
                   https://github.com/DashMoney/DashMoney-Decentralized-Frontend
                 </a>
               </b>
-              , and run the frontend yourself. Or you can host the frontend
-              yourself so that others can use it, and you can earn Dash!
+              , and run the frontend yourself. Or you can host the frontend so
+              that others can use it, and you can earn Dash!
             </p>
 
             {this.props.isLoginComplete &&

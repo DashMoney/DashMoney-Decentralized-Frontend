@@ -147,12 +147,12 @@ class RequestMsgs extends React.Component {
               </>
             )} */}
 
-            <span
+            <b
               style={{ color: "#008de4" }}
               onClick={() => this.handleNameClick()}
             >
               {this.props.tuple[0].label}
-            </span>
+            </b>
 
             <span
               className="textsmaller" //style={{textAlign:'right'}}

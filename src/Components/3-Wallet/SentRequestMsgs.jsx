@@ -300,29 +300,29 @@ class SentRequestMsgs extends React.Component {
             {this.props.identity === this.props.tuple[1].$ownerId ? (
               <>
                 <div>
-                  <span style={{ color: "green" }}>To: </span>{" "}
+                  <b style={{ color: "green" }}>To: </b>{" "}
                   {/* <span style={{ color: "#008de4" }}>{this.props.tuple[0]}</span> */}
-                  <span
+                  <b
                     //style={{ color: "red" }}
                     style={{ color: "#008de4" }}
                     onClick={() => this.handleNameClick()}
                   >
                     {this.props.tuple[0]}
-                  </span>
+                  </b>
                 </div>
                 <span>{this.state.copiedName ? <span>✅</span> : <></>}</span>
               </>
             ) : (
               <>
                 <div>
-                  <span style={{ color: "red" }}>From: </span>{" "}
-                  <span
+                  <b style={{ color: "red" }}>From: </b>{" "}
+                  <b
                     style={{ color: "#008de4" }}
                     //style={{ color: "green" }}
                     onClick={() => this.handleNameClick()}
                   >
                     {this.props.tuple[0]}
-                  </span>
+                  </b>
                   {/* {" "} */}
                   {/* <span> Paid You</span> */}
                 </div>

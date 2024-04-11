@@ -119,31 +119,29 @@ class PaymentsMsgs extends React.Component {
             {this.props.identity === this.props.tuple[1].$ownerId ? (
               <>
                 <div>
-                  <span style={{ color: "red" }}>To: </span>{" "}
+                  <b style={{ color: "red" }}>To: </b>{" "}
                   {/* <span style={{ color: "#008de4" }}>{this.props.tuple[0]}</span> */}
-                  <span
+                  <b
                     //style={{ color: "red" }}
                     style={{ color: "#008de4" }}
                     onClick={() => this.handleNameClick()}
                   >
                     {this.props.tuple[0]}
-                  </span>
+                  </b>
                 </div>
-                <span>{this.state.copiedName ? <span>✅</span> : <></>}</span>
+                {this.state.copiedName ? <span>✅</span> : <></>}
               </>
             ) : (
               <>
                 <div>
-                  <span style={{ color: "green" }}>From: </span>{" "}
-                  <span
+                  <b style={{ color: "green" }}>From: </b>{" "}
+                  <b
                     style={{ color: "#008de4" }}
                     //style={{ color: "green" }}
                     onClick={() => this.handleNameClick()}
                   >
                     {this.props.tuple[0]}
-                  </span>
-                  {/* {" "} */}
-                  {/* <span> Paid You</span> */}
+                  </b>
                 </div>
                 <span>{this.state.copiedName ? <span>✅</span> : <></>}</span>
               </>
@@ -173,6 +171,7 @@ class PaymentsMsgs extends React.Component {
                 this.props.tuple[0]
               )
             }
+            style={{ whiteSpace: "pre-wrap" }}
           >
             {this.props.tuple[1].msg}
           </Card.Text>

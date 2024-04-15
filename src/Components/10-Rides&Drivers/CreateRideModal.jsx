@@ -943,6 +943,21 @@ class CreateRideModal extends React.Component {
                   </Form.Control.Feedback>
                 </Form.Group>
 
+                {/* PAYMENT SCHEDULE FORM BELOW */}
+
+                <Form.Group className="mb-3" controlId="formPaymentSchedule">
+                  <Form.Label>
+                    <h5 style={{ marginTop: ".5rem", marginBottom: ".2rem" }}>
+                      Payment Schedule
+                    </h5>
+                  </Form.Label>
+                  <Form.Select>
+                    <option value="1">On Dropoff</option>
+                    <option value="2">On Pickup</option>
+                    <option value="3">1/2 & 1/2</option>
+                  </Form.Select>
+                </Form.Group>
+
                 {/*  AMT FORM BELOW */}
 
                 <Form.Group className="mb-3" controlId="formexRate">
@@ -954,15 +969,14 @@ class CreateRideModal extends React.Component {
 
                   <Form.Control
                     type="text"
-                    placeholder="0.8 for example.."
+                    placeholder="0.85 for example.."
                     required
                     isValid={this.state.validAmt}
                     //isInvalid={!this.state.validexRate}
                   />
-                  <p className="smallertext">
-                    (i.e. Must include 2 decimal precision) how does the wallet
-                    do it?
-                  </p>
+                  {/* <p className="smallertext">
+                    (i.e. Must include 2 decimal precision)
+                  </p> */}
                 </Form.Group>
 
                 <div

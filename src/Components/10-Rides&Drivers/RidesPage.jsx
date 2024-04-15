@@ -4,12 +4,12 @@ import Spinner from "react-bootstrap/Spinner";
 import Button from "react-bootstrap/Button";
 import CreditsOnPage from "../CreditsOnPage";
 
-class ExchangePage extends React.Component {
-  componentDidMount() {
-    if (this.props.isLoginComplete && this.props.InitialPullRides) {
-      this.props.pullInitialTriggerRIDES();
-    }
-  }
+class RidesPage extends React.Component {
+  // componentDidMount() {
+  //   if (this.props.isLoginComplete && this.props.InitialPullRides) {
+  //     this.props.pullInitialTriggerRIDES();
+  //   }
+  // }
   render() {
     return (
       <>
@@ -23,9 +23,9 @@ class ExchangePage extends React.Component {
           <div className="d-grid gap-2">
             <Button
               variant="primary"
-              //onClick={() => this.props.showModal("CreateOfferModal")}
+              onClick={() => this.props.showModal("CreateRideModal")}
             >
-              <b style={{ fontSize: "larger" }}>Need a Ride</b>
+              <b style={{ fontSize: "larger" }}>Request Ride</b>
             </Button>
           </div>
           {/* <YourRideRequests
@@ -44,4 +44,4 @@ class ExchangePage extends React.Component {
   }
 }
 
-export default ExchangePage;
+export default RidesPage;

@@ -38,6 +38,8 @@ import ReviewsPage from "./Components/7-Reviews/ReviewsPage";
 
 import ProofsPage from "./Components/8-ProofOfFunds/ProofsPage";
 
+import RidesPage from "./Components/10-Rides&Drivers/RidesPage";
+
 //const ProofsPage = React.lazy(() =>
 // import("./Components/8-ProofOfFunds/ProofsPage")
 //);
@@ -110,6 +112,8 @@ import EditReplyModal from "./Components/7-Reviews/ReviewModals/EditReplyModal";
 
 import CreateProofModal from "./Components/8-ProofOfFunds/YourProofs/CreateProofModal";
 import DeleteProofModal from "./Components/8-ProofOfFunds/YourProofs/DeleteProofModal";
+
+import CreateRideModal from "./Components/10-Rides&Drivers/CreateRideModal";
 
 //const Dash = require("dash");
 import Dash from "dash";
@@ -14716,14 +14720,22 @@ class App extends React.Component {
   };
 
   /**
-
+PROOF OF FUNDS FUNCTIONS^^^^
                                              ################
    *                                         ###          ###
    *                                         ################
    *                                         ###          
    *                                         ###           
-   * PROOF OF FUNDS FUNCTIONS^^^^
+   * 
+   *      ################              ###############
+   *      ###          ####             ###          ###
+   *      ################              ###          ###
+   *      ###          ####             ###          ###
+   *      ###           ####            ###############
    */
+
+  //Rides and Drivers FUNCTIONS
+  // USE the Nearby stuff.. and the Wallet P2P stuff..
 
   handleFrontendFee = () => {
     //This should be at the point of display
@@ -15588,7 +15600,13 @@ class App extends React.Component {
               )}
               {this.state.selectedDapp === "Rides" ? (
                 <>
-                  <h1>I want ride!</h1>
+                  
+                  <RidesPage
+                    identityInfo={this.state.identityInfo}
+                    uniqueName={this.state.uniqueName}
+                    showModal={this.showModal}
+                    mode={this.state.mode}
+                  />
                   {/* <ProofsPage
                     isLoginComplete={isLoginComplete}
                     InitialPullProofs={this.state.InitialPullProofs}
@@ -15619,7 +15637,7 @@ class App extends React.Component {
               )}
               {this.state.selectedDapp === "Drivers" ? (
                 <>
-                  <h1>I am Driver</h1>
+                  <h1 style={{paddingTop:'1rem',textAlign:'center'}}>Under Construction</h1>
                 </>
               ) : (
                 <></>
@@ -16395,6 +16413,25 @@ class App extends React.Component {
             uniqueName={this.state.uniqueName}
             deleteYourProof={this.deleteYourProof}
             isModalShowing={this.state.isModalShowing}
+            hideModal={this.hideModal}
+            mode={this.state.mode}
+            closeTopNav={this.closeTopNav}
+          />
+        ) : (
+          <></>
+        )}
+        {/*
+         *      ################              ###############
+         *      ###          ####             ###          ###
+         *      ################              ###          ###
+         *      ###          ####             ###          ###
+         *      ###           ####            ############### */}
+
+        {this.state.isModalShowing &&
+        this.state.presentModal === "CreateRideModal" ? (
+          <CreateRideModal
+            isModalShowing={this.state.isModalShowing}
+            //createYourRide={this.createYourRide}
             hideModal={this.hideModal}
             mode={this.state.mode}
             closeTopNav={this.closeTopNav}

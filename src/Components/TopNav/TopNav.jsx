@@ -302,7 +302,34 @@ class TopNav extends React.Component {
                     selectedDapp={this.props.selectedDapp}
                     handleSelectedDapp={this.props.handleSelectedDapp}
                   />
-                  {/* <p></p>
+                  <p></p>
+                  {/* {isLoginComplete ? (
+                    <NavSelects
+                      selection="Rides"
+                      selectedDapp={this.props.selectedDapp}
+                      handleSelectedDapp={this.props.handleSelectedDapp}
+                    />
+                  ) : (
+                    <Nav.Link className="canvasLinkDisabled" disabled>
+                      <h5>
+                        <b>Rides</b>
+                      </h5>
+                    </Nav.Link>
+                  )}
+
+                  {isLoginComplete ? (
+                    <NavSelects
+                      selection="Drivers"
+                      selectedDapp={this.props.selectedDapp}
+                      handleSelectedDapp={this.props.handleSelectedDapp}
+                    />
+                  ) : (
+                    <Nav.Link className="canvasLinkDisabled" disabled>
+                      <h5>
+                        <b>Drivers</b>
+                      </h5>
+                    </Nav.Link>
+                  )} */}
                   <NavSelects
                     selection="Rides"
                     selectedDapp={this.props.selectedDapp}
@@ -312,7 +339,8 @@ class TopNav extends React.Component {
                     selection="Drivers"
                     selectedDapp={this.props.selectedDapp}
                     handleSelectedDapp={this.props.handleSelectedDapp}
-                  /> */}
+                  />
+
                   <p></p>
                   {isLoginComplete ? (
                     <div

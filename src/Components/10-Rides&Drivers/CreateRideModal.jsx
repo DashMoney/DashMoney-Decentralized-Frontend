@@ -6,9 +6,11 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import CloseButton from "react-bootstrap/CloseButton";
 
+import handleDenomDisplay from "../UnitDisplay";
+
 //Ride Request
 /**
- 'area', //can just be ''
+        'area', //can just be ''
         'city',
         'region',
         'reqTime', //DATE.now()
@@ -53,16 +55,6 @@ class CreateRideModal extends React.Component {
       validRegion: false,
       tooLongRegionError: false,
 
-      reqTimeInput: "",
-      //IN 5 in 15 in 30
-      //set custom
-      validReqTime: true,
-
-      selectedPickupTime: "Right now",
-
-      reqTimeTime: [],
-      reqTimeDate: [],
-
       // 'pickupAddr',
       pickupAddrInput: "",
       validpickupAddr: false,
@@ -79,9 +71,9 @@ class CreateRideModal extends React.Component {
       tooLongtimeEstError: false,
 
       //  'timeEstUnit', //just minutes for now
-      timeEstUnitInput: "minutes",
-      validtimeEstUnit: false,
-      tooLongtimeEstUnitError: false,
+      // timeEstUnitInput: "minutes",
+      // validtimeEstUnit: false,
+      // tooLongtimeEstUnitError: false,
 
       //  'distEst', //just do a string convert to number
       distEstInput: "",
@@ -89,12 +81,28 @@ class CreateRideModal extends React.Component {
       tooLongdistEstError: false,
 
       //  'distEstUnit', //don't use for now don't need
-      distEstUnitInput: "km",
-      validdistEstUnit: false,
-      tooLongdistEstUnitError: false,
+      // distEstUnitInput: "km",
+      // validdistEstUnit: false,
+      // tooLongdistEstUnitError: false,
+
+      //pmtForm
+
+      paymentType: "1", //Payment Schedule
 
       amtInput: 0,
       validAmt: false,
+
+      //
+
+      reqTimeInput: "",
+      //IN 5 in 15 in 30
+      //set custom
+      validReqTime: false,
+
+      selectedPickupTime: "",
+
+      reqTimeTime: [],
+      reqTimeDate: [],
 
       //
 
@@ -104,14 +112,6 @@ class CreateRideModal extends React.Component {
       extraInstrInput: "",
       validextraInstr: true,
       tooLongextraInstrError: false,
-
-      // dateInput: "",
-      // validDate: true,
-      // tooLongDateError: false,
-
-      // timeInput: "",
-      // validTime: true,
-      // tooLongTimeError: false,
     };
   }
 
@@ -120,30 +120,44 @@ class CreateRideModal extends React.Component {
   };
 
   handlePickupTimeButtons = (time) => {
-    this.setState({
-      selectedPickupTime: time,
-      reqTimeTime: [],
-      reqTimeDate: [],
-      reqTimeInput: "",
-    });
-    if (time !== "Custom") {
-      this.handleDateTimeCalcNotCustom(time);
-    }
+    this.setState(
+      {
+        selectedPickupTime: time,
+        reqTimeTime: [],
+        reqTimeDate: [],
+        reqTimeInput: "",
+      },
+      () => {
+        if (time !== "Custom") {
+          this.handleDateTimeCalcNotCustom(time);
+        }
+      }
+    );
   };
 
   handleDateTimeCalcNotCustom = (time) => {
     let dateTime = Date.now();
     if (this.state.selectedPickupTime === "Right now") {
-      dateTime = dateTime + 60000;
-      console.log(dateTime);
+      this.setState({
+        reqTimeInput: dateTime + 60000,
+        validReqTime: true,
+      });
+      //console.log(dateTime);
     } else if (this.state.selectedPickupTime === "20 mins") {
-      dateTime = dateTime + 1200000;
-      console.log(dateTime);
+      this.setState({
+        reqTimeInput: dateTime + 1230000,
+        validReqTime: true,
+      });
+      // console.log(dateTime);
     } else if (this.state.selectedPickupTime === "1 hour") {
-      dateTime = dateTime + 3600000;
-      console.log(dateTime);
+      this.setState({
+        reqTimeInput: dateTime + 3630000,
+        validReqTime: true,
+      });
+      //console.log(dateTime);
+    } else {
+      console.log("No Not Custom Time");
     }
-    console.log("No Custom Time");
   };
 
   handleDateTimeCalc = () => {
@@ -165,7 +179,7 @@ class CreateRideModal extends React.Component {
       this.state.reqTimeTime.length === 2
     ) {
       dateArr = [...this.state.reqTimeDate, ...this.state.reqTimeTime];
-      console.log(dateArr);
+      //console.log(dateArr);
       const d = new Date(
         dateArr[0],
         dateArr[1],
@@ -173,17 +187,28 @@ class CreateRideModal extends React.Component {
         dateArr[3],
         dateArr[4]
       );
-      console.log(d);
-      console.log(d.getTime()); //.getTime() just w/o milliseconds
+      //  console.log(d);
+      // console.log(d.getTime()); //.getTime() just w/o milliseconds
       this.setState({
         reqTimeInput: d.getTime(),
+        validReqTime: true,
       });
     } else {
       console.log("No date avail..");
       this.setState({
         reqTimeInput: "",
+        validReqTime: false,
       });
     }
+  };
+
+  handlePaymentSchedule = (num) => {
+    this.setState(
+      {
+        paymentType: num,
+      },
+      () => console.log(this.state.paymentType)
+    );
   };
 
   handleNumOfRiders = (num) => {
@@ -218,14 +243,6 @@ class CreateRideModal extends React.Component {
       this.regionValidate(event.target.value);
     }
 
-    // if (event.target.id === "DGP-switch") {
-    //   event.stopPropagation();
-    //   this.handleDGP();
-    // }
-
-    //
-    //MUST HAVE A FORM RESET HERE
-
     if (event.target.id === "formPickupAddress") {
       event.preventDefault();
       event.stopPropagation();
@@ -237,11 +254,6 @@ class CreateRideModal extends React.Component {
       this.dropoffAddrValidate(event.target.value);
     }
 
-    // if (event.target.id === "formGroup") {
-    //   event.preventDefault();
-    //   event.stopPropagation();
-    //   this.groupValidate(event.target.value);
-    // }
     if (event.target.id === "formTimeEstimate") {
       event.preventDefault();
       event.stopPropagation();
@@ -251,6 +263,17 @@ class CreateRideModal extends React.Component {
       event.preventDefault();
       event.stopPropagation();
       this.distEstValidate(event.target.value);
+    }
+    //Payment Schedule
+    if (event.target.id === "formPaymentSchedule") {
+      event.stopPropagation();
+      this.handlePaymentSchedule(event.target.value);
+    }
+    //Ride Price
+    if (event.target.id === "formAmount") {
+      event.preventDefault();
+      event.stopPropagation();
+      this.amtValidate(event.target.value);
     }
     if (event.target.id === "formReqTime") {
       event.preventDefault();
@@ -267,19 +290,16 @@ class CreateRideModal extends React.Component {
       this.reqTimeDateParse(event.target.value);
     }
 
-    // if (event.target.id === "formItemPrice") {
-    //   this.priceValidate(event.target.value);
-    // }
-
     if (event.target.id === "formNumOfRiders") {
       event.stopPropagation();
       this.handleNumOfRiders(event.target.value);
     }
-    // if (event.target.id === "formDescription") {
-    //   event.preventDefault();
-    //   event.stopPropagation();
-    //   this.descriptionValidate(event.target.value);
-    // }
+
+    if (event.target.id === "formExtraInstr") {
+      event.preventDefault();
+      event.stopPropagation();
+      this.extraInstrValidate(event.target.value);
+    }
   };
 
   areaValidate = (area) => {
@@ -360,152 +380,23 @@ class CreateRideModal extends React.Component {
     }
   };
 
-  countryValidate = (country) => {
-    let regex = /^\S.{1,30}\S$/;
-    let valid = regex.test(country);
+  pickupAddrValidate = (pickupAddr) => {
+    // let regex = /^[\S\s]{0,150}$/;
+    // let valid = regex.test(pickupAddr);
 
-    if (valid) {
-      this.setState({
-        countryInput: country,
-        tooLongCountryError: false,
-        validCountry: true,
-      });
-    } else {
-      if (country.length > 32) {
-        this.setState({
-          countryInput: country,
-          tooLongCountryError: true,
-          validCountry: false,
-        });
-      } else {
-        this.setState({
-          countryInput: country,
-          validCountry: false,
-        });
-      }
-    }
-  };
+    let regex1 = /^.[\S\s]{0,149}$/;
 
-  //   priceValidate = (numberInput) => {
-  //     //console.log(this.props.accountBalance);
+    let valid1 = regex1.test(pickupAddr);
 
-  //     let regex = /(^[0-9]+[.,]{0,1}[0-9]{0,5}$)|(^[.,][0-9]{1,5}$)/;
-  //     //CHANGED TO LIMIT TO minimum mDash possible
-  //     //let regex = /(^[0-9]+[.,]{0,1}[0-9]*$)|(^[.,][0-9]+$)/;
+    let regex2 = /^(?:[^\r\n]*(?:\r\n?|\n)){0,2}[^\r\n]*$/;
 
-  //     let valid = regex.test(numberInput);
-
-  // //MAX SPENDABLE IS 1000 DASH
-  //     if (valid && numberInput > 0 && numberInput <= 1000) {
-  //       this.setState({
-  //         priceInput: numberInput,
-  //         validPrice: true,
-  //       });
-  //     } else {
-  //       this.setState({
-  //         priceInput: numberInput,
-  //         validPrice: false,
-  //       });
-  //     }
-  //   };
-
-  descriptionValidate = (description) => {
-    // let regex = /^.[\S\s]{0,350}$/;
-
-    // let valid = regex.test(description);
-
-    let regex1 = /^.[\S\s]{0,349}$/;
-
-    let valid1 = regex1.test(description);
-
-    let regex2 = /^(?:[^\r\n]*(?:\r\n?|\n)){0,4}[^\r\n]*$/;
-
-    let valid2 = regex2.test(description);
+    let valid2 = regex2.test(pickupAddr);
 
     let valid = false;
 
     if (valid1 && valid2) {
       valid = true;
     }
-
-    if (valid) {
-      this.setState({
-        descriptionInput: description,
-        validDescription: true,
-        tooLongDescriptionError: false,
-      });
-    } else {
-      if (description.length > 350 || !valid2) {
-        this.setState({
-          descriptionInput: description,
-          validDescription: false,
-          tooLongDescriptionError: true,
-        });
-      } else {
-        this.setState({
-          descriptionInput: description,
-          validDescription: false,
-        });
-      }
-    }
-  };
-
-  // linkValidate = (link) => {
-  //   let regex = /^[\S\s]{0,350}$/;
-
-  //   let valid = regex.test(link);
-
-  //   if (valid) {
-  //     this.setState({
-  //       linkInput: link,
-  //       validLink: true,
-  //       tooLongLinkError: false,
-  //     });
-  //   } else {
-  //     if (link.length > 350) {
-  //       this.setState({
-  //         linkInput: link,
-  //         validLink: false,
-  //         tooLongLinkError: true,
-  //       });
-  //     } else {
-  //       this.setState({
-  //         linkInput: link,
-  //         validLink: false,
-  //       });
-  //     }
-  //   }
-  // };
-
-  groupValidate = (group) => {
-    let regex = /^\S.{1,30}\S$/;
-    let valid = regex.test(group);
-
-    if (valid) {
-      this.setState({
-        groupInput: group,
-        tooLongGroupError: false,
-        validGroup: true,
-      });
-    } else {
-      if (group.length > 32) {
-        this.setState({
-          groupInput: group,
-          tooLongGroupError: true,
-          validGroup: false,
-        });
-      } else {
-        this.setState({
-          groupInput: group,
-          validGroup: false,
-        });
-      }
-    }
-  };
-
-  pickupAddrValidate = (pickupAddr) => {
-    let regex = /^[\S\s]{0,150}$/;
-    let valid = regex.test(pickupAddr);
 
     if (valid) {
       this.setState({
@@ -530,8 +421,22 @@ class CreateRideModal extends React.Component {
   };
 
   dropoffAddrValidate = (dropoffAddr) => {
-    let regex = /^[\S\s]{0,150}$/;
-    let valid = regex.test(dropoffAddr);
+    // let regex = /^[\S\s]{0,150}$/;
+    // let valid = regex.test(dropoffAddr);
+
+    let regex1 = /^.[\S\s]{0,149}$/;
+
+    let valid1 = regex1.test(dropoffAddr);
+
+    let regex2 = /^(?:[^\r\n]*(?:\r\n?|\n)){0,2}[^\r\n]*$/;
+
+    let valid2 = regex2.test(dropoffAddr);
+
+    let valid = false;
+
+    if (valid1 && valid2) {
+      valid = true;
+    }
 
     if (valid) {
       this.setState({
@@ -555,63 +460,64 @@ class CreateRideModal extends React.Component {
     }
   };
 
-  // formTimeEstimateValidate = (date) => {
-  //   let regex = /^[\S\s]{0,32}$/;
-  //   let valid = regex.test(date);
+  timeEstValidate = (time) => {
+    let regex = /(^[0-9]{1,4}$)/;
+    // timeEstInput: "",
+    // validtimeEst: false,
+    // tooLongtimeEstError: false,
 
-  //   if (valid) {
-  //     this.setState({
-  //       dateInput: date,
-  //       tooLongDateError: false,
-  //       validDate: true,
-  //     });
-  //   } else {
-  //     if (date.length > 32) {
-  //       this.setState({
-  //         dateInput: date,
-  //         tooLongDateError: true,
-  //         validDate: false,
-  //       });
-  //     } else {
-  //       this.setState({
-  //         dateInput: date,
-  //         validDate: false,
-  //       });
-  //     }
-  //   }
-  // };
+    let valid = regex.test(time);
 
-  // timeValidate = (time) => {
-  //   let regex = /^[\S\s]{0,32}$/;
-  //   let valid = regex.test(time);
+    if (valid && time > 0) {
+      this.setState({
+        timeEstInput: time,
+        validtimeEst: true,
+        tooLongtimeEstError: false,
+      });
+    } else if (time.length >= 5) {
+      this.setState({
+        timeEstInput: time,
+        validtimeEst: false,
+        tooLongtimeEstError: true,
+      });
+    } else {
+      this.setState({
+        timeEstInput: time,
+        validtimeEst: false,
+      });
+    }
+  }; //this is a number
 
-  //   if (valid) {
-  //     this.setState({
-  //       timeInput: time,
-  //       tooLongTimeError: false,
-  //       validTime: true,
-  //     });
-  //   } else {
-  //     if (time.length > 32) {
-  //       this.setState({
-  //         timeInput: time,
-  //         tooLongTimeError: true,
-  //         validTime: false,
-  //       });
-  //     } else {
-  //       this.setState({
-  //         timeInput: time,
-  //         validTime: false,
-  //       });
-  //     }
-  //   }
-  // };
+  distEstValidate = (distEst) => {
+    let regex = /^\S.{0,31}$/;
+    let valid = regex.test(distEst);
 
-  timeEstValidate = () => {}; //this is a number
-  distEstValidate = () => {}; // this is a string
+    if (valid) {
+      this.setState({
+        distEstInput: distEst,
+        tooLongdistEstError: false,
+        validdistEst: true,
+      });
+    } else {
+      if (distEst.length > 32) {
+        this.setState({
+          distEstInput: distEst,
+          tooLongdistEstError: true,
+          validdistEst: false,
+        });
+      } else {
+        this.setState({
+          distEstInput: distEst,
+          validdistEst: false,
+        });
+      }
+    }
+  };
+
+  //Payment Schedule is just dropdown
 
   //amtValidate - props.accountBalance checks for sufficient money
-  amtValidate = (amtInput) => {
+  amtValidate = (amount) => {
     //console.log(this.props.accountBalance);
 
     //let regex = /(^[0-9]+[.,]{0,1}[0-9]*$)|(^[.,][0-9]+$)/;
@@ -619,20 +525,31 @@ class CreateRideModal extends React.Component {
     let regex = /(^[0-9]+[.,]{0,1}[0-9]{0,5}$)|(^[.,][0-9]{1,5}$)/;
     //CHANGED TO LIMIT TO minimum mDash possible
 
-    let valid = regex.test(amtInput);
+    let valid = regex.test(amount);
 
-    let result = this.props.accountBalance - amtInput * 100000000;
+    // let result = this.props.accountBalance - amount * 100000000;
     //console.log(result);
+    let result = 1;
+    // amtInput: 0,
+    //   validAmt: false,
 
-    if (result >= 0 && valid && amtInput > 0) {
+    if (result >= 0 && valid && amount > 0) {
       this.setState({
-        amountToSend: amtInput,
-        amtQuantity: true,
+        amtInput: amount,
+        validAmt: true,
+        amtError: "",
+      });
+    } else if (result < 0) {
+      this.setState({
+        amtInput: amount,
+        validAmt: false,
+        amtError: "Insufficient Funds",
       });
     } else {
       this.setState({
-        amountToSend: amtInput,
-        amtQuantity: false,
+        amtInput: amount,
+        validAmt: false,
+        amtError: "",
       });
     }
   };
@@ -663,6 +580,47 @@ class CreateRideModal extends React.Component {
       () => this.handleDateTimeCalc()
     );
   };
+  //Num of Passengers is Dropdown
+  extraInstrValidate = (extraInstr) => {
+    // let regex = /^.[\S\s]{0,350}$/;
+
+    // let valid = regex.test(extraInstr);
+
+    let regex1 = /^.[\S\s]{0,349}$/;
+
+    let valid1 = regex1.test(extraInstr);
+
+    let regex2 = /^(?:[^\r\n]*(?:\r\n?|\n)){0,4}[^\r\n]*$/;
+
+    let valid2 = regex2.test(extraInstr);
+
+    let valid = false;
+
+    if (valid1 && valid2) {
+      valid = true;
+    }
+
+    if (valid) {
+      this.setState({
+        extraInstrInput: extraInstr,
+        validextraInstr: true,
+        tooLongextraInstrError: false,
+      });
+    } else {
+      if (extraInstr.length > 350 || !valid2) {
+        this.setState({
+          extraInstrInput: extraInstr,
+          validextraInstr: false,
+          tooLongextraInstrError: true,
+        });
+      } else {
+        this.setState({
+          extraInstrInput: extraInstr,
+          validextraInstr: false,
+        });
+      }
+    }
+  };
 
   handleSubmitClick = (event) => {
     event.preventDefault();
@@ -672,54 +630,37 @@ class CreateRideModal extends React.Component {
     let newRide;
 
     newRide = {
+      area: this.state.areaInput.toLocaleLowerCase(),
       city: this.state.cityInput.toLocaleLowerCase(),
       region: this.state.regionInput.toLocaleLowerCase(),
-      country: this.state.countryInput.toLocaleLowerCase(),
 
-      date: this.state.dateInput,
-      time: this.state.timeInput,
+      pickupAddr: this.state.pickupAddrInput,
+      dropoffAddr: this.state.dropoffAddrInput,
 
-      description: this.state.descriptionInput,
-      //category: this.state.selectedCategory,
+      timeEst: this.state.timeEstInput,
+      //  'timeEstUnit'
+      distEst: this.state.distEstInput,
+      // 'distEstUnit',
 
-      //price:  Number((this.state.priceInput * 100000000).toFixed(0)),
-      //active: this.state.postActive,
+      //pmtForm  QEdits, Duffs, both
 
-      //address: this.state.addressInput,
+      pmtType: Number(this.state.paymentType), //1 ,2, 3 //OnArrival OnDropoff 1/2&1/2 // 1,2,5050, 2080 OnConfirm??
 
-      /**
- 'area', //can just be ''
-        'city',
-        'region',
-        'reqTime', 
+      amt: Number((this.state.amtInput * 100000000).toFixed(0)),
 
-        'pickupAddr',
-        'dropoffAddr',
-        
-        //pmtForm: QEdits, Duffs, both
-        'pmtType', //OnArrival OnDropoff 1/2&1/2 // 1,2,5050, 2080 OnConfirm??
+      reqTime: this.state.reqTimeInput,
+      numOfRiders: Number(this.state.numOfRidersInput),
+      extraInstr: this.state.extraInstrInput,
 
-        'timeEst', // number input convert to number
-        'timeEstUnit', //just minutes for now
-
-
-        'distEst', //just do a string convert to number
-        'distEstUnit', //don't use for now don't need
-
-        'amt',
-        'extraInstr',
-        'numOfRiders',
-        'msgId',
-        //toId
-        'txId1',
-        //txId2
-        //txId3
-
- */
+      msgId: "",
+      // toId:''
+      txId1: "",
+      //txId2: '',// sort out in createRide Function ->
+      //txId3: '',// sort out in createRide Function ->
     };
 
-    //console.log(newRide);
-    //this.props.createYourRide(newRide);
+    console.log(newRide);
+    this.props.passToStateAndDisplay(newRide);
     this.props.hideModal();
   };
 
@@ -761,9 +702,10 @@ class CreateRideModal extends React.Component {
     //If you set time in the past this will trigger the error alert
 
     let priceUnit = "";
-    if (this.state.timeEstInput !== "" && this.state.amtInput !== 0) {
-      priceUnit = (this.state.amtInput / this.state.amtInput) * 30;
-      // Need the UnitConvert here.. ->
+    let priceUnitDisplay;
+    if (this.state.validtimeEst && this.state.validAmt) {
+      priceUnit = (this.state.amtInput / this.state.timeEstInput) * 30;
+      priceUnitDisplay = handleDenomDisplay((priceUnit * 100000000).toFixed(0));
       //per half hour.. //bc per minute is small and could be kD..
     }
 
@@ -801,7 +743,7 @@ class CreateRideModal extends React.Component {
                   </h5>
                   <Form.Control
                     type="text"
-                    placeholder="Optional"
+                    placeholder="(Optional)"
                     required
                     isInvalid={this.state.tooLongAreaError}
                     isValid={this.state.validArea}
@@ -868,8 +810,8 @@ class CreateRideModal extends React.Component {
                     rows={2}
                     placeholder="Enter address..."
                     required
-                    isInvalid={this.state.tooLongpickupAddressError}
-                    isValid={this.state.validpickupAddress}
+                    isInvalid={this.state.tooLongpickupAddrError}
+                    isValid={this.state.validpickupAddr}
                   />
                   <p></p>
                   <Form.Control.Feedback type="invalid">
@@ -888,8 +830,8 @@ class CreateRideModal extends React.Component {
                     rows={2}
                     placeholder="Enter address..."
                     required
-                    isInvalid={this.state.tooLongdropoffError}
-                    isValid={this.state.validdropoff}
+                    isInvalid={this.state.tooLongdropoffAddrError}
+                    isValid={this.state.validdropoffAddr}
                   />
                   <p></p>
                   <Form.Control.Feedback type="invalid">
@@ -906,7 +848,12 @@ class CreateRideModal extends React.Component {
 
                   <InputGroup className="mb-3">
                     <Form.Control
-                      type="text"
+                      type="number"
+                      // step="1"
+                      // precision="0"
+                      // min="1"
+                      // max="2000"
+                      // defaultValue="15"
                       placeholder="Enter a number (minutes)"
                       required
                       isInvalid={this.state.tooLongtimeEstError}
@@ -960,7 +907,7 @@ class CreateRideModal extends React.Component {
 
                 {/*  AMT FORM BELOW */}
 
-                <Form.Group className="mb-3" controlId="formexRate">
+                <Form.Group className="mb-3" controlId="formAmount">
                   <Form.Label>
                     <h4 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
                       Ride Price (in Dash)
@@ -972,12 +919,20 @@ class CreateRideModal extends React.Component {
                     placeholder="0.85 for example.."
                     required
                     isValid={this.state.validAmt}
-                    //isInvalid={!this.state.validexRate}
+                    //isInvalid={!this.state.validAmt}
                   />
                   {/* <p className="smallertext">
                     (i.e. Must include 2 decimal precision)
                   </p> */}
                 </Form.Group>
+
+                {priceUnit !== "" ? (
+                  <p>
+                    <b>{priceUnitDisplay} per 30 minutes</b>
+                  </p>
+                ) : (
+                  <></>
+                )}
 
                 <div
                   className="BottomBorder"
@@ -993,6 +948,17 @@ class CreateRideModal extends React.Component {
                 <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>
                   <b>Time of Pickup</b>
                 </h5>
+
+                {this.state.selectedPickupTime === "" ? (
+                  <>
+                    {" "}
+                    <p className="smallertext" style={{ color: "red" }}>
+                      Please select a time for pickup.
+                    </p>
+                  </>
+                ) : (
+                  <></>
+                )}
                 {/* Selected Time */}
                 {this.state.selectedPickupTime === "Right now" ? (
                   <Button
@@ -1157,6 +1123,17 @@ class CreateRideModal extends React.Component {
                 ) : (
                   <></>
                 )}
+
+                {this.state.validReqTime ? (
+                  <>
+                    {" "}
+                    <p className="smallertext" style={{ color: "green" }}>
+                      Time looks good.
+                    </p>
+                  </>
+                ) : (
+                  <></>
+                )}
                 {timeMinimum ? (
                   <>
                     {" "}
@@ -1187,11 +1164,15 @@ class CreateRideModal extends React.Component {
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">Other</option>
                   </Form.Select>
                 </Form.Group>
                 {/* EXTRA INFO FORM BELOW */}
 
-                <Form.Group className="mb-3" controlId="formDescription">
+                <Form.Group className="mb-3" controlId="formExtraInstr">
                   <Form.Label>
                     <h5 style={{ marginTop: ".5rem", marginBottom: ".2rem" }}>
                       Extra Instructions
@@ -1223,12 +1204,13 @@ class CreateRideModal extends React.Component {
                     {this.state.validArea &&
                     this.state.validCity &&
                     this.state.validRegion &&
-                    this.state.validDescription &&
-                    this.state.validLink &&
-                    this.state.validGroup &&
-                    this.state.validAddress &&
-                    this.state.validDate &&
-                    this.state.validTime ? (
+                    this.state.validpickupAddr &&
+                    this.state.validdropoffAddr &&
+                    this.state.validtimeEst &&
+                    this.state.validdistEst &&
+                    this.state.validAmt &&
+                    this.state.validReqTime &&
+                    this.state.validextraInstr ? (
                       <Button variant="primary" type="submit">
                         <b>Request Ride</b>
                       </Button>

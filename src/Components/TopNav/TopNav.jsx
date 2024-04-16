@@ -330,7 +330,7 @@ class TopNav extends React.Component {
                       </h5>
                     </Nav.Link>
                   )} */}
-                  {/* <NavSelects
+                  <NavSelects
                     selection="Rides"
                     selectedDapp={this.props.selectedDapp}
                     handleSelectedDapp={this.props.handleSelectedDapp}
@@ -339,7 +339,7 @@ class TopNav extends React.Component {
                     selection="Drivers"
                     selectedDapp={this.props.selectedDapp}
                     handleSelectedDapp={this.props.handleSelectedDapp}
-                  /> */}
+                  />
 
                   <p></p>
                   {isLoginComplete ? (

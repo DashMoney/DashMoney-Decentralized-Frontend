@@ -636,6 +636,9 @@ class App extends React.Component {
       nameToSearch_EXCHANGE: "",
       nameFormat_EXCHANGE: false,
 
+      SearchedNameDoc_EXCHANGE: [],
+      SearchedNameOffers_EXCHANGE: [],
+
       isTooLongNameError_EXCHANGE: false, //Pass to form and add ->
 
       SearchedOffers: [
@@ -731,8 +734,8 @@ class App extends React.Component {
       nameToSearch: "",
       nameFormat: false,
 
-      SearchedNameDoc_EXCHANGE: [],
-      SearchedNameOffers_EXCHANGE: [],
+      // SearchedNameDoc_EXCHANGE: [],  WRONG SPOT
+      // SearchedNameOffers_EXCHANGE: [],
 
       isTooLongNameError: false, //Pass to form and add ->
 
@@ -824,10 +827,83 @@ class App extends React.Component {
 
       //PROOFS PAGE STATE^^^^^^
 
+      //RIDES PAGE
+      // whichRidesTab: "Search", //Search and Your Rides
+
+      isLoadingRidesSearch: false,
+      isLoadingYourRides: false, //FOR BUILDING
+
+      YourRides1: false,
+      YourRides2: false,
+
+      YourRides: [
+        {
+          amt: 120000000,
+          area: "airport pickup area",
+          city: "paradise",
+          distEst: "7 km",
+          dropoffAddr: "100 Beach Circle",
+          extraInstr: "I'm going to the beach!",
+          msgId: "",
+          numOfRiders: 1,
+          pickupAddr: "7384 Airport Lane",
+          pmtType: 1,
+          region: "dashland",
+          reqTime: Date.now() - 1200000,
+          timeEst: "11",
+        },
+      ],
+      // YourRideNames: [],
+
+      YourRideReplies: [], //Both your replies and driver's replies
+      YourRideReplyNames: [], //Names of Drivers and your name
+
+      //DRIVER PAGE
+      //YourDrives
+      //YourDrivesNames
+
+      SearchedRides: [
+        {
+          //  $ownerId: "4h5j6j",
+          //  $id: "7ku98rj",
+          //  review: "Good service, would eat here again!",
+          //  rating: 5,
+          //  toId: "fjghtyru",
+          //  $createdAt: Date.now() - 1000000,
+        },
+      ],
+
+      SearchedRideNames: [
+        {
+          $ownerId: "4h5j6j",
+          label: "Alice",
+        },
+      ],
+
+      SearchedRideReplies: [
+        {
+          $ownerId: "JAdeE9whiXXdxzSrz7Rd1i8aHC3XFh5AvuV7cpxcYYmN",
+          // $id: "klsui4312",
+          // reply: "Thanks Alice",
+          // reviewId: "7ku98rj",
+          $createdAt: Date.now() - 300000,
+        },
+      ],
+
+      rideToEdit: [], //use a function to find and pass to modal ->
+      rideToEditIndex: "",
+
+      replyRide: [], //This is for the create reply reviewId
+      replyRideToEdit: [],
+      replyingRideToName: "",
+
+      //RIDES PAGE STATE^^^^^^
+
       selectedDapp: "Login",
 
       InitialPullReviews: true,
       InitialPullProofs: true,
+      InitialPullRides: true,
 
       presentModal: "",
       isModalShowing: false,
@@ -14737,6 +14813,25 @@ PROOF OF FUNDS FUNCTIONS^^^^
   //Rides and Drivers FUNCTIONS
   // USE the Nearby stuff.. and the Wallet P2P stuff..
 
+  // handleYourRide   from handleYourOffer
+  // handleDeleteYourRide
+
+  passToStateAndDisplay = (rideObj) => {
+    this.setState({
+      YourRides: [rideObj, ...this.state.YourRides],
+    });
+  };
+
+  /**
+RIDES AND DRIVERS FUNCTIONS^^^^
+   * 
+   *      ################              ###############
+   *      ###          ####             ###          ###
+   *      ################              ###          ###
+   *      ###          ####             ###          ###
+   *      ###           ####            ###############
+   */
+
   handleFrontendFee = () => {
     //This should be at the point of display
     // should verify and return unit for display or no fee
@@ -15600,13 +15695,21 @@ PROOF OF FUNDS FUNCTIONS^^^^
               )}
               {this.state.selectedDapp === "Rides" ? (
                 <>
-                  
                   <RidesPage
                     identityInfo={this.state.identityInfo}
+                    identity={this.state.identity}
                     uniqueName={this.state.uniqueName}
                     showModal={this.showModal}
                     mode={this.state.mode}
+                    YourRides={this.state.YourRides}
+                    // handleYourRide={this.handleYourRide}
+                    // handleDeleteYourRide={this.handleDeleteYourRide}
+
+                    isLoadingYourRides={this.state.isLoadingYourRides}
                   />
+                  <h1 style={{ paddingTop: "1rem", textAlign: "center" }}>
+                    Still Constructing
+                  </h1>
                   {/* <ProofsPage
                     isLoginComplete={isLoginComplete}
                     InitialPullProofs={this.state.InitialPullProofs}
@@ -15637,7 +15740,9 @@ PROOF OF FUNDS FUNCTIONS^^^^
               )}
               {this.state.selectedDapp === "Drivers" ? (
                 <>
-                  <h1 style={{paddingTop:'1rem',textAlign:'center'}}>Under Construction</h1>
+                  <h1 style={{ paddingTop: "1rem", textAlign: "center" }}>
+                    Under Construction
+                  </h1>
                 </>
               ) : (
                 <></>
@@ -16431,6 +16536,7 @@ PROOF OF FUNDS FUNCTIONS^^^^
         this.state.presentModal === "CreateRideModal" ? (
           <CreateRideModal
             isModalShowing={this.state.isModalShowing}
+            passToStateAndDisplay={this.passToStateAndDisplay}
             //createYourRide={this.createYourRide}
             hideModal={this.hideModal}
             mode={this.state.mode}

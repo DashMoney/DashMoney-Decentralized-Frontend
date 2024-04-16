@@ -3,27 +3,19 @@ import React from "react";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 
-import YourRide from "./YourRide";
+import Ride from "./Ride";
 
-class YourRides extends React.Component {
-  //Dont need a constructor because gets data from app.js this is just to display
-  /**
-   * 1) So the tabs and credits appear at the top
-   * 2) like DGP -> button that says add post
-   * 3)
-   */
-
+class Rides extends React.Component {
   render() {
-    let rides = this.props.YourRides.map((ride, index) => {
+    let rides = this.props.SearchedDrives.map((ride, index) => {
       //console.log(item);
       return (
-        <YourRide
+        <Ride
           key={index}
           mode={this.props.mode}
           index={index}
           ride={ride}
-          // handleYourPost={this.props.handleYourPost}
-          // handleYourEvent={this.props.handleYourEvent}
+          SearchedDrivesNames={this.props.SearchedDrivesNames}
         />
       );
     });
@@ -31,7 +23,7 @@ class YourRides extends React.Component {
     return (
       <>
         <p></p>
-        {this.props.isLoadingYourRides ? (
+        {this.props.isLoadingDriversSearch ? (
           <>
             <div id="spinner">
               <Spinner animation="border" role="status">
@@ -51,10 +43,10 @@ class YourRides extends React.Component {
             </div> */}
             <p></p>
 
-            {this.props.YourRides.length === 0 ? (
+            {this.props.SearchedDrives.length === 0 ? (
               <>
                 <p style={{ textAlign: "center" }}>
-                  (This is where your rides will appear)
+                  (This is where available rides will appear)
                 </p>
               </>
             ) : (
@@ -67,4 +59,4 @@ class YourRides extends React.Component {
   }
 }
 
-export default YourRides;
+export default Rides;

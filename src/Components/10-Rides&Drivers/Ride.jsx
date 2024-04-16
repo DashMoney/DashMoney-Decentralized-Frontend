@@ -7,7 +7,7 @@ import Card from "react-bootstrap/Card";
 import handleDenomDisplay from "../UnitDisplay";
 import getRelativeTimeAgo from "../TimeDisplayRelative";
 
-class YourRide extends React.Component {
+class Ride extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,126 +16,116 @@ class YourRide extends React.Component {
       copiedDropoffAddr: false,
     };
   }
-  // handleActive = () => {
-  //   if (this.props.ride.reqTime + 200000 > (Date.now())) {
-  //     return (
-  //       <span style={{ color: "#008de4" }}>
-  //         <b>Active</b>
-  //       </span>
-  //     );
-  //   } else {
-  //     return (
-  //       <span style={{ color: "#008de4" }}>
-  //         <b>Past</b>
-  //       </span>
-  //     );
-  //   }
-  // };
 
-  handlePickupTime = () => {};
-
-  verifyRequestStatus = (paidThrs) => {
-    if (
-      //this.props.ride.msgId !== this.props.identity ||
-      this.props.ride.msgId !== "" &&
-      paidThrs.length === 0
-    ) {
-      //console.log("Acceptance Rejected");
-      //THIS NEEDS TO BE A BUTTON -> AND NEEDS A MODAL
-      return <Badge bg="warning">Acceptance Rejected</Badge>;
-    }
-
-    if (paidThrs.length === 0) {
-      //console.log("Requested");
-      return <Badge bg="success">Requested</Badge>;
-    }
-    //what if confirmed and no paid Threads -> acceptance dropped -> reject and reset ->
-
-    if (
-      this.props.ride.msgId !== "" //this.props.identity
-    ) {
-      //console.log("Confirmed");
-      return <Badge bg="success">Confirmed</Badge>;
-    }
-
-    // if (theOrder.txId1 === "") {
-    //   //console.log("Not Paid");
-    //   return <Badge bg="warning">Pay Later</Badge>;
-    // }
-
-    // 2)Check for duplicated do a count on the order.txIds for all the orders
-
-    // paidThrs ={paidThrs_BYYOU}
-    // replyThrs ={replyThrs_BYYOU}
-
-    // let numOfPaidThrWithTxId = this.props.paidThrs.filter((thr) => {
-    //   return thr.txId === paidThrs[0].txId; //because only paidThrs of length 1 should reach this point
-    // });
-
-    // if (numOfPaidThrWithTxId.length !== 1) {
-    //   console.log("Failed on Error 1");
-    //   return <Badge bg="danger">Fail</Badge>;
-    // }
-
-    //3) Make sure there is a wallet TX that matches  txId
-
-    //accountHistory={this.props.accountHistory}
-
-    // let walletTx = this.props.accountHistory.find((tx) => {
-    //   // console.log("Wallet TX: ", tx);
-    //   return tx.txId === paidThrs[0].txId;
-    // });
-    // if (walletTx === undefined) {
-    //   //This may be the issue that cause early fail ->
-    //   // Can I check instasend?
-    //   console.log("Failed on Error 2");
-    //   return <Badge bg="danger">Fail</Badge>;
-    // }
-    //ADDED TO CHECK BC TIME DEFAULTS TO FUTURE IF NO INSTALOCK 9999999999000
-    //CURRENTLY THE INSTASEND LOCK IS NOT WORKING ON TESTNET
-    // if(!walletTx.isInstantLocked  ){
-    //   return <Badge bg="warning">Verifying..</Badge>;
-    // }
-    //
-
-    // 4) check that the order createAT and tx time are within a few minutes
-
-    // let walletTxTime = new Date(walletTx.time);
-    // //console.log('Wallet TX Time valueOf: ', walletTxTime.valueOf());
-
-    // if (walletTxTime.valueOf() - theOrder.$updatedAt > 350000) {
-    //   //***This is added due to testnet lack of instasend lock */
-    //   if (walletTxTime.valueOf() > theOrder.$updatedAt) {
-    //     return <Badge bg="primary">Paid</Badge>;
-    //   }
-
-    //   //console.log(walletTxTime.valueOf() - theOrder.$createdAt)
-    //   console.log("Failed on Error 3"); //!!!!!!!!!!!!
-    //   console.log(this.props.accountHistory);
-    //   console.log(walletTxTime.valueOf());
-    //   return <Badge bg="danger">Fail</Badge>;
-    // }
-
-    //5) make sure the tx amt === request amt
-
-    // if (this.props.tuple[1].$ownerId === this.props.identity) {
-    //   if (this.props.tuple[1].amt === walletTx.satoshisBalanceImpact) {
-    //     return <Badge bg="primary">Paid</Badge>;
-    //   }
-    // }
-    // if (this.props.tuple[1].$ownerId !== this.props.identity) {
-    //   if (this.props.tuple[1].amt === -walletTx.satoshisBalanceImpact) {
-    //     return <Badge bg="primary">Paid</Badge>;
-    //   }
-    // }
-
-    // if (this.props.tuple[1].amt === walletTx.satoshisBalanceImpact) {
-    //   return <Badge bg="primary">Paid</Badge>;
-    // } else {
-    // console.log("Failed on Error 4");
-    // return <Badge bg="danger">Fail</Badge>;
-    // // }
+  handleNameClick = (nameLabel) => {
+    navigator.clipboard.writeText(nameLabel);
+    this.setState({
+      copiedName: true,
+    });
   };
+
+  // verifyRequestStatus = (paidThrs) => {
+  //   if (
+  //     //this.props.ride.msgId !== this.props.identity ||
+  //     this.props.ride.msgId !== "" &&
+  //     paidThrs.length === 0
+  //   ) {
+  //     //console.log("Acceptance Rejected");
+  //     //THIS NEEDS TO BE A BUTTON -> AND NEEDS A MODAL
+  //     return <Badge bg="warning">Acceptance Rejected</Badge>;
+  //   }
+
+  //   if (paidThrs.length === 0) {
+  //     //console.log("Requested");
+  //     return <Badge bg="success">Requested</Badge>;
+  //   }
+  //   //what if confirmed and no paid Threads -> acceptance dropped -> reject and reset ->
+
+  //   if (
+  //     this.props.ride.msgId !== "" //this.props.identity
+  //   ) {
+  //     //console.log("Confirmed");
+  //     return <Badge bg="success">Confirmed</Badge>;
+  //   }
+
+  //   // if (theOrder.txId1 === "") {
+  //   //   //console.log("Not Paid");
+  //   //   return <Badge bg="warning">Pay Later</Badge>;
+  //   // }
+
+  //   // 2)Check for duplicated do a count on the order.txIds for all the orders
+
+  //   // paidThrs ={paidThrs_BYYOU}
+  //   // replyThrs ={replyThrs_BYYOU}
+
+  //   // let numOfPaidThrWithTxId = this.props.paidThrs.filter((thr) => {
+  //   //   return thr.txId === paidThrs[0].txId; //because only paidThrs of length 1 should reach this point
+  //   // });
+
+  //   // if (numOfPaidThrWithTxId.length !== 1) {
+  //   //   console.log("Failed on Error 1");
+  //   //   return <Badge bg="danger">Fail</Badge>;
+  //   // }
+
+  //   //3) Make sure there is a wallet TX that matches  txId
+
+  //   //accountHistory={this.props.accountHistory}
+
+  //   // let walletTx = this.props.accountHistory.find((tx) => {
+  //   //   // console.log("Wallet TX: ", tx);
+  //   //   return tx.txId === paidThrs[0].txId;
+  //   // });
+  //   // if (walletTx === undefined) {
+  //   //   //This may be the issue that cause early fail ->
+  //   //   // Can I check instasend?
+  //   //   console.log("Failed on Error 2");
+  //   //   return <Badge bg="danger">Fail</Badge>;
+  //   // }
+  //   //ADDED TO CHECK BC TIME DEFAULTS TO FUTURE IF NO INSTALOCK 9999999999000
+  //   //CURRENTLY THE INSTASEND LOCK IS NOT WORKING ON TESTNET
+  //   // if(!walletTx.isInstantLocked  ){
+  //   //   return <Badge bg="warning">Verifying..</Badge>;
+  //   // }
+  //   //
+
+  //   // 4) check that the order createAT and tx time are within a few minutes
+
+  //   // let walletTxTime = new Date(walletTx.time);
+  //   // //console.log('Wallet TX Time valueOf: ', walletTxTime.valueOf());
+
+  //   // if (walletTxTime.valueOf() - theOrder.$updatedAt > 350000) {
+  //   //   //***This is added due to testnet lack of instasend lock */
+  //   //   if (walletTxTime.valueOf() > theOrder.$updatedAt) {
+  //   //     return <Badge bg="primary">Paid</Badge>;
+  //   //   }
+
+  //   //   //console.log(walletTxTime.valueOf() - theOrder.$createdAt)
+  //   //   console.log("Failed on Error 3"); //!!!!!!!!!!!!
+  //   //   console.log(this.props.accountHistory);
+  //   //   console.log(walletTxTime.valueOf());
+  //   //   return <Badge bg="danger">Fail</Badge>;
+  //   // }
+
+  //   //5) make sure the tx amt === request amt
+
+  //   // if (this.props.tuple[1].$ownerId === this.props.identity) {
+  //   //   if (this.props.tuple[1].amt === walletTx.satoshisBalanceImpact) {
+  //   //     return <Badge bg="primary">Paid</Badge>;
+  //   //   }
+  //   // }
+  //   // if (this.props.tuple[1].$ownerId !== this.props.identity) {
+  //   //   if (this.props.tuple[1].amt === -walletTx.satoshisBalanceImpact) {
+  //   //     return <Badge bg="primary">Paid</Badge>;
+  //   //   }
+  //   // }
+
+  //   // if (this.props.tuple[1].amt === walletTx.satoshisBalanceImpact) {
+  //   //   return <Badge bg="primary">Paid</Badge>;
+  //   // } else {
+  //   // console.log("Failed on Error 4");
+  //   // return <Badge bg="danger">Fail</Badge>;
+  //   // // }
+  // };
 
   render() {
     let cardBkg;
@@ -147,6 +137,20 @@ class YourRide extends React.Component {
     } else {
       cardBkg = "dark";
       cardText = "white";
+    }
+
+    let nameDocToPass = ""; //this is the nameDoc and not the label
+
+    if (this.props.ride.$ownerId === this.props.identity) {
+      let myNameDoc = {
+        $ownerId: this.props.identity,
+        label: this.props.uniqueName,
+      };
+      nameDocToPass = myNameDoc;
+    } else {
+      nameDocToPass = this.props.SearchedDrivesNames.find((doc) => {
+        return this.props.ride.$ownerId === doc.$ownerId;
+      });
     }
 
     let priceUnit = "";
@@ -212,10 +216,20 @@ Paid -> Check TX first
             </div>
 
             <Card.Title className="cardTitle">
-              {/* User Name - no bc its my name */}
-              {/* Status -> Waiting Accept, */}
-              {/* {this.handleActive()} */}
-              {/* calculate time left */}
+              {/* {this.handleName(this.props.post)} */}
+
+              <span
+                style={{ color: "#008de3" }}
+                onClick={() => this.handleNameClick(nameDocToPass.label)}
+              >
+                {nameDocToPass.label}
+              </span>
+
+              <span>{this.state.copiedName ? <span>✅</span> : <></>}</span>
+
+              {/* <span className="textsmaller">
+                {this.formatDate(this.props.post.$createdAt)}
+              </span> */}
             </Card.Title>
 
             <p></p>
@@ -325,16 +339,16 @@ Paid -> Check TX first
                 //   this.props.handleDeleteYourRide(this.props.index)
                 // }
               >
-                <b>Delete Ride</b>
+                <b>Reply</b>
               </Button>
               <Button
                 variant="primary"
                 // onClick={() => this.props.handleYourRide(this.props.index)}
               >
-                <b>Edit Ride</b>
+                <b>Accept</b>
               </Button>
             </div>
-            <div className="BottomBorder" style={{ paddingTop: ".5rem" }}></div>
+            {/* <div className="BottomBorder" style={{ paddingTop: ".5rem" }}></div>
             <div
               className="cardTitle"
               style={{ marginTop: ".4rem", marginBottom: ".5rem" }}
@@ -352,7 +366,7 @@ Paid -> Check TX first
             </div>
             <p style={{ textAlign: "center", paddingTop: ".5rem" }}>
               (Currently, there are no responses to this ride request.
-            </p>
+            </p> */}
           </Card.Body>
         </Card>
       </>
@@ -360,4 +374,4 @@ Paid -> Check TX first
   }
 }
 
-export default YourRide;
+export default Ride;

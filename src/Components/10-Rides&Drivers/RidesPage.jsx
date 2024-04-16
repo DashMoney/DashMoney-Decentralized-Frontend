@@ -16,11 +16,11 @@ class RidesPage extends React.Component {
     return (
       <>
         <div className="bodytext">
-          <CreditsOnPage
+          {/* <CreditsOnPage
             identityInfo={this.props.identityInfo}
             uniqueName={this.props.uniqueName}
             showModal={this.props.showModal}
-          />
+          /> */}
           <p></p>
           <div className="d-grid gap-2">
             <Button

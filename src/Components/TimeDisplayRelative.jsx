@@ -11,7 +11,7 @@ export default function getRelativeTimeAgo(messageTime, timeNow) {
   //So I want Time of message
 
   let timeDifference = messageTime - timeNow;
-  console.log(timeDifference);
+  //console.log(timeDifference);
   /*
   Calculate milliseconds in a year
   const minute = 1000 * 60;

@@ -40,6 +40,8 @@ import ProofsPage from "./Components/8-ProofOfFunds/ProofsPage";
 
 import RidesPage from "./Components/10-Rides&Drivers/RidesPage";
 
+import DriversPage from "./Components/10-Rides&Drivers/DriversPage";
+
 //const ProofsPage = React.lazy(() =>
 // import("./Components/8-ProofOfFunds/ProofsPage")
 //);
@@ -858,10 +860,6 @@ class App extends React.Component {
       YourRideReplies: [], //Both your replies and driver's replies
       YourRideReplyNames: [], //Names of Drivers and your name
 
-      //DRIVER PAGE
-      //YourDrives
-      //YourDrivesNames
-
       SearchedRides: [
         {
           //  $ownerId: "4h5j6j",
@@ -898,6 +896,74 @@ class App extends React.Component {
       replyingRideToName: "",
 
       //RIDES PAGE STATE^^^^^^
+
+      //DRIVERS PAGE
+
+      OnPageLoadDRIVERS: true,
+      InitialPullDrivers: true,
+
+      whichDriversTab: "Search",
+
+      isLoadingDriversInitial: true,
+      isLoadingDriversSearch: false,
+      isLoadingDriversForm: false,
+
+      isLoadingYourDrives: true,
+
+      //##### LOCATION FORM STATE ######
+
+      cityInput_DRIVERS: "",
+      validCity_DRIVERS: true,
+      tooLongCityNameError_DRIVERS: false,
+
+      regionInput_DRIVERS: "",
+      validRegion_DRIVERS: true,
+      tooLongRegionNameError_DRIVERS: false,
+      //^^^^^ LOCATION FORM STATE ^^^^^
+
+      citySubmitted_DRIVERS: "",
+      regionSubmitted_DRIVERS: "",
+
+      //DRIVER PAGE
+      //YourDrives
+      //YourDrivesNames
+
+      SearchedDrives: [
+        {
+          $ownerId: "4h5j6j",
+          amt: 120000000,
+          area: "airport pickup area",
+          city: "paradise",
+          distEst: "7 km",
+          dropoffAddr: "100 Beach Circle",
+          extraInstr: "I'm going to the beach!",
+          msgId: "",
+          numOfRiders: 1,
+          pickupAddr: "7384 Airport Lane",
+          pmtType: 1,
+          region: "dashland",
+          reqTime: Date.now() + 10000000, //+ 200000
+          timeEst: "11",
+        },
+      ],
+      SearchedDrivesNames: [
+        {
+          $ownerId: "4h5j6j",
+          label: "Alice",
+        },
+      ],
+
+      //^^^^^ Search DRIVES ^^^^^
+
+      selectedSearchedDrive: "",
+      selectedSearchedDriveNameDoc: "",
+
+      yourDrivesToDisplay: [],
+
+      selectedYourDrive: "",
+      selectedYourDriveIndex: "",
+
+      //DRIVERS PAGE STATE^^^^^^
 
       selectedDapp: "Login",
 
@@ -14822,6 +14888,108 @@ PROOF OF FUNDS FUNCTIONS^^^^
     });
   };
 
+  //DRIVERS BELOW
+
+  handleDriversTab = (eventKey) => {
+    if (eventKey === "Search")
+      this.setState({
+        whichNearbyTab: "Search",
+      });
+    else {
+      this.setState({
+        whichNearbyTab: "Your Posts",
+      });
+    }
+  };
+
+  pullInitialTriggerDRIVERS = () => {
+    //this.getYourPosts(this.state.identity);
+
+    this.setState({
+      InitialPullDrivers: false,
+    });
+  };
+
+  pullOnPageLoadTriggerDRIVERS = () => {
+    if (this.state.OnPageLoadDRIVERS) {
+      this.getInitialDrives();
+      this.setState({
+        OnPageLoadDRIVERS: false,
+      });
+    }
+  };
+
+  // FORM FUNCTIONS
+
+  handleDriversOnChangeValidation = (event) => {
+    this.setState({
+      nameAvail: false,
+      identityIdReceipient: "", //Test if this clears the error msg after failed send ->
+      dgmDocumentsForReceipient: [],
+      isError: false,
+    });
+
+    if (event.target.id === "formCityName") {
+      this.cityNameValidate_DRIVERS(event.target.value);
+    }
+
+    if (event.target.id === "formRegionName") {
+      this.regionNameValidate_DRIVERS(event.target.value);
+    }
+  };
+
+  cityNameValidate_DRIVERS = (cityName) => {
+    let regex = /^.{0,32}$/;
+    let valid = regex.test(cityName);
+
+    if (valid) {
+      this.setState({
+        cityInput: cityName,
+        tooLongCityNameError: false,
+        validCity: true,
+      });
+    } else {
+      if (cityName.length > 32) {
+        this.setState({
+          cityInput: cityName,
+          tooLongCityNameError: true,
+          validCity: false,
+        });
+      } else {
+        this.setState({
+          cityInput: cityName,
+          validCity: false,
+        });
+      }
+    }
+  };
+
+  regionNameValidate_DRIVERS = (regionName) => {
+    let regex = /^.{0,32}$/;
+    let valid = regex.test(regionName);
+
+    if (valid) {
+      this.setState({
+        regionInput: regionName,
+        tooLongRegionNameError: false,
+        validRegion: true,
+      });
+    } else {
+      if (regionName.length > 32) {
+        this.setState({
+          regionInput: regionName,
+          tooLongRegionNameError: true,
+          validRegion: false,
+        });
+      } else {
+        this.setState({
+          regionInput: regionName,
+          validRegion: false,
+        });
+      }
+    }
+  };
+
   /**
 RIDES AND DRIVERS FUNCTIONS^^^^
    * 
@@ -15695,9 +15863,9 @@ RIDES AND DRIVERS FUNCTIONS^^^^
               )}
               {this.state.selectedDapp === "Rides" ? (
                 <>
-                  {/* <h1 style={{ paddingTop: "1rem", textAlign: "center" }}>
+                  <h1 style={{ paddingTop: "1rem", textAlign: "center" }}>
                     Still Constructing
-                  </h1> */}
+                  </h1>
                   <RidesPage
                     identityInfo={this.state.identityInfo}
                     identity={this.state.identity}
@@ -15710,31 +15878,6 @@ RIDES AND DRIVERS FUNCTIONS^^^^
 
                     isLoadingYourRides={this.state.isLoadingYourRides}
                   />
-
-                  {/* <ProofsPage
-                    isLoginComplete={isLoginComplete}
-                    InitialPullProofs={this.state.InitialPullProofs}
-                    pullInitialTriggerPROOFS={this.pullInitialTriggerPROOFS}
-                    identityInfo={this.state.identityInfo}
-                    uniqueName={this.state.uniqueName}
-                    showModal={this.showModal}
-                    mode={this.state.mode}
-                    identity={this.state.identity}
-                    isLoadingSearch_POD={this.state.isLoadingSearch_POD}
-                    isLoadingYourProofs={this.state.isLoadingYourProofs}
-                    whichTab_POD={this.state.whichTab_POD}
-                    handleTab_POD={this.handleTab_POD}
-                    nameToSearch_POD={this.state.nameToSearch_POD}
-                    nameFormat_POD={this.state.nameFormat_POD}
-                    SearchedNameDoc_POD={this.state.SearchedNameDoc_POD}
-                    searchName_POD={this.searchName_POD}
-                    handleOnChangeValidation_POD={
-                      this.handleOnChangeValidation_POD
-                    }
-                    SearchedProofs={this.state.SearchedProofs}
-                    YourProofs={this.state.YourProofs}
-                    handleDeleteYourProof={this.handleDeleteYourProof}
-                  /> */}
                 </>
               ) : (
                 <></>
@@ -15742,8 +15885,33 @@ RIDES AND DRIVERS FUNCTIONS^^^^
               {this.state.selectedDapp === "Drivers" ? (
                 <>
                   <h1 style={{ paddingTop: "1rem", textAlign: "center" }}>
-                    Under Construction
+                    Still Constructing
                   </h1>
+                  <DriversPage
+                    isLoginComplete={isLoginComplete}
+                    InitialPullDrivers={this.state.InitialPullDrivers}
+                    pullInitialTriggerDRIVERS={this.pullInitialTriggerDRIVERS}
+                    identityInfo={this.state.identityInfo}
+                    uniqueName={this.state.uniqueName}
+                    showModal={this.showModal}
+                    mode={this.state.mode}
+                    identity={this.state.identity}
+                    isLoadingDriversSearch={this.state.isLoadingDriversSearch}
+                    isLoadingYourDrives={this.state.isLoadingYourDrives}
+                    whichDriversTab={this.state.whichDriversTab}
+                    handleDriversTab={this.handleDriversTab}
+                    //  nameToSearch_POD={this.state.nameToSearch_POD}
+                    //  nameFormat_POD={this.state.nameFormat_POD}
+                    // SearchedNameDoc_DRIVERS={this.state.SearchedNameDoc_DRIVERS}
+                    searchName_DRIVERS={this.searchName_DRIVERS}
+                    handleOnChangeValidation={
+                      this.handleDriversOnChangeValidation
+                    }
+                    SearchedDrives={this.state.SearchedDrives}
+                    SearchedDrivesNames={this.state.SearchedDrivesNames}
+                    //YourDrives={this.state.YourDrives}
+                    //handleDeleteYourDrive={this.handleDeleteYourDrive}
+                  />
                 </>
               ) : (
                 <></>

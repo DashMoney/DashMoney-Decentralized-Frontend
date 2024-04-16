@@ -15695,6 +15695,9 @@ RIDES AND DRIVERS FUNCTIONS^^^^
               )}
               {this.state.selectedDapp === "Rides" ? (
                 <>
+                  <h1 style={{ paddingTop: "1rem", textAlign: "center" }}>
+                    Still Constructing
+                  </h1>
                   <RidesPage
                     identityInfo={this.state.identityInfo}
                     identity={this.state.identity}
@@ -15707,9 +15710,7 @@ RIDES AND DRIVERS FUNCTIONS^^^^
 
                     isLoadingYourRides={this.state.isLoadingYourRides}
                   />
-                  <h1 style={{ paddingTop: "1rem", textAlign: "center" }}>
-                    Still Constructing
-                  </h1>
+
                   {/* <ProofsPage
                     isLoginComplete={isLoginComplete}
                     InitialPullProofs={this.state.InitialPullProofs}

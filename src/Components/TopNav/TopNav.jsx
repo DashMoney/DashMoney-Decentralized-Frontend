@@ -290,19 +290,6 @@ class TopNav extends React.Component {
                     handleSelectedDapp={this.props.handleSelectedDapp}
                   />
                   <p></p>
-
-                  <NavSelects
-                    selection="Reviews"
-                    selectedDapp={this.props.selectedDapp}
-                    handleSelectedDapp={this.props.handleSelectedDapp}
-                  />
-
-                  <NavSelects
-                    selection="Proof of Funds"
-                    selectedDapp={this.props.selectedDapp}
-                    handleSelectedDapp={this.props.handleSelectedDapp}
-                  />
-                  <p></p>
                   {/* {isLoginComplete ? (
                     <NavSelects
                       selection="Rides"
@@ -342,6 +329,20 @@ class TopNav extends React.Component {
                   />
 
                   <p></p>
+
+                  <NavSelects
+                    selection="Reviews"
+                    selectedDapp={this.props.selectedDapp}
+                    handleSelectedDapp={this.props.handleSelectedDapp}
+                  />
+
+                  <NavSelects
+                    selection="Proof of Funds"
+                    selectedDapp={this.props.selectedDapp}
+                    handleSelectedDapp={this.props.handleSelectedDapp}
+                  />
+                  <p></p>
+
                   {isLoginComplete ? (
                     <div
                       className="d-grid gap-2"

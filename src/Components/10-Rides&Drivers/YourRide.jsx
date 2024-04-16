@@ -5,6 +5,7 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 
 import handleDenomDisplay from "../UnitDisplay";
+import getRelativeTimeAgo from "../TimeDisplayRelative";
 
 class YourRide extends React.Component {
   constructor(props) {
@@ -30,6 +31,117 @@ class YourRide extends React.Component {
   //     );
   //   }
   // };
+
+  handlePickupTime = () => {};
+
+  verifyRequestStatus = (paidThrs) => {
+    // if (theOrder.txId1 === "") {
+    //   //console.log("Not Paid");
+    //   return <Badge bg="warning">Pay Later</Badge>;
+    // }
+
+    // if (theOrder.msgId === this.props.identity) {
+    //   //console.log("Confirmed");
+    //   return <Badge bg="warning">Pay Later</Badge>;
+    // }
+
+    if (paidThrs.length === 0) {
+      //console.log("PayLater");
+      return <Badge bg="success">Requested</Badge>;
+    }
+
+    //This can be 'Requested'(unpaid), 'Rejected', 'Paid' , 'Error'
+
+    if (paidThrs > 1) {
+      return <Badge bg="warning">Error</Badge>;
+    }
+
+    if (paidThrs[0].txId === "rej") {
+      return <Badge bg="secondary">Rejected</Badge>;
+    }
+
+    // if (paidThrs[0].txId !== "") {
+    //   //CALL Verify Function -> if fails return Fail, or Paid if paid ->
+    // }
+    //
+    //8) DID i handle the Self Pay or Self Order?? -> if toId and OwnerId of order match
+    // if (theOrder.toId === theOrder.$ownerId) {
+    //   return <Badge bg="warning">Self Order</Badge>;
+    // }
+
+    // 2)Check for duplicated do a count on the order.txIds for all the orders
+
+    // paidThrs ={paidThrs_BYYOU}
+    // replyThrs ={replyThrs_BYYOU}
+
+    let numOfPaidThrWithTxId = this.props.paidThrs.filter((thr) => {
+      return thr.txId === paidThrs[0].txId; //because only paidThrs of length 1 should reach this point
+    });
+
+    if (numOfPaidThrWithTxId.length !== 1) {
+      console.log("Failed on Error 1");
+      return <Badge bg="danger">Fail</Badge>;
+    }
+
+    //3) Make sure there is a wallet TX that matches  txId
+
+    //accountHistory={this.props.accountHistory}
+
+    let walletTx = this.props.accountHistory.find((tx) => {
+      // console.log("Wallet TX: ", tx);
+      return tx.txId === paidThrs[0].txId;
+    });
+    if (walletTx === undefined) {
+      //This may be the issue that cause early fail ->
+      // Can I check instasend?
+      console.log("Failed on Error 2");
+      return <Badge bg="danger">Fail</Badge>;
+    }
+    //ADDED TO CHECK BC TIME DEFAULTS TO FUTURE IF NO INSTALOCK 9999999999000
+    //CURRENTLY THE INSTASEND LOCK IS NOT WORKING ON TESTNET
+    // if(!walletTx.isInstantLocked  ){
+    //   return <Badge bg="warning">Verifying..</Badge>;
+    // }
+    //
+
+    // 4) check that the order createAT and tx time are within a few minutes
+
+    // let walletTxTime = new Date(walletTx.time);
+    // //console.log('Wallet TX Time valueOf: ', walletTxTime.valueOf());
+
+    // if (walletTxTime.valueOf() - theOrder.$updatedAt > 350000) {
+    //   //***This is added due to testnet lack of instasend lock */
+    //   if (walletTxTime.valueOf() > theOrder.$updatedAt) {
+    //     return <Badge bg="primary">Paid</Badge>;
+    //   }
+
+    //   //console.log(walletTxTime.valueOf() - theOrder.$createdAt)
+    //   console.log("Failed on Error 3"); //!!!!!!!!!!!!
+    //   console.log(this.props.accountHistory);
+    //   console.log(walletTxTime.valueOf());
+    //   return <Badge bg="danger">Fail</Badge>;
+    // }
+
+    //5) make sure the tx amt === request amt
+
+    if (this.props.tuple[1].$ownerId === this.props.identity) {
+      if (this.props.tuple[1].amt === walletTx.satoshisBalanceImpact) {
+        return <Badge bg="primary">Paid</Badge>;
+      }
+    }
+    if (this.props.tuple[1].$ownerId !== this.props.identity) {
+      if (this.props.tuple[1].amt === -walletTx.satoshisBalanceImpact) {
+        return <Badge bg="primary">Paid</Badge>;
+      }
+    }
+
+    // if (this.props.tuple[1].amt === walletTx.satoshisBalanceImpact) {
+    //   return <Badge bg="primary">Paid</Badge>;
+    // } else {
+    console.log("Failed on Error 4");
+    return <Badge bg="danger">Fail</Badge>;
+    // }
+  };
 
   render() {
     let cardBkg;
@@ -72,6 +184,11 @@ class YourRide extends React.Component {
 // reqTime: 1713220087357 -> Tab label  // msgId: "" // txId1: ""
 
 
+How to do status -> In Quene, Otherwise
+no confirm past time -> Past Time check (reqTime + 20) vs Date.Now 
+confirm -> Pay on Arrival -> MSGID points to self OwnerId 
+Paid -> Check TX first
+
 
  */
     }
@@ -107,9 +224,11 @@ class YourRide extends React.Component {
             <p></p>
 
             <div className="cardTitle">
-              <span style={{ whiteSpace: "pre-wrap" }}>
-                {this.props.ride.pickupAddr}
-              </span>
+              <div>
+                <span style={{ whiteSpace: "pre-wrap" }}>
+                  {this.props.ride.pickupAddr}
+                </span>
+              </div>
 
               <Button
                 variant="outline-primary"
@@ -154,14 +273,24 @@ class YourRide extends React.Component {
             <div
               className="BottomBorder" //style={{ paddingTop: ".5rem" }}
             ></div>
+            <p
+              style={{
+                marginTop: "1rem", //, textAlign: "right"
+              }}
+            >
+              Pickup Time:{" "}
+              <b style={{ color: "#008de4" }}>
+                {getRelativeTimeAgo(this.props.ride.reqTime, Date.now())}
+              </b>
+            </p>
 
-            <h5 style={{ textAlign: "center", margin: "1rem" }}>
+            <h5 style={{ textAlign: "center" }}>
               {" "}
               Pays <b>{handleDenomDisplay(this.props.ride.amt)}</b>
             </h5>
 
             <p style={{ textAlign: "center" }}>
-              <b>{priceUnitDisplay} per 30 minutes</b>
+              ({priceUnitDisplay} per 30 minutes)
             </p>
             <div
               className="BottomBorder" // style={{ paddingTop: ".5rem" }}

@@ -849,7 +849,7 @@ class App extends React.Component {
           pickupAddr: "7384 Airport Lane",
           pmtType: 1,
           region: "dashland",
-          reqTime: Date.now() - 1200000,
+          reqTime: Date.now() + 10000000, //+ 200000
           timeEst: "11",
         },
       ],
@@ -15695,9 +15695,9 @@ RIDES AND DRIVERS FUNCTIONS^^^^
               )}
               {this.state.selectedDapp === "Rides" ? (
                 <>
-                  <h1 style={{ paddingTop: "1rem", textAlign: "center" }}>
+                  {/* <h1 style={{ paddingTop: "1rem", textAlign: "center" }}>
                     Still Constructing
-                  </h1>
+                  </h1> */}
                   <RidesPage
                     identityInfo={this.state.identityInfo}
                     identity={this.state.identity}

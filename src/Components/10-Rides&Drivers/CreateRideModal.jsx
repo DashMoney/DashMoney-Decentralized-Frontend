@@ -1124,7 +1124,7 @@ class CreateRideModal extends React.Component {
                   <></>
                 )}
 
-                {this.state.validReqTime ? (
+                {this.state.validReqTime && !timeMinimum ? (
                   <>
                     {" "}
                     <p className="smallertext" style={{ color: "green" }}>
@@ -1210,6 +1210,7 @@ class CreateRideModal extends React.Component {
                     this.state.validdistEst &&
                     this.state.validAmt &&
                     this.state.validReqTime &&
+                    !timeMinimum &&
                     this.state.validextraInstr ? (
                       <Button variant="primary" type="submit">
                         <b>Request Ride</b>

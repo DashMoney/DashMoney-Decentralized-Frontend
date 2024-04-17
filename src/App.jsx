@@ -830,13 +830,12 @@ class App extends React.Component {
       //PROOFS PAGE STATE^^^^^^
 
       //RIDES PAGE
-      // whichRidesTab: "Search", //Search and Your Rides
+      InitialPullRides: true, //Pulls Your Rides initial
 
-      isLoadingRidesSearch: false,
-      isLoadingYourRides: false, //FOR BUILDING
+      isLoadingYourRides: false, //FOR BUILDING -> Change to true
 
-      YourRides1: false,
-      YourRides2: false,
+      YourRides1: false, //Load your rides
+      YourRides2: false, //Load replies and names
 
       YourRides: [
         {
@@ -855,38 +854,9 @@ class App extends React.Component {
           timeEst: "11",
         },
       ],
-      // YourRideNames: [],
 
       YourRideReplies: [], //Both your replies and driver's replies
       YourRideReplyNames: [], //Names of Drivers and your name
-
-      SearchedRides: [
-        {
-          //  $ownerId: "4h5j6j",
-          //  $id: "7ku98rj",
-          //  review: "Good service, would eat here again!",
-          //  rating: 5,
-          //  toId: "fjghtyru",
-          //  $createdAt: Date.now() - 1000000,
-        },
-      ],
-
-      SearchedRideNames: [
-        {
-          $ownerId: "4h5j6j",
-          label: "Alice",
-        },
-      ],
-
-      SearchedRideReplies: [
-        {
-          $ownerId: "JAdeE9whiXXdxzSrz7Rd1i8aHC3XFh5AvuV7cpxcYYmN",
-          // $id: "klsui4312",
-          // reply: "Thanks Alice",
-          // reviewId: "7ku98rj",
-          $createdAt: Date.now() - 300000,
-        },
-      ],
 
       rideToEdit: [], //use a function to find and pass to modal ->
       rideToEditIndex: "",
@@ -899,14 +869,14 @@ class App extends React.Component {
 
       //DRIVERS PAGE
 
-      OnPageLoadDRIVERS: true,
-      InitialPullDrivers: true,
+      OnPageLoadDRIVERS: true, //Pulls the Drives
+      InitialPullDrivers: true, //Pulls your drives
 
       whichDriversTab: "Search",
 
       isLoadingDriversInitial: true,
       isLoadingDriversSearch: false,
-      isLoadingDriversForm: false,
+      //isLoadingDriversForm: false, //What does this accomplish?
 
       isLoadingYourDrives: true,
 
@@ -969,7 +939,6 @@ class App extends React.Component {
 
       InitialPullReviews: true,
       InitialPullProofs: true,
-      InitialPullRides: true,
 
       presentModal: "",
       isModalShowing: false,
@@ -1012,6 +981,7 @@ class App extends React.Component {
       DataContractDGR: "BtFmyeE6mLKH3Hg8Zet9qXUY2GAtWSkhCSD5A5iSoeKH",
       DataContractPOD: "HZktejcqyaTMQqKeydWMfvbtFi2ax23gjMZVqt7xxbyv",
       DataContractDPNS: "GWRSAVFMjXx8HpQFaNJMqBV7MBgMK4br5UESsB4S31Ec",
+      DataContractRAD: "",
 
       expandedTopNav: false,
     };
@@ -14881,11 +14851,623 @@ PROOF OF FUNDS FUNCTIONS^^^^
 
   // handleYourRide   from handleYourOffer
   // handleDeleteYourRide
+  pullInitialTriggerRIDES = () => {
+    //this.getYourRides(this.state.identity);
 
+    this.setState({
+      InitialPullRides: false,
+    });
+  };
+
+  //CHANGE TO RIDES ->
+  pullInitialTriggerRIDES = () => {
+    this.getYourReviews(this.state.identity);
+    this.setState({
+      InitialPullReviews: false,
+    });
+  };
+  //CHANGE TO RIDES ->
+  yourRidesRace = () => {
+    if (this.state.YourReviews1 && this.state.YourReviews2) {
+      this.setState({
+        YourReviews1: false,
+        YourReviews2: false,
+
+        isLoadingYourReviews: false,
+      });
+    }
+  };
+  //CHANGE TO RIDES ->
+  getYourRides = (theIdentity) => {
+    //console.log("Calling getYourReviews");
+
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      apps: {
+        DGRContract: {
+          contractId: this.state.DataContractDGR,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const getDocuments = async () => {
+      return client.platform.documents.get("DGRContract.dgrreview", {
+        where: [
+          ["toId", "==", theIdentity],
+          ["$createdAt", "<=", Date.now()],
+        ],
+        orderBy: [["$createdAt", "desc"]],
+      });
+    };
+
+    getDocuments()
+      .then((d) => {
+        if (d.length === 0) {
+          //console.log("There are no YourReviews");
+
+          this.setState(
+            {
+              YourReviews1: true,
+              YourReviews2: true,
+            },
+            () => this.yourReviewsRace()
+          );
+        } else {
+          let docArray = [];
+          //console.log("Getting YourReviews Reviews");
+
+          for (const n of d) {
+            let returnedDoc = n.toJSON();
+            //console.log("Review:\n", returnedDoc);
+            returnedDoc.toId = Identifier.from(
+              returnedDoc.toId,
+              "base64"
+            ).toJSON();
+            //console.log("newReview:\n", returnedDoc);
+            docArray = [...docArray, returnedDoc];
+          }
+          this.getYourReviewNames(docArray);
+          this.getYourReplies(docArray);
+        }
+      })
+      .catch((e) => console.error("Something went wrong:\n", e))
+      .finally(() => client.disconnect());
+  };
+
+  //CHANGE TO RIDES ->
+  getYourRideReplies = (docArray) => {
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      apps: {
+        DGRContract: {
+          contractId: this.state.DataContractDGR,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    // This Below is to get unique set of ByYou review doc ids
+    let arrayOfReviewIds = docArray.map((doc) => {
+      return doc.$id;
+    });
+
+    //console.log("Array of ByYouThreads ids", arrayOfReviewIds);
+
+    let setOfReviewIds = [...new Set(arrayOfReviewIds)];
+
+    arrayOfReviewIds = [...setOfReviewIds];
+
+    //console.log("Array of order ids", arrayOfReviewIds);
+
+    const getDocuments = async () => {
+      //console.log("Called Get Search Replies");
+
+      return client.platform.documents.get("DGRContract.dgrreply", {
+        where: [["reviewId", "in", arrayOfReviewIds]], // check reviewId ->
+        orderBy: [["reviewId", "asc"]],
+      });
+    };
+
+    getDocuments()
+      .then((d) => {
+        let docArray = [];
+
+        for (const n of d) {
+          let returnedDoc = n.toJSON();
+          //console.log("Thr:\n", returnedDoc);
+          returnedDoc.reviewId = Identifier.from(
+            returnedDoc.reviewId,
+            "base64"
+          ).toJSON();
+          //console.log("newThr:\n", returnedDoc);
+          docArray = [...docArray, returnedDoc];
+        }
+
+        this.setState(
+          {
+            YourReviews2: true,
+            YourReplies: docArray,
+          },
+          () => this.yourReviewsRace()
+        );
+      })
+      .catch((e) => {
+        console.error("Something went wrong Search Replies:\n", e);
+      })
+      .finally(() => client.disconnect());
+  };
+
+  //CHANGE TO RIDES -> ALSO THIS IS FOR THE REPLIES NOT RIDES ->
+  getYourRideRepliesNames = (docArray) => {
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      apps: {
+        DPNS: {
+          contractId: this.state.DataContractDPNS,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+    //START OF NAME RETRIEVAL
+
+    let ownerarrayOfOwnerIds = docArray.map((doc) => {
+      return doc.$ownerId;
+    });
+
+    let setOfOwnerIds = [...new Set(ownerarrayOfOwnerIds)];
+
+    let arrayOfOwnerIds = [...setOfOwnerIds];
+
+    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+      Buffer.from(Identifier.from(item))
+    );
+
+    //console.log("Calling getNamesforDSOmsgs");
+
+    const getNameDocuments = async () => {
+      return client.platform.documents.get("DPNS.domain", {
+        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
+        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      });
+    };
+
+    getNameDocuments()
+      .then((d) => {
+        //WHAT IF THERE ARE NO NAMES? -> THEN THIS WON'T BE CALLED
+        if (d.length === 0) {
+          //console.log("No DPNS domain documents retrieved.");
+        }
+
+        let nameDocArray = [];
+
+        for (const n of d) {
+          //console.log("NameDoc:\n", n.toJSON());
+
+          nameDocArray = [n.toJSON(), ...nameDocArray];
+        }
+        //console.log(`DPNS Name Docs: ${nameDocArray}`);
+
+        this.setState(
+          {
+            YourReviewNames: nameDocArray,
+            YourReviews: docArray,
+            YourReviews1: true,
+          },
+          () => this.yourReviewsRace()
+        );
+      })
+      .catch((e) => {
+        console.error("Something went wrong getting YourReview Names:\n", e);
+      })
+      .finally(() => client.disconnect());
+    //END OF NAME RETRIEVAL
+  };
+
+  //TEMPORARY ONLY****
   passToStateAndDisplay = (rideObj) => {
     this.setState({
       YourRides: [rideObj, ...this.state.YourRides],
     });
+  };
+  //CHANGE TO RIDES ->
+  createYourRide = (rideObject) => {
+    console.log("Called Create Ride");
+
+    this.setState({
+      isLoadingYourRides: true,
+    });
+
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+      apps: {
+        RADContract: {
+          contractId: this.state.DataContractRAD,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const submitRideDoc = async () => {
+      const { platform } = client;
+
+      let identity = "";
+      if (this.state.identityRaw !== "") {
+        identity = this.state.identityRaw;
+      } else {
+        identity = await platform.identities.get(this.state.identity);
+      }
+      let rideProperties;
+
+      rideProperties = {
+        area: rideObject.area, //.toLocaleUpperCase() <- done in modal
+        city: rideObject.city, //.toLocaleUpperCase() <- done in modal
+        region: rideObject.region, //.toLocaleUpperCase() <- done in modal
+
+        reqTime: rideObject.reqTime,
+        numOfRiders: rideObject.numOfRiders,
+        pickupAddr: rideObject.pickupAddr,
+        dropoffAddr: rideObject.dropoffAddr,
+        extraInstr: rideObject.extraInstr,
+        //pmtForm: LEAVE OFF
+        pmtType: rideObject.pmtType,
+        timeEst: rideObject.timeEst,
+        //timeEstUnit: LEAVE OFF
+        distEst: rideObject.distEst,
+        //distEstUnit: LEAVE OFF
+        amt: rideObject.amt,
+        msgId: this.state.identity, //GOOD DECISION - DOESN'T MATTER
+        //toId: LEAVE OFF FOR NOW,
+        txId1: "",
+        txId2: ''
+
+      };
+
+      //console.log('Ride to Create: ', rideProperties);
+
+      // Create the note document
+      const rideDocument = await platform.documents.create(
+        "RADContract.rideReq",
+        identity,
+        rideProperties
+      );
+
+      //############################################################
+      //This below disconnects the document sending..***
+
+      return rideDocument;
+
+      //This is to disconnect the Document Creation***
+      //############################################################
+
+      // const documentBatch = {
+      //   create: [rideDocument], // Document(s) to create
+      // };
+
+      // await platform.documents.broadcast(documentBatch, identity);
+      // return rideDocument;
+    };
+
+    submitRideDoc()
+      .then((d) => {
+        let returnedDoc = d.toJSON();
+        console.log("Document:\n", returnedDoc);
+
+        let ride = {
+          $ownerId: returnedDoc.$ownerId,
+          $id: returnedDoc.$id,
+          //$createdAt: returnedDoc.$createdAt,
+          $updatedAt: returnedDoc.$updatedAt,
+
+          area: rideObject.area, //.toLocaleUpperCase() <- done in modal
+          city: rideObject.city, //.toLocaleUpperCase() <- done in modal
+          region: rideObject.region, //.toLocaleUpperCase() <- done in modal
+  
+          reqTime: rideObject.reqTime,
+          numOfRiders: rideObject.numOfRiders,
+          pickupAddr: rideObject.pickupAddr,
+          dropoffAddr: rideObject.dropoffAddr,
+          extraInstr: rideObject.extraInstr,
+          //pmtForm: LEAVE OFF
+          pmtType: rideObject.pmtType,
+          timeEst: rideObject.timeEst,
+          //timeEstUnit: LEAVE OFF
+          distEst: rideObject.distEst,
+          //distEstUnit: LEAVE OFF
+          amt: rideObject.amt,
+          msgId: this.state.identity, //GOOD DECISION - DOESN'T MATTER
+          //toId: LEAVE OFF FOR NOW,
+          txId1: "",
+          txId2: ''
+          
+        };
+
+        this.setState(
+          {
+            YourRides: [ride, ...this.state.YourRides],
+            isLoadingYourRides: false,
+          },
+          () => this.sendFrontendFee()
+        );
+      })
+      .catch((e) => {
+        console.error("Something went wrong with ride creation:\n", e);
+        this.setState({
+          yourRideError: true,
+          isLoadingYourRides: false,
+        });
+      })
+      .finally(() => client.disconnect());
+  };
+  //CHANGE TO RIDES ->
+  editYourRide = (rideObject) => {
+    //  console.log("Called Edit Offer");
+
+    this.setState({
+      isLoadingYourOffers: true,
+    });
+
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+      apps: {
+        P2PContract: {
+          contractId: this.state.DataContractP2P,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const submitPostDoc = async () => {
+      const { platform } = client;
+
+      let identity = "";
+      if (this.state.identityRaw !== "") {
+        identity = this.state.identityRaw;
+      } else {
+        identity = await platform.identities.get(this.state.identity);
+      }
+
+      const [document] = await client.platform.documents.get(
+        "P2PContract.offer",
+        {
+          where: [
+            [
+              "$id",
+              "==",
+              this.state.YourOffers[this.state.selectedYourOfferIndex].$id,
+            ],
+          ],
+        }
+      );
+      /*
+         toMe: offerObject.toMe, //.toLocaleUpperCase() <- done in modal
+          toMeVia: offerObject.toMeVia, //.toLocaleLowerCase() <- done in modal
+          toMeHandle: offerObject.toMeHandle,
+          toU: offerObject.toU, //.toLocaleUpperCase() <- done in modal
+          toUVia: offerObject.toUVia, //.toLocaleLowerCase() <- done in modal
+
+          //toUHandle -> Not Data Contract
+          exRate: offerObject.exRate,
+          instruction: offerObject.instruction,
+          minAmt: offerObject.minAmt,
+          maxAmt: offerObject.maxAmt,
+          active: offerObject.active,
+       */
+
+      // if (
+      //   this.state.YourOffers[this.state.selectedYourOfferIndex].toMe !==
+      //   offerObject.toMe
+      // ) {
+      //   document.set("toMe", offerObject.toMe);
+      // }
+
+      // if (
+      //   this.state.YourOffers[this.state.selectedYourOfferIndex].toMeVia !==
+      //   offerObject.toMeVia
+      // ) {
+      //   document.set("toMeVia", offerObject.toMeVia);
+      // }
+
+      // if (
+      //   this.state.YourOffers[this.state.selectedYourOfferIndex].toMeHandle !==
+      //   offerObject.toMeHandle
+      // ) {
+      //   document.set("toMeHandle", offerObject.toMeHandle);
+      // }
+
+      // if (
+      //   this.state.YourOffers[this.state.selectedYourOfferIndex].toU !==
+      //   offerObject.toU
+      // ) {
+      //   document.set("toU", offerObject.toU);
+      // }
+
+      // if (
+      //   this.state.YourOffers[this.state.selectedYourOfferIndex].toUVia !==
+      //   offerObject.toUVia
+      // ) {
+      //   document.set("toUVia", offerObject.toUVia);
+      // }
+
+      if (
+        this.state.YourOffers[this.state.selectedYourOfferIndex].exRate !==
+        offerObject.exRate
+      ) {
+        document.set("exRate", offerObject.exRate);
+      }
+
+      if (
+        this.state.YourOffers[this.state.selectedYourOfferIndex].instruction !==
+        offerObject.instruction
+      ) {
+        document.set("instruction", offerObject.instruction);
+      }
+
+      if (
+        this.state.YourOffers[this.state.selectedYourOfferIndex].minAmt !==
+        offerObject.minAmt
+      ) {
+        document.set("minAmt", offerObject.minAmt);
+      }
+
+      if (
+        this.state.YourOffers[this.state.selectedYourOfferIndex].maxAmt !==
+        offerObject.maxAmt
+      ) {
+        document.set("maxAmt", offerObject.maxAmt);
+      }
+
+      if (
+        this.state.YourOffers[this.state.selectedYourOfferIndex].active !==
+        offerObject.active
+      ) {
+        document.set("active", offerObject.active);
+      }
+
+      await platform.documents.broadcast({ replace: [document] }, identity);
+      return document;
+
+      //############################################################
+      //This below disconnects the document editing..***
+
+      //return document;
+
+      //This is to disconnect the Document editing***
+      //############################################################
+    };
+
+    submitPostDoc()
+      .then((d) => {
+        let returnedDoc = d.toJSON();
+        console.log("Edited Offer Doc:\n", returnedDoc);
+
+        let offer = {
+          $ownerId: returnedDoc.$ownerId,
+          $id: returnedDoc.$id,
+          $createdAt: returnedDoc.$createdAt,
+          $updatedAt: returnedDoc.$updatedAt,
+
+          toMe: returnedDoc.toMe, //.toLocaleLowerCase() <- done in modal
+          toMeVia: returnedDoc.toMeVia, //.toLocaleLowerCase() <- done in modal
+          toMeHandle: returnedDoc.toMeHandle,
+          toU: returnedDoc.toU, //.toLocaleLowerCase() <- done in modal
+          toUVia: returnedDoc.toUVia, //.toLocaleLowerCase() <- done in modal
+
+          //toUHandle -> Not Data Contract
+          exRate: offerObject.exRate,
+          instruction: offerObject.instruction,
+          minAmt: offerObject.minAmt,
+          maxAmt: offerObject.maxAmt,
+          active: offerObject.active,
+          myStore: false,
+        };
+
+        let editedOffers = this.state.YourOffers;
+
+        editedOffers.splice(this.state.selectedYourOfferIndex, 1, offer);
+
+        this.setState(
+          {
+            YourOffers: editedOffers,
+            isLoadingYourOffers: false,
+          },
+          () => this.loadIdentityCredits()
+        );
+      })
+      .catch((e) => {
+        console.error("Something went wrong with Offer creation:\n", e);
+        this.setState({
+          offerError: true,
+          isLoadingYourOffers: false,
+        });
+      })
+      .finally(() => client.disconnect());
+  };
+  //CHANGE TO RIDES ->
+  deleteYourRide = () => {
+    console.log("Called Delete Offer");
+
+    this.setState({
+      isLoadingYourOffers: true,
+    });
+
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+      apps: {
+        P2PContract: {
+          contractId: this.state.DataContractP2P,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const deleteNoteDocument = async () => {
+      const { platform } = client;
+
+      let identity = "";
+      if (this.state.identityRaw !== "") {
+        identity = this.state.identityRaw;
+      } else {
+        identity = await platform.identities.get(this.state.identity);
+      }
+
+      const documentId = this.state.selectedYourOffer.$id;
+
+      // Retrieve the existing document
+
+      //JUST PUT IN THE DOCUMENT THAT i ALREADY HAVE... => Done
+      // Wrong ^^^ Can not use because changed to JSON
+
+      const [document] = await client.platform.documents.get(
+        "P2PContract.offer",
+        { where: [["$id", "==", documentId]] }
+      );
+      //const document = this.state.selectedYourProof;
+
+      // Sign and submit the document delete transition
+      await platform.documents.broadcast({ delete: [document] }, identity);
+      return document;
+    };
+
+    deleteNoteDocument()
+      .then((d) => {
+        console.log("Document deleted:\n", d.toJSON());
+
+        let editedOffers = this.state.YourOffers;
+
+        editedOffers.splice(this.state.selectedYourOfferIndex, 1);
+
+        this.setState({
+          YourOffers: editedOffers,
+          isLoadingYourOffers: false,
+        });
+      })
+      .catch((e) => console.error("Something went wrong:\n", e))
+      .finally(() => client.disconnect());
   };
 
   //DRIVERS BELOW
@@ -14903,7 +15485,7 @@ PROOF OF FUNDS FUNCTIONS^^^^
   };
 
   pullInitialTriggerDRIVERS = () => {
-    //this.getYourPosts(this.state.identity);
+    //this.getYourDrives(this.state.identity);
 
     this.setState({
       InitialPullDrivers: false,

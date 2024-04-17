@@ -260,19 +260,20 @@ Paid -> Check TX first
               </Button>
             </div>
             <p></p>
-            <p>
+            <p style={{ marginBottom: ".2rem" }}>
               Estimated Time: <b>{this.props.ride.timeEst} minutes</b>
             </p>
 
-            <p>
+            <p style={{ marginTop: "0rem", marginBottom: ".2rem" }}>
               Estimated Distance: <b>{this.props.ride.distEst}</b>
             </p>
             <div
-              className="BottomBorder" //style={{ paddingTop: ".5rem" }}
+              className="BottomBorder"
+              style={{ paddingTop: ".7rem", marginBottom: ".7rem" }}
             ></div>
             <p
               style={{
-                marginTop: "1rem", //, textAlign: "right"
+                marginTop: ".6rem", //, textAlign: "right"
               }}
             >
               Pickup Time:{" "}
@@ -281,34 +282,39 @@ Paid -> Check TX first
               </b>
             </p>
 
-            <h5 style={{ textAlign: "center" }}>
+            <h5 style={{ marginTop: ".2rem", textAlign: "center" }}>
               {" "}
               Pays <b>{handleDenomDisplay(this.props.ride.amt)}</b>
             </h5>
 
-            <p style={{ textAlign: "center" }}>
+            <p style={{ textAlign: "center", marginBottom: ".2rem" }}>
               ({priceUnitDisplay} per 30 minutes)
             </p>
             <div
-              className="BottomBorder" // style={{ paddingTop: ".5rem" }}
+              className="BottomBorder"
+              style={{ paddingTop: ".7rem", marginBottom: ".7rem" }}
             ></div>
 
-            <p></p>
-            <p>Payment: {paymentSchedule}</p>
+            <p style={{ marginBottom: ".2rem" }}>Payment: {paymentSchedule}</p>
 
             {/* <p style={{ whiteSpace: "pre-wrap" }}>
               {this.props.post.description}
             </p> */}
 
-            <p>
+            <p style={{ marginTop: "0rem", marginBottom: ".2rem" }}>
               Passengers: <b>{this.props.ride.numOfRiders}</b>
             </p>
 
-            <p></p>
             {this.props.ride.extraInstr !== undefined &&
             this.props.ride.extraInstr !== "" ? (
               <>
-                <p style={{ whiteSpace: "pre-wrap", textAlign: "center" }}>
+                <p
+                  style={{
+                    paddingBottom: "0.5rem",
+                    whiteSpace: "pre-wrap",
+                    textAlign: "center",
+                  }}
+                >
                   <b>{this.props.ride.extraInstr}</b>
                 </p>
               </>
@@ -334,7 +340,10 @@ Paid -> Check TX first
                 <b>Edit Ride</b>
               </Button>
             </div>
-            <div className="BottomBorder" style={{ paddingTop: ".5rem" }}></div>
+            <div
+              className="BottomBorder"
+              style={{ paddingTop: ".7rem", marginBottom: ".7rem" }}
+            ></div>
             <div
               className="cardTitle"
               style={{ marginTop: ".4rem", marginBottom: ".5rem" }}

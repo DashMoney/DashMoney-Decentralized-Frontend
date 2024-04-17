@@ -851,7 +851,7 @@ class App extends React.Component {
           pickupAddr: "7384 Airport Lane",
           pmtType: 1,
           region: "dashland",
-          reqTime: Date.now() + 10000000, //+ 200000
+          reqTime: Date.now() + 1600000, //+ 200000
           timeEst: "11",
         },
       ],
@@ -942,7 +942,7 @@ class App extends React.Component {
           pickupAddr: "7384 Airport Lane",
           pmtType: 1,
           region: "dashland",
-          reqTime: Date.now() + 10000000, //+ 200000
+          reqTime: Date.now() + 1600000, //+ 200000
           timeEst: "11",
         },
       ],

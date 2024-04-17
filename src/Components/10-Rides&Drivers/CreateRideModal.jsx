@@ -728,7 +728,9 @@ class CreateRideModal extends React.Component {
           {/* <div className="BottomBorder" style={{ paddingTop: ".5rem" }}></div> */}
 
           <Modal.Body>
-            <p style={{ textAlign: "center" }}>Search Criteria</p>
+            <p style={{ textAlign: "center", color: "#008de3" }}>
+              Search Criteria
+            </p>
 
             <>
               <Form
@@ -798,7 +800,9 @@ class CreateRideModal extends React.Component {
                   style={{ paddingTop: ".5rem" }}
                 ></div>
                 <p></p>
-                <p style={{ textAlign: "center" }}>Ride Details</p>
+                <p style={{ textAlign: "center", color: "#008de3" }}>
+                  Ride Details
+                </p>
                 {/* PICKUP ADDRESS FORM BELOW */}
                 <Form.Group className="mb-3" controlId="formPickupAddress">
                   <h5 style={{ marginTop: ".2rem", marginBottom: ".2rem" }}>

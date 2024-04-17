@@ -351,7 +351,7 @@ Paid -> Check TX first
               </Button>
             </div>
             <p style={{ textAlign: "center", paddingTop: ".5rem" }}>
-              (Currently, there are no responses to this ride request.
+              (Currently, there are no responses to this ride request.)
             </p>
           </Card.Body>
         </Card>

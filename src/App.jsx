@@ -14859,63 +14859,63 @@ PROOF OF FUNDS FUNCTIONS^^^^
     });
   };
 
-  //CHANGE TO RIDES ->
-  pullInitialTriggerRIDES = () => {
-    this.getYourReviews(this.state.identity);
-    this.setState({
-      InitialPullReviews: false,
-    });
-  };
-  //CHANGE TO RIDES ->
+  //CHANGE TO RIDES -> DONE -> Drivers???
+  // pullInitialTriggerRIDES = () => {
+  //   this.getYourRides(this.state.identity);
+  //   this.setState({
+  //     InitialPullRides: false,
+  //   });
+  // };
+  //CHANGE TO RIDES -> DONE
   yourRidesRace = () => {
-    if (this.state.YourReviews1 && this.state.YourReviews2) {
+    if (this.state.YourRides1 && this.state.YourRides2) {
       this.setState({
-        YourReviews1: false,
-        YourReviews2: false,
+        YourRides1: false,
+        YourRides2: false,
 
-        isLoadingYourReviews: false,
+        isLoadingYourRides: false,
       });
     }
   };
   //CHANGE TO RIDES ->
   getYourRides = (theIdentity) => {
-    //console.log("Calling getYourReviews");
+    //console.log("Calling getYourRides");
 
     const clientOpts = {
       network: this.state.whichNetwork,
       apps: {
-        DGRContract: {
-          contractId: this.state.DataContractDGR,
+        RADContract: {
+          contractId: this.state.DataContractRAD,
         },
       },
     };
     const client = new Dash.Client(clientOpts);
 
     const getDocuments = async () => {
-      return client.platform.documents.get("DGRContract.dgrreview", {
+      return client.platform.documents.get("RADContract.rideReq", {
         where: [
-          ["toId", "==", theIdentity],
-          ["$createdAt", "<=", Date.now()],
+          ["ownerId", "==", theIdentity],
+          ["$updatedAt", "<=", Date.now()],
         ],
-        orderBy: [["$createdAt", "desc"]],
+        orderBy: [["$updatedAt", "desc"]],
       });
     };
 
     getDocuments()
       .then((d) => {
         if (d.length === 0) {
-          //console.log("There are no YourReviews");
+          //console.log("There are no YourRides");
 
           this.setState(
             {
-              YourReviews1: true,
-              YourReviews2: true,
+              YourRides1: true,
+              YourRides2: true,
             },
-            () => this.yourReviewsRace()
+            () => this.yourRidesRace()
           );
         } else {
           let docArray = [];
-          //console.log("Getting YourReviews Reviews");
+          //console.log("Getting YourRides");
 
           for (const n of d) {
             let returnedDoc = n.toJSON();
@@ -14927,8 +14927,7 @@ PROOF OF FUNDS FUNCTIONS^^^^
             //console.log("newReview:\n", returnedDoc);
             docArray = [...docArray, returnedDoc];
           }
-          this.getYourReviewNames(docArray);
-          this.getYourReplies(docArray);
+          this.getYourRideReplies(docArray);
         }
       })
       .catch((e) => console.error("Something went wrong:\n", e))
@@ -14940,57 +14939,75 @@ PROOF OF FUNDS FUNCTIONS^^^^
     const clientOpts = {
       network: this.state.whichNetwork,
       apps: {
-        DGRContract: {
-          contractId: this.state.DataContractDGR,
+        RADContract: {
+          contractId: this.state.DataContractRAD,
         },
       },
     };
     const client = new Dash.Client(clientOpts);
 
-    // This Below is to get unique set of ByYou review doc ids
-    let arrayOfReviewIds = docArray.map((doc) => {
+    // This Below is to get unique set of rideReq doc ids
+    let arrayOfRideIds = docArray.map((doc) => {
       return doc.$id;
     });
 
-    //console.log("Array of ByYouThreads ids", arrayOfReviewIds);
+    //console.log("Array of Ride Req ids", arrayOfRideIds);
 
-    let setOfReviewIds = [...new Set(arrayOfReviewIds)];
+    let setOfRideIds = [...new Set(arrayOfRideIds)];
 
-    arrayOfReviewIds = [...setOfReviewIds];
+    arrayOfRideIds = [...setOfRideIds];
 
-    //console.log("Array of order ids", arrayOfReviewIds);
+    //console.log("Array of Ride ids", arrayOfRideIds);
 
     const getDocuments = async () => {
-      //console.log("Called Get Search Replies");
+      //console.log("Called Get Ride Replies");
 
-      return client.platform.documents.get("DGRContract.dgrreply", {
-        where: [["reviewId", "in", arrayOfReviewIds]], // check reviewId ->
-        orderBy: [["reviewId", "asc"]],
+      return client.platform.documents.get("RADContract.rideRply", {
+        where: [["reqId", "in", arrayOfRideIds]], // check reqId ->
+        orderBy: [["reqId", "asc"]],
+        // ["$updatedAt", "<=", Date.now()],
+        // ],
+        // orderBy: [["$updatedAt", "desc"]],
       });
     };
 
     getDocuments()
       .then((d) => {
+        // if (d.length === 0) {
+        //   //console.log("There are no YourRidesReplies");
+        //   this.setState(
+        //     {
+        //       YourRides2: true,
+        //     },
+        //     () => this.yourRidesRace()
+        //   );
+        // } else {
+
+        //   //console.log("Getting YourRides");
+
         let docArray = [];
 
         for (const n of d) {
           let returnedDoc = n.toJSON();
           //console.log("Thr:\n", returnedDoc);
-          returnedDoc.reviewId = Identifier.from(
-            returnedDoc.reviewId,
+          returnedDoc.reqId = Identifier.from(
+            returnedDoc.reqId,
             "base64"
           ).toJSON();
           //console.log("newThr:\n", returnedDoc);
           docArray = [...docArray, returnedDoc];
         }
+        //this.getYourRideRepliesNames(docArray);
 
-        this.setState(
-          {
-            YourReviews2: true,
-            YourReplies: docArray,
-          },
-          () => this.yourReviewsRace()
-        );
+        // }
+
+        // this.setState(
+        //   {
+        //     //YourRides2: true,
+        //     //YourReplies: docArray,
+        //   } //,() => this.yourRidesRace() //Because need names
+        //   //this.getYourRideRepliesNames(docArray);
+        // );
       })
       .catch((e) => {
         console.error("Something went wrong Search Replies:\n", e);
@@ -15064,13 +15081,16 @@ PROOF OF FUNDS FUNCTIONS^^^^
     //END OF NAME RETRIEVAL
   };
 
+  //refreshRideReplies
+  //refreshRideRepliesNames
+
   //TEMPORARY ONLY****
   passToStateAndDisplay = (rideObj) => {
     this.setState({
       YourRides: [rideObj, ...this.state.YourRides],
     });
   };
-  //CHANGE TO RIDES ->
+  //CHANGE TO RIDES -> TEST ->
   createYourRide = (rideObject) => {
     console.log("Called Create Ride");
 
@@ -15127,8 +15147,7 @@ PROOF OF FUNDS FUNCTIONS^^^^
         msgId: this.state.identity, //GOOD DECISION - DOESN'T MATTER
         //toId: LEAVE OFF FOR NOW,
         txId1: "",
-        txId2: ''
-
+        txId2: "",
       };
 
       //console.log('Ride to Create: ', rideProperties);
@@ -15170,7 +15189,7 @@ PROOF OF FUNDS FUNCTIONS^^^^
           area: rideObject.area, //.toLocaleUpperCase() <- done in modal
           city: rideObject.city, //.toLocaleUpperCase() <- done in modal
           region: rideObject.region, //.toLocaleUpperCase() <- done in modal
-  
+
           reqTime: rideObject.reqTime,
           numOfRiders: rideObject.numOfRiders,
           pickupAddr: rideObject.pickupAddr,
@@ -15186,8 +15205,7 @@ PROOF OF FUNDS FUNCTIONS^^^^
           msgId: this.state.identity, //GOOD DECISION - DOESN'T MATTER
           //toId: LEAVE OFF FOR NOW,
           txId1: "",
-          txId2: ''
-          
+          txId2: "",
         };
 
         this.setState(

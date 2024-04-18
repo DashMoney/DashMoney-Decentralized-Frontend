@@ -90,6 +90,18 @@ class LoginForm extends React.Component {
           </p>
         </div>
 
+        <p></p>
+        <Alert variant="warning">
+          <Alert.Heading>Testnet Updating - IN PROGRESS</Alert.Heading>
+
+          <p>
+            Issue with Credit Withdrawals being corrected on testnet. Awaiting
+            testnet Platform v1.0.0-dev.11, once testnet nodes have successfully
+            updated. This notice will be removed when that is complete.
+          </p>
+        </Alert>
+        <p></p>
+
         {/* <p></p>
         <Alert variant="warning">
           <Alert.Heading>Testnet Updating - IN PROGRESS</Alert.Heading>

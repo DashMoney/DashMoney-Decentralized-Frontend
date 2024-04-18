@@ -96,8 +96,8 @@ class LoginForm extends React.Component {
 
           <p>
             Issue with Credit Withdrawals being corrected on testnet. Awaiting
-            testnet Platform v1.0.0-dev.11, once testnet nodes have successfully
-            updated. This notice will be removed when that is complete.
+            testnet Platform v1.0.0-dev.11 and updated testnet nodes. This
+            notice will be removed when that is complete.
           </p>
         </Alert>
         <p></p>

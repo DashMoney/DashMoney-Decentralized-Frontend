@@ -810,9 +810,15 @@ class WalletPage extends React.Component {
                           className="mb-3"
                           controlId="validationCustomMessage"
                         >
-                          <Form.Label>
-                            <b>Payment Message</b>
-                          </Form.Label>
+                          {this.props.whichPayType === "Pay" ? (
+                            <Form.Label>
+                              <b>Payment Message</b>
+                            </Form.Label>
+                          ) : (
+                            <Form.Label>
+                              <b>Request Message</b>
+                            </Form.Label>
+                          )}
 
                           {this.state.isLoadingVerify ||
                           this.props.isLoadingForm_WALLET ? (

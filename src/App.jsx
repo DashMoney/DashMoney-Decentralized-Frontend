@@ -7924,6 +7924,7 @@ class App extends React.Component {
           description: storeObject.description,
           public: storeObject.public,
           open: storeObject.open,
+          payLater: storeObject.payLater,
         };
 
         this.setState(
@@ -14867,6 +14868,53 @@ PROOF OF FUNDS FUNCTIONS^^^^
   //   });
   // };
   //CHANGE TO RIDES -> DONE
+
+  //CHANGE TO RIDES ->
+  handleEditYourRide = (index) => {
+    this.setState(
+      {
+        selectedYourOffer: this.state.YourOffers[index],
+        //I also need the name <- NOT FOR MY POSTS
+        selectedYourOfferIndex: index, //<- Need this for the editingfunction!!
+      },
+      () => this.showModal("EditOfferModal")
+    );
+  };
+
+  //CHANGE TO RIDES ->
+  handleDeleteYourRide = (index) => {
+    this.setState(
+      {
+        selectedYourOffer: this.state.YourOffers[index],
+        //I also need the name <- NOT FOR MY POSTS
+        selectedYourOfferIndex: index, //<- Need this for the editingfunction!!
+      },
+      () => this.showModal("DeleteOfferModal")
+    );
+  };
+
+  //CHANGE TO RIDES ->
+  handleConfirmYourRide = (offer, nameDoc) => {
+    this.setState(
+      {
+        selectedSearchedOffer: offer,
+        selectedSearchedOfferNameDoc: nameDoc,
+      },
+      () => this.showModal("OfferModal")
+    );
+  };
+
+  //CHANGE TO RIDES ->
+  handleReplyYourRide = (offer, nameDoc) => {
+    this.setState(
+      {
+        selectedSearchedOffer: offer,
+        selectedSearchedOfferNameDoc: nameDoc,
+      },
+      () => this.showModal("OfferModal")
+    );
+  };
+
   yourRidesRace = () => {
     if (this.state.YourRides1 && this.state.YourRides2) {
       this.setState({
@@ -15090,6 +15138,7 @@ PROOF OF FUNDS FUNCTIONS^^^^
       YourRides: [rideObj, ...this.state.YourRides],
     });
   };
+
   //CHANGE TO RIDES -> TEST ->
   createYourRide = (rideObject) => {
     console.log("Called Create Ride");
@@ -15589,6 +15638,8 @@ PROOF OF FUNDS FUNCTIONS^^^^
       }
     }
   };
+
+  //
 
   /**
 RIDES AND DRIVERS FUNCTIONS^^^^

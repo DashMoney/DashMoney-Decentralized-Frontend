@@ -12,6 +12,10 @@ class StoreStatusModal extends React.Component {
     let storeObject = {
       description: this.props.DGPStore[0].description,
       open: !this.props.DGPStore[0].open,
+
+      public: this.props.DGPStore[0].public,
+
+      payLater: this.props.DGPStore[0].payLater,
     };
 
     this.props.editDGPStore(storeObject);

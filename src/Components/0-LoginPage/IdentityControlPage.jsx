@@ -187,7 +187,7 @@ class IdentityControlPage extends React.Component {
               <Form.Control
                 onChange={this.onChange}
                 placeholder="Break Identity"
-                required
+                //required
                 isValid={this.state.validReply}
               />
 

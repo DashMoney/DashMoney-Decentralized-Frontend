@@ -302,9 +302,9 @@ class TopNav extends React.Component {
                         <b>Rides</b>
                       </h5>
                     </Nav.Link>
-                  )}
+                  )} */}
 
-                  {isLoginComplete ? (
+                  {/* {isLoginComplete ? (
                     <NavSelects
                       selection="Drivers"
                       selectedDapp={this.props.selectedDapp}
@@ -317,6 +317,7 @@ class TopNav extends React.Component {
                       </h5>
                     </Nav.Link>
                   )} */}
+
                   <NavSelects
                     selection="Rides"
                     selectedDapp={this.props.selectedDapp}

@@ -83,9 +83,7 @@ class DriversPage extends React.Component {
                 <></>
               )}
               <p></p>
-              {/* <h5>
-                <b>Still Constructing</b>
-              </h5> */}
+
               <Rides
                 //ALL STATE MUST BE IN APP.JS <-
                 SearchedDrives={this.props.SearchedDrives}

@@ -131,7 +131,7 @@ class ShoppingPage extends React.Component {
                             ? "Enter merchant name here..."
                             : this.props.merchantStoreName
                         }
-                        required
+                        //required
                         // isInvalid={!this.props.merchantNameFormat}
                         // TEST ^^ remove red fail when click in recent or active =>
                         isValid={this.props.merchantNameFormat}
@@ -260,8 +260,7 @@ class ShoppingPage extends React.Component {
                   <Alert variant="danger" dismissible>
                     <Alert.Heading>No Store/Menu for Name</Alert.Heading>
                     <p>
-                      This name is not a DashGetPaid merchant, please try
-                      another name.
+                      This name does not have a store, please try another name.
                     </p>
                   </Alert>
                 </>
@@ -269,7 +268,8 @@ class ShoppingPage extends React.Component {
                 <></>
               )}
             </div>
-            <div className="sidetextsidesonly">
+            <div //className="sidetextsidesonly"
+            >
               <FindMerchant
                 isLoadingWallet={this.props.isLoadingWallet}
                 isLoadingRecentOrders={this.props.isLoadingRecentOrders}

@@ -1,66 +1,63 @@
 .paddingBadge {
-  margin-right: .5rem;
-  margin-left: .5rem;
- }
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
+}
 
- .paddingReqBadge{
-  margin-left: .5rem;
-  padding-bottom: .1rem;
- }
+.paddingReqBadge {
+  margin-left: 0.5rem;
+  padding-bottom: 0.1rem;
+}
 
- .paddingTop{
-  margin-top: 1rem;
-  margin-bottom: 1rem;
- }
+.paddingTop {
+  margin-top: 0.6rem;
+  margin-bottom: 0.6rem;
+}
 
- 
- .indent{
-   margin-left: .5rem;
- }
+.indent {
+  margin-left: 0.5rem;
+}
 
- .indentMembers{
+.indentMembers {
   margin-left: 1rem;
 }
 
-#card{
-  margin: .3rem;
-
+#card {
+  margin: 0.3rem;
 }
 
-#cardtext{
-  
+#cardtext {
 }
 
-.cartTotal{
+.cartTotal {
   display: flex;
-  justify-content:flex-end;
+  justify-content: flex-end;
   align-items: center;
   margin-right: 1rem;
- }
+}
 
- .cardTitle{
+.cardTitle {
   display: flex;
   justify-content: space-between;
   align-items: center;
- }
+}
 
- .categoryTitle{
+.categoryTitle {
   display: flex;
-  
-  align-items: center;
- }
 
- .spaceLeft{
+  align-items: center;
+}
+
+.spaceLeft {
   margin-left: 2rem;
- }
+}
 
- .cartItemTitle{
+.cartItemTitle {
   display: flex;
-  
-  align-items: center;
- }
 
- /* .requestbtn{
+  align-items: center;
+}
+
+/* .requestbtn{
   padding-top:.2rem;
   padding-right:.4rem;
   padding-left: .6rem;
@@ -68,106 +65,101 @@
   font-size: large;
  } */
 
- .textsmaller{
+.textsmaller {
   font-size: medium;
   text-align: right;
- }
+}
 
- .sendReqTrial{
-  display:flex;
-  align-items: center;
- }
- 
- 
- div {
-   word-wrap: break-word;
- }
- 
- 
- .positionButton {
-   display: flex;
-   margin-top: 3rem;
- }
- 
- .id-line{
-  margin-top: 0.5rem;
-   display:flex;
-   flex-wrap: wrap;
-   word-wrap: break-word;
-   word-break: break-all;
- }
- 
- p {
-   word-wrap: break-word;
- }
- 
- .ButtonRight{
-  margin-right: 1rem;
-  padding-bottom: .8rem;
+.sendReqTrial {
   display: flex;
-  justify-content:flex-end ;
-  border-bottom: 0.1rem solid white;
- }
+  align-items: center;
+}
 
- .ButtonRightNoUnderline{
+div {
+  word-wrap: break-word;
+}
+
+.positionButton {
+  display: flex;
+  margin-top: 3rem;
+}
+
+.id-line {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+p {
+  word-wrap: break-word;
+}
+
+.ButtonRight {
+  margin-right: 1rem;
+  padding-bottom: 0.8rem;
+  display: flex;
+  justify-content: flex-end;
+  border-bottom: 0.1rem solid white;
+}
+
+.ButtonRightNoUnderline {
   margin-top: 1rem;
   margin-right: 1rem;
-  padding-bottom: .8rem;
+  padding-bottom: 0.8rem;
   display: flex;
-  justify-content:flex-end ;
- }
+  justify-content: flex-end;
+}
 
- .BalanceRight{
+.BalanceRight {
   display: flex;
   padding-right: 3rem;
-  justify-content:flex-end ;
-  padding-bottom: .5rem;
+  justify-content: flex-end;
+  padding-bottom: 0.5rem;
   border-bottom: 0.1rem solid white;
- }
+}
 
- .BalanceRightNoUnderline{
+.BalanceRightNoUnderline {
   display: flex;
   margin-right: 1rem;
-  justify-content:flex-end ;
- }
+  justify-content: flex-end;
+}
 
-
-
- .Underline{
+.Underline {
   display: flex;
-  justify-content:flex-end;
+  justify-content: flex-end;
   align-items: center;
   margin-right: 1rem;
   padding-top: 0.6rem;
   border-top: 0.1rem solid white;
- }
+}
 
- .cardTitleUnderlineAbove{
+.cardTitleUnderlineAbove {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-top: 0.6rem;
   border-top: 0.1rem solid white;
- }
- 
- .cardTitleUnderlineBelow{
+}
+
+.cardTitleUnderlineBelow {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-bottom: 0.6rem;
   border-bottom: 0.1rem solid white;
- }
- .JustUnderline{
-
+}
+.JustUnderline {
   border-bottom: 0.1rem solid white;
- }
+}
 
- .PriceRight{
+.PriceRight {
   display: flex;
   justify-content: flex-end;
   margin-right: 1rem;
- }
+}
 
- .ButtonFontBigger{
+.ButtonFontBigger {
   font-size: larger;
- }
+}

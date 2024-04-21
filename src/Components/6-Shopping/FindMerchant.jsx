@@ -1,5 +1,5 @@
 import React from "react";
-//import Badge from "react-bootstrap/Badge";
+import Badge from "react-bootstrap/Badge";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 //import Form from "react-bootstrap/Form";
@@ -203,6 +203,7 @@ class FindMerchant extends React.Component {
                 <span className="visually-hidden">Loading...</span>
               </Spinner>
             </div>
+            <p> </p>
           </>
         ) : (
           <>
@@ -259,18 +260,96 @@ class FindMerchant extends React.Component {
                         <>
                           {this.props.viewStore ? (
                             <>
-                              <h2
+                              {/* <h2
                                 className="paddingTop"
                                 style={{ color: "#008de4" }}
                               >
                                 <b> {this.props.merchantStoreName}</b>
-                              </h2>
+                              </h2> */}
+                              <div className="indentStuff">
+                                <div className="paddingTop">
+                                  <div className="cardTitle">
+                                    <h2
+                                      className="paddingTop"
+                                      style={{ color: "#008de4" }}
+                                    >
+                                      <b> {this.props.merchantStoreName}</b>
+                                    </h2>
+                                    <span>
+                                      {this.props.merchantStore[0].public ? (
+                                        <Badge variant="primary">
+                                          {" "}
+                                          <b>Public</b>
+                                        </Badge>
+                                      ) : (
+                                        <Badge variant="primary">
+                                          {" "}
+                                          <b>Private</b>
+                                        </Badge>
+                                      )}
+                                    </span>
+                                    <span>
+                                      {this.props.merchantStore[0].payLater ? (
+                                        <Badge variant="primary">
+                                          {" "}
+                                          <b>Pay Later</b>
+                                        </Badge>
+                                      ) : (
+                                        <Badge variant="primary">
+                                          {" "}
+                                          <b>No Pay Later</b>
+                                        </Badge>
+                                      )}
+                                    </span>
+
+                                    <span></span>
+                                  </div>{" "}
+                                </div>
+                              </div>
                             </>
                           ) : (
                             <div className="indentStuff">
-                              <h3 style={{ color: "#008de4" }}>
+                              {/* <h3 style={{ color: "#008de4" }}>
                                 <b> {this.props.merchantStoreName}</b>
-                              </h3>
+                              </h3> */}
+                              <div className="paddingTop">
+                                <div className="cardTitle">
+                                  <h2
+                                    className="paddingTop"
+                                    style={{ color: "#008de4" }}
+                                  >
+                                    <b> {this.props.merchantStoreName}</b>
+                                  </h2>
+                                  <span>
+                                    {this.props.merchantStore[0].public ? (
+                                      <Badge variant="primary">
+                                        {" "}
+                                        <b>Public</b>
+                                      </Badge>
+                                    ) : (
+                                      <Badge variant="primary">
+                                        {" "}
+                                        <b>Private</b>
+                                      </Badge>
+                                    )}
+                                  </span>
+                                  <span>
+                                    {this.props.merchantStore[0].payLater ? (
+                                      <Badge variant="primary">
+                                        {" "}
+                                        <b>Pay Later</b>
+                                      </Badge>
+                                    ) : (
+                                      <Badge variant="primary">
+                                        {" "}
+                                        <b>No Pay Later</b>
+                                      </Badge>
+                                    )}
+                                  </span>
+
+                                  <span></span>
+                                </div>{" "}
+                              </div>
                               <h5
                                 className="bodytext"
                                 style={{ whiteSpace: "pre-wrap" }}
@@ -342,9 +421,18 @@ class FindMerchant extends React.Component {
                         ) : (
                           <div id="cardtext">
                             {this.state.selectedCategory === "" ? (
-                              <div className="d-grid gap-2" id="button-edge">
-                                {categoryButtons}
-                              </div>
+                              <>
+                                {categoryNames.length === 0 ? (
+                                  <></>
+                                ) : (
+                                  <div
+                                    className="d-grid gap-2"
+                                    id="button-edge"
+                                  >
+                                    {categoryButtons}
+                                  </div>
+                                )}
+                              </>
                             ) : (
                               <div className="categoryTitle">
                                 <Button

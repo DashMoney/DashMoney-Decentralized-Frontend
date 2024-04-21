@@ -16518,6 +16518,7 @@ RIDES AND DRIVERS FUNCTIONS^^^^
                     Still Constructing
                   </h1>
                   <RidesPage
+                    isLoginComplete={isLoginComplete}
                     identityInfo={this.state.identityInfo}
                     identity={this.state.identity}
                     uniqueName={this.state.uniqueName}

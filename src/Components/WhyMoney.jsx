@@ -386,11 +386,11 @@ class WhyMoney extends React.Component {
           </p>
           <p>
             Creating a new economy with a new money(not fiat) is like arriving
-            in a new, completely uninhabited continent. There are no roads, no
-            houses to stay in, no stores to get what you need. These would all
-            need to be formed and build. All new forms of businesses for goods
-            and services need to be created. We have only scratched the surface
-            with Dash.
+            in a new, completely uninhabited continent of mountains, forests,
+            rivers, fields and valleys. There are no roads, no houses to stay
+            in, no stores to get what you need. These would all need to be
+            formed and build. All new forms of businesses for goods and services
+            need to be created. We have only scratched the surface with Dash.
           </p>
           <p>
             See with money, you don’t need any marketing or BizDev. Everything

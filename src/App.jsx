@@ -14,6 +14,8 @@ import Col from "react-bootstrap/Col";
 
 import TopNav from "./Components/TopNav/TopNav";
 
+import WhyMoney from "./Components/WhyMoney";
+
 import "./App.css";
 import LoginForm from "./Components/0-LoginPage/LoginForm";
 import AccountLogin from "./Components/0-LoginPage/AccountLogin";
@@ -969,6 +971,8 @@ class App extends React.Component {
       FrontendFee: 100,
       validFrontendFee: true,
 
+      InitialWhyMoney: true,
+
       skipSynchronizationBeforeHeight: 990000,
       mostRecentBlockHeight: 990000,
 
@@ -1008,9 +1012,18 @@ class App extends React.Component {
   handleSelectedDapp = (theDapp) => {
     this.setState({
       selectedDapp: theDapp,
+      InitialWhyMoney: false, //handles the Initial
       expandedTopNav: false,
     });
   };
+
+  // handleWhyMoney = () => {
+  //   this.setState({
+  //     selectedDapp: theDapp,
+  //     InitialWhyMoney:false,
+  //     expandedTopNav: false,
+  //   });
+  // };
 
   hideModal = () => {
     this.setState({
@@ -15896,6 +15909,15 @@ RIDES AND DRIVERS FUNCTIONS^^^^
     let isLoginComplete =
       this.state.uniqueName !== "" && this.state.uniqueName !== "no name";
 
+    let showWhyMoney = false;
+
+    if (
+      import.meta.env.VITE_FRONTEND_NAME === "DashMoney" &&
+      this.state.InitialWhyMoney
+    ) {
+      showWhyMoney = true;
+    }
+
     return (
       <>
         <TopNav
@@ -15917,7 +15939,14 @@ RIDES AND DRIVERS FUNCTIONS^^^^
         <Container className="g-0">
           <Row className="justify-content-md-center">
             <Col md={9} lg={8} xl={7} xxl={6}>
-              {this.state.selectedDapp === "Login" ? (
+              {this.state.selectedDapp === "Login" && showWhyMoney ? (
+                <>
+                  <WhyMoney handleSelectedDapp={this.handleSelectedDapp} />
+                </>
+              ) : (
+                <></>
+              )}
+              {this.state.selectedDapp === "Login" && !showWhyMoney ? (
                 <>
                   {!this.state.isLoggedIn ? (
                     <>

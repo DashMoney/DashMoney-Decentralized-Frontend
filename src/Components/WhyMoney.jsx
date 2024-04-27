@@ -29,7 +29,7 @@ class WhyMoney extends React.Component {
           <p></p>
           <p>Why money, is best answered by understanding what money is.</p>
           <p>
-            So I will discuss 2 bad ideas about money and correct them by
+            So I will discuss 2 bad ideas concerning money and correct them by
             explaining what money is. When you understand what money is then you
             will understand why we need money.
           </p>
@@ -309,7 +309,7 @@ class WhyMoney extends React.Component {
               <p>
                 2) “No money comes about from less than the market price.”
                 (e.g., if you want to loan money, it must come from your
-                savings.) No one gets to create credit or ‘new money’.
+                savings.) No one gets to create credit or ‘new money’(fiat).
                 <p>
                   Also what I mean by “less than market price” is this: What
                   does it cost to get money or receive money from others? Well

@@ -124,14 +124,14 @@ class WhyMoney extends React.Component {
               of the keep.
             </p>
             <p>
-              The man-in-charge sorted out the depression in the ground at the
+              The man-in-charge began by sorting out the depression in the ground at the
               center of the keep, left from moving the stones used for the
-              walls, so it was made tidy and covered, so no one would fall in.
-              It was work made difficult by the water that kept collecting at
-              the bottom.
+              walls. It was made tidy and covered, so no one would fall in. It
+              was work made difficult by the water that kept collecting at the
+              bottom.
             </p>
             <p>
-              Then one hot summer day, not any hotter than any normal hot sunny
+              Then one hot summer day, not any hotter than any normal, hot sunny
               day. In the marketplace nearby the keep, someone remembered the
               water in the keep, and went and asked the man-in-charge for some.
             </p>

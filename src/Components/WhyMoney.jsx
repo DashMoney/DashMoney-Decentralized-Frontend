@@ -112,8 +112,8 @@ class WhyMoney extends React.Component {
               livestock. Theirs was a simple life.
             </p>
             <p>
-              One day, the villages came together and decided, they needed to do
-              something in case they were attacked or there was an emergency.
+              One day, the villagers came together and decided, they needed to
+              do something in case they were attacked or there was an emergency.
             </p>
             <p>
               There was a pile of stones in the center of the valley, most

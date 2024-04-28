@@ -266,7 +266,7 @@ class WhyMoney extends React.Component {
           <p>
             Because there would be no notion of what causes that water/money to
             have the value that it currently possesses, and so how could anyone
-            with the new created water/money know the best way to use it. And
+            with the newly created water/money know the best way to use it. And
             furthermore, how could they foresee the consequences of what would
             happen, even if they used it for only “good”.
           </p>
@@ -369,26 +369,28 @@ class WhyMoney extends React.Component {
           <p>
             Money is not “payments” that can be interchanged with other forms of
             payments. Money is the Medium of Exchange that people use in the
-            market, and it is The Good, a person wants when they sell something.
-            Not some conversion mechanism that they use to get some other
-            currency.
+            market. In other words, it is The Good, a person wants when they
+            sell something. Not some conversion substitute that they use to get
+            some other currency.
           </p>
           <p>
-            “Do you want to use cash, checks, credit cards, crypto?” The idea of
-            “payments” reinforces the idea that money does not change anything
-            in the economy which I believe is untrue.
+            For example, “Do you want to use cash, checks, credit cards,
+            crypto?” The idea of “payments” reinforces the idea that money does
+            not change anything in the economy which I believe is completely
+            untrue.
           </p>
           <p>
             That is why I don’t like the word “payments” or the idea of the
             economy as a “vehicle”. The idea of “payments” to me is just
-            thinking about money as the wheels of a “vehicle” economy. Just
-            change the wheels and the economy runs the exact same.
+            thinking about money as the "wheels" of a “vehicle” economy. This
+            makes people think, "Oh, just change the wheels and the economy runs
+            the exact same." This is entirely wrong.
           </p>
           <p>
             Creating a new economy with a new money(not fiat) is like arriving
-            in a new, completely uninhabited continent of mountains, forests,
-            rivers, fields and valleys. There are no roads, no houses to stay
-            in, no stores to get what you need. These would all need to be
+            in a new, completely uninhabited continent with mountains, forests,
+            rivers, fields, lakes, and valleys. There are no roads, no houses to
+            stay in, no stores to get what you need. These would all need to be
             formed and build. All new forms of businesses for goods and services
             need to be created. We have only scratched the surface with Dash.
           </p>

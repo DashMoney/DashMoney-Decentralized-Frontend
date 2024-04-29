@@ -124,11 +124,11 @@ class WhyMoney extends React.Component {
               of the keep.
             </p>
             <p>
-              The man-in-charge began by sorting out the depression in the ground at the
-              center of the keep, left from moving the stones used for the
-              walls. It was made tidy and covered, so no one would fall in. It
-              was work made difficult by the water that kept collecting at the
-              bottom.
+              The man-in-charge began by sorting out the depression in the
+              ground at the center of the keep, left from moving the stones used
+              for the walls. It was made tidy and covered, so no one would fall
+              in. It was work made difficult by the water that kept collecting
+              at the bottom.
             </p>
             <p>
               Then one hot summer day, not any hotter than any normal, hot sunny
@@ -257,14 +257,14 @@ class WhyMoney extends React.Component {
             causality.
           </p>
           <p>
-            When water/money can be created at a below market price then it
+            When water/money(fiat) can be created at a below market price then it
             throws the entire system off. And even if the person in charge were
             to just give it all away. It would still throw the entire system
             into chaos. It breaks the chain of causality, it separates causes
             and effects.
           </p>
           <p>
-            Because there would be no notion of what causes that water/money to
+            Because there would be no notion of what causes that water/money(fiat) to
             have the value that it currently possesses, and so how could anyone
             with the newly created water/money know the best way to use it. And
             furthermore, how could they foresee the consequences of what would
@@ -272,7 +272,7 @@ class WhyMoney extends React.Component {
           </p>
           <p style={{ fontStyle: "italic" }}>
             As an aside - Please understand that the market should not be
-            confused with a large group of people. Money is able to create the
+            confused with a large group of people. Money(not fiat) is able to create the
             network of users(quantum computers) , because it functions through
             the money(specie)-price mechanism. A group of people have no such
             advantage, and it is dangerous to think they might.
@@ -301,8 +301,8 @@ class WhyMoney extends React.Component {
           </p>
           <div style={{ paddingLeft: "1rem", paddingRight: "1rem" }}>
             <p>
-              Money as a concrete, real-life, implementation, consists of these
-              2 ideas:
+              Money(not fiat) as a concrete, real-life, implementation, consists
+              of these 2 ideas:
             </p>
             <div style={{ paddingLeft: "1rem", paddingRight: "1rem" }}>
               <p>1) “Peer to peer and final.” (Medium of Exchange)</p>
@@ -320,7 +320,7 @@ class WhyMoney extends React.Component {
               </p>
             </div>
             <p>
-              Any deviation from money as described above creates market
+              Any deviation from money(not fiat) as described above creates market
               distortions and hinders the ability of money to perform the
               money-price mechanism, and thereby, not give accurate pricing to
               the free market.
@@ -331,10 +331,10 @@ class WhyMoney extends React.Component {
             style={{ paddingTop: ".2rem", marginBottom: "1rem" }}
           ></div>
           <p>
-            But as I said, I don’t think Dash is at the point of being money,
-            Dash still needs the treasury. Dash needs to build more P2P markets
-            and marketplaces that use Dash, and that will build the Dash economy
-            going forward.
+            But as I said, I don’t think Dash is at the point of being money(not
+            fiat), Dash still needs the treasury. Dash needs to build more P2P
+            markets and marketplaces that use Dash, and that will build the Dash
+            economy going forward.
           </p>
           <p>
             So where is that line? Where is the line between deciding to fund
@@ -395,10 +395,10 @@ class WhyMoney extends React.Component {
             need to be created. We have only scratched the surface with Dash.
           </p>
           <p>
-            See with money, you don’t need any marketing or BizDev. Everything
-            in the market is priced in the money. That is the best marketing,
-            you could possibly get. Not only is it the best marketing, but it’s
-            free.
+            See with money(not fiat), you don’t need any marketing or BizDev.
+            Everything in the market is priced in the money. That is the best
+            marketing, you could possibly get. Not only is it the best
+            marketing, but it’s free.
           </p>
           <p>
             I think this vision of Dash as money is bigger than Evan’s

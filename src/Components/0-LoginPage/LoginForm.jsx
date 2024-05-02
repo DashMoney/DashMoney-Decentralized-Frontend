@@ -90,6 +90,17 @@ class LoginForm extends React.Component {
           </p>
         </div>
 
+        <p></p>
+        <Alert variant="warning">
+          <Alert.Heading>Testnet - New Version Deployed</Alert.Heading>
+
+          <p>
+            New version of Testnet deployed, prior version's data has been
+            wiped. Frontend has not been updated.
+          </p>
+        </Alert>
+        <p></p>
+
         {/* <p></p>
         <Alert variant="warning">
           <Alert.Heading>Testnet Updating - IN PROGRESS</Alert.Heading>

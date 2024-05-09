@@ -98,6 +98,21 @@ class LoginForm extends React.Component {
             New version of Testnet deployed, prior version's data has been
             wiped. Frontend has not been updated.
           </p>
+          <p>
+            Check out Proposal on Dash Central and as soon as it shows passing,
+            I will update frontend and get started on new development.
+          </p>
+          <p>
+            <b>
+              <a
+                rel="noopener noreferrer"
+                target="_blank"
+                href="https://www.dashcentral.org/p/DashMoney-Creating-P2P-Markets-Q2-2024"
+              >
+                https://www.dashcentral.org/p/DashMoney-Creating-P2P-Markets-Q2-2024
+              </a>
+            </b>
+          </p>
         </Alert>
         <p></p>
 

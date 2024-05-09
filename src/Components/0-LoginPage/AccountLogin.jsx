@@ -455,9 +455,9 @@ class AccountLogin extends React.Component {
                   <b>dashUniqueIdentityId</b>, and all names purchased after are{" "}
                   <b>dashAliasIdentityId</b> or "aliases". But rest assured, be
                   it the first name or an alias, it will successfully retrieve
-                  your identity. (But the Dapps build by DashMoney will focus on
-                  the DashUniqueIdentityID, so if you want to use a name make
-                  sure it is the first.)
+                  your identity. (But these Dapps focus on the
+                  DashUniqueIdentityID, so if you want to use a name make sure
+                  it is the first.)
                 </p>
                 <p>
                   It is recommended that names for an Identity be related. For
@@ -474,11 +474,11 @@ class AccountLogin extends React.Component {
                   Identities.
                 </p>
                 <p>
-                  <b>DashMoney Dapps</b> are implemented such that you can only
-                  purchase a single Identity for your account(12 word mnemonic).
-                  This is to maintain a simple implementation and not add
-                  complexity in the future. Currently, there is no trustless way
-                  to exchange names with others.
+                  These dapps are implemented such that you can only purchase a
+                  single Identity for your account(12 word mnemonic). This is to
+                  maintain a simple implementation and not add complexity in the
+                  future. Currently, there is no trustless way to exchange names
+                  with others.
                 </p>
               </div>
             </>

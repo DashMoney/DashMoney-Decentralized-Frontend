@@ -90,7 +90,7 @@ class LoginForm extends React.Component {
           </p>
         </div>
 
-        <p></p>
+        {/* <p></p>
         <Alert variant="warning">
           <Alert.Heading>Testnet - New Version Deployed</Alert.Heading>
 
@@ -114,7 +114,7 @@ class LoginForm extends React.Component {
             </b>
           </p>
         </Alert>
-        <p></p>
+        <p></p> */}
 
         {/* <p></p>
         <Alert variant="warning">

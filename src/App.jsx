@@ -971,21 +971,21 @@ class App extends React.Component {
       FrontendFee: 100,
       validFrontendFee: true,
 
-      InitialWhyMoney: true,
+      //InitialWhyMoney: true,
 
-      skipSynchronizationBeforeHeight: 990000,
-      mostRecentBlockHeight: 990000,
+      skipSynchronizationBeforeHeight: 1029000,
+      mostRecentBlockHeight: 1029000,
 
-      DataContractDSO: "Hc5z7Mtre5AQwnZ9Kmk3EFbXP73DmgYPFJyFEsvwizQG",
-      DataContractDGT: "APDRA882aRB68URwDQ7Bgqjc1tqhuFBRhmFoRSeyNPyE",
-      DataContractDGM: "2q7HEMoiZbuwXkVN2mL8VxLwRPoxGh6YWaH5rKqbLNmX",
-      DataContractDGP: "7NmkFZAFS4otLLXhPEHWFz6zUMMFRgbYbFx5N1BZPNba",
-      DataContractDMIO: "39uojukJ7rGSaehAEmu4QTEQLmc4HrTVZ17gfXyCMJcj",
-      DataContractP2P: "7Hiku2RTLZtmLVmwEdMwL6hxotARJRbSzXQwCMos65qw",
-      DataContractDGR: "8WF5xCAEiNzvWxvjLzAci7BDeSZfFByRyrgNH8dFyT4F",
-      DataContractPOD: "68HxGdYVpPafrw6xRtW15xZVoiwWMDb8gE9WroXCP67q",
+      DataContractDSO: "J1yfgbsmkfZ6KDV9VMFJQqZnpecrMAHKHHjZBhqWHdz9",
+      DataContractDGT: "CGxXpYVee7CEJ1NJYuA8ob1t1V4XZ7JyH93R3KNYiaeV",
+      DataContractDGM: "3STFfHfPgaQyt73LA6AmugYL1aMT7P5ZkvScKqdSZC2c",
+      DataContractDGP: "AsHwpSteMBzX3etneG3dR8PWiJKEHVBnc7uGNoHjE1pV",
+      DataContractDMIO: "ATaoUrNj4DKQj38wQCxhLagderzTUmvTkBhH1HJwz1er",
+      DataContractP2P: "4ganxymxTon9MkqsBDeiXGdzkZmLmmXnhZdWZnP4PB7w",
+      DataContractDGR: "HXQg6fj5xv4KYQZAgJYTAhUMcUE2mhqDjVsd3MyTFwvg",
+      DataContractPOD: "2MJGP7N1BtAr2Ce8Aap2iCe8PFg9CLrg2QnzCpSHMxuR",
       DataContractDPNS: "GWRSAVFMjXx8HpQFaNJMqBV7MBgMK4br5UESsB4S31Ec",
-      DataContractRAD: "",
+      // DataContractRAD: "",
 
       expandedTopNav: false,
     };
@@ -1012,18 +1012,10 @@ class App extends React.Component {
   handleSelectedDapp = (theDapp) => {
     this.setState({
       selectedDapp: theDapp,
-      InitialWhyMoney: false, //handles the Initial
+      // InitialWhyMoney: false, //handles the Initial
       expandedTopNav: false,
     });
   };
-
-  // handleWhyMoney = () => {
-  //   this.setState({
-  //     selectedDapp: theDapp,
-  //     InitialWhyMoney:false,
-  //     expandedTopNav: false,
-  //   });
-  // };
 
   hideModal = () => {
     this.setState({
@@ -1160,16 +1152,16 @@ class App extends React.Component {
     // };
     // const client = new Dash.Client(clientOpts);
     // const getMostRecentBlockHeight = async () => {
-    //   const status = await client.getDAPIClient().core.getStatus();
+    //   const status = await client.getDAPIClient().core.getBlockchainStatus();
     //   return status;
     // };
     // getMostRecentBlockHeight()
     //   .then((d) => {
     //     let blockHeight = d.chain.blocksCount;
     //     console.log("Most Recent Block Height:\n", blockHeight);
-    //     this.setState({
-    //       mostRecentBlockHeight: blockHeight - 2500,
-    //     });
+    //     // this.setState({
+    //     //   mostRecentBlockHeight: blockHeight - 2500,
+    //     // });
     //   })
     //   .catch((e) => {
     //     console.error("Something went wrong:\n", e);
@@ -15909,14 +15901,14 @@ RIDES AND DRIVERS FUNCTIONS^^^^
     let isLoginComplete =
       this.state.uniqueName !== "" && this.state.uniqueName !== "no name";
 
-    let showWhyMoney = false;
+    // let showWhyMoney = false;
 
-    if (
-      import.meta.env.VITE_FRONTEND_NAME === "DashMoney" &&
-      this.state.InitialWhyMoney
-    ) {
-      showWhyMoney = true;
-    }
+    // if (
+    //   import.meta.env.VITE_FRONTEND_NAME === "DashMoney" &&
+    //   this.state.InitialWhyMoney
+    // ) {
+    //   showWhyMoney = true;
+    // }
 
     return (
       <>
@@ -15939,14 +15931,15 @@ RIDES AND DRIVERS FUNCTIONS^^^^
         <Container className="g-0">
           <Row className="justify-content-md-center">
             <Col md={9} lg={8} xl={7} xxl={6}>
-              {this.state.selectedDapp === "Login" && showWhyMoney ? (
+              {/* {this.state.selectedDapp === "Login" && showWhyMoney ? (
                 <>
                   <WhyMoney handleSelectedDapp={this.handleSelectedDapp} />
                 </>
               ) : (
                 <></>
-              )}
-              {this.state.selectedDapp === "Login" && !showWhyMoney ? (
+              )} */}
+              {this.state.selectedDapp === "Login" ? (
+                // && !showWhyMoney
                 <>
                   {!this.state.isLoggedIn ? (
                     <>

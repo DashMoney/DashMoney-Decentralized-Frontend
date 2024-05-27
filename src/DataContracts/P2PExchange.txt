@@ -1,0 +1,191 @@
+//THIS IS THE P2P Exchange - REGISTER DATA CONTRACT
+//change .txt to .js  AND use node to create
+
+const Dash = require("dash");
+
+const clientOpts = {
+  network: "testnet",
+  wallet: {
+    mnemonic:
+      "icon hazard scheme idle write tired age early market badge couch  minimum", //<- CHANGE***
+    unsafeOptions: {
+      skipSynchronizationBeforeHeight: 1029000, //<- CHANGE***
+    },
+  },
+};
+
+const client = new Dash.Client(clientOpts);
+
+const registerContract = async () => {
+  const { platform } = client;
+  const identity = await platform.identities.get(
+    "BtCcXi8akHVmpb84S9xAPUj7HdyQ4pdEXWCzejvBaxca" //<- CHANGE***
+  );
+
+  const contractDocuments = {
+    offer: {
+      type: "object",
+      indices: [
+        {
+          name: "toMetoMeViatoUtoUViaUPAt",
+          properties: [
+            { toMe: "asc" }, //Dollars(USD), Euro(EUR), Dash
+            { toMeVia: "asc" }, //(DashMoney.io) Wallet, Paypal, Venmo
+            { toU: "asc" }, //Dollars(USD), Euro(EUR), Dash
+            { toUVia: "asc" }, //(DashMoney.io) Wallet, Paypal, Venmo
+            { $updatedAt: "asc" },
+          ],
+          unique: false,
+        },
+
+        {
+          name: "toMetoUtoUViaUPAT",
+          properties: [
+            { toMe: "asc" }, //Dollars(USD), Euro(EUR), Dash
+            //{ toMeVia: 'asc' }, //Use (DashMoney.io) Wallet Pay-to-Name, Paypal, Venmo
+            { toU: "asc" }, //Dollars(USD), Euro(EUR), Dash
+            { toUVia: "asc" }, //(DashMoney.io) Wallet, Paypal, Venmo
+            //{ exRate: 'asc' },//nOT BY RATE COULD GET OLD
+            { $updatedAt: "asc" },
+          ],
+          unique: false,
+        },
+        {
+          name: "toMetoMeViatoUUPAT",
+          properties: [
+            { toMe: "asc" }, //Dollars(USD), Euro(EUR), Dash
+            { toMeVia: "asc" }, //Use (DashMoney.io) Wallet Pay-to-Name, Paypal, Venmo
+            { toU: "asc" }, //Dollars(USD), Euro(EUR), Dash
+            //{ toUVia: 'asc' }, //(DashMoney.io) Wallet, Paypal, Venmo
+
+            { $updatedAt: "asc" },
+          ],
+          unique: false,
+        },
+        {
+          name: "toMetoUUPAT",
+          properties: [
+            { toMe: "asc" }, //Dollars(USD), Euro(EUR), Dash
+            //{ toMeVia: 'asc' }, //Use (DashMoney.io) Wallet Pay-to-Name, Paypal, Venmo
+            { toU: "asc" }, //Dollars(USD), Euro(EUR), Dash
+            //{ toUVia: 'asc' }, //(DashMoney.io) Wallet, Paypal, Venmo
+
+            { $updatedAt: "asc" },
+          ],
+          unique: false,
+        },
+
+        {
+          //This is the FIND YOUR POSTS
+          name: "ownerIdAndcreatedAt",
+          properties: [{ $ownerId: "asc" }, { $createdAt: "asc" }],
+          unique: false,
+        },
+      ],
+
+      properties: {
+        toMe: {
+          //Dollars(USD), Euro(EUR), Dash
+          type: "string",
+          minLength: 0,
+          maxLength: 34,
+          position: 0,
+        },
+
+        toMeVia: {
+          //(DashMoney.io) Wallet, Paypal, Venmo
+          type: "string",
+          minLength: 0,
+          maxLength: 34,
+          position: 1,
+        },
+
+        toMeHandle: {
+          // 'Bob', 'Bob0242325'
+          type: "string",
+          minLength: 0,
+          maxLength: 34, //maxLength: 34,
+          position: 2,
+        },
+
+        toU: {
+          //Dollars(USD), Euro(EUR), Dash
+          type: "string",
+          minLength: 0,
+          maxLength: 34,
+          position: 3,
+        },
+        toUVia: {
+          //(DashMoney.io) Wallet, Paypal, Venmo
+          type: "string",
+          minLength: 0,
+          maxLength: 34,
+          position: 4,
+        },
+
+        exRate: {
+          type: "integer",
+          minimum: 0,
+          maximum: 10000000000000,
+          position: 5,
+        },
+
+        instruction: {
+          type: "string",
+          minLength: 0,
+          maxLength: 600,
+          position: 6,
+        },
+        minAmt: {
+          type: "integer",
+          minimum: 0,
+          maximum: 1000000000000,
+          position: 7,
+        },
+        maxAmt: {
+          type: "integer",
+          minimum: 0,
+          maximum: 1000000000000,
+          position: 8,
+        },
+        active: {
+          type: "boolean",
+          position: 9,
+        },
+        myStore: {
+          type: "boolean",
+          position: 10,
+        },
+      },
+
+      required: [
+        "toMe",
+        "toMeVia",
+        "toMeHandle",
+        "toU",
+        "toUVia",
+        //'toUHandle',
+        "exRate",
+        "instruction",
+        "minAmt",
+        "maxAmt",
+        "active",
+        "myStore",
+        "$createdAt",
+        "$updatedAt",
+      ],
+      additionalProperties: false,
+    },
+  };
+
+  const contract = await platform.contracts.create(contractDocuments, identity);
+  console.dir({ contract: contract.toJSON() });
+
+  await platform.contracts.publish(contract, identity);
+  return contract;
+};
+
+registerContract()
+  .then((d) => console.log("Contract registered:\n", d.toJSON()))
+  .catch((e) => console.error("Something went wrong:\n", e))
+  .finally(() => client.disconnect());

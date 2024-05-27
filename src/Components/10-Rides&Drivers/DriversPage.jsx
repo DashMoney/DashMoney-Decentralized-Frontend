@@ -1,4 +1,3 @@
-//This will be like the NEARBY and use all the forms a stuff as well.
 import React from "react";
 
 import Spinner from "react-bootstrap/Spinner";
@@ -12,19 +11,20 @@ import Rides from "./Rides";
 //import YourPostsPage from "./YourPosts/YourPostsPage";
 
 class DriversPage extends React.Component {
-  // componentDidMount() {
-  //   if (this.props.OnPageLoadNEARBY) {
-  //     this.props.pullOnPageLoadTriggerNEARBY();
-  //   }
+  componentDidMount() {
+    if (this.props.OnPageLoadDRIVERS) {
+      this.props.pullOnPageLoadTriggerDRIVERS();
+    }
 
-  //   if (this.props.isLoginComplete && this.props.InitialPullNearBy) {
-  //     this.props.pullInitialTriggerNEARBY();
-  //   }
-  // }
+    //   if (this.props.isLoginComplete && this.props.InitialPullDrivers) {
+    //     this.props.pullInitialTriggerDRIVERS();
+    //   }
+  }
+
   render() {
     return (
       <>
-        {/* {this.props.isLoginComplete ? (
+        {this.props.isLoginComplete ? (
           <>
             <TabsOnPage
               whichDriversTab={this.props.whichDriversTab}
@@ -32,12 +32,12 @@ class DriversPage extends React.Component {
             />
           </>
         ) : (
-          <> */}
-        <div className="bodytext" style={{ textAlign: "center" }}>
-          <h3>Build the Dash Economy by earning Dash.</h3>
-        </div>
-        {/* </>
-        )} */}
+          <>
+            <div className="bodytext" style={{ textAlign: "center" }}>
+              <h3>Build the Dash Economy by earning Dash.</h3>
+            </div>
+          </>
+        )}
 
         <div className="bodytextnotop">
           {this.props.whichDriversTab === "Search" ? (
@@ -58,8 +58,8 @@ class DriversPage extends React.Component {
                 tooLongRegionNameError={this.props.tooLongRegionNameError}
                 isLoadingDriversForm={this.props.isLoadingDriversForm}
                 handleOnChangeValidation={this.props.handleOnChangeValidation}
-                submittedStateAndCategoryTHENConstruct_DRIVERS={
-                  this.props.submittedStateAndCategoryTHENConstruct_DRIVERS
+                submittedDriversTHENConstruct={
+                  this.props.submittedDriversTHENConstruct
                 }
               />
 
@@ -82,19 +82,16 @@ class DriversPage extends React.Component {
               ) : (
                 <></>
               )}
-              <p></p>
 
               <Rides
-                //ALL STATE MUST BE IN APP.JS <-
                 SearchedDrives={this.props.SearchedDrives}
                 SearchedDrivesNames={this.props.SearchedDrivesNames}
                 identity={this.props.identity}
                 uniqueName={this.props.uniqueName}
                 //handleSearchedPost={this.props.handleSearchedPost}
-                //isLoadingNearbySearch={this.props.isLoadingNearbySearch}
-                //isLoadingNearbyInitial={this.props.isLoadingNearbyInitial}
+                isLoadingDriversSearch={this.props.isLoadingDriversSearch}
+                isLoadingDriversInitial={this.props.isLoadingDriversInitial}
                 mode={this.props.mode}
-                //isLoadingYourRides={this.props.isLoadingYourRides}
               />
             </>
           ) : (

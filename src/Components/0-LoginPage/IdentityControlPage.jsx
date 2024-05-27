@@ -154,6 +154,9 @@ class IdentityControlPage extends React.Component {
             >
               <b>Copy</b>
             </Button> */}
+            {/* this.props.withdrawalCredits
+            NEED TO ADD FORM FOR THIS
+            */}
             <p>
               This will be where a user will be able to change their Platform
               credits to Dash in their wallet.

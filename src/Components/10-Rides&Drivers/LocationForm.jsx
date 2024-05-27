@@ -1,7 +1,5 @@
 import React from "react";
-
 import Button from "react-bootstrap/Button";
-
 import Form from "react-bootstrap/Form";
 
 class LocationForm extends React.Component {
@@ -10,7 +8,7 @@ class LocationForm extends React.Component {
   // };
 
   onChange = (event) => {
-    //console.log(event.target.value);
+    // console.log(event.target.value);
 
     event.preventDefault();
     event.stopPropagation();
@@ -23,14 +21,14 @@ class LocationForm extends React.Component {
   //DISCONNECTED BELOW
   handleSubmitClick = (event) => {
     event.preventDefault();
+    event.stopPropagation();
     //console.log(event.target.ControlTextarea1.value);
 
-    this.props.submittedStateAndCategoryTHENConstruct();
+    this.props.submittedDriversTHENConstruct();
   };
 
   render() {
     /**
-
       cityInput: "",
       validCity: false,
       tooLongCityNameError: false,
@@ -49,7 +47,7 @@ class LocationForm extends React.Component {
         >
           {/* CITY INPUT BELOW */}
 
-          <Form.Group className="mb-3" controlId="formCityName">
+          <Form.Group className="mb-3" controlId="formCityNameDriver">
             <h4 style={{ marginTop: ".5rem", marginBottom: ".2rem" }}>
               City/Town
             </h4>
@@ -70,7 +68,7 @@ class LocationForm extends React.Component {
           </Form.Group>
 
           {/* REGION INPUT BELOW */}
-          <Form.Group className="mb-3" controlId="formRegionName">
+          <Form.Group className="mb-3" controlId="formRegionNameDriver">
             <>
               <h4 style={{ marginTop: ".5rem", marginBottom: ".2rem" }}>
                 Region
@@ -79,8 +77,8 @@ class LocationForm extends React.Component {
                 type="text"
                 placeholder="Enter state/province (Optional)"
                 required
-                isInvalid={this.props.tooLongCountryRegionNameError}
-                isValid={this.props.validCountryRegion}
+                isInvalid={this.props.tooLongRegionNameError}
+                isValid={this.props.validRegion}
               />
               <p></p>
               <Form.Control.Feedback type="invalid">
@@ -97,10 +95,8 @@ class LocationForm extends React.Component {
           <div className="ButtonRightNoUnderline">
             {this.props.validCity &&
             this.props.validRegion &&
-            !this.props.isLoadingNearbyForm ? (
-              <Button
-                variant="primary" //type="submit"
-              >
+            !this.props.isLoadingDriversForm ? (
+              <Button variant="primary" type="submit">
                 <b>Start Search</b>
               </Button>
             ) : (
@@ -108,15 +104,15 @@ class LocationForm extends React.Component {
             )}
 
             {(!this.props.validCity || !this.props.validRegion) &&
-            !this.props.isLoadingNearbyForm ? (
+            !this.props.isLoadingDriversForm ? (
               <Button variant="primary" disabled>
-                <b>Start Search</b>
+                <b>Search</b>
               </Button>
             ) : (
               <></>
             )}
 
-            {this.props.isLoadingNearbyForm ? (
+            {this.props.isLoadingDriversForm ? (
               <Button variant="primary">
                 <b>Loading..</b>
               </Button>

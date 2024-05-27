@@ -1,0 +1,176 @@
+//THIS IS THE MESSAGES DAPP - REGISTER DATA CONTRACT v0.25!!!
+//change .txt to .js  AND use node to create
+
+const Dash = require("dash");
+
+const clientOpts = {
+  network: "testnet",
+  wallet: {
+    mnemonic:
+      "icon hazard scheme idle write tired age early market badge couch  minimum", //<- CHANGE***
+    unsafeOptions: {
+      skipSynchronizationBeforeHeight: 1029000, //<- CHANGE***
+    },
+  },
+};
+
+const client = new Dash.Client(clientOpts);
+
+const registerContract = async () => {
+  const { platform } = client;
+  const identity = await platform.identities.get(
+    "BtCcXi8akHVmpb84S9xAPUj7HdyQ4pdEXWCzejvBaxca" //<- CHANGE***
+  );
+
+  const contractDocuments = {
+    dsomsg: {
+      type: "object",
+      indices: [
+        {
+          //This is the the Everybody query ->
+          name: "shoutAndcreatedAt",
+          properties: [{ sh: "asc" }, { $createdAt: "asc" }],
+          unique: false,
+        },
+        {
+          //This is the the Foryou query -> From you (Shout and DM)
+          name: "ownerIdAndcreatedAt",
+          properties: [{ $ownerId: "asc" }, { $createdAt: "asc" }],
+          unique: false,
+        },
+      ],
+
+      properties: {
+        msg: {
+          type: "string",
+          minLength: 0,
+          maxLength: 450,
+          position: 0,
+        },
+        topic: {
+          type: "string",
+          minLength: 0,
+          maxLength: 120,
+          position: 1,
+        },
+        sh: {
+          type: "string",
+          minLength: 0,
+          maxLength: 32,
+          position: 2,
+        },
+      },
+
+      required: ["msg", "$createdAt", "$updatedAt"],
+      additionalProperties: false,
+    },
+
+    dsothr: {
+      type: "object",
+      indices: [
+        {
+          //This is Sender QUERY
+          name: "ownerIdAndcreatedAt",
+          properties: [{ $ownerId: "asc" }, { $createdAt: "asc" }],
+          unique: false,
+        },
+        {
+          name: "msgId",
+          properties: [{ msgId: "asc" }],
+          unique: false,
+        },
+      ],
+
+      properties: {
+        msg: {
+          type: "string",
+          minLength: 0,
+          maxLength: 450,
+          position: 0,
+        },
+        sh: {
+          type: "string",
+          minLength: 0,
+          maxLength: 32,
+          position: 1,
+        },
+        msgId: {
+          //This is for enabling the reply/thread capability*
+          type: "array",
+          byteArray: true,
+          minItems: 32,
+          maxItems: 32,
+          contentMediaType: "application/x.dash.dpp.identifier",
+          position: 2,
+        },
+      },
+      required: ["msg", "msgId", "$createdAt", "$updatedAt"],
+      additionalProperties: false,
+    },
+
+    dsotag: {
+      type: "object",
+      indices: [
+        {
+          //This is Sender QUERY, just in case msg get deleted for 3rd query below.
+          name: "ownerIdAndcreatedAt",
+          properties: [{ $ownerId: "asc" }, { $createdAt: "asc" }],
+          unique: false,
+        },
+        {
+          //This is so the user can find the most recent tags for them
+          name: "toIdandcreatedAt",
+          properties: [{ toId: "asc" }, { $createdAt: "asc" }],
+          unique: false,
+        },
+        {
+          //This is for the finding and deleting of tags
+          name: "msgId",
+          properties: [{ msgId: "asc" }],
+          unique: false,
+        },
+      ],
+      properties: {
+        toId: {
+          type: "array",
+          byteArray: true,
+          minItems: 32,
+          maxItems: 32,
+          contentMediaType: "application/x.dash.dpp.identifier",
+          position: 0,
+        },
+        msgId: {
+          type: "array",
+          byteArray: true,
+          minItems: 32,
+          maxItems: 32,
+          contentMediaType: "application/x.dash.dpp.identifier",
+          position: 1,
+        },
+        recipientKeyIndex: {
+          type: "integer",
+          minimum: 0,
+          position: 2,
+        },
+        senderKeyIndex: {
+          type: "integer",
+          minimum: 0,
+          position: 3,
+        },
+      },
+      required: ["toId", "msgId", "$createdAt", "$updatedAt"],
+      additionalProperties: false,
+    },
+  };
+
+  const contract = await platform.contracts.create(contractDocuments, identity);
+  console.dir({ contract: contract.toJSON() });
+
+  await platform.contracts.publish(contract, identity);
+  return contract;
+};
+
+registerContract()
+  .then((d) => console.log("Contract registered:\n", d.toJSON()))
+  .catch((e) => console.error("Something went wrong:\n", e))
+  .finally(() => client.disconnect());

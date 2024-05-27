@@ -1,0 +1,270 @@
+//THIS IS THE MY STORE & SHOPPING - REGISTER DATA CONTRACT - no timeStamp no arrays
+//change .txt to .js  AND use node to create
+
+const Dash = require("dash");
+
+const clientOpts = {
+  network: "testnet",
+  wallet: {
+    mnemonic:
+      "icon hazard scheme idle write tired age early market badge couch  minimum", //<- CHANGE***
+    unsafeOptions: {
+      skipSynchronizationBeforeHeight: 1029000, //<- CHANGE***
+    },
+  },
+};
+
+const client = new Dash.Client(clientOpts);
+
+const registerContract = async () => {
+  const { platform } = client;
+  const identity = await platform.identities.get(
+    "BtCcXi8akHVmpb84S9xAPUj7HdyQ4pdEXWCzejvBaxca" //<- CHANGE***
+  );
+
+  const contractDocuments = {
+    dgpstore: {
+      type: "object",
+      //Search for My Store (by Merchant) will be by ownerId
+      //Search for Store (by Buyer) will be DPNS Doc then MyStore
+      indices: [
+        {
+          name: "ownerId",
+          properties: [{ $ownerId: "asc" }],
+          unique: true, // NOT false, bc singleton document
+        },
+      ],
+      properties: {
+        description: {
+          //Why is the description required? mainly bc no image so need a differenciator
+          type: "string",
+          minLength: 0,
+          maxLength: 350,
+          position: 0,
+        },
+        public: {
+          type: "boolean",
+          position: 1,
+        },
+        open: {
+          type: "boolean",
+          position: 2,
+        },
+        payLater: {
+          type: "boolean",
+          position: 3,
+        },
+        acceptCredits: {
+          type: "boolean",
+          position: 4,
+        },
+        acceptDash: {
+          type: "boolean",
+          position: 5,
+        },
+        paymentAddress: {
+          type: "string",
+          minLength: 34,
+          maxLength: 34,
+          position: 6,
+        },
+        // reqAccept: {
+        //   //Part
+        //   type: 'boolean',
+        //   position: 6,
+        // },
+        // reqConfirm: {
+        //   type: 'boolean',
+        //   position: 7,
+        // },
+
+        //https://github.com/dashpay/dips/blob/master/dip-0015.md#the-profile
+        // image:{
+        // }
+      },
+      required: [
+        "description",
+        "public",
+        "open",
+        "payLater",
+        "acceptCredits",
+        "acceptDash",
+        "$createdAt",
+        "$updatedAt",
+      ],
+      additionalProperties: false,
+    },
+    dgpitem: {
+      type: "object",
+      indices: [
+        {
+          //This is getting a store's items
+          name: "ownerId",
+          properties: [{ $ownerId: "asc" }],
+          unique: false,
+        },
+      ],
+      properties: {
+        name: {
+          type: "string",
+          minLength: 0,
+          maxLength: 32,
+          position: 0,
+        },
+        price: {
+          type: "integer",
+          minimum: 0,
+          maximum: 1000000000000000,
+          position: 1,
+        },
+        description: {
+          type: "string",
+          minLength: 0,
+          maxLength: 250,
+          position: 2,
+        },
+        category: {
+          type: "string",
+          minLength: 0,
+          maxLength: 32,
+          position: 3,
+        },
+        itemNum: {
+          type: "integer",
+          minimum: 0,
+          maximum: 100000,
+          position: 4,
+        },
+        avail: {
+          type: "boolean",
+          position: 5,
+        },
+      },
+      required: ["name", "price", "avail", "$createdAt", "$updatedAt"],
+      additionalProperties: false,
+    },
+    dgporder: {
+      type: "object",
+      indices: [
+        {
+          //This is BUYER QUERY
+          name: "ownerIdAndcreatedAt",
+          properties: [{ $ownerId: "asc" }, { $createdAt: "asc" }],
+          unique: false,
+        },
+        {
+          //This is MERCHANT QUERY
+          name: "toIdandcreatedAt",
+          properties: [{ toId: "asc" }, { $createdAt: "asc" }],
+          unique: false,
+        },
+        {
+          //This is Active Orders QUERY
+          name: "createdAt",
+          properties: [{ $createdAt: "asc" }],
+          unique: false,
+        },
+      ],
+      properties: {
+        comment: {
+          type: "string",
+          minLength: 0,
+          maxLength: 350,
+          position: 0,
+        },
+
+        cart: {
+          type: "string",
+          
+          maxLength: 2000, //ROUGHLY 50 CHARS FOR AN ITEM,AMOUNT AND OVER 20 ITEMS POSSIBLE.
+          position: 1,
+        }, // JSON STRINGIFY AND PARSE
+
+        toId: {
+          //This is the Merchant ownerId
+          type: "array",
+          byteArray: true,
+          minItems: 32,
+          maxItems: 32,
+          contentMediaType: "application/x.dash.dpp.identifier",
+          position: 2,
+        },
+
+        txId: {
+          type: "string",
+          minLength: 0, // change to 0 so -> PayLater or "" or Tracking
+          maxLength: 64,
+          position: 3,
+        },
+      },
+      required: ["cart", "toId", "txId", "$createdAt", "$updatedAt"],
+      additionalProperties: false,
+    },
+
+    dgpmsg: {
+      //CONFIRM/ACCEPT ORDER
+      type: "object",
+      indices: [
+        {
+          //This is delete QUERY
+          name: "ownerIdAndcreatedAt",
+          properties: [{ $ownerId: "asc" }, { $createdAt: "asc" }],
+          unique: false,
+        },
+        {
+          name: "orderIdandcreatedAt",
+          properties: [{ orderId: "asc" }, { $createdAt: "asc" }],
+          unique: false,
+        },
+      ],
+      properties: {
+        msg: {
+          type: "string",
+          minLength: 0,
+          maxLength: 350,
+          position: 0,
+        },
+        orderId: {
+          type: "array",
+          byteArray: true,
+          minItems: 32,
+          maxItems: 32,
+          contentMediaType: "application/x.dash.dpp.identifier",
+          position: 1,
+        },
+        toId: {
+          //TAGS THE OWNER SO IF DELETE ORDER  //MEANS ACCEPTED
+          //This is the ORDER ownerId
+          type: "array",
+          byteArray: true,
+          minItems: 32,
+          maxItems: 32,
+          contentMediaType: "application/x.dash.dpp.identifier",
+          position: 2,
+        },
+
+        txId: {
+          //Copy of TxID from the Order <=
+          //MEANS COMPLETED/CONFIRM?
+          type: "string",
+          minLength: 0,
+          maxLength: 64,
+          position: 3,
+        },
+      },
+      required: ["msg", "orderId", "$createdAt", "$updatedAt"],
+      additionalProperties: false,
+    },
+  };
+
+  const contract = await platform.contracts.create(contractDocuments, identity);
+  console.dir({ contract: contract.toJSON() });
+
+  await platform.contracts.publish(contract, identity);
+  return contract;
+};
+
+registerContract()
+  .then((d) => console.log("Contract registered:\n", d.toJSON()))
+  .catch((e) => console.error("Something went wrong:\n", e))
+  .finally(() => client.disconnect());

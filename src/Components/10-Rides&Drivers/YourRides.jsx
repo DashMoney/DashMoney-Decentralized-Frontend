@@ -19,6 +19,7 @@ class YourRides extends React.Component {
       return (
         <YourRide
           key={index}
+          identity={this.props.identity}
           mode={this.props.mode}
           index={index}
           ride={ride}

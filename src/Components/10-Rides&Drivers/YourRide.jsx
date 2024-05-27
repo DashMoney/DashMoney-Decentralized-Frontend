@@ -37,7 +37,7 @@ class YourRide extends React.Component {
   verifyRequestStatus = (paidThrs) => {
     if (
       //this.props.ride.msgId !== this.props.identity ||
-      this.props.ride.msgId !== "" &&
+      this.props.ride.msgId !== this.props.identity &&
       paidThrs.length === 0
     ) {
       //console.log("Acceptance Rejected");

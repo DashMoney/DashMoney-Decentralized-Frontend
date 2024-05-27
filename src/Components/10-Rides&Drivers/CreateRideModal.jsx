@@ -31,13 +31,29 @@ import handleDenomDisplay from "../UnitDisplay";
         'amt',
         'extraInstr',
         'numOfRiders',
-        'msgId',
+        'replyId',
         //toId
         'txId1',
         //txId2
         //txId3
 
  */
+
+// validArea;
+// validCity;
+// validRegion;
+// validpickupAddr;
+// validdropoffAddr;
+// //pmtForm
+// validtimeEst;
+// //validtimeEstUnit;
+// validdistEst;
+// //validdistEstUnit
+// //paymentType
+// validAmt;
+// validReqTime;
+// //numOfRidersInput
+// validextraInstr;
 
 class CreateRideModal extends React.Component {
   constructor(props) {
@@ -278,15 +294,15 @@ class CreateRideModal extends React.Component {
     if (event.target.id === "formReqTime") {
       event.preventDefault();
       event.stopPropagation();
-      console.log(event.target.value);
-      console.log(event);
+      //console.log(event.target.value);
+      //console.log(event);
       this.reqTimeTimeParse(event.target.value);
     }
     if (event.target.id === "formReqTimeDate") {
       event.preventDefault();
       event.stopPropagation();
-      console.log(event.target.value);
-      console.log(event);
+      //console.log(event.target.value);
+      //console.log(event);
       this.reqTimeDateParse(event.target.value);
     }
 
@@ -637,7 +653,7 @@ class CreateRideModal extends React.Component {
       pickupAddr: this.state.pickupAddrInput,
       dropoffAddr: this.state.dropoffAddrInput,
 
-      timeEst: this.state.timeEstInput,
+      timeEst: Number(this.state.timeEstInput),
       //  'timeEstUnit'
       distEst: this.state.distEstInput,
       // 'distEstUnit',
@@ -652,15 +668,14 @@ class CreateRideModal extends React.Component {
       numOfRiders: Number(this.state.numOfRidersInput),
       extraInstr: this.state.extraInstrInput,
 
-      msgId: "",
+      replyId: "",
       // toId:''
       txId1: "",
       //txId2: '',// sort out in createRide Function ->
-      //txId3: '',// sort out in createRide Function ->
     };
 
-    console.log(newRide);
-    this.props.passToStateAndDisplay(newRide);
+    //console.log(newRide);
+    this.props.createYourRide(newRide);
     this.props.hideModal();
   };
 

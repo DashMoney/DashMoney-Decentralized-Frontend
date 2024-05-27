@@ -1,0 +1,204 @@
+//THIS IS THE NEARBY DAPP - REGISTER DATA CONTRACT
+//change .txt to .js  AND use node to create
+
+const Dash = require("dash");
+
+const clientOpts = {
+  network: "testnet",
+  wallet: {
+    mnemonic:
+      "icon hazard scheme idle write tired age early market badge couch  minimum", //<- CHANGE***
+    unsafeOptions: {
+      skipSynchronizationBeforeHeight: 1029000, //<- CHANGE***
+    },
+  },
+};
+
+const client = new Dash.Client(clientOpts);
+
+const registerContract = async () => {
+  const { platform } = client;
+  const identity = await platform.identities.get(
+    "BtCcXi8akHVmpb84S9xAPUj7HdyQ4pdEXWCzejvBaxca" //<- CHANGE***
+  );
+
+  const contractDocuments = {
+    dmiopost: {
+      type: "object",
+      indices: [
+        {
+          name: "categorycreatedAt",
+          properties: [{ category: "asc" }, { $createdAt: "asc" }],
+          unique: false,
+        },
+        {
+          name: "countrycategorycreatedAt",
+          properties: [
+            { country: "asc" },
+            { category: "asc" },
+            { $createdAt: "asc" },
+          ],
+          unique: false,
+        },
+        {
+          name: "regioncategorycreatedAt", //reg is region for state or province, etc
+          properties: [
+            { region: "asc" },
+            { category: "asc" },
+            { $createdAt: "asc" },
+          ],
+          unique: false,
+        },
+        {
+          name: "citycategorycreatedAt",
+          properties: [
+            { city: "asc" },
+            { category: "asc" },
+            { $createdAt: "asc" },
+          ],
+          unique: false,
+        },
+        {
+          name: "cityregioncategorycreatedAt",
+          properties: [
+            { city: "asc" },
+            { region: "asc" },
+            { category: "asc" },
+            { $createdAt: "asc" },
+          ],
+          unique: false,
+        },
+        {
+          name: "citycountrycategorycreatedAt",
+          properties: [
+            { city: "asc" },
+            { country: "asc" },
+            { category: "asc" },
+            { $createdAt: "asc" },
+          ],
+          unique: false,
+        },
+
+        {
+          //This is the FIND YOUR POSTS
+          name: "ownerIdAndcreatedAt",
+          properties: [{ $ownerId: "asc" }, { $createdAt: "asc" }],
+          unique: false,
+        },
+      ],
+
+      properties: {
+        city: {
+          type: "string",
+          minLength: 0,
+          maxLength: 32,
+          position: 0,
+        },
+        region: {
+          type: "string",
+          minLength: 0,
+          maxLength: 32,
+          position: 1,
+        },
+        country: {
+          type: "string",
+          minLength: 0,
+          maxLength: 32,
+          position: 2,
+        },
+
+        description: {
+          type: "string",
+          minLength: 0,
+          maxLength: 450,
+          position: 3,
+        },
+
+        category: {
+          type: "string",
+          minLength: 0,
+          maxLength: 32,
+          position: 4,
+        },
+
+        link: {
+          //one url/http address
+          type: "string",
+          minLength: 0,
+          maxLength: 250,
+          position: 5,
+        },
+
+        active: {
+          type: "boolean",
+          position: 6,
+        },
+
+        dgp: {
+          //My Store
+          type: "boolean",
+          position: 7,
+        },
+
+        //EVENTS ->
+        // -> add groupName/title for Joining Group function!
+        group: {
+          type: "string",
+          minLength: 0,
+          maxLength: 32,
+          position: 8,
+        },
+
+        address: {
+          type: "string",
+          minLength: 0,
+          maxLength: 250,
+          position: 9,
+        },
+
+        date: {
+          type: "string",
+          minLength: 0,
+          maxLength: 32,
+          position: 10,
+        },
+
+        time: {
+          type: "string",
+          minLength: 0,
+          maxLength: 32,
+          position: 11,
+        },
+
+        resrv: {
+          //Reservations / Appointment
+          type: "boolean",
+          position: 12,
+        },
+      },
+
+      required: [
+        "city",
+        "region",
+        "country",
+        "description",
+        "category",
+        "active",
+        "$createdAt",
+        "$updatedAt",
+      ],
+      additionalProperties: false,
+    },
+  };
+
+  const contract = await platform.contracts.create(contractDocuments, identity);
+  console.dir({ contract: contract.toJSON() });
+
+  await platform.contracts.publish(contract, identity);
+  return contract;
+};
+
+registerContract()
+  .then((d) => console.log("Contract registered:\n", d.toJSON()))
+  .catch((e) => console.error("Something went wrong:\n", e))
+  .finally(() => client.disconnect());

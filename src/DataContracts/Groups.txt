@@ -1,0 +1,132 @@
+//THIS IS THE GROUPS DAPP - REGISTER DATA CONTRACT
+//change .txt to .js  AND use node to create
+
+const Dash = require("dash");
+
+const clientOpts = {
+  network: "testnet",
+  wallet: {
+    mnemonic:
+      "icon hazard scheme idle write tired age early market badge couch  minimum", //<- CHANGE***
+    unsafeOptions: {
+      skipSynchronizationBeforeHeight: 1029000, //<- CHANGE***
+    },
+  },
+};
+
+const client = new Dash.Client(clientOpts);
+
+const registerContract = async () => {
+  const { platform } = client;
+  const identity = await platform.identities.get(
+    "BtCcXi8akHVmpb84S9xAPUj7HdyQ4pdEXWCzejvBaxca" //<- CHANGE***
+  );
+
+  const contractDocuments = {
+    dgtinvite: {
+      type: "object",
+      indices: [
+        {
+          //This is Sender QUERY
+          name: "ownerIdcreatedAt",
+          properties: [{ $ownerId: "asc" }, { $createdAt: "asc" }],
+          unique: false,
+        },
+        {
+          //Will find all invites self and others sent -> to you
+          name: "toIdcreatedAt",
+          properties: [{ toId: "asc" }, { $createdAt: "asc" }],
+          unique: false,
+        },
+
+        {
+          //Finds all invites and so can view members
+          name: "groupAnddgt",
+          properties: [{ group: "asc" }, { dgt: "asc" }],
+          unique: false,
+        },
+      ],
+      properties: {
+        toId: {
+          type: "array",
+          byteArray: true,
+          minItems: 32,
+          maxItems: 32,
+          contentMediaType: "application/x.dash.dpp.identifier",
+          position: 0,
+        },
+        group: {
+          type: "string",
+          minLength: 0,
+          maxLength: 32,
+          position: 1,
+        },
+        dgt: {
+          type: "string",
+          minLength: 0,
+          maxLength: 32,
+          position: 2,
+        },
+      },
+      required: ["toId", "group", "dgt", "$updatedAt", "$createdAt"],
+      additionalProperties: false,
+    },
+
+    dgtmsg: {
+      type: "object",
+      indices: [
+        {
+          //This is Sender QUERY
+          name: "ownerIdAndcreatedAt",
+          properties: [{ $ownerId: "asc" }, { $createdAt: "asc" }],
+          unique: false,
+        },
+        {
+          //Finds the msgs for a group
+          name: "groupAndcreatedAt",
+          properties: [{ group: "asc" }, { $createdAt: "asc" }],
+          unique: false,
+        },
+
+        {
+          name: "createdAt", //This is for active Groups
+          properties: [{ $createdAt: "asc" }],
+          unique: false,
+        },
+      ],
+      properties: {
+        message: {
+          type: "string",
+          minLength: 0,
+          maxLength: 450,
+          position: 0,
+        },
+        group: {
+          type: "string",
+          minLength: 0,
+          maxLength: 32,
+          position: 1,
+        },
+        dgt: {
+          type: "string",
+          minLength: 0,
+          maxLength: 32,
+          position: 2,
+        },
+      },
+      required: ["message", "group", "$createdAt", "$updatedAt"], //Added the created and updated so that can edit msgs in the future.
+      additionalProperties: false,
+    },
+  };
+
+  const contract = await platform.contracts.create(contractDocuments, identity);
+  console.dir({ contract: contract.toJSON() });
+
+  await platform.contracts.publish(contract, identity);
+  return contract;
+};
+
+registerContract()
+  .then((d) => console.log("Contract registered:\n", d.toJSON()))
+  .catch((e) => console.error("Something went wrong:\n", e))
+  .finally(() => client.disconnect());

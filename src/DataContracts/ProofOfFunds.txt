@@ -1,0 +1,86 @@
+//THIS IS THE PROOFOFFUNDS - REGISTER DATA CONTRACT
+//change .txt to .js  AND use node to create
+
+const Dash = require("dash");
+
+const clientOpts = {
+  network: "testnet",
+  wallet: {
+    mnemonic:
+      "icon hazard scheme idle write tired age early market badge couch  minimum", //<- CHANGE***
+    unsafeOptions: {
+      skipSynchronizationBeforeHeight: 1029000, //<- CHANGE***
+    },
+  },
+};
+
+const client = new Dash.Client(clientOpts);
+
+const registerContract = async () => {
+  const { platform } = client;
+  const identity = await platform.identities.get(
+    "BtCcXi8akHVmpb84S9xAPUj7HdyQ4pdEXWCzejvBaxca" //<- CHANGE***
+  );
+
+  const contractDocuments = {
+    podproof: {
+      type: "object",
+      indices: [
+        {
+          //This is proof provider query and proof searcher by name
+          name: "ownerIdAndcreatedAt",
+          properties: [{ $ownerId: "asc" }, { $createdAt: "asc" }],
+          unique: false,
+        },
+        {
+          //This is to ensure address uniqueness and no duplicates
+          name: "address",
+          properties: [{ address: "asc" }],
+          unique: true,
+        },
+      ],
+      properties: {
+        address: {
+          type: "string",
+          minLength: 34,
+          maxLength: 34,
+          position: 0,
+        },
+        message: {
+          type: "string",
+          minLength: 0,
+          maxLength: 450,
+          position: 1,
+        },
+        signature: {
+          type: "string",
+          minLength: 1,
+          maxLength: 600,
+          position: 2,
+        },
+      },
+      required: ["address", "message", "signature", "$createdAt", "$updatedAt"],
+      additionalProperties: false,
+    },
+  };
+
+  const contract = await platform.contracts.create(contractDocuments, identity);
+  //ADDED THE CONTRACT CONFIG PART ***
+  contract.setConfig({
+    canBeDeleted: false,
+    readonly: false, // Make contract read-only
+    keepsHistory: false, // Enable storing of contract history
+    documentsKeepHistoryContractDefault: false,
+    documentsMutableContractDefault: true, //THIS MEANS I CAN NOT DELETE OR EDIT!!
+  });
+
+  console.dir({ contract: contract.toJSON() });
+
+  await platform.contracts.publish(contract, identity);
+  return contract;
+};
+
+registerContract()
+  .then((d) => console.log("Contract registered:\n", d.toJSON()))
+  .catch((e) => console.error("Something went wrong:\n", e))
+  .finally(() => client.disconnect());

@@ -22,37 +22,21 @@ class Rides extends React.Component {
 
     return (
       <>
-        <p></p>
-        {this.props.isLoadingDriversSearch ? (
+        {this.props.SearchedDrives.length === 0 ? (
           <>
-            <div id="spinner">
-              <Spinner animation="border" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </Spinner>
-            </div>
-          </>
-        ) : (
-          <>
-            {/* <div className="d-grid gap-2">
-              <Button
-                variant="primary"
-                onClick={() => this.props.showModal("CreateRideModal")}
-              >
-                <b>Create Post</b>
-              </Button>
-            </div> */}
-            <p></p>
-
-            {this.props.SearchedDrives.length === 0 ? (
+            {this.props.isLoadingDriversInitial ||
+            this.props.isLoadingDriversSearch ? (
+              <></>
+            ) : (
               <>
                 <p style={{ textAlign: "center" }}>
                   (This is where available rides will appear)
                 </p>
               </>
-            ) : (
-              <div className="footer">{rides}</div>
             )}
           </>
+        ) : (
+          <div className="footer">{rides}</div>
         )}
       </>
     );

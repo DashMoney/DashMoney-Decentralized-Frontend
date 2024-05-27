@@ -7,11 +7,12 @@ import CreditsOnPage from "../CreditsOnPage";
 import YourRides from "./YourRides";
 
 class RidesPage extends React.Component {
-  // componentDidMount() {
-  //   if (this.props.isLoginComplete && this.props.InitialPullRides) {
-  //     this.props.pullInitialTriggerRIDES();
-  //   }
-  // }
+  componentDidMount() {
+    if (this.props.isLoginComplete && this.props.InitialPullRides) {
+      this.props.pullInitialTriggerRIDES();
+    }
+  }
+
   render() {
     return (
       <>

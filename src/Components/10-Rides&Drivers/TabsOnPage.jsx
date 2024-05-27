@@ -8,8 +8,8 @@ class TabsOnPage extends React.Component {
         <Nav
           fill
           variant="pills"
-          defaultActiveKey={this.props.whichDrivesTab}
-          onSelect={(eventKey) => this.props.handleDrivesTab(eventKey)}
+          defaultActiveKey={this.props.whichDriversTab}
+          onSelect={(eventKey) => this.props.handleDriversTab(eventKey)}
         >
           <Nav.Item>
             <Nav.Link eventKey="Search">

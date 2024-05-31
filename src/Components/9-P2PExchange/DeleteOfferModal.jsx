@@ -4,7 +4,6 @@ import Badge from "react-bootstrap/Badge";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import CloseButton from "react-bootstrap/CloseButton";
-import Spinner from "react-bootstrap/Spinner";
 
 class DeleteOfferModal extends React.Component {
   handleCloseClick = () => {

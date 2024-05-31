@@ -8,7 +8,7 @@ import CreditsOnPage from "../CreditsOnPage";
 import LocationForm from "./LocationForm";
 
 import Rides from "./Rides";
-//import YourPostsPage from "./YourPosts/YourPostsPage";
+import YourDrives from "./YourDrives";
 
 class DriversPage extends React.Component {
   componentDidMount() {
@@ -16,9 +16,9 @@ class DriversPage extends React.Component {
       this.props.pullOnPageLoadTriggerDRIVERS();
     }
 
-    //   if (this.props.isLoginComplete && this.props.InitialPullDrivers) {
-    //     this.props.pullInitialTriggerDRIVERS();
-    //   }
+    if (this.props.isLoginComplete && this.props.InitialPullDrivers) {
+      this.props.pullInitialTriggerDRIVERS();
+    }
   }
 
   render() {
@@ -84,14 +84,18 @@ class DriversPage extends React.Component {
               )}
 
               <Rides
-                SearchedDrives={this.props.SearchedDrives}
-                SearchedDrivesNames={this.props.SearchedDrivesNames}
+                isLoginComplete={this.props.isLoginComplete}
                 identity={this.props.identity}
                 uniqueName={this.props.uniqueName}
-                //handleSearchedPost={this.props.handleSearchedPost}
+                SearchedDrives={this.props.SearchedDrives}
+                SearchedDrivesNames={this.props.SearchedDrivesNames}
+                YourDrives={this.props.YourDrives}
+                handleAcceptDrive={this.props.handleAcceptDrive}
                 isLoadingDriversSearch={this.props.isLoadingDriversSearch}
                 isLoadingDriversInitial={this.props.isLoadingDriversInitial}
+                isLoadingYourDrives={this.props.isLoadingYourDrives}
                 mode={this.props.mode}
+                handleDriversTab={this.props.handleDriversTab}
               />
             </>
           ) : (
@@ -103,14 +107,16 @@ class DriversPage extends React.Component {
                 showModal={this.props.showModal}
               />
 
-              {/* <YourDrivesPage
-                    yourDrivesToDisplay={this.props.yourDrivesToDisplay}
-                    handleYourPost={this.props.handleYourPost}
-                    handleYourEvent={this.props.handleYourEvent}
-                    mode={this.props.mode}
-                    showModal={this.props.showModal}
-                    isLoadingYourDrivers={this.props.isLoadingYourDrivers}
-                  /> */}
+              <YourDrives
+                uniqueName={this.props.uniqueName}
+                identity={this.props.identity}
+                mode={this.props.mode}
+                showModal={this.props.showModal}
+                isLoadingYourDrivers={this.props.isLoadingYourDrivers}
+                YourDrives={this.props.YourDrives}
+                YourDrivesRequests={this.props.YourDrivesRequests} //RideRequests
+                YourDrivesRequestsNames={this.props.YourDrivesRequestsNames}
+              />
             </>
           )}
         </div>

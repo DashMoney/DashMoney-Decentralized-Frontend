@@ -24,109 +24,6 @@ class Ride extends React.Component {
     });
   };
 
-  // verifyRequestStatus = (paidThrs) => {
-  //   if (
-  //     //this.props.ride.msgId !== this.props.identity ||
-  //     this.props.ride.msgId !== "" &&
-  //     paidThrs.length === 0
-  //   ) {
-  //     //console.log("Acceptance Rejected");
-  //     //THIS NEEDS TO BE A BUTTON -> AND NEEDS A MODAL
-  //     return <Badge bg="warning">Acceptance Rejected</Badge>;
-  //   }
-
-  //   if (paidThrs.length === 0) {
-  //     //console.log("Requested");
-  //     return <Badge bg="success">Requested</Badge>;
-  //   }
-  //   //what if confirmed and no paid Threads -> acceptance dropped -> reject and reset ->
-
-  //   if (
-  //     this.props.ride.msgId !== "" //this.props.identity
-  //   ) {
-  //     //console.log("Confirmed");
-  //     return <Badge bg="success">Confirmed</Badge>;
-  //   }
-
-  //   // if (theOrder.txId1 === "") {
-  //   //   //console.log("Not Paid");
-  //   //   return <Badge bg="warning">Pay Later</Badge>;
-  //   // }
-
-  //   // 2)Check for duplicated do a count on the order.txIds for all the orders
-
-  //   // paidThrs ={paidThrs_BYYOU}
-  //   // replyThrs ={replyThrs_BYYOU}
-
-  //   // let numOfPaidThrWithTxId = this.props.paidThrs.filter((thr) => {
-  //   //   return thr.txId === paidThrs[0].txId; //because only paidThrs of length 1 should reach this point
-  //   // });
-
-  //   // if (numOfPaidThrWithTxId.length !== 1) {
-  //   //   console.log("Failed on Error 1");
-  //   //   return <Badge bg="danger">Fail</Badge>;
-  //   // }
-
-  //   //3) Make sure there is a wallet TX that matches  txId
-
-  //   //accountHistory={this.props.accountHistory}
-
-  //   // let walletTx = this.props.accountHistory.find((tx) => {
-  //   //   // console.log("Wallet TX: ", tx);
-  //   //   return tx.txId === paidThrs[0].txId;
-  //   // });
-  //   // if (walletTx === undefined) {
-  //   //   //This may be the issue that cause early fail ->
-  //   //   // Can I check instasend?
-  //   //   console.log("Failed on Error 2");
-  //   //   return <Badge bg="danger">Fail</Badge>;
-  //   // }
-  //   //ADDED TO CHECK BC TIME DEFAULTS TO FUTURE IF NO INSTALOCK 9999999999000
-  //   //CURRENTLY THE INSTASEND LOCK IS NOT WORKING ON TESTNET
-  //   // if(!walletTx.isInstantLocked  ){
-  //   //   return <Badge bg="warning">Verifying..</Badge>;
-  //   // }
-  //   //
-
-  //   // 4) check that the order createAT and tx time are within a few minutes
-
-  //   // let walletTxTime = new Date(walletTx.time);
-  //   // //console.log('Wallet TX Time valueOf: ', walletTxTime.valueOf());
-
-  //   // if (walletTxTime.valueOf() - theOrder.$updatedAt > 350000) {
-  //   //   //***This is added due to testnet lack of instasend lock */
-  //   //   if (walletTxTime.valueOf() > theOrder.$updatedAt) {
-  //   //     return <Badge bg="primary">Paid</Badge>;
-  //   //   }
-
-  //   //   //console.log(walletTxTime.valueOf() - theOrder.$createdAt)
-  //   //   console.log("Failed on Error 3"); //!!!!!!!!!!!!
-  //   //   console.log(this.props.accountHistory);
-  //   //   console.log(walletTxTime.valueOf());
-  //   //   return <Badge bg="danger">Fail</Badge>;
-  //   // }
-
-  //   //5) make sure the tx amt === request amt
-
-  //   // if (this.props.tuple[1].$ownerId === this.props.identity) {
-  //   //   if (this.props.tuple[1].amt === walletTx.satoshisBalanceImpact) {
-  //   //     return <Badge bg="primary">Paid</Badge>;
-  //   //   }
-  //   // }
-  //   // if (this.props.tuple[1].$ownerId !== this.props.identity) {
-  //   //   if (this.props.tuple[1].amt === -walletTx.satoshisBalanceImpact) {
-  //   //     return <Badge bg="primary">Paid</Badge>;
-  //   //   }
-  //   // }
-
-  //   // if (this.props.tuple[1].amt === walletTx.satoshisBalanceImpact) {
-  //   //   return <Badge bg="primary">Paid</Badge>;
-  //   // } else {
-  //   // console.log("Failed on Error 4");
-  //   // return <Badge bg="danger">Fail</Badge>;
-  //   // // }
-  // };
-
   render() {
     let cardBkg;
     let cardText;
@@ -176,20 +73,9 @@ class Ride extends React.Component {
         paymentSchedule = <b>1/2 & 1/2</b>;
     }
 
-    {
-      /* 
-
-// reqTime: 1713220087357 -> Tab label  // msgId: "" // txId1: ""
-
-
-How to do status -> In Quene, Otherwise
-no confirm past time -> Past Time check (reqTime + 20) vs Date.Now 
-confirm -> Pay on Arrival -> MSGID points to self OwnerId 
-Paid -> Check TX first
-
-
- */
-    }
+    let acceptedDrive = this.props.YourDrives.find((reply) => {
+      return reply.reqId === this.props.ride.$id;
+    });
 
     return (
       <>
@@ -342,22 +228,70 @@ Paid -> Check TX first
 
             <p></p>
 
-            <div className="TwoButtons">
-              <Button
+            {/* <div className="TwoButtons"> */}
+            {/* <Button
                 variant="primary"
                 // onClick={() =>
                 //   this.props.handleDeleteYourRide(this.props.index)
                 // }
               >
                 <b>Reply</b>
-              </Button>
-              <Button
-                variant="primary"
-                // onClick={() => this.props.handleYourRide(this.props.index)}
-              >
-                <b>Accept</b>
-              </Button>
-            </div>
+              </Button> */}
+            {this.props.isLoginComplete &&
+            acceptedDrive === undefined &&
+            !this.props.isLoadingYourDrives &&
+            this.props.identity !== this.props.ride.$ownerId ? (
+              <>
+                <Button
+                  variant="primary"
+                  onClick={() =>
+                    this.props.handleAcceptDrive(this.props.ride, nameDocToPass)
+                  }
+                >
+                  <b>Accept to Drive</b>
+                </Button>
+              </>
+            ) : (
+              <></>
+            )}
+
+            {this.props.isLoginComplete &&
+            acceptedDrive !== undefined &&
+            this.props.identity !== this.props.ride.$ownerId ? (
+              <>
+                {/* <Button
+                  variant="primary"
+                  onClick={() => this.props.handleDriversTab("Your Drives")}
+                >
+                  <b>Go to Your Drives</b>
+                </Button> */}
+                <p style={{ textAlign: "center", color: "#008de3" }}>
+                  <b>View in Your Drives</b>
+                </p>
+              </>
+            ) : (
+              <></>
+            )}
+
+            {this.props.isLoginComplete &&
+            this.props.identity === this.props.ride.$ownerId ? (
+              <>
+                {/* <Button
+                  variant="primary"
+                  onClick={() => this.props.handleDriversTab("Your Drives")}
+                >
+                  <b>Go to Your Drives</b>
+                </Button> */}
+                <p style={{ textAlign: "center", color: "#008de3" }}>
+                  <b>Your Ride</b>
+                </p>
+              </>
+            ) : (
+              <></>
+            )}
+
+            {/* </div> */}
+
             {/* <div className="BottomBorder" style={{ paddingTop: ".5rem" }}></div>
             <div
               className="cardTitle"

@@ -15,7 +15,13 @@ class Rides extends React.Component {
           mode={this.props.mode}
           index={index}
           ride={ride}
+          identity={this.props.identity}
           SearchedDrivesNames={this.props.SearchedDrivesNames}
+          YourDrives={this.props.YourDrives}
+          isLoginComplete={this.props.isLoginComplete}
+          handleAcceptDrive={this.props.handleAcceptDrive}
+          handleDriversTab={this.props.handleDriversTab}
+          isLoadingYourDrives={this.props.isLoadingYourDrives}
         />
       );
     });

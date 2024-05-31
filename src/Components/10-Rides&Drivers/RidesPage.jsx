@@ -32,12 +32,20 @@ class RidesPage extends React.Component {
             </Button>
           </div>
           <YourRides
-            //ALL STATE MUST BE IN APP.JS <-
             YourRides={this.props.YourRides}
+            YourRideReplies={this.props.YourRideReplies}
+            YourRideReplyNames={this.props.YourRideReplyNames}
             identity={this.props.identity}
             uniqueName={this.props.uniqueName}
-            // handleYourRide={this.props.handleYourRide}
-            // handleDeleteYourRide={this.props.handleDeleteYourRide}
+            handleConfirmYourDriverModal={
+              this.props.handleConfirmYourDriverModal
+            }
+            //index,
+            //rideReply
+            handleEditYourRide={this.props.handleEditYourRide}
+            //index
+            handleDeleteYourRide={this.props.handleDeleteYourRide}
+            //index
             mode={this.props.mode}
             isLoadingYourRides={this.props.isLoadingYourRides}
           />

@@ -14,17 +14,26 @@ class YourRides extends React.Component {
    */
 
   render() {
+    let today = new Date();
+    let yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
     let rides = this.props.YourRides.map((ride, index) => {
       //console.log(item);
       return (
         <YourRide
+          today={today}
+          yesterday={yesterday}
           key={index}
           identity={this.props.identity}
           mode={this.props.mode}
           index={index}
           ride={ride}
-          // handleYourPost={this.props.handleYourPost}
-          // handleYourEvent={this.props.handleYourEvent}
+          YourRideReplies={this.props.YourRideReplies}
+          YourRideReplyNames={this.props.YourRideReplyNames}
+          handleConfirmYourDriverModal={this.props.handleConfirmYourDriverModal}
+          handleEditYourRide={this.props.handleEditYourRide}
+          handleDeleteYourRide={this.props.handleDeleteYourRide}
         />
       );
     });

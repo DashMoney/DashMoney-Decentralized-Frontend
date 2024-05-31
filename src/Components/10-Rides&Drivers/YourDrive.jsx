@@ -6,9 +6,8 @@ import Card from "react-bootstrap/Card";
 
 import handleDenomDisplay from "../UnitDisplay";
 import getRelativeTimeAgo from "../TimeDisplayRelative";
-import RideConfirmComponent from "./RideConfirmComponent";
 
-class YourRide extends React.Component {
+class YourDrive extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -17,6 +16,14 @@ class YourRide extends React.Component {
       copiedDropoffAddr: false,
     };
   }
+
+  handleNameClick = (nameLabel) => {
+    navigator.clipboard.writeText(nameLabel);
+    this.setState({
+      copiedName: true,
+    });
+  };
+
   // handleActive = () => {
   //   if (this.props.ride.reqTime + 200000 > (Date.now())) {
   //     return (
@@ -35,45 +42,21 @@ class YourRide extends React.Component {
 
   handlePickupTime = () => {};
 
-  verifyRequestStatus = (theConfirmedDrive, acceptReplies) => {
-    //
-    // confirmedDrive - rideReply-Confirmed OR undefined
-    // acceptDrives -> rideReplies-Accepted
-    //
-    if (
-      this.props.ride.replyId !== this.props.identity &&
-      theConfirmedDrive === undefined
-    ) {
-      //console.log("Acceptance Rejected");
-      return <Badge bg="warning">Acceptance Error</Badge>;
-    }
-    //THIS NEEDS TO BE A BUTTON -> AND NEEDS A MODAL -> LATER ->
-
-    if (
-      this.props.ride.replyId === this.props.identity &&
-      theConfirmedDrive === undefined &&
-      acceptReplies.length === 0
-    ) {
-      //console.log("Requested");
-      return <Badge bg="secondary">Requested</Badge>;
-    }
-
-    if (
-      this.props.ride.replyId === this.props.identity &&
-      theConfirmedDrive === undefined &&
-      acceptReplies.length !== 0
-    ) {
+  verifyRequestStatus = (ride, paidThrs) => {
+    if (ride.replyId === ride.$ownerId) {
       //console.log("Awaiting Confirmation");
       return <Badge bg="warning">Awaiting Confirm</Badge>;
     }
 
-    // if (ride.replyId === ride.$ownerId) {
-    //   //console.log("Awaiting Confirmation");
-    //   return <Badge bg="warning">Awaiting Confirm</Badge>;
+    // if (paidThrs.length === 0) {
+    //   //console.log("Requested");
+    //   return <Badge bg="success">Requested</Badge>;
     // }
     //what if confirmed and no paid Threads -> acceptance dropped -> reject and reset ->
 
-    if (this.props.ride.replyId === theConfirmedDrive.$id) {
+    if (
+      ride.reqId === this.props.identity //this.props.identity
+    ) {
       //console.log("Confirmed");
       return <Badge bg="success">Confirmed</Badge>;
     }
@@ -84,6 +67,9 @@ class YourRide extends React.Component {
     // }
 
     // 2)Check for duplicated do a count on the order.txIds for all the orders
+
+    // paidThrs ={paidThrs_BYYOU}
+    // replyThrs ={replyThrs_BYYOU}
 
     // let numOfPaidThrWithTxId = this.props.paidThrs.filter((thr) => {
     //   return thr.txId === paidThrs[0].txId; //because only paidThrs of length 1 should reach this point
@@ -166,10 +152,36 @@ class YourRide extends React.Component {
       cardText = "white";
     }
 
+    // drive={drive}
+    //       rideReplies={this.props.YourDrives} //rideReplies
+    //       rideRequests={this.props.YourDrivesRequests} //rideRequest
+    //       rideRequestsNames={this.props.YourDrivesRequestsNames}
+
+    //drive is the acceptedRideRequest
+    // 1) get the rideRequest of the acceptedRideRequest
+    let rideRequest = this.props.rideRequests.find((request) => {
+      return request.$id === this.props.drive.reqId;
+    });
+    //if none -> request not found
+    //NEEDS A COMPONENT TO RETURN A RIDE NOT FOUND
+    //
+    // get rideRequestName
+    let rideRequestName = this.props.rideRequestsNames.find((requestName) => {
+      return requestName.$ownerId === rideRequest.$ownerId;
+    });
+    // get rideReplies ->
+    let rideRepliesThrs = this.props.rideReplies.filter((thr) => {
+      return (
+        thr.amt === 0 &&
+        (rideRequestName.$ownerId === thr.$ownerId ||
+          rideRequest.$ownerId === thr.$ownerId)
+      );
+    });
+
     let priceUnit = "";
     let priceUnitDisplay;
 
-    priceUnit = (this.props.ride.amt / this.props.ride.timeEst) * 30;
+    priceUnit = (rideRequest.amt / rideRequest.timeEst) * 30;
 
     priceUnitDisplay = handleDenomDisplay(priceUnit);
     //per half hour.. //bc per minute is small and could be kD..
@@ -177,7 +189,7 @@ class YourRide extends React.Component {
     let paymentSchedule = "";
 
     switch (
-      this.props.ride.pmtType // pmtType: 1 On Dropoff
+      rideRequest.pmtType // pmtType: 1 On Dropoff
     ) {
       case 1:
         paymentSchedule = <b>On Dropoff</b>;
@@ -188,127 +200,51 @@ class YourRide extends React.Component {
       default:
         paymentSchedule = <b>1/2 & 1/2</b>;
     }
-    // YourRideReplies={this.props.YourRideReplies}
-    // YourRideReplyNames={this.props.YourRideReplyNames}
-    //
-    //Get the rideReply that is confirmed.
-    // 1) get the confirmed rideReply of the YourRideReplies
-    let confirmedDrive = this.props.YourRideReplies.find((reply) => {
-      return reply.$id === this.props.ride.replyId;
-    });
-    //console.log(`ConfirmedDrive: ${confirmedDrive}`);
-    //
-    //If ride is unconfirmed then get all accepted
-    let acceptDrives = [];
-    //
-    if (confirmedDrive === undefined) {
-      acceptDrives = this.props.YourRideReplies.filter((reply) => {
-        return reply.amt === this.props.ride.amt;
-      });
-    }
-    console.log(`Accepted Drives: ${acceptDrives}`);
-    //
-    // If confirmed get only threads from that
-    let replyThrs = [];
-    //
-    if (confirmedDrive !== undefined) {
-      replyThrs = this.props.YourRideReplies.filter((reply) => {
-        return (
-          (this.props.identity === reply.$ownerId ||
-            confirmedDrive.$id === reply.$ownerId) &&
-          reply.amt === 0
-        );
-      });
-    }
-
-    // If confirmedDrive get that name only
-    //
-    // If confirmed undefined get all names for replies
-
-    let replyNames = [];
-
-    if (confirmedDrive === undefined && acceptDrives !== undefined) {
-      replyNames = acceptDrives.map((drive) => {
-        let name = this.props.YourRideReplyNames.find((replyName) => {
-          return replyName.$ownerId === drive.$ownerId;
-        });
-        return name;
-      });
-    } else if (confirmedDrive !== undefined) {
-      replyNames = this.props.YourRideReplyNames.find((replyName) => {
-        return replyName.$ownerId === confirmedDrive.$ownerId;
-      });
-    }
-    //
-    // confirmedDrive
-    // acceptDrives
-    // replyThrs
-    // replyNames ->
-
-    //NEED ACCEPTDRIVES -> CONFIRMDRIVER COMPONENT
-    //
-    //
-    let DriversToConfirm = [];
-    if (confirmedDrive === undefined) {
-      DriversToConfirm = acceptDrives.map((driver, index) => {
-        return (
-          <RideConfirmComponent
-            today={this.props.today}
-            yesterday={this.props.yesterday}
-            key={index}
-            index={index}
-            rideIndex={this.props.index}
-            mode={this.props.mode}
-            driverReply={driver}
-            driverReplyNames={replyNames}
-            handleConfirmYourDriverModal={this.props.handleConfirmYourDriverModal}
-            
-          />
-        );
-      });
-    }
-
-    // replyThrs -> NEED COMPONENT TO CONFIRM DRIVER
-    //
-    // replyNames -> accepts or just confirm
-    //
-    let replyMessages = [];
-    if (confirmedDrive === undefined) {
-      replyMessages = replyThrs.map((thr) => {
-        return <>{/* CARD */}</>;
-      });
-    }
 
     return (
       <>
+        {rideRequest === undefined ? <></> : <></>}
         <Card id="card" key={this.props.index} bg={cardBkg} text={cardText}>
           <Card.Body>
             <div
               className="locationTitle"
               style={{ marginBottom: ".4rem", marginTop: ".4rem" }}
             >
-              {this.props.ride.area !== "" &&
-              this.props.ride.area !== undefined ? (
+              {rideRequest.area !== "" && rideRequest.area !== undefined ? (
                 <Badge bg="primary" style={{ marginRight: ".5rem" }}>
-                  {this.props.ride.area}
+                  {rideRequest.area}
                 </Badge>
               ) : (
                 <></>
               )}
 
               <Badge bg="primary" style={{ marginRight: ".5rem" }}>
-                {this.props.ride.city}
+                {rideRequest.city}
               </Badge>
 
-              <Badge bg="primary">{this.props.ride.region}</Badge>
+              <Badge bg="primary">{rideRequest.region}</Badge>
             </div>
 
-            <Card.Title style={{ display: "flex", justifyContent: "center" }}>
-              {/* User Name - no bc its my name */}
-              {/* Status -> Waiting Accept, */}
-              {/* {this.handleActive()} */}
-              {/* calculate time left */}
-              {this.verifyRequestStatus(confirmedDrive, acceptDrives)}
+            <Card.Title className="cardTitle">
+              {/* {this.handleName(this.props.post)} */}
+
+              <span
+                style={{
+                  color: "#008de3",
+                  marginTop: ".2rem",
+                  marginBottom: "0rem",
+                }}
+                onClick={() => this.handleNameClick(rideRequestName.label)}
+              >
+                <b>{rideRequestName.label}</b>
+              </span>
+
+              <span>{this.state.copiedName ? <span>✅</span> : <></>}</span>
+              <span> {this.verifyRequestStatus(rideRequest, [])}</span>
+
+              {/* <span className="textsmaller">
+                {this.formatDate(this.props.post.$createdAt)}
+              </span> */}
             </Card.Title>
 
             <p></p>
@@ -316,49 +252,49 @@ class YourRide extends React.Component {
             <div className="cardTitle">
               <div>
                 <span style={{ whiteSpace: "pre-wrap" }}>
-                  {this.props.ride.pickupAddr}
+                  {rideRequest.pickupAddr}
                 </span>
               </div>
 
-              {/* <Button
+              <Button
                 variant="outline-primary"
                 onClick={() => {
-                  navigator.clipboard.writeText(this.props.ride.pickupAddr);
+                  navigator.clipboard.writeText(rideRequest.pickupAddr);
                   this.setState({
                     copiedPickupAddr: true,
                   });
                 }}
               >
                 {this.state.copiedPickupAddr ? <b>Copied!</b> : <b>Copy</b>}
-              </Button> */}
+              </Button>
             </div>
 
             <p></p>
 
             <div className="cardTitle">
               <span style={{ whiteSpace: "pre-wrap" }}>
-                {this.props.ride.dropoffAddr}
+                {rideRequest.dropoffAddr}
               </span>
 
-              {/* <Button
+              <Button
                 variant="outline-primary"
                 onClick={() => {
-                  navigator.clipboard.writeText(this.props.ride.dropoffAddr);
+                  navigator.clipboard.writeText(rideRequest.dropoffAddr);
                   this.setState({
                     copiedDropoffAddr: true,
                   });
                 }}
               >
                 {this.state.copiedDropoffAddr ? <b>Copied!</b> : <b>Copy</b>}
-              </Button> */}
+              </Button>
             </div>
             <p></p>
             <p style={{ marginBottom: ".2rem" }}>
-              Estimated Time: <b>{this.props.ride.timeEst} minutes</b>
+              Estimated Time: <b>{rideRequest.timeEst} minutes</b>
             </p>
 
             <p style={{ marginTop: "0rem", marginBottom: ".2rem" }}>
-              Estimated Distance: <b>{this.props.ride.distEst}</b>
+              Estimated Distance: <b>{rideRequest.distEst}</b>
             </p>
             <div
               className="BottomBorder"
@@ -371,13 +307,13 @@ class YourRide extends React.Component {
             >
               Pickup Time:{" "}
               <b style={{ color: "#008de4" }}>
-                {getRelativeTimeAgo(this.props.ride.reqTime, Date.now())}
+                {getRelativeTimeAgo(rideRequest.reqTime, Date.now())}
               </b>
             </p>
 
             <h5 style={{ marginTop: ".2rem", textAlign: "center" }}>
               {" "}
-              Pays <b>{handleDenomDisplay(this.props.ride.amt)}</b>
+              Pays <b>{handleDenomDisplay(rideRequest.amt)}</b>
             </h5>
 
             <p style={{ textAlign: "center", marginBottom: ".2rem" }}>
@@ -395,11 +331,11 @@ class YourRide extends React.Component {
             </p> */}
 
             <p style={{ marginTop: "0rem", marginBottom: ".2rem" }}>
-              Passengers: <b>{this.props.ride.numOfRiders}</b>
+              Passengers: <b>{rideRequest.numOfRiders}</b>
             </p>
 
-            {this.props.ride.extraInstr !== undefined &&
-            this.props.ride.extraInstr !== "" ? (
+            {rideRequest.extraInstr !== undefined &&
+            rideRequest.extraInstr !== "" ? (
               <>
                 <p
                   style={{
@@ -408,49 +344,31 @@ class YourRide extends React.Component {
                     textAlign: "center",
                   }}
                 >
-                  <b>{this.props.ride.extraInstr}</b>
+                  <b>{rideRequest.extraInstr}</b>
                 </p>
               </>
             ) : (
               <></>
             )}
 
-            {/* {this.props.handleConfirmYourDriverModal}
-                      //index, 
-                      //rideReply
-                    {this.props.handleEditYourRide}
-                    //index
-                    {this.props.handleDeleteYourRide}
-                    //index */}
-
             <p></p>
-            {confirmedDrive === undefined && acceptDrives.length === 0 ? (
-              <>
-                <div className="TwoButtons">
-                  <Button
-                    variant="primary"
-                    onClick={() =>
-                      this.props.handleDeleteYourRide(this.props.index)
-                    }
-                  >
-                    <b>Delete Ride</b>
-                  </Button>
-                  <Button
-                    variant="primary"
-                    onClick={() =>
-                      this.props.handleEditYourRide(this.props.index)
-                    }
-                  >
-                    <b>Edit Ride</b>
-                  </Button>
-                </div>
-              </>
-            ) : (
-              <></>
-            )}
 
-            {/* Add THE PAY DRIVER BUTTON */}
-            {confirmedDrive === undefined ? <></> : <></>}
+            {/* <div className="TwoButtons">
+              <Button
+                variant="primary"
+                // onClick={() =>
+                //   this.props.handleDeleteYourDrive(this.props.index)
+                // }
+              >
+                <b>Delete Ride</b>
+              </Button>
+              <Button
+                variant="primary"
+                // onClick={() => this.props.handleYourDrive(this.props.index)}
+              >
+                <b>Edit Ride</b>
+              </Button>
+            </div> */}
             <div
               className="BottomBorder"
               style={{ paddingTop: ".7rem", marginBottom: ".7rem" }}
@@ -460,10 +378,8 @@ class YourRide extends React.Component {
               style={{ marginTop: ".4rem", marginBottom: ".5rem" }}
             >
               <h5>Responses</h5>
-              {this.verifyRequestStatus(confirmedDrive, acceptDrives)}
+              {this.verifyRequestStatus(rideRequest, [])}
             </div>
-
-            {/* {confirmedDrive !== undefined ? <></> : <></>} */}
             <div className="d-grid gap-2">
               <Button
                 variant="primary"
@@ -474,19 +390,13 @@ class YourRide extends React.Component {
                   paddingRight: "1rem",
                 }}
               >
-                <b>Refresh</b>
+                <b>Refresh </b>
               </Button>
             </div>
-            {confirmedDrive === undefined ? <>{DriversToConfirm}</> : <></>}
-            {confirmedDrive === undefined && acceptDrives.length === 0 ? (
-              <>
-                <p style={{ textAlign: "center", paddingTop: ".5rem" }}>
-                  (Currently, there are no responses to this ride request.)
-                </p>
-              </>
-            ) : (
-              <></>
-            )}
+            {/*  */}
+            <p style={{ textAlign: "center", paddingTop: ".5rem" }}>
+              (Currently, there are no responses.)
+            </p>
           </Card.Body>
         </Card>
       </>
@@ -494,4 +404,4 @@ class YourRide extends React.Component {
   }
 }
 
-export default YourRide;
+export default YourDrive;

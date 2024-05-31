@@ -6,7 +6,7 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import CloseButton from "react-bootstrap/CloseButton";
 
-import handleDenomDisplay from "../UnitDisplay";
+import handleDenomDisplay from "../../UnitDisplay";
 
 //Ride Request
 /**
@@ -55,77 +55,63 @@ import handleDenomDisplay from "../UnitDisplay";
 // //numOfRidersInput
 // validextraInstr;
 
-class CreateRideModal extends React.Component {
+class EditRideModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      areaInput: "",
+      areaInput: this.props.selectedYourRide.area,
       validArea: true,
       tooLongAreaError: false,
 
-      cityInput: "",
-      validCity: false,
+      cityInput: this.props.selectedYourRide.city,
+      validCity: true,
       tooLongCityError: false,
 
-      regionInput: "",
-      validRegion: false,
+      regionInput: this.props.selectedYourRide.region,
+      validRegion: true,
       tooLongRegionError: false,
 
       // 'pickupAddr',
-      pickupAddrInput: "",
-      validpickupAddr: false,
+      pickupAddrInput: this.props.selectedYourRide.pickupAddr,
+      validpickupAddr: true,
       tooLongpickupAddrError: false,
 
       //   'dropoffAddr',
-      dropoffAddrInput: "",
-      validdropoffAddr: false,
+      dropoffAddrInput: this.props.selectedYourRide.dropoffAddr,
+      validdropoffAddr: true,
       tooLongdropoffAddrError: false,
 
       //'timeEst', // number input convert to number
-      timeEstInput: "",
-      validtimeEst: false,
+      timeEstInput: this.props.selectedYourRide.timeEst,
+      validtimeEst: true,
       tooLongtimeEstError: false,
 
-      //  'timeEstUnit', //just minutes for now
-      // timeEstUnitInput: "minutes",
-      // validtimeEstUnit: false,
-      // tooLongtimeEstUnitError: false,
-
       //  'distEst', //just do a string convert to number
-      distEstInput: "",
-      validdistEst: false,
+      distEstInput: this.props.selectedYourRide.distEst,
+      validdistEst: true,
       tooLongdistEstError: false,
 
-      //  'distEstUnit', //don't use for now don't need
-      // distEstUnitInput: "km",
-      // validdistEstUnit: false,
-      // tooLongdistEstUnitError: false,
+      paymentType: this.props.selectedYourRide.pmtType, //Payment Schedule
 
-      //pmtForm
-
-      paymentType: "1", //Payment Schedule
-
-      amtInput: 0,
-      validAmt: false,
+      amtInput: this.props.selectedYourRide.amt,
+      validAmt: true,
 
       //
 
-      reqTimeInput: "",
+      reqTimeInput: this.props.selectedYourRide.reqTime,
       //IN 5 in 15 in 30
       //set custom
-      validReqTime: false,
+      validReqTime: true,
 
       selectedPickupTime: "",
 
       reqTimeTime: [],
       reqTimeDate: [],
 
-      //
-
-      numOfRidersInput: 1,
+      numOfRidersInput: this.props.selectedYourRide.numOfRiders,
 
       //   'extraInstr',
-      extraInstrInput: "",
+      extraInstrInput: this.props.selectedYourRide.extraInstr,
       validextraInstr: true,
       tooLongextraInstrError: false,
     };
@@ -724,6 +710,14 @@ class CreateRideModal extends React.Component {
       //per half hour.. //bc per minute is small and could be kD..
     }
 
+    let priceUnitProps = "";
+    let priceUnitDisplayProps;
+
+    priceUnitProps =
+      (this.props.selectedYourRide.amt / this.props.selectedYourRide.timeEst) *
+      30;
+    priceUnitDisplayProps = handleDenomDisplay(priceUnit);
+
     return (
       <>
         <Modal
@@ -761,6 +755,7 @@ class CreateRideModal extends React.Component {
                   <Form.Control
                     type="text"
                     placeholder="(Optional)"
+                    defaultValue={this.props.selectedYourRide.area}
                     required
                     isInvalid={this.state.tooLongAreaError}
                     isValid={this.state.validArea}
@@ -781,7 +776,7 @@ class CreateRideModal extends React.Component {
                   </h5>
                   <Form.Control
                     type="text"
-                    placeholder="Enter city/town"
+                    defaultValue={this.props.selectedYourRide.city}
                     required
                     isInvalid={this.state.tooLongCityError}
                     isValid={this.state.validCity}
@@ -799,7 +794,7 @@ class CreateRideModal extends React.Component {
                   </h5>
                   <Form.Control
                     type="text"
-                    placeholder="Enter state/province"
+                    defaultValue={this.props.selectedYourRide.region}
                     required
                     isInvalid={this.state.tooLongRegionError}
                     isValid={this.state.validRegion}
@@ -827,7 +822,7 @@ class CreateRideModal extends React.Component {
                     //onChange={this.onChange}
                     as="textarea"
                     rows={2}
-                    placeholder="Enter address..."
+                    defaultValue={this.props.selectedYourRide.pickupAddr}
                     required
                     isInvalid={this.state.tooLongpickupAddrError}
                     isValid={this.state.validpickupAddr}
@@ -847,7 +842,7 @@ class CreateRideModal extends React.Component {
                     //onChange={this.onChange}
                     as="textarea"
                     rows={2}
-                    placeholder="Enter address..."
+                    defaultValue={this.props.selectedYourRide.dropoffAddr}
                     required
                     isInvalid={this.state.tooLongdropoffAddrError}
                     isValid={this.state.validdropoffAddr}
@@ -873,7 +868,8 @@ class CreateRideModal extends React.Component {
                       // min="1"
                       // max="2000"
                       // defaultValue="15"
-                      placeholder="Enter a number (minutes)"
+
+                      defaultValue={this.props.selectedYourRide.timeEst}
                       required
                       isInvalid={this.state.tooLongtimeEstError}
                       isValid={this.state.validtimeEst}
@@ -897,7 +893,7 @@ class CreateRideModal extends React.Component {
 
                   <Form.Control
                     type="text"
-                    placeholder="Enter distance"
+                    defaultValue={this.props.selectedYourRide.distEst}
                     required
                     isInvalid={this.state.tooLongdistEstError}
                     isValid={this.state.validdistEst}
@@ -932,10 +928,13 @@ class CreateRideModal extends React.Component {
                       Ride Price (in Dash)
                     </h4>
                   </Form.Label>
-
+                  {/* let priceUnit = "";
+    let priceUnitDisplay; */}
                   <Form.Control
                     type="text"
-                    placeholder="0.85 for example.."
+                    defaultValue={handleDenomDisplay(
+                      this.props.selectedYourRide.amt
+                    )}
                     required
                     isValid={this.state.validAmt}
                     //isInvalid={!this.state.validAmt}
@@ -947,7 +946,7 @@ class CreateRideModal extends React.Component {
 
                 {priceUnit !== "" ? (
                   <p>
-                    <b>{priceUnitDisplay} per 30 minutes</b>
+                    <b>{priceUnitDisplayProps} per 30 minutes</b>
                   </p>
                 ) : (
                   <></>
@@ -968,7 +967,7 @@ class CreateRideModal extends React.Component {
                   <b>Time of Pickup</b>
                 </h5>
 
-                {this.state.selectedPickupTime === "" ? (
+                {/* {this.state.selectedPickupTime === "" ? (
                   <>
                     {" "}
                     <p className="smallertext" style={{ color: "red" }}>
@@ -977,7 +976,7 @@ class CreateRideModal extends React.Component {
                   </>
                 ) : (
                   <></>
-                )}
+                )} */}
                 {/* Selected Time */}
                 {this.state.selectedPickupTime === "Right now" ? (
                   <Button
@@ -1202,7 +1201,8 @@ class CreateRideModal extends React.Component {
                     // onChange={this.onChange}
                     as="textarea"
                     rows={2}
-                    placeholder="(Optional)"
+                    //placeholder="(Optional)"
+                    defaultValue={this.props.selectedYourRide.extraInstr}
                     required
                     isInvalid={this.state.tooLongextraInstrError}
                     isValid={this.state.validextraInstr}
@@ -1231,12 +1231,14 @@ class CreateRideModal extends React.Component {
                     this.state.validReqTime &&
                     !timeMinimum &&
                     this.state.validextraInstr ? (
-                      <Button variant="primary" type="submit">
-                        <b>Request Ride</b>
+                      <Button
+                        variant="primary" //type="submit"
+                      >
+                        <b>Edit Ride</b>
                       </Button>
                     ) : (
                       <Button variant="primary" disabled>
-                        <b>Request Ride</b>
+                        <b>Edit Ride</b>
                       </Button>
                     )}
                   </>
@@ -1250,4 +1252,4 @@ class CreateRideModal extends React.Component {
   }
 }
 
-export default CreateRideModal;
+export default EditRideModal;

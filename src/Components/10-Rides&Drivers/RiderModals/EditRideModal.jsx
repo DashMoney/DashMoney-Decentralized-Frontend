@@ -93,7 +93,9 @@ class EditRideModal extends React.Component {
 
       paymentType: this.props.selectedYourRide.pmtType, //Payment Schedule
 
-      amtInput: this.props.selectedYourRide.amt,
+      amtInput: Number(
+        (this.props.selectedYourRide.amt / 100000000).toFixed(5)
+      ),
       validAmt: true,
 
       //
@@ -628,10 +630,10 @@ class EditRideModal extends React.Component {
     event.preventDefault();
     //console.log(event.target.ControlTextarea1.value);
 
-    //CHANGE TO NEWRIDE AND SET THE LOWERCASE HERE!
-    let newRide;
+    //CHANGE TO edittedRIDE AND SET THE LOWERCASE HERE!
+    let edittedRide;
 
-    newRide = {
+    edittedRide = {
       area: this.state.areaInput.toLocaleLowerCase(),
       city: this.state.cityInput.toLocaleLowerCase(),
       region: this.state.regionInput.toLocaleLowerCase(),
@@ -660,8 +662,8 @@ class EditRideModal extends React.Component {
       //txId2: '',// sort out in createRide Function ->
     };
 
-    //console.log(newRide);
-    this.props.createYourRide(newRide);
+    console.log(edittedRide);
+    this.props.editYourRide(edittedRide);
     this.props.hideModal();
   };
 
@@ -710,13 +712,13 @@ class EditRideModal extends React.Component {
       //per half hour.. //bc per minute is small and could be kD..
     }
 
-    let priceUnitProps = "";
-    let priceUnitDisplayProps;
+    // let priceUnitProps = "";
+    // let priceUnitDisplayProps;
 
-    priceUnitProps =
-      (this.props.selectedYourRide.amt / this.props.selectedYourRide.timeEst) *
-      30;
-    priceUnitDisplayProps = handleDenomDisplay(priceUnit);
+    // priceUnitProps =
+    //   (this.props.selectedYourRide.amt / this.props.selectedYourRide.timeEst) *
+    //   30;
+    // priceUnitDisplayProps = handleDenomDisplay(priceUnit);
 
     return (
       <>
@@ -915,8 +917,8 @@ class EditRideModal extends React.Component {
                   </Form.Label>
                   <Form.Select>
                     <option value="1">On Dropoff</option>
-                    <option value="2">On Pickup</option>
-                    <option value="3">1/2 & 1/2</option>
+                    {/* <option value="2">On Pickup</option>
+                    <option value="3">1/2 & 1/2</option> */}
                   </Form.Select>
                 </Form.Group>
 
@@ -932,9 +934,7 @@ class EditRideModal extends React.Component {
     let priceUnitDisplay; */}
                   <Form.Control
                     type="text"
-                    defaultValue={handleDenomDisplay(
-                      this.props.selectedYourRide.amt
-                    )}
+                    defaultValue={this.state.amtInput}
                     required
                     isValid={this.state.validAmt}
                     //isInvalid={!this.state.validAmt}
@@ -946,7 +946,7 @@ class EditRideModal extends React.Component {
 
                 {priceUnit !== "" ? (
                   <p>
-                    <b>{priceUnitDisplayProps} per 30 minutes</b>
+                    <b>{priceUnitDisplay} per 30 minutes</b>
                   </p>
                 ) : (
                   <></>
@@ -1231,9 +1231,7 @@ class EditRideModal extends React.Component {
                     this.state.validReqTime &&
                     !timeMinimum &&
                     this.state.validextraInstr ? (
-                      <Button
-                        variant="primary" //type="submit"
-                      >
+                      <Button variant="primary" type="submit">
                         <b>Edit Ride</b>
                       </Button>
                     ) : (

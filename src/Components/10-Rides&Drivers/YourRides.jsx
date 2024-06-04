@@ -26,6 +26,7 @@ class YourRides extends React.Component {
           yesterday={yesterday}
           key={index}
           identity={this.props.identity}
+          uniqueName={this.props.uniqueName}
           mode={this.props.mode}
           index={index}
           ride={ride}
@@ -34,6 +35,9 @@ class YourRides extends React.Component {
           handleConfirmYourDriverModal={this.props.handleConfirmYourDriverModal}
           handleEditYourRide={this.props.handleEditYourRide}
           handleDeleteYourRide={this.props.handleDeleteYourRide}
+          isYourRidesRefreshReady={this.props.isYourRidesRefreshReady}
+          refreshYourRides={this.props.refreshYourRides}
+          handleYourRideMsgModalShow={this.props.handleYourRideMsgModalShow}
         />
       );
     });

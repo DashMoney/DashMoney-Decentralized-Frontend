@@ -96,6 +96,10 @@ class DriversPage extends React.Component {
                 isLoadingYourDrives={this.props.isLoadingYourDrives}
                 mode={this.props.mode}
                 handleDriversTab={this.props.handleDriversTab}
+                //PAYTONAME
+                dgmDocuments={this.props.dgmDocuments}
+                WALLET_Login7={this.props.WALLET_Login7}
+                isLoadingButtons_WALLET={this.props.isLoadingButtons_WALLET}
               />
             </>
           ) : (
@@ -112,10 +116,20 @@ class DriversPage extends React.Component {
                 identity={this.props.identity}
                 mode={this.props.mode}
                 showModal={this.props.showModal}
-                isLoadingYourDrivers={this.props.isLoadingYourDrivers}
+                isLoadingYourDrives={this.props.isLoadingYourDrives}
                 YourDrives={this.props.YourDrives}
                 YourDrivesRequests={this.props.YourDrivesRequests} //RideRequests
                 YourDrivesRequestsNames={this.props.YourDrivesRequestsNames}
+                //PAYTONAME
+                YourDrivesRequestsReplies={this.props.YourDrivesRequestsReplies}
+                dgmDocuments={this.props.dgmDocuments}
+                WALLET_Login7={this.props.WALLET_Login7}
+                isLoadingButtons_WALLET={this.props.isLoadingButtons_WALLET}
+                isYourDrivesRefreshReady={this.props.isYourDrivesRefreshReady}
+                refreshYourDrives={this.props.refreshYourDrives}
+                handleYourDriveMsgModalShow={
+                  this.props.handleYourDriveMsgModalShow
+                }
               />
             </>
           )}

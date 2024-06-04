@@ -85,7 +85,6 @@ import EditStoreModal from "./Components/4-YourStore/MerchantModals/EditStoreMod
 //   import("./Components/4-YourStore/MerchantModals/EditStoreModal")
 // );
 //Lazy Loading doesn't really make a difference. Each Modal is between 5 - 15 kB AND bundle is 36,000 kB  And there are like 50 modals, still just a small amount comparatively.
-//UPDATE -> bundle went from 36mB to 16mB !!
 
 import CreateItemModal from "./Components/4-YourStore/MerchantModals/CreateItemModal";
 import EditItemModal from "./Components/4-YourStore/MerchantModals/EditItemModal";
@@ -121,6 +120,10 @@ import CreateRideModal from "./Components/10-Rides&Drivers/RiderModals/CreateRid
 import ConfirmYourDriverModal from "./Components/10-Rides&Drivers/RiderModals/ConfirmYourDriverModal";
 import EditRideModal from "./Components/10-Rides&Drivers/RiderModals/EditRideModal";
 import DeleteRideModal from "./Components/10-Rides&Drivers/RiderModals/DeleteRideModal";
+
+import RideReplyMsgModal from "./Components/10-Rides&Drivers/RiderModals/RideReplyMsgModal";
+
+import DriveReplyMsgModal from "./Components/10-Rides&Drivers/DriversModals/DriveReplyMsgModal";
 
 import AcceptDriveModal from "./Components/10-Rides&Drivers/DriversModals/AcceptDriveModal";
 
@@ -840,9 +843,7 @@ class App extends React.Component {
       InitialPullRides: true, //Pulls Your Rides initial
 
       isLoadingYourRides: true,
-
-      YourRides1: false, //Load your rides
-      YourRides2: false, //Load replies and names
+      isYourRidesRefreshReady: true,
 
       YourRides: [
         // {
@@ -884,6 +885,8 @@ class App extends React.Component {
       isLoadingDriversForm: false,
 
       isLoadingYourDrives: true,
+
+      isYourDrivesRefreshReady: true,
 
       //##### LOCATION FORM STATE ######
 
@@ -934,8 +937,10 @@ class App extends React.Component {
       YourDrives: [], //RideReplies
       YourDrivesRequests: [], //RideRequests
       YourDrivesRequestsNames: [],
+      YourDrivesRequestsReplies: [],
 
       selectedYourDrive: "", //Currently not editing or deleting
+      selectedYourDriveNameDoc: "",
       selectedYourDriveIndex: "",
 
       //DRIVERS PAGE STATE^^^^^^
@@ -6388,7 +6393,7 @@ class App extends React.Component {
   };
   //
   //3 BELOW FOR PAYMENT REQUESTS**
-  //BELOW -> RECONNECT <-
+  //BELOW -> RECONNECT <- ? ->
   //
 
   requestDashfromName_WALLET = () => {
@@ -10941,7 +10946,7 @@ class App extends React.Component {
   // PayLaterModal sends to BELOW
   // PAYLATER -> PMT AND ORDER DOC UPDATE ONLY
   // NO ORDER COMMENT EITHER JUST SENDING PMT BC THERE MAY ALREADY BE A COMMENT. SO JUST SEND MSGS IF WANT TO SAY SOMETHING.
-
+  //
   payPayLaterOrder = () => {
     this.setState({
       LoadingOrder: true,
@@ -14898,7 +14903,7 @@ PROOF OF FUNDS FUNCTIONS^^^^
     this.setState(
       {
         selectedYourRide: this.state.YourRides[index],
-        selectedYourRideIndex: index, //<- Need this for the deleteing function!!
+        selectedYourRideIndex: index,
       },
       () => this.showModal("DeleteRideModal")
     );
@@ -15113,14 +15118,103 @@ PROOF OF FUNDS FUNCTIONS^^^^
 
   // //FUNCTION FOR BUTTON TO TRIGGER - CHANGES STATE AND GOES AND LOOKS UP AND SETS STATE DIRECTLY.
   // //update below
-  refreshYourRides = (theRideReq) => {
+
+  refreshYourRides = () => {
     this.setState({
       isLoadingYourRides: true,
-      isYourRidesRefreshReady: false,
+      isYourRidesRefreshReady: false, // pass to refresh button
+    });
+
+    this.getYourRides(this.state.identity);
+
+    //REFRESH -> TIMEOUT
+    //if (!this.state.isYourRidesRefreshReady) {
+    const yourRidesTimeout = setTimeout(this.allowYourRidesRefresh, 15000);
+    // }
+    //REFRESH -> TIMEOUT
+
+    // const clientOpts = {
+    //   network: this.state.whichNetwork,
+    //   apps: {
+    //     RADContract: {
+    //       contractId: this.state.DataContractRAD,
+    //     },
+    //   },
+    // };
+    // const client = new Dash.Client(clientOpts);
+
+    // const getDocuments = async () => {
+    //   console.log("Called Your Ride Refresh");
+
+    //   return client.platform.documents.get("RADContract.rideReply", {
+    //     where: [["reqId", "==", theRideReq.$id]],
+    //     orderBy: [["$createdAt", "desc"]],
+    //   });
+    // };
+
+    // getDocuments()
+    //   .then((d) => {
+    //     let docArray = [];
+
+    //     for (const n of d) {
+    //       let returnedDoc = n.toJSON();
+    //       //console.log("Msg:\n", returnedDoc);
+    //       returnedDoc.reqId = Identifier.from(
+    //         returnedDoc.reqId,
+    //         "base64"
+    //       ).toJSON();
+    //       //console.log("newMsg:\n", returnedDoc);
+    //       docArray = [...docArray, returnedDoc];
+    //     }
+    //     //NEED THE NAMES ALSO
+    //     this.setState(
+    //       {
+    //         YourRideReplies: docArray,
+    //       } //,() => this.helperForMerchantOrders(docArray)
+    //     );
+    //   })
+    //   .catch((e) => {
+    //     console.error("Something went wrong:\n", e);
+    //     this.setState({
+    //       isLoadingYourRides: false,
+    //     });
+    //   })
+    //   .finally(() => client.disconnect());
+
+    // this.getWalletForNewOrder();
+  };
+
+  //SETTIMEOUT WAY ^^^^
+
+  //CHANGE TO RIDES ->
+  handleYourRideMsgModalShow = (rideReqDoc, nameDoc) => {
+    //probably set state and show modal
+    this.setState(
+      {
+        selectedYourRide: rideReqDoc,
+        selectedYourRideReplyNameDoc: nameDoc, //could be the rider OR driver
+      },
+      () => this.showModal("RideReplyMsgModal")
+    );
+  };
+
+  handleYourRideMsgSubmit = (replyMsgComment) => {
+    console.log("Called Your Ride Message Submit: ", replyMsgComment);
+
+    this.setState({
+      isLoadingYourRides: true,
     });
 
     const clientOpts = {
       network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
       apps: {
         RADContract: {
           contractId: this.state.DataContractRAD,
@@ -15129,48 +15223,83 @@ PROOF OF FUNDS FUNCTIONS^^^^
     };
     const client = new Dash.Client(clientOpts);
 
-    const getDocuments = async () => {
-      console.log("Called Your Ride Refresh");
+    const submitMsgDoc = async () => {
+      const { platform } = client;
 
-      return client.platform.documents.get("RADContract.rideReply", {
-        where: [["reqId", "==", theRideReq.$id]],
-        orderBy: [["$createdAt", "desc"]],
-      });
+      let identity = "";
+      if (this.state.identityRaw !== "") {
+        identity = this.state.identityRaw;
+      } else {
+        identity = await platform.identities.get(this.state.identity);
+      }
+
+      const replyProperties = {
+        amt: 0,
+        //toId
+        reqId: this.state.selectedYourRide.$id,
+        msg: replyMsgComment,
+      };
+      //console.log('Reply to Create: ', replyProperties);
+
+      // Create the note document
+      const radDocument = await platform.documents.create(
+        "RADContract.rideReply",
+        identity,
+        replyProperties
+      );
+
+      //############################################################
+      //This below disconnects the document sending..***
+
+      //return radDocument;
+
+      //This is to disconnect the Document Creation***
+      //############################################################
+
+      const documentBatch = {
+        create: [radDocument], // Document(s) to create
+      };
+
+      await platform.documents.broadcast(documentBatch, identity);
+      return radDocument;
     };
 
-    getDocuments()
+    submitMsgDoc()
       .then((d) => {
-        let docArray = [];
+        let returnedDoc = d.toJSON();
+        //console.log("Document:\n", returnedDoc);
 
-        for (const n of d) {
-          let returnedDoc = n.toJSON();
-          //console.log("Msg:\n", returnedDoc);
-          returnedDoc.reqId = Identifier.from(
-            returnedDoc.reqId,
-            "base64"
-          ).toJSON();
-          //console.log("newMsg:\n", returnedDoc);
-          docArray = [...docArray, returnedDoc];
-        }
-        //NEED THE NAMES ALSO
+        // returnedDoc.reqId = Identifier.from(
+        //   returnedDoc.reqId,
+        //   "base64"
+        // ).toJSON();
+
+        let rideReply = {
+          $ownerId: returnedDoc.$ownerId,
+          $id: returnedDoc.$id,
+          $createdAt: returnedDoc.$createdAt,
+          amt: 0,
+          //toId
+          reqId: this.state.selectedYourRide.$id,
+          msg: replyMsgComment,
+        };
+
         this.setState(
           {
-            YourRideReplies: docArray,
-          } //,() => this.helperForMerchantOrders(docArray)
+            YourRideReplies: [rideReply, ...this.state.YourRideReplies],
+            isLoadingYourRides: false,
+          },
+          () => this.loadIdentityCredits()
         );
       })
       .catch((e) => {
-        console.error("Something went wrong:\n", e);
-        this.setState({
-          isLoadingYourRides: false,
-        });
+        console.error(
+          "Something went wrong with Your Ride Reply Msg creation:\n",
+          e
+        );
       })
       .finally(() => client.disconnect());
-
-    // this.getWalletForNewOrder();
   };
-
-  //SETTIMEOUT WAY ^^^^
 
   createYourRide = (rideObject) => {
     console.log("Called Create Ride");
@@ -15318,7 +15447,7 @@ PROOF OF FUNDS FUNCTIONS^^^^
   // selectedYourRideReplyNameDoc: nameDoc,
   //selectedYourRideIndex
 
-  editConfirmYourDriver = (rideObject) => {
+  editConfirmYourDriver = () => {
     //  console.log("Called ConfirmYourDriver");
 
     this.setState({
@@ -15376,13 +15505,13 @@ PROOF OF FUNDS FUNCTIONS^^^^
         document.set("replyId", this.state.selectedYourRideReply.$id);
       }
 
-      // await platform.documents.broadcast({ replace: [document] }, identity);
-      // return document;
+      await platform.documents.broadcast({ replace: [document] }, identity);
+      return document;
 
       //############################################################
       //This below disconnects the document editing..***
 
-      return document;
+      //return document;
 
       //This is to disconnect the Document editing***
       //############################################################
@@ -15392,6 +15521,11 @@ PROOF OF FUNDS FUNCTIONS^^^^
       .then((d) => {
         let returnedDoc = d.toJSON();
         console.log("Edited Ride Doc:\n", returnedDoc);
+
+        returnedDoc.replyId = Identifier.from(
+          returnedDoc.replyId,
+          "base64"
+        ).toJSON();
 
         let editedRides = this.state.YourRides;
 
@@ -15406,7 +15540,7 @@ PROOF OF FUNDS FUNCTIONS^^^^
         );
       })
       .catch((e) => {
-        console.error("Something went wrong with Offer creation:\n", e);
+        console.error("Something went wrong with confirm your driver:\n", e);
         this.setState({
           isLoadingYourRides: false,
         });
@@ -15558,6 +15692,11 @@ PROOF OF FUNDS FUNCTIONS^^^^
         let returnedDoc = d.toJSON();
         console.log("Edited Ride Doc:\n", returnedDoc);
 
+        returnedDoc.replyId = Identifier.from(
+          returnedDoc.replyId,
+          "base64"
+        ).toJSON();
+
         let editedRides = this.state.YourRides;
 
         editedRides.splice(this.state.selectedYourRideIndex, 1, returnedDoc);
@@ -15646,6 +15785,185 @@ PROOF OF FUNDS FUNCTIONS^^^^
       })
       .catch((e) => console.error("Something went wrong:\n", e))
       .finally(() => client.disconnect());
+  };
+
+  // PayLaterModal sends to BELOW
+  // PAYLATER -> PMT AND ORDER DOC UPDATE ONLY
+  // NO ORDER COMMENT EITHER JUST SENDING PMT BC THERE MAY ALREADY BE A COMMENT. SO JUST SEND MSGS IF WANT TO SAY SOMETHING.
+  //
+  //CHANGE TO RIDES ->
+  payPayLaterOrder = () => {
+    this.setState({
+      LoadingOrder: true,
+    });
+
+    const client = new Dash.Client({
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+    });
+
+    let theTotal = 0;
+
+    this.state.payLaterCartItems.forEach((tuple) => {
+      if (tuple[0].price !== 0) {
+        theTotal += tuple[1] * tuple[0].price;
+      }
+    });
+
+    const payToRecipient = async () => {
+      const account = await client.getWalletAccount();
+
+      console.log("sats sent in TX:", theTotal);
+
+      const transaction = account.createTransaction({
+        recipient: this.state.payLaterDGMAddressSHOPPING.address,
+        satoshis: theTotal, //Must be a string!!
+      });
+
+      //return transaction;  //Use to disable TX <- !!!
+
+      return account.broadcastTransaction(transaction);
+    };
+
+    payToRecipient()
+      .then((d) => {
+        console.log("Payment TX:\n", d);
+
+        this.setState(
+          {
+            sendPaymentSuccess: true,
+          },
+          () => this.updatePayLaterOrder(d)
+        );
+      })
+      .catch((e) => {
+        console.error("Something went wrong:\n", e);
+        this.setState({
+          LoadingOrder: false,
+          sendFailure: true,
+        });
+      });
+    //.finally(() => client.disconnect()); //TEST -> messed up DGM may be causing problem here as well
+  };
+  //CHANGE TO RIDES ->
+  updatePayLaterOrder = (theTXid) => {
+    console.log("Called updatePayLaterOrder");
+
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
+      apps: {
+        DGPContract: {
+          contractId: this.state.DataContractDGP,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    const editOrderDocument = async () => {
+      const { platform } = client;
+
+      let identity = "";
+      if (this.state.identityRaw !== "") {
+        identity = this.state.identityRaw;
+      } else {
+        identity = await platform.identities.get(this.state.identity);
+      } // Your identity ID
+
+      // ### ###  ### ###  ### ###   ###   ####
+
+      const [document] = await client.platform.documents.get(
+        "DGPContract.dgporder",
+        {
+          where: [
+            [
+              "$id",
+              "==",
+              this.state.recentOrders[this.state.payLaterOrderIndex].$id,
+              //this.state.payLaterOrderSHOPPING.$id,
+            ],
+          ],
+        }
+      );
+
+      // if (
+      //   this.state.recentOrders[this.state.payLaterOrderIndex].txId !== theTXid
+      // ) {
+      document.set("txId", theTXid);
+      //}
+
+      // ### ###  ### ###  ### ###   ###   ####
+
+      await platform.documents.broadcast({ replace: [document] }, identity);
+      return document;
+
+      //############################################################
+      //This below disconnects the document editing..***
+
+      //return document;
+
+      //This is to disconnect the Document editing***
+      //############################################################
+    };
+
+    editOrderDocument()
+      .then((d) => {
+        let returnedDoc = d.toJSON();
+        console.log("Edited Order Doc:\n", returnedDoc);
+
+        let order = {
+          $ownerId: returnedDoc.$ownerId,
+          $id: returnedDoc.$id,
+          $createdAt: returnedDoc.$createdAt,
+          $updatedAt: returnedDoc.$updatedAt,
+
+          cart: JSON.parse(returnedDoc.cart),
+
+          comment: returnedDoc.comment,
+          toId: this.state.payLaterOrderSHOPPING.toId,
+          txId: returnedDoc.txId, //new edited txId
+        };
+
+        let editedOrders = this.state.recentOrders;
+
+        editedOrders.splice(this.state.payLaterOrderIndex, 1, order);
+
+        this.setState(
+          {
+            sendPaymentSuccess: false,
+            sendOrderSuccess: true,
+            recentOrders: editedOrders,
+            LoadingOrder: false,
+          },
+          () => this.loadIdentityCredits()
+        );
+      })
+      .catch((e) => {
+        console.error("Something went wrong:\n", e);
+        this.setState({
+          orderError: "Order Error", //What does this control
+          sendPaymentFailed: true, //Add this alert ->
+          LoadingOrder: false,
+        });
+      })
+      .finally(() => client.disconnect());
+
+    // Added BELOW to go retrieve the wallet after purchase so the wallet balance will update. Trying to maximize the time for order document creation but also load wallet at the same time. ->
+    this.getWalletForNewOrder();
   };
 
   //DRIVERS BELOW
@@ -15970,7 +16288,7 @@ PROOF OF FUNDS FUNCTIONS^^^^
               returnedDoc.replyId,
               "base64"
             ).toJSON();
-            //console.log("newDrives:\n", returnedDoc);
+            console.log("newDrives:\n", returnedDoc);
             docArray = [returnedDoc, ...docArray];
           }
 
@@ -16042,7 +16360,7 @@ PROOF OF FUNDS FUNCTIONS^^^^
     //END OF NAME RETRIEVAL
   };
 
-  //BELOW RIDEREPLY ->
+  //BELOW RIDEREPLY = Drive
   getYourDrives = (theIdentity) => {
     if (!this.state.isLoadingYourDrives) {
       this.setState({ isLoadingYourDrives: true });
@@ -16195,15 +16513,15 @@ PROOF OF FUNDS FUNCTIONS^^^^
     getNameDocuments()
       .then((d) => {
         if (d.length === 0) {
-          //console.log("No DPNS domain documents retrieved.");
-          this.setState({
-            YourDrives: theDocArray,
-            YourDrivesRequests: docArray,
-            YourDrivesRequestsNames: [],
-            isLoadingYourDrives: false,
-          });
-        }
-
+          console.log("No DPNS domain documents retrieved.");
+          // this.setState({
+          //   YourDrives: theDocArray,
+          //   YourDrivesRequests: docArray,
+          //   YourDrivesRequestsNames: [],
+          //   YourDrivesRequestsReplies: [],
+          //   isLoadingYourDrives: false,
+          // });
+        } //else {
         let nameDocArray = [];
 
         for (const n of d) {
@@ -16212,12 +16530,15 @@ PROOF OF FUNDS FUNCTIONS^^^^
         }
         //console.log(`DPNS Name Docs: ${nameDocArray}`);
 
-        this.setState({
-          YourDrives: theDocArray,
-          YourDrivesRequests: docArray,
-          YourDrivesRequestsNames: nameDocArray,
-          isLoadingYourDrives: false,
-        });
+        // this.setState({
+        //   YourDrives: theDocArray,
+        //   YourDrivesRequests: docArray,
+        //   YourDrivesRequestsNames: nameDocArray,
+        //   isLoadingYourDrives: false,
+        // });
+
+        this.getYourDrivesRequestsReplies(theDocArray, docArray, nameDocArray); //BE CAREFUL - NAME BETTER ^^
+        //}
       })
       .catch((e) => {
         console.error("Something went wrong getting YourDriveReq Names:\n", e);
@@ -16225,6 +16546,94 @@ PROOF OF FUNDS FUNCTIONS^^^^
       .finally(() => client.disconnect());
     //END OF NAME RETRIEVAL
   };
+
+  getYourDrivesRequestsReplies = (
+    yourDrivesDocArray,
+    rideReqDocArray,
+    rideReqNameDocArray
+  ) => {
+    const clientOpts = {
+      network: this.state.whichNetwork,
+      apps: {
+        RADContract: {
+          contractId: this.state.DataContractRAD,
+        },
+      },
+    };
+    const client = new Dash.Client(clientOpts);
+
+    // This Below is to get unique set of rideReq doc ids
+    let arrayOfRideIds = rideReqDocArray.map((doc) => {
+      return doc.$id;
+    });
+
+    //console.log("Array of Ride Req ids", arrayOfRideIds);
+
+    let setOfRideIds = [...new Set(arrayOfRideIds)];
+
+    arrayOfRideIds = [...setOfRideIds];
+
+    //console.log("Array of Ride ids", arrayOfRideIds);
+
+    const getDocuments = async () => {
+      //console.log("Called YourDrivesRequestsReplies");
+
+      return client.platform.documents.get("RADContract.rideReply", {
+        where: [["reqId", "in", arrayOfRideIds]], // check reqId ->
+        orderBy: [["reqId", "asc"]],
+        // ["$updatedAt", "<=", Date.now()],
+        // ],
+        // orderBy: [["$updatedAt", "desc"]],
+      });
+    };
+
+    getDocuments()
+      .then((d) => {
+        //console.log("Getting YourDrivesRequestsReplies");
+        if (d.length === 0) {
+          //console.log("There are no YourDrivesRequestsReplies");
+          //yourDrivesDocArray,
+          //rideReqDocArray,
+          //rideReqNameDocArray
+          this.setState({
+            YourDrives: yourDrivesDocArray,
+            YourDrivesRequests: rideReqDocArray,
+            YourDrivesRequestsNames: rideReqNameDocArray,
+            YourDrivesRequestsReplies: [],
+            isLoadingYourDrives: false,
+          });
+        } else {
+          let docArray = [];
+
+          for (const n of d) {
+            let returnedDoc = n.toJSON();
+            //console.log("RideReply:\n", returnedDoc);
+            returnedDoc.reqId = Identifier.from(
+              returnedDoc.reqId,
+              "base64"
+            ).toJSON();
+            //console.log("newRideReply:\n", returnedDoc);
+            docArray = [...docArray, returnedDoc];
+          }
+          this.setState({
+            YourDrives: yourDrivesDocArray,
+            YourDrivesRequests: rideReqDocArray,
+            YourDrivesRequestsNames: rideReqNameDocArray,
+            YourDrivesRequestsReplies: docArray,
+            isLoadingYourDrives: false,
+          });
+        }
+      })
+      .catch((e) => {
+        console.error(
+          "Something went wrong getYourDrivesRequestsReplies:\n",
+          e
+        );
+      })
+      .finally(() => client.disconnect());
+  };
+
+  //SETTIMEOUT WAY ^^^^
 
   //SETTIMEOUT WAY BELOW
   //FUNCTION TO CHANGE STATE AND ALLOW BUTTON TO BE PRESSED
@@ -16236,14 +16645,55 @@ PROOF OF FUNDS FUNCTIONS^^^^
 
   // //FUNCTION FOR BUTTON TO TRIGGER - CHANGES STATE AND GOES AND LOOKS UP AND SETS STATE DIRECTLY.
   // //update below
-  refreshYourDrives = (theRideReq) => {
+  refreshYourDrives = () => {
+    //(theRideReq) => {
     this.setState({
       isLoadingYourDrives: true,
+
       isYourDrivesRefreshReady: false,
+    });
+
+    this.getYourDrives(this.state.identity);
+
+    //REFRESH -> TIMEOUT
+    //if (!this.state.isYourDrivesRefreshReady) {
+    const yourDrivesTimeout = setTimeout(this.allowYourDrivesRefresh, 15000);
+    // }
+    //REFRESH -> TIMEOUT
+
+    // this.getWalletForNewOrder();
+  };
+
+  //SETTIMEOUT WAY ^^^^
+
+  handleYourDriveMsgModalShow = (rideReqDoc, nameDoc) => {
+    //probably set state and show modal
+    this.setState(
+      {
+        selectedYourDrive: rideReqDoc,
+        selectedYourDriveNameDoc: nameDoc, //could be the rider OR driver
+      },
+      () => this.showModal("DriveReplyMsgModal")
+    );
+  };
+
+  handleYourDriveMsgSubmit = (replyMsgComment) => {
+    //console.log("Called Your Drive Message Submit: ", replyMsgComment);
+
+    this.setState({
+      isLoadingYourDrives: true,
     });
 
     const clientOpts = {
       network: this.state.whichNetwork,
+      wallet: {
+        mnemonic: this.state.mnemonic,
+        adapter: LocalForage.createInstance,
+        unsafeOptions: {
+          skipSynchronizationBeforeHeight:
+            this.state.skipSynchronizationBeforeHeight,
+        },
+      },
       apps: {
         RADContract: {
           contractId: this.state.DataContractRAD,
@@ -16252,78 +16702,87 @@ PROOF OF FUNDS FUNCTIONS^^^^
     };
     const client = new Dash.Client(clientOpts);
 
-    const getDocuments = async () => {
-      console.log("Called Your Ride Refresh");
+    const submitMsgDoc = async () => {
+      const { platform } = client;
 
-      return client.platform.documents.get("RADContract.rideReply", {
-        where: [["reqId", "==", theRideReq.$id]],
-        orderBy: [["$createdAt", "desc"]],
-      });
+      let identity = "";
+      if (this.state.identityRaw !== "") {
+        identity = this.state.identityRaw;
+      } else {
+        identity = await platform.identities.get(this.state.identity);
+      }
+
+      const replyProperties = {
+        amt: 0,
+        //toId
+        reqId: this.state.selectedYourDrive.$id,
+        msg: replyMsgComment,
+      };
+      //console.log('Reply to Create: ', replyProperties);
+
+      // Create the note document
+      const radDocument = await platform.documents.create(
+        "RADContract.rideReply",
+        identity,
+        replyProperties
+      );
+
+      //############################################################
+      //This below disconnects the document sending..***
+
+      //return radDocument;
+
+      //This is to disconnect the Document Creation***
+      //############################################################
+
+      const documentBatch = {
+        create: [radDocument], // Document(s) to create
+      };
+
+      await platform.documents.broadcast(documentBatch, identity);
+      return radDocument;
     };
 
-    getDocuments()
+    submitMsgDoc()
       .then((d) => {
-        let docArray = [];
+        let returnedDoc = d.toJSON();
+        console.log("Document:\n", returnedDoc);
 
-        for (const n of d) {
-          let returnedDoc = n.toJSON();
-          //console.log("Msg:\n", returnedDoc);
-          returnedDoc.reqId = Identifier.from(
-            returnedDoc.reqId,
-            "base64"
-          ).toJSON();
-          //console.log("newMsg:\n", returnedDoc);
-          docArray = [...docArray, returnedDoc];
-        }
-        //NEED THE NAMES ALSO
+        // returnedDoc.reqId = Identifier.from(
+        //   returnedDoc.reqId,
+        //   "base64"
+        // ).toJSON();
+
+        let rideReply = {
+          $ownerId: returnedDoc.$ownerId,
+          $id: returnedDoc.$id,
+          $createdAt: returnedDoc.$createdAt,
+          amt: 0,
+          //toId
+          reqId: returnedDoc.reqId,
+          msg: replyMsgComment,
+        };
+
         this.setState(
           {
-            YourRideReplies: docArray,
-          } //,() => this.helperForMerchantOrders(docArray)
+            //YourDrives: [rideReply, ...this.state.YourDrives],
+            YourDrivesRequestsReplies: [
+              rideReply,
+              ...this.state.YourDrivesRequestsReplies,
+            ],
+            isLoadingYourDrives: false,
+          },
+          () => this.loadIdentityCredits()
         );
       })
       .catch((e) => {
-        console.error("Something went wrong:\n", e);
-        this.setState({
-          isLoadingYourRides: false,
-        });
+        console.error(
+          "Something went wrong with Your Drive Reply Msg creation:\n",
+          e
+        );
       })
       .finally(() => client.disconnect());
-
-    // this.getWalletForNewOrder();
   };
-
-  //SETTIMEOUT WAY ^^^^
-
-  //CHANGE TO Drives ->
-  // maybe not handle YourRideReply -> maybe acceptRideReply
-  // createAcceptRideReply = (requestDoc, requesterNameDoc) => {
-  //   //First search and see if there is already a reply for the review
-  //   // let replyDoc = this.state.YourReplies.find((doc) => {
-  //   //   return doc.reviewId === reviewDoc.$id;
-  //   // });
-
-  //   // if (replyDoc !== undefined) {
-  //   //   this.setState(
-  //   //     {
-  //   //       replyReview: reviewDoc,
-  //   //       replyToEdit: replyDoc,
-  //   //       replyingToName: revieweeLabel,
-  //   //     },
-  //   //     () => this.showModal("EditReplyModal")
-  //   //   );
-  //   // } else {
-  //   this.setState(
-  //     {
-  //       selectedSearchedDrive: requestDoc,
-  //CHANGED
-  //       replyRideToEdit: [],
-  //       rideRequesterNameDoc: requesterNameDoc,
-  //     },
-  //     () => this.showModal("AcceptDriveModalModal")
-  //   );
-  //   // }
-  // };
 
   handleAcceptDrive = (ride, nameDoc) => {
     this.setState(
@@ -17374,6 +17833,9 @@ RIDES AND DRIVERS FUNCTIONS^^^^
                     handleEditYourRide={this.handleEditYourRide}
                     handleDeleteYourRide={this.handleDeleteYourRide}
                     isLoadingYourRides={this.state.isLoadingYourRides}
+                    isYourRidesRefreshReady={this.state.isYourRidesRefreshReady}
+                    refreshYourRides={this.refreshYourRides}
+                    handleYourRideMsgModalShow={this.handleYourRideMsgModalShow}
                   />
                 </>
               ) : (
@@ -17424,9 +17886,25 @@ RIDES AND DRIVERS FUNCTIONS^^^^
                     YourDrives={this.state.YourDrives}
                     YourDrivesRequests={this.state.YourDrivesRequests} //RideRequests
                     YourDrivesRequestsNames={this.state.YourDrivesRequestsNames}
+                    YourDrivesRequestsReplies={
+                      this.state.YourDrivesRequestsReplies
+                    }
                     //handleDeleteYourDrive={this.handleDeleteYourDrive}
 
                     handleAcceptDrive={this.handleAcceptDrive}
+                    //
+
+                    //BELOW -> DGMAddr and Store Separation
+                    dgmDocuments={this.state.dgmDocuments}
+                    WALLET_Login7={this.state.WALLET_Login7}
+                    isLoadingButtons_WALLET={this.state.isLoadingButtons_WALLET}
+                    isYourDrivesRefreshReady={
+                      this.state.isYourDrivesRefreshReady
+                    }
+                    refreshYourDrives={this.refreshYourDrives}
+                    handleYourDriveMsgModalShow={
+                      this.handleYourDriveMsgModalShow
+                    }
                   />
                 </>
               ) : (
@@ -18301,7 +18779,7 @@ RIDES AND DRIVERS FUNCTIONS^^^^
         this.state.presentModal === "ConfirmYourDriverModal" ? (
           <ConfirmYourDriverModal
             isModalShowing={this.state.isModalShowing}
-            handleConfirmYourDriverModal={this.handleConfirmYourDriverModal}
+            editConfirmYourDriver={this.editConfirmYourDriver}
             selectedYourRide={this.state.selectedYourRide}
             selectedYourRideReply={this.state.selectedYourRideReply}
             selectedYourRideReplyNameDoc={
@@ -18314,6 +18792,28 @@ RIDES AND DRIVERS FUNCTIONS^^^^
         ) : (
           <></>
         )}
+
+        {/* {this.state.isModalShowing &&
+        this.state.presentModal === "RidePaymentModal" ? (
+          <RidePaymentModal
+            isLoadingWallet={this.state.isLoadingWallet}
+            accountBalance={this.state.accountBalance}
+
+            payLaterOrderSHOPPING={this.state.payLaterOrderSHOPPING}
+            cartItems={this.state.payLaterCartItems}
+            payLaterDGMAddressSHOPPING={this.state.payLaterDGMAddressSHOPPING}
+
+            payLaterNameDoc={this.state.payLaterNameDoc}
+
+            //payLaterOrderIndex={this.state.payLaterOrderIndex} //Already in state and used for editing order Doc after payment
+            isModalShowing={this.state.isModalShowing}
+            payPayLaterOrder={this.payPayLaterOrder}
+            hideModal={this.hideModal}
+            mode={this.state.mode}
+          />
+        ) : (
+          <></>
+        )} */}
 
         {this.state.isModalShowing &&
         this.state.presentModal === "EditRideModal" ? (
@@ -18342,6 +18842,22 @@ RIDES AND DRIVERS FUNCTIONS^^^^
         )}
 
         {this.state.isModalShowing &&
+        this.state.presentModal === "RideReplyMsgModal" ? (
+          <RideReplyMsgModal
+            isModalShowing={this.state.isModalShowing}
+            hideModal={this.hideModal}
+            mode={this.state.mode}
+            selectedYourRideReplyNameDoc={
+              this.state.selectedYourRideReplyNameDoc
+            }
+            handleYourRideMsgSubmit={this.handleYourRideMsgSubmit}
+            closeTopNav={this.closeTopNav}
+          />
+        ) : (
+          <></>
+        )}
+
+        {this.state.isModalShowing &&
         this.state.presentModal === "AcceptDriveModal" ? (
           <AcceptDriveModal
             isModalShowing={this.state.isModalShowing}
@@ -18352,6 +18868,20 @@ RIDES AND DRIVERS FUNCTIONS^^^^
             }
             hideModal={this.hideModal}
             mode={this.state.mode}
+          />
+        ) : (
+          <></>
+        )}
+
+        {this.state.isModalShowing &&
+        this.state.presentModal === "DriveReplyMsgModal" ? (
+          <DriveReplyMsgModal
+            isModalShowing={this.state.isModalShowing}
+            hideModal={this.hideModal}
+            mode={this.state.mode}
+            selectedYourDriveNameDoc={this.state.selectedYourDriveNameDoc}
+            handleYourDriveMsgSubmit={this.handleYourDriveMsgSubmit}
+            closeTopNav={this.closeTopNav}
           />
         ) : (
           <></>

@@ -201,9 +201,7 @@ class DeleteRideModal extends React.Component {
           <p></p>
         </Modal.Body>
         <div className="TwoButtons">
-          <Button
-            variant="primary" //</div>onClick={() => this.props.deleteYourRide()}
-          >
+          <Button variant="primary" onClick={() => this.props.deleteYourRide()}>
             <b>Delete Ride</b>
           </Button>
           <Button variant="primary" onClick={() => this.handleCloseClick()}>

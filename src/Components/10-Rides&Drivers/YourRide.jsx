@@ -206,7 +206,7 @@ class YourRide extends React.Component {
         return reply.amt === this.props.ride.amt;
       });
     }
-    console.log(`Accepted Drives: ${acceptDrives}`);
+    // console.log(`Accepted Drives: ${acceptDrives}`);
     //
     // If confirmed get only threads from that
     let replyThrs = [];
@@ -215,7 +215,7 @@ class YourRide extends React.Component {
       replyThrs = this.props.YourRideReplies.filter((reply) => {
         return (
           (this.props.identity === reply.$ownerId ||
-            confirmedDrive.$id === reply.$ownerId) &&
+            confirmedDrive.$ownerId === reply.$ownerId) &&
           reply.amt === 0
         );
       });
@@ -261,8 +261,9 @@ class YourRide extends React.Component {
             mode={this.props.mode}
             driverReply={driver}
             driverReplyNames={replyNames}
-            handleConfirmYourDriverModal={this.props.handleConfirmYourDriverModal}
-            
+            handleConfirmYourDriverModal={
+              this.props.handleConfirmYourDriverModal
+            }
           />
         );
       });
@@ -273,9 +274,32 @@ class YourRide extends React.Component {
     // replyNames -> accepts or just confirm
     //
     let replyMessages = [];
-    if (confirmedDrive === undefined) {
-      replyMessages = replyThrs.map((thr) => {
-        return <>{/* CARD */}</>;
+    if (confirmedDrive !== undefined) {
+      replyMessages = replyThrs.map((msg, index) => {
+        return (
+          <Card
+            id="comment"
+            key={index}
+            index={index}
+            bg={cardBkg}
+            text={cardText}
+          >
+            <Card.Body>
+              <Card.Title className="cardTitle">
+                {msg.$ownerId === this.props.identity ? (
+                  <b style={{ color: "#008de4" }}>{this.props.uniqueName}</b>
+                ) : (
+                  <b style={{ color: "#008de4" }}>{replyNames.label}</b>
+                )}
+                {/* <b style={{ color: "#008de4" }}>{replyNames.label}</b> */}
+                {/* <span className="textsmaller">
+                    {this.formatDate(msg.$createdAt, today, yesterday)}
+                  </span> */}
+              </Card.Title>
+              <Card.Text>{msg.msg}</Card.Text>
+            </Card.Body>
+          </Card>
+        );
       });
     }
 
@@ -450,7 +474,30 @@ class YourRide extends React.Component {
             )}
 
             {/* Add THE PAY DRIVER BUTTON */}
+            {confirmedDrive !== undefined ? (
+              <>
+                <div className="d-grid gap-2" id="button-edge-noTop">
+                  <Button
+                    variant="primary"
+                    // onClick={() => {
+                    //   this.props.payDriver();
+                    // }}
+                    disabled
+                    style={{
+                      fontSize: "larger",
+                      paddingLeft: "1rem",
+                      paddingRight: "1rem",
+                    }}
+                  >
+                    <b>Pay Driver</b>
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <></>
+            )}
             {confirmedDrive === undefined ? <></> : <></>}
+
             <div
               className="BottomBorder"
               style={{ paddingTop: ".7rem", marginBottom: ".7rem" }}
@@ -462,9 +509,49 @@ class YourRide extends React.Component {
               <h5>Responses</h5>
               {this.verifyRequestStatus(confirmedDrive, acceptDrives)}
             </div>
-
+            {/* l      l */}
+            {/* isYourRidesRefreshReady={this.props.isYourRidesRefreshReady}
+                    refreshYourRides={this.props.refreshYourRides} */}
+            {/* l      l */}
             {/* {confirmedDrive !== undefined ? <></> : <></>} */}
-            <div className="d-grid gap-2">
+            {/* l      l */}
+            {this.props.isYourRidesRefreshReady ? (
+              // !this.props.LoadingStore &&
+              // !this.props.isLoadingWallet &&
+              // !this.props.LoadingOrders
+              <div className="d-grid gap-2" id="button-edge-noTop">
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    this.props.refreshYourRides();
+                  }}
+                  style={{
+                    fontSize: "larger",
+                    paddingLeft: "1rem",
+                    paddingRight: "1rem",
+                  }}
+                >
+                  <b>Refresh</b>
+                </Button>
+              </div>
+            ) : (
+              <>
+                <div className="d-grid gap-2" id="button-edge-noTop">
+                  <Button
+                    variant="primary"
+                    disabled
+                    style={{
+                      fontSize: "larger",
+                      paddingLeft: "1rem",
+                      paddingRight: "1rem",
+                    }}
+                  >
+                    <b>Refresh</b>
+                  </Button>
+                </div>
+              </>
+            )}
+            {/* <div className="d-grid gap-2">
               <Button
                 variant="primary"
                 //onClick={() => this.props.refreshRideRequest(rideDoc)}
@@ -475,14 +562,71 @@ class YourRide extends React.Component {
                 }}
               >
                 <b>Refresh</b>
-              </Button>
-            </div>
+              </Button> 
+            </div>*/}
+
+            {confirmedDrive !== undefined ? (
+              <>
+                <h5>
+                  <span
+                    style={{
+                      marginTop: ".2rem",
+                      marginBottom: "0rem",
+                    }}
+                  >
+                    <b>Driver:</b>
+                  </span>
+                  <span
+                    style={{
+                      color: "#008de3",
+                      marginTop: ".2rem",
+                      marginBottom: "0rem",
+                    }}
+                  >
+                    {" "}
+                    <b>{replyNames.label}</b>
+                  </span>
+                </h5>
+                <p></p>
+              </>
+            ) : (
+              <></>
+            )}
             {confirmedDrive === undefined ? <>{DriversToConfirm}</> : <></>}
             {confirmedDrive === undefined && acceptDrives.length === 0 ? (
               <>
                 <p style={{ textAlign: "center", paddingTop: ".5rem" }}>
                   (Currently, there are no responses to this ride request.)
                 </p>
+              </>
+            ) : (
+              <></>
+            )}
+
+            {replyMessages}
+
+            {/* // confirmedDrive
+    // acceptDrives
+    // replyThrs
+    // replyNames  */}
+
+            {confirmedDrive !== undefined ? (
+              <>
+                <div className="ButtonRightNoUnderline">
+                  <Button
+                    variant="primary"
+                    onClick={
+                      () =>
+                        this.props.handleYourRideMsgModalShow(
+                          this.props.ride,
+                          replyNames
+                        )
+                      // this.props.handleYourRideMsgModalShow = (rideReqDoc, nameDoc)
+                    }
+                  >
+                    <b>Add Message</b>
+                  </Button>
+                </div>
               </>
             ) : (
               <></>

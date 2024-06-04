@@ -919,8 +919,8 @@ class CreateRideModal extends React.Component {
                   </Form.Label>
                   <Form.Select>
                     <option value="1">On Dropoff</option>
-                    <option value="2">On Pickup</option>
-                    <option value="3">1/2 & 1/2</option>
+                    {/* <option value="2">On Pickup</option>
+                    <option value="3">1/2 & 1/2</option> */}
                   </Form.Select>
                 </Form.Group>
 

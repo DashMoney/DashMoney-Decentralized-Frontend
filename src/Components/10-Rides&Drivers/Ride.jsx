@@ -38,17 +38,20 @@ class Ride extends React.Component {
 
     let nameDocToPass = ""; //this is the nameDoc and not the label
 
-    if (this.props.ride.$ownerId === this.props.identity) {
-      let myNameDoc = {
-        $ownerId: this.props.identity,
-        label: this.props.uniqueName,
-      };
-      nameDocToPass = myNameDoc;
-    } else {
-      nameDocToPass = this.props.SearchedDrivesNames.find((doc) => {
-        return this.props.ride.$ownerId === doc.$ownerId;
-      });
-    }
+    nameDocToPass = this.props.SearchedDrivesNames.find((doc) => {
+      return this.props.ride.$ownerId === doc.$ownerId;
+    });
+    // if (this.props.ride.$ownerId === this.props.identity) {
+    //   let myNameDoc = {
+    //     $ownerId: this.props.identity,
+    //     label: this.props.uniqueName,
+    //   };
+    //   nameDocToPass = myNameDoc;
+    // } else {
+    //   nameDocToPass = this.props.SearchedDrivesNames.find((doc) => {
+    //     return this.props.ride.$ownerId === doc.$ownerId;
+    //   });
+    // }
 
     let priceUnit = "";
     let priceUnitDisplay;
@@ -102,8 +105,6 @@ class Ride extends React.Component {
             </div>
 
             <Card.Title className="cardTitle">
-              {/* {this.handleName(this.props.post)} */}
-
               <span
                 style={{
                   color: "#008de3",
@@ -237,7 +238,9 @@ class Ride extends React.Component {
               >
                 <b>Reply</b>
               </Button> */}
-            {this.props.isLoginComplete &&
+            {this.props.dgmDocuments.length !== 0 &&
+            this.props.WALLET_Login7 &&
+            this.props.isLoginComplete &&
             acceptedDrive === undefined &&
             !this.props.isLoadingYourDrives &&
             this.props.identity !== this.props.ride.$ownerId ? (

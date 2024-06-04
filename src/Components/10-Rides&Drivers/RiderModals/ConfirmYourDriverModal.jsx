@@ -9,7 +9,7 @@ class ConfirmYourDriverModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loadTime: 4, //set to 4 when successful dgm addr and call
+      loadTime: 3,
     };
   }
 
@@ -31,6 +31,7 @@ class ConfirmYourDriverModal extends React.Component {
     //   this.state.dgmDocumentsForReceipient[0].address,
     //   this.state.commentInput
     // );
+    this.props.editConfirmYourDriver();
 
     this.handleCloseClick();
   };

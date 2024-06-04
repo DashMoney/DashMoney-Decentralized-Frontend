@@ -16,6 +16,7 @@ class YourDrives extends React.Component {
       //console.log(drive);
       //
       //need the reply to know if no req/ req removed
+      // handled in YourDrive -> go there
       //
       return (
         <YourDrive
@@ -28,12 +29,48 @@ class YourDrives extends React.Component {
           rideReplies={this.props.YourDrives} //rideReplies
           rideRequests={this.props.YourDrivesRequests} //rideRequest
           rideRequestsNames={this.props.YourDrivesRequestsNames}
+          rideRequestsReplies={this.props.YourDrivesRequestsReplies}
+          isYourDrivesRefreshReady={this.props.isYourDrivesRefreshReady}
+          refreshYourDrives={this.props.refreshYourDrives}
+          handleYourDriveMsgModalShow={this.props.handleYourDriveMsgModalShow}
         />
       );
     });
 
     return (
       <>
+        {this.props.dgmDocuments.length === 0 &&
+        this.props.WALLET_Login7 &&
+        !this.props.isLoadingButtons_WALLET ? (
+          <>
+            <div className="d-grid gap-2" style={{ margin: "1rem" }}>
+              <Button
+                variant="primary"
+                size="lg"
+                onClick={() => this.props.showModal("RegisterDGMModal")}
+              >
+                <b>Enable Pay-to-Name</b>
+              </Button>
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
+
+        {this.props.dgmDocuments.length === 0 &&
+        this.props.WALLET_Login7 &&
+        this.props.isLoadingButtons_WALLET ? (
+          <>
+            <div className="d-grid gap-2" style={{ margin: "1rem" }}>
+              <Button variant="primary" size="lg" disabled>
+                <b>Enable Pay-to-Name</b>
+              </Button>
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
+
         <p></p>
         {this.props.isLoadingYourDrives ? (
           <>

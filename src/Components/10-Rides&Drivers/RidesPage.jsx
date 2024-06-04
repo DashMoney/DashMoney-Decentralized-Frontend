@@ -40,14 +40,13 @@ class RidesPage extends React.Component {
             handleConfirmYourDriverModal={
               this.props.handleConfirmYourDriverModal
             }
-            //index,
-            //rideReply
             handleEditYourRide={this.props.handleEditYourRide}
-            //index
             handleDeleteYourRide={this.props.handleDeleteYourRide}
-            //index
             mode={this.props.mode}
             isLoadingYourRides={this.props.isLoadingYourRides}
+            isYourRidesRefreshReady={this.props.isYourRidesRefreshReady}
+            refreshYourRides={this.props.refreshYourRides}
+            handleYourRideMsgModalShow={this.props.handleYourRideMsgModalShow}
           />
         </div>
       </>

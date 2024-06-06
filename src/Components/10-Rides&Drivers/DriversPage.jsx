@@ -2,10 +2,14 @@ import React from "react";
 
 import Spinner from "react-bootstrap/Spinner";
 
+import Button from "react-bootstrap/Button";
+
 import TabsOnPage from "./TabsOnPage";
 import LowCreditsOnPage from "../LowCreditsOnPage";
 import CreditsOnPage from "../CreditsOnPage";
 import LocationForm from "./LocationForm";
+
+import handleDenomDisplay from "../UnitDisplay";
 
 import Rides from "./Rides";
 import YourDrives from "./YourDrives";
@@ -111,6 +115,38 @@ class DriversPage extends React.Component {
                 uniqueName={this.props.uniqueName}
                 showModal={this.props.showModal}
               />
+              <div id="sidetextonlysides">
+                {this.props.isLoadingWallet ? (
+                  <>
+                    <div className="paddingBadge">
+                      <b>Wallet Balance</b>
+
+                      <h4>Loading..</h4>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="paddingBadge">
+                      <div className="cardTitle">
+                        <div>
+                          <b>Wallet Balance</b>
+                          <h4 style={{ color: "#008de4" }}>
+                            <b>
+                              {handleDenomDisplay(this.props.accountBalance, 1)}
+                            </b>
+                          </h4>
+                        </div>
+                        <Button
+                          variant="primary"
+                          onClick={() => this.props.showModal("WalletTXModal")}
+                        >
+                          <b>Wallet TXs</b>
+                        </Button>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
 
               <YourDrives
                 uniqueName={this.props.uniqueName}

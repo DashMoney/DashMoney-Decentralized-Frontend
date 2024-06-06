@@ -17887,6 +17887,7 @@ RIDES AND DRIVERS FUNCTIONS^^^^
                     showModal={this.showModal}
                     mode={this.state.mode}
                     isLoadingWallet={this.state.isLoadingWallet}
+                    accountBalance={this.state.accountBalance}
                     accountHistory={this.state.accountHistory}
                     YourRides={this.state.YourRides}
                     YourRideReplies={this.state.YourRideReplies}
@@ -17925,6 +17926,7 @@ RIDES AND DRIVERS FUNCTIONS^^^^
                     mode={this.state.mode}
                     identity={this.state.identity}
                     isLoadingWallet={this.state.isLoadingWallet}
+                    accountBalance={this.state.accountBalance}
                     accountHistory={this.state.accountHistory}
                     whichDriversTab={this.state.whichDriversTab}
                     handleDriversTab={this.handleDriversTab}

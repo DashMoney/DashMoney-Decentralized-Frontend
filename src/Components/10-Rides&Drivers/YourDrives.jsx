@@ -24,6 +24,8 @@ class YourDrives extends React.Component {
           uniqueName={this.props.uniqueName}
           identity={this.props.identity}
           mode={this.props.mode}
+          isLoadingWallet={this.props.isLoadingWallet}
+          accountHistory={this.props.accountHistory}
           index={index}
           drive={drive}
           rideReplies={this.props.YourDrives} //rideReplies

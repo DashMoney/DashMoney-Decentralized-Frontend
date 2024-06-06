@@ -43,6 +43,12 @@ class YourDrive extends React.Component {
   handlePickupTime = () => {};
 
   verifyRequestStatus = (ride, paidThrs) => {
+    if (ride.txId1 !== "") {
+      //pass to the verify payment function ->
+      // console.log("Called Verify Payment Status");
+      return this.verifyPaymentStatus(ride);
+    }
+
     if (ride.replyId === ride.$ownerId) {
       //console.log("Awaiting Confirmation");
       return <Badge bg="warning">Awaiting Confirm</Badge>;
@@ -63,84 +69,81 @@ class YourDrive extends React.Component {
       //console.log("Confirmed");
       return <Badge bg="success">Confirmed</Badge>;
     }
+  };
 
+  verifyPaymentStatus = (ride) => {
+    //isLoadingWallet={this.props.isLoadingWallet}
+    if (this.props.isLoadingWallet) {
+      return <Badge bg="warning">Loading..</Badge>;
+    }
+    // accountHistory={this.props.accountHistory}
+    //MAYBE USE THIS TO HANDLE WHEN TXID1 AND TXID2
     // if (theOrder.txId1 === "") {
     //   //console.log("Not Paid");
     //   return <Badge bg="warning">Pay Later</Badge>;
     // }
-
+    //
+    //DO I NEED TO WORRY ABOUT DUPLICATED TXIDS, IF YOU ARE THE DRIVER
     // 2)Check for duplicated do a count on the order.txIds for all the orders
-
-    // paidThrs ={paidThrs_BYYOU}
-    // replyThrs ={replyThrs_BYYOU}
-
     // let numOfPaidThrWithTxId = this.props.paidThrs.filter((thr) => {
     //   return thr.txId === paidThrs[0].txId; //because only paidThrs of length 1 should reach this point
     // });
-
     // if (numOfPaidThrWithTxId.length !== 1) {
     //   console.log("Failed on Error 1");
     //   return <Badge bg="danger">Fail</Badge>;
     // }
-
+    //
     //3) Make sure there is a wallet TX that matches  txId
-
     //accountHistory={this.props.accountHistory}
-
-    // let walletTx = this.props.accountHistory.find((tx) => {
-    //   // console.log("Wallet TX: ", tx);
-    //   return tx.txId === paidThrs[0].txId;
-    // });
-    // if (walletTx === undefined) {
-    //   //This may be the issue that cause early fail ->
-    //   // Can I check instasend?
-    //   console.log("Failed on Error 2");
-    //   return <Badge bg="danger">Fail</Badge>;
-    // }
+    let walletTx = this.props.accountHistory.find((tx) => {
+      // console.log("Wallet TX: ", tx);
+      return tx.txId === ride.txId1;
+    });
+    if (walletTx === undefined) {
+      //This may be the issue that cause early fail ->
+      // Can I check instasend?
+      console.log("Failed on Error 2");
+      return <Badge bg="danger">Payment Fail</Badge>;
+    }
     //ADDED TO CHECK BC TIME DEFAULTS TO FUTURE IF NO INSTALOCK 9999999999000
     //CURRENTLY THE INSTASEND LOCK IS NOT WORKING ON TESTNET
     // if(!walletTx.isInstantLocked  ){
     //   return <Badge bg="warning">Verifying..</Badge>;
     // }
     //
-
     // 4) check that the order createAT and tx time are within a few minutes
-
     // let walletTxTime = new Date(walletTx.time);
     // //console.log('Wallet TX Time valueOf: ', walletTxTime.valueOf());
-
     // if (walletTxTime.valueOf() - theOrder.$updatedAt > 350000) {
     //   //***This is added due to testnet lack of instasend lock */
     //   if (walletTxTime.valueOf() > theOrder.$updatedAt) {
     //     return <Badge bg="primary">Paid</Badge>;
     //   }
-
     //   //console.log(walletTxTime.valueOf() - theOrder.$createdAt)
     //   console.log("Failed on Error 3"); //!!!!!!!!!!!!
     //   console.log(this.props.accountHistory);
     //   console.log(walletTxTime.valueOf());
     //   return <Badge bg="danger">Fail</Badge>;
     // }
-
     //5) make sure the tx amt === request amt
 
-    // if (this.props.tuple[1].$ownerId === this.props.identity) {
-    //   if (this.props.tuple[1].amt === walletTx.satoshisBalanceImpact) {
-    //     return <Badge bg="primary">Paid</Badge>;
-    //   }
-    // }
-    // if (this.props.tuple[1].$ownerId !== this.props.identity) {
-    //   if (this.props.tuple[1].amt === -walletTx.satoshisBalanceImpact) {
-    //     return <Badge bg="primary">Paid</Badge>;
-    //   }
-    // }
-
-    // if (this.props.tuple[1].amt === walletTx.satoshisBalanceImpact) {
-    //   return <Badge bg="primary">Paid</Badge>;
+    //
+    if (ride.$ownerId === this.props.identity) {
+      if (ride.amt === -walletTx.satoshisBalanceImpact) {
+        return <Badge bg="success">Paid</Badge>;
+      }
+    }
+    if (ride.$ownerId !== this.props.identity) {
+      if (ride.amt === walletTx.satoshisBalanceImpact) {
+        return <Badge bg="success">Paid</Badge>;
+      }
+    }
+    // if (ride.amt === walletTx.satoshisBalanceImpact) {
+    //   return <Badge bg="success">Paid</Badge>;
     // } else {
-    // console.log("Failed on Error 4");
-    // return <Badge bg="danger">Fail</Badge>;
-    // // }
+    console.log("Failed on Error 4");
+    return <Badge bg="danger">Fail</Badge>;
+    //}
   };
 
   render() {

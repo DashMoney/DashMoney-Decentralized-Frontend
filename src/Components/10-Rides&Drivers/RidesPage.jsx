@@ -35,6 +35,7 @@ class RidesPage extends React.Component {
             YourRides={this.props.YourRides}
             YourRideReplies={this.props.YourRideReplies}
             YourRideReplyNames={this.props.YourRideReplyNames}
+            YourRideReplyAddresses={this.props.YourRideReplyAddresses}
             identity={this.props.identity}
             uniqueName={this.props.uniqueName}
             handleConfirmYourDriverModal={
@@ -42,6 +43,9 @@ class RidesPage extends React.Component {
             }
             handleEditYourRide={this.props.handleEditYourRide}
             handleDeleteYourRide={this.props.handleDeleteYourRide}
+            handlePayDriver={this.props.handlePayDriver}
+            isLoadingWallet={this.props.isLoadingWallet}
+            accountHistory={this.props.accountHistory}
             mode={this.props.mode}
             isLoadingYourRides={this.props.isLoadingYourRides}
             isYourRidesRefreshReady={this.props.isYourRidesRefreshReady}

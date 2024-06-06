@@ -28,13 +28,17 @@ class YourRides extends React.Component {
           identity={this.props.identity}
           uniqueName={this.props.uniqueName}
           mode={this.props.mode}
+          isLoadingWallet={this.props.isLoadingWallet}
+          accountHistory={this.props.accountHistory}
           index={index}
           ride={ride}
           YourRideReplies={this.props.YourRideReplies}
           YourRideReplyNames={this.props.YourRideReplyNames}
+          YourRideReplyAddresses={this.props.YourRideReplyAddresses}
           handleConfirmYourDriverModal={this.props.handleConfirmYourDriverModal}
           handleEditYourRide={this.props.handleEditYourRide}
           handleDeleteYourRide={this.props.handleDeleteYourRide}
+          handlePayDriver={this.props.handlePayDriver}
           isYourRidesRefreshReady={this.props.isYourRidesRefreshReady}
           refreshYourRides={this.props.refreshYourRides}
           handleYourRideMsgModalShow={this.props.handleYourRideMsgModalShow}

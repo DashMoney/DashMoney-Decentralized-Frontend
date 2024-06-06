@@ -272,19 +272,51 @@ class YourDrive extends React.Component {
           <>
             <Card id="card" key={this.props.index} bg={cardBkg} text={cardText}>
               <Card.Body>
-                <p>There is no ride request found</p>{" "}
-                <Button
-                  variant="primary"
-                  // onClick={() =>
-                  //   this.props.handleDeleteYourDrive(this.props.index)
-                  // }
-                >
-                  <b>Delete Acceptance</b>
-                </Button>
+                <p>There is no ride request found.</p>{" "}
+                <div className="d-grid gap-2">
+                  <Button
+                    variant="primary"
+                    disabled
+                    // onClick={() =>
+                    //   this.props.handleDeleteYourDrive(this.props.index)
+                    // }
+                  >
+                    <b>Delete Drive</b>
+                  </Button>
+                </div>
               </Card.Body>{" "}
             </Card>
           </>
         ) : (
+          <></>
+        )}
+        {rideRequest !== undefined &&
+        rideRequest.replyId !== rideRequest.$ownerId &&
+        rideRequest.replyId !== this.props.drive.$id ? (
+          <>
+            <Card id="card" key={this.props.index} bg={cardBkg} text={cardText}>
+              <Card.Body>
+                <p>A different Driver was selected.</p>{" "}
+                <div className="d-grid gap-2">
+                  <Button
+                    variant="primary"
+                    disabled
+                    // onClick={() =>
+                    //   this.props.handleDeleteYourDrive(this.props.index)
+                    // }
+                  >
+                    <b>Delete Drive</b>
+                  </Button>
+                </div>
+              </Card.Body>{" "}
+            </Card>
+          </>
+        ) : (
+          <></>
+        )}
+        {rideRequest !== undefined &&
+        (rideRequest.replyId === rideRequest.$ownerId ||
+          rideRequest.replyId === this.props.drive.$id) ? (
           <>
             <Card id="card" key={this.props.index} bg={cardBkg} text={cardText}>
               <Card.Body>
@@ -540,6 +572,8 @@ class YourDrive extends React.Component {
               </Card.Body>
             </Card>
           </>
+        ) : (
+          <></>
         )}
       </>
     );

@@ -15215,61 +15215,10 @@ PROOF OF FUNDS FUNCTIONS^^^^
     const yourRidesTimeout = setTimeout(this.allowYourRidesRefresh, 15000);
     // }
     //REFRESH -> TIMEOUT
-
-    // const clientOpts = {
-    //   network: this.state.whichNetwork,
-    //   apps: {
-    //     RADContract: {
-    //       contractId: this.state.DataContractRAD,
-    //     },
-    //   },
-    // };
-    // const client = new Dash.Client(clientOpts);
-
-    // const getDocuments = async () => {
-    //   console.log("Called Your Ride Refresh");
-
-    //   return client.platform.documents.get("RADContract.rideReply", {
-    //     where: [["reqId", "==", theRideReq.$id]],
-    //     orderBy: [["$createdAt", "desc"]],
-    //   });
-    // };
-
-    // getDocuments()
-    //   .then((d) => {
-    //     let docArray = [];
-
-    //     for (const n of d) {
-    //       let returnedDoc = n.toJSON();
-    //       //console.log("Msg:\n", returnedDoc);
-    //       returnedDoc.reqId = Identifier.from(
-    //         returnedDoc.reqId,
-    //         "base64"
-    //       ).toJSON();
-    //       //console.log("newMsg:\n", returnedDoc);
-    //       docArray = [...docArray, returnedDoc];
-    //     }
-    //     //NEED THE NAMES ALSO
-    //     this.setState(
-    //       {
-    //         YourRideReplies: docArray,
-    //       } //,() => this.helperForMerchantOrders(docArray)
-    //     );
-    //   })
-    //   .catch((e) => {
-    //     console.error("Something went wrong:\n", e);
-    //     this.setState({
-    //       isLoadingYourRides: false,
-    //     });
-    //   })
-    //   .finally(() => client.disconnect());
-
-    // this.getWalletForNewOrder();
   };
 
   //SETTIMEOUT WAY ^^^^
 
-  //CHANGE TO RIDES ->
   handleYourRideMsgModalShow = (rideReqDoc, nameDoc) => {
     //probably set state and show modal
     this.setState(
@@ -15479,6 +15428,11 @@ PROOF OF FUNDS FUNCTIONS^^^^
         let returnedDoc = d.toJSON();
         console.log("Document:\n", returnedDoc);
 
+        // returnedDoc.replyId = Identifier.from(
+        //   returnedDoc.replyId,
+        //   "base64"
+        // ).toJSON();
+
         let ride = {
           $ownerId: returnedDoc.$ownerId,
           $id: returnedDoc.$id,
@@ -15501,7 +15455,7 @@ PROOF OF FUNDS FUNCTIONS^^^^
           distEst: rideObject.distEst,
           //distEstUnit: LEAVE OFF
           amt: rideObject.amt,
-          msgId: this.state.identity, //GOOD DECISION - DOESN'T MATTER
+          replyId: this.state.identity, //GOOD DECISION - DOESN'T MATTER
           //toId: LEAVE OFF FOR NOW,
           txId1: "",
           txId2: "",
@@ -15517,10 +15471,10 @@ PROOF OF FUNDS FUNCTIONS^^^^
       })
       .catch((e) => {
         console.error("Something went wrong with ride creation:\n", e);
-        this.setState({
-          yourRideError: true,
-          isLoadingYourRides: false,
-        });
+        // this.setState({
+        //   yourRideError: true,
+        //   isLoadingYourRides: false,
+        // });
       })
       .finally(() => client.disconnect());
   };
@@ -15870,7 +15824,6 @@ PROOF OF FUNDS FUNCTIONS^^^^
       .finally(() => client.disconnect());
   };
 
-  //CHANGE TO RIDES ->
   payDriver = () => {
     this.setState({
       isLoadingYourRides: true,
@@ -15920,7 +15873,7 @@ PROOF OF FUNDS FUNCTIONS^^^^
       });
     //.finally(() => client.disconnect()); //TEST -> messed up DGM may be causing problem here as well
   };
-  //CHANGE TO RIDES ->
+
   updatePayDriverRideRequest = (theTXid) => {
     //  console.log("Called UPdatePayDriverRideRequest");
 

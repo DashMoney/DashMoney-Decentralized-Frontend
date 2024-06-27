@@ -195,7 +195,7 @@ class App extends React.Component {
       EveryoneNames: [
         {
           $ownerId: "4h5j6j",
-          label: "DashMoney",
+          label: "Miles",
         },
       ],
 
@@ -238,7 +238,7 @@ class App extends React.Component {
         },
         {
           $ownerId: "4h5j6j",
-          label: "DashMoney",
+          label: "Miles",
         },
       ],
 
@@ -956,7 +956,7 @@ class App extends React.Component {
 
       presentModal: "",
       isModalShowing: false,
-      whichNetwork: "testnet",
+      whichNetwork: import.meta.env.VITE_NETWORK, //"testnet" or 'mainnet',
 
       mnemonic: "",
       identity: "",
@@ -980,7 +980,7 @@ class App extends React.Component {
       //
       //LocalForageKeys: [],
       DashMoneyLFKeys: [],
-      FrontendFee: 100,
+      FrontendFee: 0,
       validFrontendFee: true,
 
       //InitialWhyMoney: true,
@@ -988,16 +988,19 @@ class App extends React.Component {
       skipSynchronizationBeforeHeight: 1029000,
       mostRecentBlockHeight: 1029000,
 
-      DataContractDSO: "J1yfgbsmkfZ6KDV9VMFJQqZnpecrMAHKHHjZBhqWHdz9",
-      DataContractDGT: "CGxXpYVee7CEJ1NJYuA8ob1t1V4XZ7JyH93R3KNYiaeV",
-      DataContractDGM: "3STFfHfPgaQyt73LA6AmugYL1aMT7P5ZkvScKqdSZC2c",
-      DataContractDGP: "AsHwpSteMBzX3etneG3dR8PWiJKEHVBnc7uGNoHjE1pV",
-      DataContractDMIO: "ATaoUrNj4DKQj38wQCxhLagderzTUmvTkBhH1HJwz1er",
-      DataContractP2P: "4ganxymxTon9MkqsBDeiXGdzkZmLmmXnhZdWZnP4PB7w",
-      DataContractDGR: "HXQg6fj5xv4KYQZAgJYTAhUMcUE2mhqDjVsd3MyTFwvg",
-      DataContractPOD: "2MJGP7N1BtAr2Ce8Aap2iCe8PFg9CLrg2QnzCpSHMxuR",
+      DataContractDSO: "7pn3AFQEZRY4TWJ8g52E593EpxxaXT64ovNMFFTkWnss", //
+
+      DataContractDGT: "ECQ3626MPZRFW3KgZm3iPdxUSjyALpndZmEbXnQWXh1p", //
+      //
+      DataContractDGM: "3E6tRUybFV4MXJfSS4dEHujs8SzWjco4thC9uUM6vKzx", //
+      //
+      DataContractDGP: "2ZRd4pPuVyX2KGEYyxLQFCUUkJZSPDVcqZ7zJzjHafsE", //
+      DataContractDMIO: "4o4FE66f5uo9pgQbpGx6BRs8YjEKFcE8JRmbPchQEWi2", //
+      DataContractP2P: "2YKHGWpZEApRoQjXqtqoD7YgVzRtCDvmL8tXvDZ25bzh", //
+      DataContractDGR: "D26rEM7r19R5nJ4Xjj3FkCK5uwrjsd2tHs6vuRcw3gZg", //
+      DataContractPOD: "6DY7aEQ9uNVuNUg1FnMPTjkWEWhzyei9RCcvK9msMYs", //
       DataContractDPNS: "GWRSAVFMjXx8HpQFaNJMqBV7MBgMK4br5UESsB4S31Ec",
-      DataContractRAD: "2v5xPMqjyfANzbMbvy6w3Kfro5c8ZvYHDZcB7Tao7mjN",
+      DataContractRAD: "2ZDicoSHYoXTbX3tbTHZwMyJZFdW6ZfEL8DZVkD8DMUY",
 
       expandedTopNav: false,
     };
@@ -4643,7 +4646,7 @@ class App extends React.Component {
     });
 
     const clientOpts = {
-      network: "testnet",
+      network: this.state.whichNetwork,
       wallet: {
         mnemonic: this.state.mnemonic,
         adapter: LocalForage.createInstance,
@@ -4723,7 +4726,7 @@ class App extends React.Component {
     });
 
     const clientOpts = {
-      network: "testnet",
+      network: this.state.whichNetwork,
       wallet: {
         mnemonic: this.state.mnemonic,
         adapter: LocalForage.createInstance,
@@ -16981,6 +16984,17 @@ RIDES AND DRIVERS FUNCTIONS^^^^
    *      ###          ####             ###          ###
    *      ###           ####            ###############
    */
+
+  /*
+   *
+   *    ################
+   *          ###
+   *          ###
+   *          ###
+   *          ###
+   */
+
+  //TRANSFER FUNCTIONS
 
   handleFrontendFee = () => {
     //This should be at the point of display

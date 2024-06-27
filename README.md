@@ -10,10 +10,11 @@
 
 \*These are the environmental variable that you need to create for operation:
 
-- VITE_FRONTEND_NAME = DashMoney
+- VITE_FRONTEND_NAME = WebsiteName
 - VITE_IDENTITY_TO_RECEIVE_FEE = (This is your Dash IdentityID)
 - VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP = 100
 - VITE_BKGD = dark
+- VITE_NETWORK = testnet
 
 _Frontend Name is what will appear in the top of page navigation bar._
 
@@ -22,6 +23,8 @@ _Identity to Receive can be found in your Account Login page under the Identity 
 _Percent of Topup is represented as 0 - 10000 for 0% to 100.00% (i.e. 100 equals 1.00%)_
 
 _BKGD is 'Background' which can be dark or primary_
+
+\_NETWORK can be testnet or mainnet
 
 ### React + Vite (Everything else is from initial Vite setup)
 

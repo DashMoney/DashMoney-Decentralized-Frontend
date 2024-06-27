@@ -173,7 +173,7 @@ class EventModal extends React.Component {
                 variant="outline-primary"
                 onClick={() => {
                   navigator.clipboard.writeText(
-                    this.props.selectedSearchedPost.address
+                    this.props.selectedSearchedEvent.address
                   );
                   this.setState({
                     copiedAddress: true,

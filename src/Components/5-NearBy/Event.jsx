@@ -78,9 +78,9 @@ class Event extends React.Component {
                 <b> {this.props.event.group}</b>
               </h5>
 
-              <span className="textsmaller">
+              {/* <span className="textsmaller">
                 {this.formatDate(this.props.event.$createdAt)}
-              </span>
+              </span> */}
             </Card.Title>
 
             <Card.Text style={{ whiteSpace: "pre-wrap" }}>
@@ -104,7 +104,8 @@ class Event extends React.Component {
               <></>
             )}
             <p className="textsmaller" style={{ textAlign: "right" }}>
-              Created by: {nameDocToPass.label}
+              Created by: {nameDocToPass.label} on{" "}
+              {this.formatDate(this.props.event.$createdAt)}
             </p>
           </Card.Body>
         </Card>

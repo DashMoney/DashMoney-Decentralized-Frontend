@@ -40,21 +40,27 @@ class JoinEventComponent extends React.Component {
                   <div className="d-grid gap-2">
                     <Button
                       variant="primary"
-                      onClick={() =>
-                        this.props.handleSelectedJoinGroup(
-                          this.props.event.group
-                        )
-                      }
+                      onClick={() => this.handleGotoGroupClick()}
                     >
                       <b>Join {this.props.event.group}?</b>
                     </Button>
                   </div>
                 ) : (
                   <>
-                    <h5 style={{ textAlign: "center", margin: "1.2rem" }}>
+                    {/* <h5 style={{ textAlign: "center", margin: "1.2rem" }}>
                       {" "}
                       <b>{this.props.event.group} joined!</b>
-                    </h5>
+                    </h5> */}
+                    <div className="d-grid gap-2">
+                      <Button
+                        variant="primary"
+                        onClick={() =>
+                          this.props.showGroupPage(this.props.event.group)
+                        }
+                      >
+                        <b>Go to {this.props.event.group}!</b>
+                      </Button>
+                    </div>
                   </>
                 )}
               </>

@@ -988,19 +988,27 @@ class App extends React.Component {
       skipSynchronizationBeforeHeight: 1029000,
       mostRecentBlockHeight: 1029000,
 
-      DataContractDSO: "7pn3AFQEZRY4TWJ8g52E593EpxxaXT64ovNMFFTkWnss", //
-
-      DataContractDGT: "ECQ3626MPZRFW3KgZm3iPdxUSjyALpndZmEbXnQWXh1p", //
-      //
-      DataContractDGM: "3E6tRUybFV4MXJfSS4dEHujs8SzWjco4thC9uUM6vKzx", //
-      //
-      DataContractDGP: "2ZRd4pPuVyX2KGEYyxLQFCUUkJZSPDVcqZ7zJzjHafsE", //
-      DataContractDMIO: "4o4FE66f5uo9pgQbpGx6BRs8YjEKFcE8JRmbPchQEWi2", //
-      DataContractP2P: "2YKHGWpZEApRoQjXqtqoD7YgVzRtCDvmL8tXvDZ25bzh", //
-      DataContractDGR: "D26rEM7r19R5nJ4Xjj3FkCK5uwrjsd2tHs6vuRcw3gZg", //
-      DataContractPOD: "6DY7aEQ9uNVuNUg1FnMPTjkWEWhzyei9RCcvK9msMYs", //
+      DataContractDSO: "7pn3AFQEZRY4TWJ8g52E593EpxxaXT64ovNMFFTkWnss",
+      DataContractDGT: "ECQ3626MPZRFW3KgZm3iPdxUSjyALpndZmEbXnQWXh1p",
+      DataContractDGM: "3E6tRUybFV4MXJfSS4dEHujs8SzWjco4thC9uUM6vKzx",
+      DataContractDGP: "2ZRd4pPuVyX2KGEYyxLQFCUUkJZSPDVcqZ7zJzjHafsE",
+      DataContractDMIO: "4o4FE66f5uo9pgQbpGx6BRs8YjEKFcE8JRmbPchQEWi2",
+      DataContractP2P: "2YKHGWpZEApRoQjXqtqoD7YgVzRtCDvmL8tXvDZ25bzh",
+      DataContractDGR: "D26rEM7r19R5nJ4Xjj3FkCK5uwrjsd2tHs6vuRcw3gZg",
+      DataContractPOD: "6DY7aEQ9uNVuNUg1FnMPTjkWEWhzyei9RCcvK9msMYs",
       DataContractDPNS: "GWRSAVFMjXx8HpQFaNJMqBV7MBgMK4br5UESsB4S31Ec",
       DataContractRAD: "2ZDicoSHYoXTbX3tbTHZwMyJZFdW6ZfEL8DZVkD8DMUY",
+
+      // DataContractDSOTESTNET: "7pn3AFQEZRY4TWJ8g52E593EpxxaXT64ovNMFFTkWnss",
+      // DataContractDGTTESTNET: "ECQ3626MPZRFW3KgZm3iPdxUSjyALpndZmEbXnQWXh1p",
+      // DataContractDGMTESTNET: "3E6tRUybFV4MXJfSS4dEHujs8SzWjco4thC9uUM6vKzx",
+      // DataContractDGPTESTNET: "2ZRd4pPuVyX2KGEYyxLQFCUUkJZSPDVcqZ7zJzjHafsE",
+      // DataContractDMIOTESTNET: "4o4FE66f5uo9pgQbpGx6BRs8YjEKFcE8JRmbPchQEWi2",
+      // DataContractP2PTESTNET: "2YKHGWpZEApRoQjXqtqoD7YgVzRtCDvmL8tXvDZ25bzh",
+      // DataContractDGRTESTNET: "D26rEM7r19R5nJ4Xjj3FkCK5uwrjsd2tHs6vuRcw3gZg",
+      // DataContractPODTESTNET: "6DY7aEQ9uNVuNUg1FnMPTjkWEWhzyei9RCcvK9msMYs",
+      // DataContractDPNSTESTNET: "GWRSAVFMjXx8HpQFaNJMqBV7MBgMK4br5UESsB4S31Ec",
+      // DataContractRADTESTNET: "2ZDicoSHYoXTbX3tbTHZwMyJZFdW6ZfEL8DZVkD8DMUY",
 
       expandedTopNav: false,
     };
@@ -1091,38 +1099,8 @@ class App extends React.Component {
   handleLogout = () => {
     window.location.reload();
   };
-  //FIX THIS *** BELOW
+
   componentDidMount() {
-    //1) GET WALLETID KEYS For New Wallet Login and Wallet Sync
-    //  ///  ///  ///  ///
-    //**** I don't need any of this because the wallet login handles it itself..   ****
-    //  \\\  \\\  \\\  \\\
-    // True^^^ - but using to determine if first time loading so can let know that this may take up to a minute for first time logging in.
-    //
-    // LocalForage.config({
-    //   name: "dashevo-wallet-lib",
-    // });
-    // let dashevo = LocalForage.createInstance({
-    //   name: "dashevo-wallet-lib",
-    // });
-    // dashevo
-    //   .keys()
-    //   .then((keys) => {
-    //     this.setState({
-    //       LocalForageKeys: keys,
-    // *** //WAS USING THIS FOR NOTICE THAT "LOGIN CAN TAKE UP TO A MINUTE FOR FIRST LOGIN." ***
-    //     });
-    //     console.log(keys);
-    //   })
-    //   .catch(function (err) {
-    //     console.log(err);
-    //   });
-    //
-    //****************************** */
-    //
-    // SO IF I DON'T COMBINE THAN I WILL HAVE TO SEPARATE INTO 2 DIFFERENT CONFIGS AND SWITCH BETWEEN THEM, THIS SLOWS STUFF DOWN AND ADDS COMPLEXITY
-    // IF I DO COMBINE THEN I NEED TO SET LENGTH TO > 1 INSTEAD OF 0 OR DO LIKE A MINUS THE KEY THAT GOES TO THE MODE.
-    //
     LocalForage.config({
       name: "dash-frontend",
     });
@@ -1160,36 +1138,12 @@ class App extends React.Component {
       .catch(function (err) {
         console.log(err);
       });
-    //****************************** */
-    //3) GET MOST RECENT BLOCK HEIGHT FOR NEW WALLET LOGIN
-    // const clientOpts = {
-    //   network: this.state.whichNetwork,
-    // };
-    // const client = new Dash.Client(clientOpts);
-    // const getMostRecentBlockHeight = async () => {
-    //   const status = await client.getDAPIClient().core.getBlockchainStatus();
-    //   return status;
-    // };
-    // getMostRecentBlockHeight()
-    //   .then((d) => {
-    //     let blockHeight = d.chain.blocksCount;
-    //     console.log("Most Recent Block Height:\n", blockHeight);
-    //     // this.setState({
-    //     //   mostRecentBlockHeight: blockHeight - 2500,
-    //     // });
-    //   })
-    //   .catch((e) => {
-    //     console.error("Something went wrong:\n", e);
-    //   })
-    //   .finally(() => client.disconnect());
-    //FIX THIS^^^
-    //
 
-    //
-    //BELOW, YEAH DO THAT ->  ->  vvvv
-    //
-    this.verifyFrontendFee();
-    this.getDSOEveryoneDocs(); //WHY NOT MOVE TO ONSELECT LIKE OTHERS ->
+    //NEED TO ADD THE TESTNET/MAINNET VERIFY AND CHANGE IF TESTNET ->
+    this.verifyFrontendFeeAndNetwork();
+
+    //HAVE TO HAVE THE NETWORK SET FIRST ->
+    //this.getDSOEveryoneDocs(); //WHY NOT MOVE TO ONSELECT LIKE OTHERS -> it doesn't cause that much of an issue.
   }
 
   //ACCOUNT LOGIN FUNCTIONS => SIMPLE LOGIN FIRST
@@ -4114,6 +4068,8 @@ class App extends React.Component {
 
   showGroupPage = (groupName) => {
     this.setState({
+      selectedDapp: "Groups", // ADDED THIS FOR THE EVENT FUNCTIONALITY
+      isModalShowing: false, // ADDED THIS FOR THE EVENT FUNCTIONALITY
       selectedGroup: groupName,
       isGroupShowing: true,
     });
@@ -17008,11 +16964,11 @@ RIDES AND DRIVERS FUNCTIONS^^^^
       //Need to add a decimal or comma on the second from last
       return (this.state.FrontendFee / 100).toFixed(2);
     } else {
-      return "No Frontend Fee";
+      return "0"; //"No Frontend Fee";
     }
   };
 
-  verifyFrontendFee = () => {
+  verifyFrontendFeeAndNetwork = () => {
     // RUN CompDidMount
 
     let regex = /^[0-9]{1,4}$|^10000$/;
@@ -17021,19 +16977,34 @@ RIDES AND DRIVERS FUNCTIONS^^^^
       import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP
     );
 
+    if (Number(import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP) === 0) {
+      valid = false;
+    }
+
+    let network = "mainnet";
+
+    if (import.meta.env.VITE_NETWORK !== "mainnet") {
+      network = "testnet";
+    }
+
     if (valid) {
       this.setState(
         {
           FrontendFee: import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP,
           validFrontendFee: true,
+          whichNetwork: network,
         },
-        () => console.log(`Frontend Fee: ${this.state.FrontendFee}`)
+        () => this.getDSOEveryoneDocs()
       );
     } else {
-      this.setState({
-        FrontendFee: 0,
-        validFrontendFee: false,
-      });
+      this.setState(
+        {
+          FrontendFee: 0,
+          validFrontendFee: false,
+          whichNetwork: network,
+        },
+        () => this.getDSOEveryoneDocs()
+      );
     }
     //Verify number between 0 and 10000
     // if not then 0 OR True false
@@ -17052,108 +17023,114 @@ RIDES AND DRIVERS FUNCTIONS^^^^
   //https://github.com/dashpay/platform/blob/v1.0-dev/packages/js-dash-sdk/src/SDK/Client/Platform/methods/identities/creditTransfer.ts
   // see above ^^^
   sendFrontendFee = () => {
-    this.setState({
-      isLoadingIdInfo: true, //wHAT DOES THIS DO? -> because does not control the identity state that is with identityInfo, controls account page ->
+    const recipientId = import.meta.env.VITE_IDENTITY_TO_RECEIVE_FEE; //.env input
 
-      isLoadingCreditTransfer: true,
+    if (this.state.identity !== recipientId) {
+      this.setState({
+        isLoadingIdInfo: true, //wHAT DOES THIS DO? -> because does not control the identity state that is with identityInfo, controls account page ->
 
-      identityInfo: "", //bC THIS IS WHAT CONTROLS THE TOPUP CREDITS AND WILL THAT MESS WITH THE FUNCTION BELOW -> No
-    });
-    console.log(this.state.identityInfo.balance);
+        isLoadingCreditTransfer: true,
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
+        identityInfo: "", //bC THIS IS WHAT CONTROLS THE TOPUP CREDITS AND WILL THAT MESS WITH THE FUNCTION BELOW -> No
+      });
+      console.log(this.state.identityInfo.balance);
+
+      const clientOpts = {
+        network: this.state.whichNetwork,
+        wallet: {
+          mnemonic: this.state.mnemonic,
+          adapter: LocalForage.createInstance,
+          unsafeOptions: {
+            skipSynchronizationBeforeHeight:
+              this.state.skipSynchronizationBeforeHeight,
+          },
         },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+      };
+      const client = new Dash.Client(clientOpts);
 
-    const identityCreditTransfer = async () => {
-      //const identity = this.state.identityRaw; //YourIdentity
+      const identityCreditTransfer = async () => {
+        //const identity = this.state.identityRaw; //YourIdentity
 
-      let identity = "";
-      if (this.state.identityRaw !== "") {
-        identity = this.state.identityRaw;
-      } else {
-        identity = await platform.identities.get(this.state.identity);
-      } // Your identity ID
+        let identity = "";
+        if (this.state.identityRaw !== "") {
+          identity = this.state.identityRaw;
+        } else {
+          identity = await platform.identities.get(this.state.identity);
+        } // Your identity ID
 
-      // const identityId = 'identity ID of the sender goes here';
-      // const identity = await client.platform.identities.get(
-      //   this.state.identity
-      // );
+        // const identityId = 'identity ID of the sender goes here';
+        // const identity = await client.platform.identities.get(
+        //   this.state.identity
+        // );
 
-      const recipientId = import.meta.env.VITE_IDENTITY_TO_RECEIVE_FEE; //.env input
+        //add to state the variable : feeAmountBaseNumber = 10000000 and the subtract 1 from each time..
+        // SUBTRACT IN THE STATE SET AFTER TRANSITION.
 
-      //add to state the variable : feeAmountBaseNumber = 10000000 and the subtract 1 from each time..
-      // SUBTRACT IN THE STATE SET AFTER TRANSITION.
+        //BUT WILL THE -1 CHANGE THE TRANSFER AMOUNT AFTER THE TOFIXED(0) SO THAT IT IS CHANGED IN THE STATE TRANSITION? I THINK YES..
 
-      //BUT WILL THE -1 CHANGE THE TRANSFER AMOUNT AFTER THE TOFIXED(0) SO THAT IT IS CHANGED IN THE STATE TRANSITION? I THINK YES..
+        if (this.state.validFrontendFee && this.state.FrontendFee > 0) {
+          const feeAmount = //100,000,000 duffs in a Dash * 1000 duffs to credits * .01 for % // Not .01 for % but .01 for TopUp(fixed amount) // actually, So TopUp and % are included in the calculation
+            // 100,000,000 duffs in a dash * 1000 credits in a duff = 100,000,000,000
+            // .01 topup is amt in dash -> 1,000,000,000
+            // .01 change to % -> 10,000,000
+            //
+            // (NEW) -> feeAmt Change from 1 = 1% to 100 = 1.00%
+            //
+            (
+              this.state.feeAmountBaseNumber *
+              //import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP
+              this.state.FrontendFee
+            ) //1 <=
+              .toFixed(0);
 
-      if (this.state.validFrontendFee && this.state.FrontendFee > 0) {
-        const feeAmount = //100,000,000 duffs in a Dash * 1000 duffs to credits * .01 for % // Not .01 for % but .01 for TopUp(fixed amount) // actually, So TopUp and % are included in the calculation
-          // 100,000,000 duffs in a dash * 1000 credits in a duff = 100,000,000,000
-          // .01 topup is amt in dash -> 1,000,000,000
-          // .01 change to % -> 10,000,000
-          //
-          // (NEW) -> feeAmt Change from 1 = 1% to 100 = 1.00%
-          //
-          (
-            this.state.feeAmountBaseNumber *
-            //import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP
-            this.state.FrontendFee
-          ) //1 <=
-            .toFixed(0);
+          console.log(feeAmount);
 
-        console.log(feeAmount);
+          // fee amount need to augment just a little.. I think it is using the logic just like the core so need to be different.
+          //So like have a fee amount in state aand subtract 1 from it each time.. <= ****
 
-        // fee amount need to augment just a little.. I think it is using the logic just like the core so need to be different.
-        //So like have a fee amount in state aand subtract 1 from it each time.. <= ****
+          await client.platform.identities.creditTransfer(
+            identity,
+            //Identifier.from(this.state.identity),
+            recipientId,
+            //Number(feeAmount)
+            feeAmount
+          );
+        } //End of If statement
+        return client.platform.identities.get(this.state.identity);
+      };
 
-        await client.platform.identities.creditTransfer(
-          identity,
-          //Identifier.from(this.state.identity),
-          recipientId,
-          //Number(feeAmount)
-          feeAmount
-        );
-      } //End of If statement
-      return client.platform.identities.get(this.state.identity);
-    };
+      identityCreditTransfer()
+        .then((d) => {
+          console.log(
+            "Identity credit balance after credit transfer: ",
+            d.balance
+          );
+          this.setState({
+            identityInfo: d.toJSON(),
+            identityRaw: d,
+            isLoadingIdInfo: false,
+            isLoadingCreditTransfer: false,
+            feeAmountBaseNumber: this.state.feeAmountBaseNumber - 1,
+          });
 
-    identityCreditTransfer()
-      .then((d) => {
-        console.log(
-          "Identity credit balance after credit transfer: ",
-          d.balance
-        );
-        this.setState({
-          identityInfo: d.toJSON(),
-          identityRaw: d,
-          isLoadingIdInfo: false,
-          isLoadingCreditTransfer: false,
-          feeAmountBaseNumber: this.state.feeAmountBaseNumber - 1,
-        });
-
-        //credit transfer
-        // get the identity balance after whatever write function and then set the state.
-      })
-      .catch((e) => {
-        console.error("Something went wrong:\n", e);
-        this.setState({
-          identityInfo: this.state.identityRaw.toJSON(), //Test <-
-          isLoadingIdInfo: false,
-          isLoadingCreditTransfer: false,
-          feeAmountBaseNumber: this.state.feeAmountBaseNumber - 20,
-        });
-      })
-      .finally(() => client.disconnect());
+          //credit transfer
+          // get the identity balance after whatever write function and then set the state.
+        })
+        .catch((e) => {
+          console.error("Something went wrong:\n", e);
+          this.setState({
+            identityInfo: this.state.identityRaw.toJSON(), //Test <-
+            isLoadingIdInfo: false,
+            isLoadingCreditTransfer: false,
+            feeAmountBaseNumber: this.state.feeAmountBaseNumber - 20,
+          });
+        })
+        .finally(() => client.disconnect());
+    } else {
+      //end if of same ownerId and userId
+      this.loadIdentityCredits();
+      //just update credits
+    }
   };
 
   loadIdentityCredits = () => {
@@ -18688,6 +18665,7 @@ RIDES AND DRIVERS FUNCTIONS^^^^
             isLoadingGroups={this.state.isLoadingGroups}
             isLoadingGroupEvents={this.state.isLoadingGroupEvents}
             handleSelectedJoinGroup={this.handleSelectedJoinGroup}
+            showGroupPage={this.showGroupPage}
           />
         ) : (
           <></>
@@ -18701,6 +18679,7 @@ RIDES AND DRIVERS FUNCTIONS^^^^
         this.state.presentModal === "CreateOfferModal" ? (
           <CreateOfferModal
             isModalShowing={this.state.isModalShowing}
+            whichNetwork={this.state.whichNetwork}
             createYourOffer={this.createYourOffer}
             hideModal={this.hideModal}
             mode={this.state.mode}
@@ -18823,6 +18802,7 @@ RIDES AND DRIVERS FUNCTIONS^^^^
           <CreateProofModal
             isModalShowing={this.state.isModalShowing}
             createYourProof={this.createYourProof}
+            whichNetwork={this.state.whichNetwork}
             hideModal={this.hideModal}
             mode={this.state.mode}
             closeTopNav={this.closeTopNav}

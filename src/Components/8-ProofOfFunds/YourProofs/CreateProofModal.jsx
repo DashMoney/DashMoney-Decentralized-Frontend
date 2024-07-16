@@ -66,7 +66,13 @@ class CreateProofModal extends React.Component {
   };
 
   addressValidate = (address) => {
-    let regex = /^[Xy][\S]{33}$/;
+    let regex; // = /^[Xy][\S]{33}$/;
+
+    if (this.props.whichNetwork === "testnet") {
+      regex = /^[y][\S]{33}$/;
+    } else {
+      regex = /^[X][\S]{33}$/;
+    }
     let valid = regex.test(address);
 
     if (valid) {

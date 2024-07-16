@@ -661,7 +661,13 @@ class CreateOfferModal extends React.Component {
   };
 
   toMeAddrValidate = (toMeAddr) => {
-    let regex = /^[Xy]\S{33}$/;
+    let regex; // = /^[Xy][\S]{33}$/;
+
+    if (this.props.whichNetwork === "testnet") {
+      regex = /^[y][\S]{33}$/;
+    } else {
+      regex = /^[X][\S]{33}$/;
+    }
     let valid = regex.test(toMeAddr);
 
     if (valid) {

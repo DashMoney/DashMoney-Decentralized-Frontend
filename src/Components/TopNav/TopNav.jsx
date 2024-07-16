@@ -32,7 +32,7 @@ class TopNav extends React.Component {
       //Need to add a decimal or comma on the second from last
       return (this.props.FrontendFee / 100).toFixed(2);
     } else {
-      return "No Frontend Fee";
+      return "0"; //"No Frontend Fee";
     }
   };
 

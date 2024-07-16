@@ -119,13 +119,13 @@ class EventModal extends React.Component {
   </span> */}
             <span>{this.state.copiedName ? <span>✅</span> : <></>}</span>
 
-            <span className="textsmaller">
+            {/* <span className="textsmaller">
               {this.formatDate(
                 this.props.selectedSearchedEvent.$createdAt,
                 today,
                 yesterday
               )}
-            </span>
+            </span> */}
           </div>
 
           <div style={{ marginTop: "1rem", marginBottom: "1.6rem" }}>
@@ -137,6 +137,7 @@ class EventModal extends React.Component {
               isLoadingGroupEvents={this.props.isLoadingGroupEvents}
               isLoadingGroups={this.props.isLoadingGroups}
               handleSelectedJoinGroup={this.props.handleSelectedJoinGroup}
+              showGroupPage={this.props.showGroupPage}
             />
           </div>
 

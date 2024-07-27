@@ -12,10 +12,11 @@ import RatingSummary from "./PostModalAddons/DGReview/RatingSummary";
 
 import DGPView from "./PostModalAddons/DGPaid/DGPView";
 
+import dapiClientNoWallet from "../DapiClientNoWallet";
+
 import Dash from "dash";
 
 const {
-  Essentials: { Buffer },
   PlatformProtocol: { Identifier },
 } = Dash;
 
@@ -168,15 +169,7 @@ class PostModal extends React.Component {
   //     });
   //   }
 
-  //   const clientOpts = {
-  //     network: this.props.whichNetwork,
-  //     apps: {
-  //       DGPContract: {
-  //         contractId: this.props.DataContractDGP,
-  //       },
-  //     },
-  //   };
-  //   const client = new Dash.Client(clientOpts);
+  //   const client = new Dash.Client(dapiClientNoWallet(this.props.whichNetwork));
 
   //   const getDocuments = async () => {
   //     console.log("Called Get DGP Items");
@@ -240,15 +233,7 @@ class PostModal extends React.Component {
   getSearchReviews = (theIdentity) => {
     //console.log("Calling getSearchReviews");
 
-    const clientOpts = {
-      network: this.props.whichNetwork,
-      apps: {
-        DGRContract: {
-          contractId: this.props.DataContractDGR,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.props.whichNetwork));
 
     const getDocuments = async () => {
       return client.platform.documents.get("DGRContract.dgrreview", {
@@ -298,15 +283,7 @@ class PostModal extends React.Component {
   };
 
   getSearchReviewNames = (docArray) => {
-    const clientOpts = {
-      network: this.props.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.props.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.props.whichNetwork));
     //START OF NAME RETRIEVAL
 
     let ownerarrayOfOwnerIds = docArray.map((doc) => {
@@ -323,16 +300,16 @@ class PostModal extends React.Component {
     });
     // End of Setting Unique reviews
 
-    arrayOfOwnerIds = arrayOfOwnerIds.map((ownerId) =>
-      Buffer.from(Identifier.from(ownerId))
-    );
+    // arrayOfOwnerIds = arrayOfOwnerIds.map((ownerId) =>
+    //   Buffer.from(Identifier.from(ownerId))
+    // );
 
     //console.log("Calling getNamesforDSOmsgs");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -369,15 +346,7 @@ class PostModal extends React.Component {
   };
 
   getSearchReplies = (docArray) => {
-    const clientOpts = {
-      network: this.props.whichNetwork,
-      apps: {
-        DGRContract: {
-          contractId: this.props.DataContractDGR,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.props.whichNetwork));
 
     // This Below is to get unique set of ByYou review doc ids
     let arrayOfReviewIds = docArray.map((doc) => {
@@ -443,15 +412,7 @@ class PostModal extends React.Component {
   };
 
   getDGPStore = (theIdentity) => {
-    const clientOpts = {
-      network: this.props.whichNetwork,
-      apps: {
-        DGPContract: {
-          contractId: this.props.DataContractDGP,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.props.whichNetwork));
 
     const getDocuments = async () => {
       //console.log("Called Get DGP Store");
@@ -494,15 +455,7 @@ class PostModal extends React.Component {
   };
 
   getDGPItems = (theIdentity) => {
-    const clientOpts = {
-      network: this.props.whichNetwork,
-      apps: {
-        DGPContract: {
-          contractId: this.props.DataContractDGP,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.props.whichNetwork));
 
     const getDocuments = async () => {
       //console.log("Called Get DGP Items");

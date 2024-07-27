@@ -2,11 +2,8 @@ import React from "react";
 import LocalForage from "localforage";
 
 import Image from "react-bootstrap/Image";
-import Button from "react-bootstrap/Button";
 
 import DashBkgd from "./Images/dash_digital-cash_logo_2018_rgb_for_screens.png";
-
-import Spinner from "react-bootstrap/Spinner";
 
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -129,6 +126,9 @@ import DriveReplyMsgModal from "./Components/10-Rides&Drivers/DriversModals/Driv
 
 import AcceptDriveModal from "./Components/10-Rides&Drivers/DriversModals/AcceptDriveModal";
 
+import dapiClient from "./Components/DapiClient";
+import dapiClientNoWallet from "./Components/DapiClientNoWallet";
+
 //const Dash = require("dash");
 import Dash from "dash";
 
@@ -160,7 +160,7 @@ class App extends React.Component {
       isLoadingCreditTransfer: false,
 
       isLoadingName: true,
-      isLoadingAlias: true,
+      isLoadingAlias: false,
 
       isLoadingWallet: true, //For wallet for topup
 
@@ -748,6 +748,9 @@ class App extends React.Component {
       nameToSearch: "",
       nameFormat: false,
 
+      SearchReviews1: false,
+      SearchReviews2: false,
+
       // SearchedNameDoc_EXCHANGE: [],  WRONG SPOT
       // SearchedNameOffers_EXCHANGE: [],
 
@@ -976,8 +979,8 @@ class App extends React.Component {
       WALLET_addressesNames: [],
 
       //mostRecentLogin: false,
-      platformLogin: false, //Will this be used? -> check -> i think yes. but do I need it?
-      //
+      platformLogin: false,
+
       //LocalForageKeys: [],
       DashMoneyLFKeys: [],
       FrontendFee: 0,
@@ -986,29 +989,9 @@ class App extends React.Component {
       //InitialWhyMoney: true,
 
       skipSynchronizationBeforeHeight: 1029000,
-      mostRecentBlockHeight: 1029000,
+      //mostRecentBlockHeight: 1029000,
 
-      DataContractDSO: "7pn3AFQEZRY4TWJ8g52E593EpxxaXT64ovNMFFTkWnss",
-      DataContractDGT: "ECQ3626MPZRFW3KgZm3iPdxUSjyALpndZmEbXnQWXh1p",
-      DataContractDGM: "3E6tRUybFV4MXJfSS4dEHujs8SzWjco4thC9uUM6vKzx",
-      DataContractDGP: "2ZRd4pPuVyX2KGEYyxLQFCUUkJZSPDVcqZ7zJzjHafsE",
-      DataContractDMIO: "4o4FE66f5uo9pgQbpGx6BRs8YjEKFcE8JRmbPchQEWi2",
-      DataContractP2P: "2YKHGWpZEApRoQjXqtqoD7YgVzRtCDvmL8tXvDZ25bzh",
-      DataContractDGR: "D26rEM7r19R5nJ4Xjj3FkCK5uwrjsd2tHs6vuRcw3gZg",
-      DataContractPOD: "6DY7aEQ9uNVuNUg1FnMPTjkWEWhzyei9RCcvK9msMYs",
-      DataContractDPNS: "GWRSAVFMjXx8HpQFaNJMqBV7MBgMK4br5UESsB4S31Ec",
-      DataContractRAD: "2ZDicoSHYoXTbX3tbTHZwMyJZFdW6ZfEL8DZVkD8DMUY",
-
-      // DataContractDSOTESTNET: "7pn3AFQEZRY4TWJ8g52E593EpxxaXT64ovNMFFTkWnss",
-      // DataContractDGTTESTNET: "ECQ3626MPZRFW3KgZm3iPdxUSjyALpndZmEbXnQWXh1p",
-      // DataContractDGMTESTNET: "3E6tRUybFV4MXJfSS4dEHujs8SzWjco4thC9uUM6vKzx",
-      // DataContractDGPTESTNET: "2ZRd4pPuVyX2KGEYyxLQFCUUkJZSPDVcqZ7zJzjHafsE",
-      // DataContractDMIOTESTNET: "4o4FE66f5uo9pgQbpGx6BRs8YjEKFcE8JRmbPchQEWi2",
-      // DataContractP2PTESTNET: "2YKHGWpZEApRoQjXqtqoD7YgVzRtCDvmL8tXvDZ25bzh",
-      // DataContractDGRTESTNET: "D26rEM7r19R5nJ4Xjj3FkCK5uwrjsd2tHs6vuRcw3gZg",
-      // DataContractPODTESTNET: "6DY7aEQ9uNVuNUg1FnMPTjkWEWhzyei9RCcvK9msMYs",
-      // DataContractDPNSTESTNET: "GWRSAVFMjXx8HpQFaNJMqBV7MBgMK4br5UESsB4S31Ec",
-      // DataContractRADTESTNET: "2ZDicoSHYoXTbX3tbTHZwMyJZFdW6ZfEL8DZVkD8DMUY",
+      //skipSynchronizationBeforeHeightTESTNET: 1069200,
 
       expandedTopNav: false,
     };
@@ -1140,7 +1123,7 @@ class App extends React.Component {
       });
 
     //NEED TO ADD THE TESTNET/MAINNET VERIFY AND CHANGE IF TESTNET ->
-    this.verifyFrontendFeeAndNetwork();
+    this.verifyFrontendFeeAndNetworkAndSkipSync();
 
     //HAVE TO HAVE THE NETWORK SET FIRST ->
     //this.getDSOEveryoneDocs(); //WHY NOT MOVE TO ONSELECT LIKE OTHERS -> it doesn't cause that much of an issue.
@@ -1171,7 +1154,7 @@ class App extends React.Component {
     });
   };
 
-  //TRIGGER THE LOGIN PROCESS ->Simplest no LF setup <- CHANGING ->
+  //TRIGGER THE LOGIN PROCESS ->
   handleAccountLogin = (theMnemonic) => {
     if (this.state.DashMoneyLFKeys.length === 0) {
       this.setState(
@@ -1199,8 +1182,6 @@ class App extends React.Component {
     //   isLoggedIn: true,
     // });
   };
-
-  //BELOW -> CHANGE -> THERE IS NOT MOST RECENT THAT IS ONLY THE LIST TO PULL FROM AND THAT IS IT.
 
   checkPlatformOnlyLogin = (theMnemonic) => {
     console.log("Called Check Platform Login");
@@ -1300,7 +1281,7 @@ class App extends React.Component {
     this.getIdentityInfo(theIdentity);
     this.getWalletPlatformLogin(theMnemonic);
     // this.getNamefromIdentity(theIdentity); DONT NEED <=
-    this.getAliasfromIdentity(theIdentity);
+    //this.getAliasfromIdentity(theIdentity); // NO MORE ALIASES
     //
     //  ----   ----   ----   ----   ----    ----   ----
     //
@@ -1323,18 +1304,30 @@ class App extends React.Component {
   //
   // BELOW STANDARD LOGIN
   getWalletAndIdentitywithMnem = (theMnemonic) => {
-    //gOT FROM DGM
-    const client = new Dash.Client({
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: theMnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-    });
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        theMnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+      //   {
+      //   network: this.state.whichNetwork,
+
+      //   dapiAddresses: ["44.233.44.95:1443"], // <= *****
+
+      //   wallet: {
+      //     mnemonic: theMnemonic,
+      //     adapter: LocalForage.createInstance,
+      //     unsafeOptions: {
+      //       skipSynchronizationBeforeHeight:
+      //         this.state.skipSynchronizationBeforeHeight,
+      //     },
+      //   },
+      // }
+    );
+
+    //console.log(this.state.whichNetwork);
+    //console.log(this.state.skipSynchronizationBeforeHeight);
 
     const retrieveIdentityIds = async () => {
       const account = await client.getWalletAccount();
@@ -1402,23 +1395,19 @@ class App extends React.Component {
     //THIS SHOULD CALL IDINFO, NAMES, AND ALIASES
     this.getIdentityInfo(theIdentity);
     this.getNamefromIdentity(theIdentity);
-    this.getAliasfromIdentity(theIdentity);
+    // this.getAliasfromIdentity(theIdentity); NO MORE ALIASES?
   }; //Many LF, mostRecent and other functions have not been incorporated yet
   //
   //
   // BELOW PLATFORM LOGIN - WALLET PART
   getWalletPlatformLogin = (theMnemonic) => {
-    const client = new Dash.Client({
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: theMnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-    });
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        theMnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const retrieveIdentityIds = async () => {
       const account = await client.getWalletAccount();
@@ -1480,9 +1469,7 @@ class App extends React.Component {
   getIdentityInfo = (theIdentity) => {
     console.log("Called get identity info");
 
-    const client = new Dash.Client({
-      network: this.state.whichNetwork,
-    });
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const retrieveIdentity = async () => {
       return client.platform.identities.get(theIdentity); // Your identity ID
@@ -1564,12 +1551,15 @@ class App extends React.Component {
   };
 
   getNamefromIdentity = (theIdentity) => {
-    const client = new Dash.Client({ network: this.state.whichNetwork });
+    console.log(theIdentity);
+    //const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
+    const client = new Dash.Client({ network: "testnet" });
 
     const retrieveNameByRecord = async () => {
       // Retrieve by a name's identity ID
       return client.platform.names.resolveByRecord(
-        "dashUniqueIdentityId",
+        "identity",
+        // "dashUniqueIdentityId", record === 'identity'
         theIdentity // Your identity ID
       );
     };
@@ -1645,7 +1635,7 @@ class App extends React.Component {
   };
 
   getAliasfromIdentity = (theIdentity) => {
-    const client = new Dash.Client({ network: this.state.whichNetwork });
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const retrieveNameByRecord = async () => {
       // Retrieve by a name's identity ID
@@ -1692,19 +1682,13 @@ class App extends React.Component {
       isLoadingIdInfo: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-    };
-
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const createIdentity = async () => {
       return client.platform.identities.register();
@@ -1741,18 +1725,24 @@ class App extends React.Component {
       identityInfo: "",
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    // const clientOpts = {
+    //   network: this.state.whichNetwork,
+    //   wallet: {
+    //     mnemonic: this.state.mnemonic,
+    //     adapter: LocalForage.createInstance,
+    //     unsafeOptions: {
+    //       skipSynchronizationBeforeHeight:
+    //         this.state.skipSynchronizationBeforeHeight,
+    //     },
+    //   },
+    // };
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const topupIdentity = async () => {
       const identityId = this.state.identity; // Your identity ID
@@ -1839,7 +1829,7 @@ class App extends React.Component {
       identityInfo: "",
     });
 
-    const client = new Dash.Client({ network: this.state.whichNetwork });
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const retrieveIdentity = async () => {
       return client.platform.identities.get(this.state.identity); // Your identity ID
@@ -1880,15 +1870,15 @@ class App extends React.Component {
   };
 
   getDSOEveryoneDocs = () => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DSOContract: {
-          contractId: this.state.DataContractDSO, // Your contract ID
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    // const clientOpts = {
+    //   network: this.state.whichNetwork,
+    //   apps: {
+    //     DSOContract: {
+    //       contractId: this.state.DataContractDSO, // Your contract ID
+    //     },
+    //   },
+    // };
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       return client.platform.documents.get("DSOContract.dsomsg", {
@@ -1932,15 +1922,15 @@ class App extends React.Component {
   };
 
   getDSOEveryoneNames = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    // const clientOpts = {
+    //   network: this.state.whichNetwork,
+    //   apps: {
+    //     DPNSContract: {
+    //       contractId: this.state.DataContractDPNS,
+    //     },
+    //   },
+    // };
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     let ownerarrayOfOwnerIds = docArray.map((doc) => {
       return doc.$ownerId;
@@ -1953,9 +1943,9 @@ class App extends React.Component {
     //console.log("Calling getNamesforDSOmsgs");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -1995,15 +1985,7 @@ class App extends React.Component {
   };
 
   getEveryoneThreads = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DSOContract: {
-          contractId: this.state.DataContractDSO,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     // This Below is to get unique set of order doc ids
     let arrayOfMsgIds = docArray.map((doc) => {
@@ -2065,15 +2047,7 @@ class App extends React.Component {
   };
 
   getEveryoneThreadsNames = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     let arrayOfOwnerIds = docArray.map((doc) => {
       return doc.$ownerId;
@@ -2087,9 +2061,9 @@ class App extends React.Component {
     //console.log(arrayOfOwnerIds);
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -2151,15 +2125,7 @@ class App extends React.Component {
   getDSOForyouByyouDocs = (theIdentity) => {
     //console.log("Calling dsoForYouFromyouDocs");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DSOContract: {
-          contractId: this.state.DataContractDSO, // Your contract ID
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     //DSOForyou Query -> From you (SO and DM)
 
@@ -2202,15 +2168,7 @@ class App extends React.Component {
   };
 
   getForyouByyouNames = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
     //START OF NAME RETRIEVAL
 
     let ownerarrayOfOwnerIds = docArray.map((doc) => {
@@ -2224,9 +2182,9 @@ class App extends React.Component {
     //console.log("Calling getNamesforyouDSOmsgs");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -2263,15 +2221,7 @@ class App extends React.Component {
   }; //SENDS TO COMBINE MESSAGES
 
   getByYouThreads = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DSOContract: {
-          contractId: this.state.DataContractDSO,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     // This Below is to get unique set of ByYou msg doc ids
     let arrayOfMsgIds = docArray.map((doc) => {
@@ -2332,15 +2282,7 @@ class App extends React.Component {
   };
 
   getByYouThreadsNames = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     let arrayOfOwnerIds = docArray.map((doc) => {
       return doc.$ownerId;
@@ -2353,9 +2295,9 @@ class App extends React.Component {
     //console.log("Called Get ByYou Threads Names");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -2395,15 +2337,7 @@ class App extends React.Component {
   getDSOForyouFromOthersTags = (theIdentity) => {
     //console.log("Calling dsoForYouOthersTags");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DSOContract: {
-          contractId: this.state.DataContractDSO, // Your contract ID
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     //DSOForyou Query -> From other's tags (SO and DM) -> this is forTAGS
 
@@ -2462,15 +2396,7 @@ class App extends React.Component {
   getDSOmsgsFromTags = (idsOfMsgsFromTags) => {
     //console.log("Getting MSGs from Tags");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DSOContract: {
-          contractId: this.state.DataContractDSO, // Your contract ID
-        },
-      },
-    };
-    let client = new Dash.Client(clientOpts);
+    let client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     //console.log(`Array of MsgIds: ${arrayOfMSGIds}`);
 
@@ -2506,15 +2432,7 @@ class App extends React.Component {
   };
 
   getDSOmsgsFromTagsNames = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
     //START OF NAME RETRIEVAL
 
     let ownerarrayOfOwnerIds = docArray.map((doc) => {
@@ -2532,9 +2450,9 @@ class App extends React.Component {
     //console.log("Calling getNamesforDSOmsgs");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -2571,15 +2489,7 @@ class App extends React.Component {
   };
 
   getFromTagsThreads = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DSOContract: {
-          contractId: this.state.DataContractDSO,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     // This Below is to get unique set of ByYou msg doc ids
     let arrayOfMsgIds = docArray.map((doc) => {
@@ -2640,15 +2550,7 @@ class App extends React.Component {
   };
 
   getFromTagsThreadsNames = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DataContractDPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     let arrayOfOwnerIds = docArray.map((doc) => {
       return doc.$ownerId;
@@ -2665,9 +2567,9 @@ class App extends React.Component {
     //console.log("Called Get FromTags Threads Names");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DataContractDPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -2716,24 +2618,14 @@ class App extends React.Component {
     });
 
     //console.log(addedMessage);
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
 
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DSOContract: {
-          contractId: this.state.DataContractDSO, // Your contract ID
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     //let dsoMessageAndTags;
     let dsoTags;
@@ -2918,23 +2810,14 @@ class App extends React.Component {
     });
 
     //console.log(addedMessage);
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DSOContract: {
-          contractId: this.state.DataContractDSO, // Your contract ID
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     let dsoTags;
 
@@ -3162,15 +3045,7 @@ class App extends React.Component {
   };
 
   checkForNewSO = () => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DSOContract: {
-          contractId: this.state.DataContractDSO, // Your contract ID
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       return client.platform.documents.get("DSOContract.dsomsg", {
@@ -3223,15 +3098,7 @@ class App extends React.Component {
   };
 
   handleLoadNewSO = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     let ownerarrayOfOwnerIds = docArray.map((doc) => {
       return doc.$ownerId;
@@ -3248,9 +3115,9 @@ class App extends React.Component {
     //console.log("Calling getNamesforDSOmsgs");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -3288,15 +3155,7 @@ class App extends React.Component {
   checkForNewSOThreads = () => {
     let docArray = [...this.state.NewSOMsgs, ...this.state.EveryoneMsgs];
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DSOContract: {
-          contractId: this.state.DataContractDSO,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     // This Below is to get unique set of order doc ids
     let arrayOfMsgIds = docArray.map((doc) => {
@@ -3368,15 +3227,7 @@ class App extends React.Component {
   handleLoadNewSoThreads = (docArray) => {
     //Get the names and trigger button
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DataContractDPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     let arrayOfOwnerIds = docArray.map((doc) => {
       return doc.$ownerId;
@@ -3393,9 +3244,9 @@ class App extends React.Component {
     //console.log("Called Get Everyone Threads Names");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DataContractDPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -3508,15 +3359,9 @@ class App extends React.Component {
     let docArray = [...this.state.ByYouMsgs];
 
     if (docArray.length !== 0) {
-      const clientOpts = {
-        network: this.state.whichNetwork,
-        apps: {
-          DSOContract: {
-            contractId: this.state.DataContractDSO,
-          },
-        },
-      };
-      const client = new Dash.Client(clientOpts);
+      const client = new Dash.Client(
+        dapiClientNoWallet(this.state.whichNetwork)
+      );
 
       // This Below is to get unique set of order doc ids
       let arrayOfMsgIds = docArray.map((doc) => {
@@ -3585,15 +3430,7 @@ class App extends React.Component {
   };
 
   handleByYouDMThreads = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DataContractDPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     let arrayOfOwnerIds = docArray.map((doc) => {
       return doc.$ownerId;
@@ -3603,16 +3440,16 @@ class App extends React.Component {
 
     arrayOfOwnerIds = [...setOfOwnerIds];
 
-    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
+    // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+    //   Buffer.from(Identifier.from(item))
+    // );
 
     //console.log("Called Get ByYouDMThreads Names");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DataContractDPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -3656,15 +3493,7 @@ class App extends React.Component {
   getTagsNewDM = () => {
     //console.log("Calling getTagsNewDM");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DSOContract: {
-          contractId: this.state.DataContractDSO, // Your contract ID
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     //DSOForyou Query -> From other's tags (SO and DM) -> this is forTAGS
 
@@ -3728,15 +3557,7 @@ class App extends React.Component {
   getNewDMMsgsFromTags = (idsOfMsgsFromTags) => {
     //console.log("Getting MSGs from Tags");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DSOContract: {
-          contractId: this.state.DataContractDSO, // Your contract ID
-        },
-      },
-    };
-    let client = new Dash.Client(clientOpts);
+    let client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     //console.log(`Array of MsgIds: ${idsOfMsgsFromTags}`);
 
@@ -3787,15 +3608,7 @@ class App extends React.Component {
   };
 
   handleFromTagsNewDM = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     let ownerarrayOfOwnerIds = docArray.map((doc) => {
       return doc.$ownerId;
@@ -3812,9 +3625,9 @@ class App extends React.Component {
     //console.log("Calling getNamesforDSOmsgs");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -3859,15 +3672,9 @@ class App extends React.Component {
     ];
 
     if (docArray.length !== 0) {
-      const clientOpts = {
-        network: this.state.whichNetwork,
-        apps: {
-          DSOContract: {
-            contractId: this.state.DataContractDSO,
-          },
-        },
-      };
-      const client = new Dash.Client(clientOpts);
+      const client = new Dash.Client(
+        dapiClientNoWallet(this.state.whichNetwork)
+      );
 
       // This Below is to get unique set of order doc ids
       let arrayOfMsgIds = docArray.map((doc) => {
@@ -3948,15 +3755,7 @@ class App extends React.Component {
   handleFromTagsDMThreads = (docArray) => {
     //Get the names and trigger button
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DataContractDPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     let arrayOfOwnerIds = docArray.map((doc) => {
       return doc.$ownerId;
@@ -3973,9 +3772,9 @@ class App extends React.Component {
     //console.log("Called Get ByYouDMThreads Names");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DataContractDPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -4085,15 +3884,8 @@ class App extends React.Component {
     }
 
     console.log("Calling DGTInvitesForEvents");
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGTContract: {
-          contractId: this.state.DataContractDGT, // Your contract ID
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     //DGTInvite Query
     const getDocuments = async () => {
@@ -4148,15 +3940,8 @@ class App extends React.Component {
     this.setState({
       isLoadingGroups: true,
     });
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGTContract: {
-          contractId: this.state.DataContractDGT, // Your contract ID
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     //DGTInvite Query
     const getDocuments = async () => {
@@ -4201,15 +3986,7 @@ class App extends React.Component {
   getDGTInvitesNames = (docArray) => {
     //console.log("Calling getNamesforDGTInvites");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     let arrayOfOwnerIds = docArray.map((doc) => {
       return doc.$ownerId;
@@ -4220,9 +3997,9 @@ class App extends React.Component {
     arrayOfOwnerIds = [...setOfOwnerIds];
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -4256,15 +4033,7 @@ class App extends React.Component {
   };
 
   getActiveGroups = () => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGTContract: {
-          contractId: this.state.DataContractDGT, // Your contract ID
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     //DGTInvite Query
     const getDocuments = async () => {
@@ -4348,24 +4117,30 @@ class App extends React.Component {
     } else {
       //ADD INVITE TO DISPLAY AND CONTINUE TO DISPLAY UNTIL RETURNED
 
-      const clientOpts = {
-        network: this.state.whichNetwork,
-        wallet: {
-          mnemonic: this.state.mnemonic,
-          adapter: LocalForage.createInstance,
-          unsafeOptions: {
-            skipSynchronizationBeforeHeight:
-              this.state.skipSynchronizationBeforeHeight,
-            //change to what the actual block height
-          },
-        },
-        apps: {
-          DGTContract: {
-            contractId: this.state.DataContractDGT,
-          },
-        },
-      };
-      const client = new Dash.Client(clientOpts);
+      // const clientOpts = {
+      //   network: this.state.whichNetwork,
+      //   wallet: {
+      //     mnemonic: this.state.mnemonic,
+      //     adapter: LocalForage.createInstance,
+      //     unsafeOptions: {
+      //       skipSynchronizationBeforeHeight:
+      //         this.state.skipSynchronizationBeforeHeight,
+      //       //change to what the actual block height
+      //     },
+      //   },
+      //   apps: {
+      //     DGTContract: {
+      //       contractId: this.state.DataContractDGT,
+      //     },
+      //   },
+      // };
+      const client = new Dash.Client(
+        dapiClient(
+          this.state.whichNetwork,
+          this.state.mnemonic,
+          this.state.skipSynchronizationBeforeHeight
+        )
+      );
 
       const submitInvite = async () => {
         const { platform } = client;
@@ -4447,23 +4222,13 @@ class App extends React.Component {
 
     //let documentId = document.$id;
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DGTContract: {
-          contractId: this.state.DataContractDGT,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const deleteDocument = async () => {
       const { platform } = client;
@@ -4513,24 +4278,13 @@ class App extends React.Component {
       isLoadingGroups: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-          //change to what the actual block height
-        },
-      },
-      apps: {
-        DGTContract: {
-          contractId: this.state.DataContractDGT,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const submitInvite = async () => {
       const { platform } = client;
@@ -4601,23 +4355,13 @@ class App extends React.Component {
       isLoadingGroup: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DGTContract: {
-          contractId: this.state.DataContractDGT,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     let docProperties = {
       group: groupName,
@@ -4681,23 +4425,13 @@ class App extends React.Component {
       // isLoadingGroup: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DGTContract: {
-          contractId: this.state.DataContractDGT,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const submitInviteDocument = async () => {
       const { platform } = client;
@@ -4953,17 +4687,13 @@ class App extends React.Component {
   };
   // ^^^^ - PAYMENT REQUEST
   handleLoginforPostPaymentWallet_WALLET = () => {
-    const client = new Dash.Client({
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-    });
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const retrieveWallet = async () => {
       const account = await client.getWalletAccount();
@@ -5016,15 +4746,7 @@ class App extends React.Component {
   };
 
   queryDGMDocument = (theIdentity) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGMContract: {
-          contractId: this.state.DataContractDGM,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       console.log("Called Query DGM Documents.");
@@ -5111,17 +4833,13 @@ class App extends React.Component {
   };
 
   refreshWallet_WALLET = () => {
-    const client = new Dash.Client({
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-    });
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const retrieveWallet = async () => {
       const account = await client.getWalletAccount();
@@ -5155,9 +4873,7 @@ class App extends React.Component {
   getRefreshIdentityInfo = (theIdentity) => {
     console.log("Called get Refresh Identity Info");
 
-    const client = new Dash.Client({
-      network: this.state.whichNetwork,
-    });
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const retrieveIdentity = async () => {
       return client.platform.identities.get(theIdentity); // Your identity ID
@@ -5186,15 +4902,7 @@ class App extends React.Component {
     //Add the thread call
     //console.log("Calling getRefreshByYou");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGMContract: {
-          contractId: this.state.DataContractDGM, // Your contract ID
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       return client.platform.documents.get("DGMContract.dgmmsg", {
@@ -5241,15 +4949,7 @@ class App extends React.Component {
   };
 
   getRefreshByYouNames = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
     //START OF NAME RETRIEVAL - ToId not the ownerId!!!
 
     let ownerarrayOfToIds = docArray.map((doc) => {
@@ -5263,9 +4963,9 @@ class App extends React.Component {
     //console.log("Calling getRefreshByYouNames");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfToIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfToIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -5302,16 +5002,7 @@ class App extends React.Component {
   };
 
   getRefreshByYouThreads = (docArray) => {
-    //CHANGE from everyone to foryou ->
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGMContract: {
-          contractId: this.state.DataContractDGM,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     // This Below is to get unique set of ByYou msg doc ids
     let arrayOfMsgIds = docArray.map((doc) => {
@@ -5378,18 +5069,10 @@ class App extends React.Component {
   };
 
   getRefreshToYou = (theIdentity) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGMContract: {
-          contractId: this.state.DataContractDGM,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
-      console.log("Called getRefreshToYou");
+      // console.log("Called getRefreshToYou");
 
       return client.platform.documents.get("DGMContract.dgmmsg", {
         where: [
@@ -5434,15 +5117,7 @@ class App extends React.Component {
   };
 
   getRefreshToYouNames = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
     //START OF NAME RETRIEVAL
 
     let ownerarrayOfOwnerIds = docArray.map((doc) => {
@@ -5456,9 +5131,9 @@ class App extends React.Component {
     //console.log("Calling getRefreshToYouNames");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -5495,16 +5170,7 @@ class App extends React.Component {
   };
 
   getRefreshToYouThreads = (docArray) => {
-    //CHANGE from everyone to foryou ->
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGMContract: {
-          contractId: this.state.DataContractDGM,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     // This Below is to get unique set of ByYou msg doc ids
     let arrayOfMsgIds = docArray.map((doc) => {
@@ -5583,16 +5249,7 @@ class App extends React.Component {
   };
 
   getAddresses_WALLET = () => {
-    //Finish BELOW ->
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGMContract: {
-          contractId: this.state.DataContractDGM,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       console.log("Called getAddresses.");
@@ -5661,15 +5318,7 @@ class App extends React.Component {
   };
 
   getAddressesNames_WALLET = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
     //START OF NAME RETRIEVAL
 
     let ownerarrayOfOwnerIds = docArray.map((doc) => {
@@ -5680,16 +5329,12 @@ class App extends React.Component {
 
     let arrayOfOwnerIds = [...setOfOwnerIds];
 
-    // arrayOfOwnerIds = arrayOfOwnerIds.map((id) =>
-    //   Buffer.from(Identifier.from(id))
-    // );
-
     //console.log("Calling getByYouNames");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -5749,18 +5394,9 @@ class App extends React.Component {
   };
 
   getByYou_WALLET = (theIdentity) => {
-    //Add the thread call
     //console.log("Calling getByYou");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGMContract: {
-          contractId: this.state.DataContractDGM, // Your contract ID
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       return client.platform.documents.get("DGMContract.dgmmsg", {
@@ -5807,16 +5443,7 @@ class App extends React.Component {
   };
 
   getByYouNames_WALLET = (docArray) => {
-    //Need to get the ToId not the ownerId ->
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
     //START OF NAME RETRIEVAL - ToId not the ownerId!!!
 
     let ownerarrayOfToIds = docArray.map((doc) => {
@@ -5827,16 +5454,12 @@ class App extends React.Component {
 
     let arrayOfToIds = [...setOfToIds];
 
-    // arrayOfToIds = arrayOfToIds.map((item) =>
-    //   Buffer.from(Identifier.from(item))
-    // ); REMOVE ALL
-
     //console.log("Calling getByYouNames");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfToIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfToIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -5873,16 +5496,7 @@ class App extends React.Component {
   }; //Need to get the ToId not the ownerId ->
 
   getByYouThreads_WALLET = (docArray) => {
-    //CHANGE from everyone to foryou ->
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGMContract: {
-          contractId: this.state.DataContractDGM,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     // This Below is to get unique set of ByYou msg doc ids
     let arrayOfMsgIds = docArray.map((doc) => {
@@ -5947,15 +5561,7 @@ class App extends React.Component {
   };
 
   getToYou_WALLET = (theIdentity) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGMContract: {
-          contractId: this.state.DataContractDGM,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       console.log("Called getToYou");
@@ -6003,15 +5609,7 @@ class App extends React.Component {
   };
 
   getToYouNames_WALLET = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
     //START OF NAME RETRIEVAL
 
     let ownerarrayOfOwnerIds = docArray.map((doc) => {
@@ -6025,9 +5623,9 @@ class App extends React.Component {
     //console.log("Calling getToYouNames");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -6064,16 +5662,7 @@ class App extends React.Component {
   };
 
   getToYouThreads_WALLET = (docArray) => {
-    //CHANGE from everyone to foryou ->
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGMContract: {
-          contractId: this.state.DataContractDGM,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     // This Below is to get unique set of ByYou msg doc ids
     let arrayOfMsgIds = docArray.map((doc) => {
@@ -6145,23 +5734,14 @@ class App extends React.Component {
       isLoadingRefresh_WALLET: true,
       isLoadingForm_WALLET: true,
     });
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DGMContract: {
-          contractId: this.state.DataContractDGM,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const submitNoteDocument = async () => {
       const { platform } = client;
@@ -6230,17 +5810,13 @@ class App extends React.Component {
       isLoadingForm_WALLET: true,
     });
 
-    const client = new Dash.Client({
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-    });
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const payToRecipient = async () => {
       const account = await client.getWalletAccount();
@@ -6297,17 +5873,13 @@ class App extends React.Component {
       isLoadingForm_WALLET: true,
     });
 
-    const client = new Dash.Client({
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-    });
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const payToRecipient = async () => {
       const account = await client.getWalletAccount();
@@ -6360,7 +5932,7 @@ class App extends React.Component {
   //
 
   requestDashfromName_WALLET = () => {
-    console.log("Called Submit Request Pmt Doc");
+    //console.log("Called Submit Request Pmt Doc");
 
     this.setState({
       isLoadingRefresh_WALLET: true,
@@ -6368,23 +5940,13 @@ class App extends React.Component {
       isLoadingForm_WALLET: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DGMContract: {
-          contractId: this.state.DataContractDGM,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     let docProperties = {};
 
@@ -6503,17 +6065,13 @@ class App extends React.Component {
       WALLET_messageToSend: "MSGFORpaidthr",
     });
 
-    const client = new Dash.Client({
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-    });
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const payToRecipient = async () => {
       const account = await client.getWalletAccount();
@@ -6570,23 +6128,14 @@ class App extends React.Component {
     });
 
     //console.log(addedMessage);
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DGMContract: {
-          contractId: this.state.DataContractDGM, // Your contract ID
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     let docProperties = {};
 
@@ -6705,23 +6254,14 @@ class App extends React.Component {
     });
 
     //console.log(addedMessage);
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DGMContract: {
-          contractId: this.state.DataContractDGM, // Your contract ID
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     let docProperties = {};
 
@@ -6844,23 +6384,13 @@ class App extends React.Component {
   submitDGMMessage_WALLET = (theTXId) => {
     console.log("Called Submit DGM MSG Doc");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DGMContract: {
-          contractId: this.state.DataContractDGM,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     let docProperties = {};
 
@@ -6974,23 +6504,14 @@ class App extends React.Component {
     });
 
     //console.log(addedMessage);
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DGMContract: {
-          contractId: this.state.DataContractDGM, // Your contract ID
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     let docProperties = {};
 
@@ -7150,23 +6671,13 @@ class App extends React.Component {
       isLoadingOrdersYOURSTORE: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DGPContract: {
-          contractId: this.state.DataContractDGP,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const submitMsgDoc = async () => {
       const { platform } = client;
@@ -7261,17 +6772,7 @@ class App extends React.Component {
   };
 
   getDGPStoreMerchant = () => {
-    //WHat if I just put all the clients in one and pass the client to the function??? ->
-
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGPContract: {
-          contractId: this.state.DataContractDGP,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       console.log("Called Get DGP Store");
@@ -7322,18 +6823,8 @@ class App extends React.Component {
       .finally(() => client.disconnect()); //Should I remove this??
   };
 
-  //Must COMBINE THIS ONE WITH THE WALLET -> AND i CAN KEEP THE OTHER 'NO ADDRESS WILL NOT BE AN ISSUE -> BUT IT WILL BE A LITTLE CLUNKY ->
   getDGMAddress = () => {
-    //Needs adjustments for DGP from DGM ->
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGMContract: {
-          contractId: this.state.DataContractDGM,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       console.log("Called Query DGM Documents.");
@@ -7388,15 +6879,7 @@ class App extends React.Component {
       });
     }
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGPContract: {
-          contractId: this.state.DataContractDGP,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       console.log("Called Get DGP Items");
@@ -7452,15 +6935,7 @@ class App extends React.Component {
   //THIS NEEDS WALLET SO DELAYED AND ALSO PART OF INTERVAL UPDATE..
   // So need wallet to verify but can get orders and names and items because i need all that to compare to the wallet TXs
   getMerchantOrders = () => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGPContract: {
-          contractId: this.state.DataContractDGP,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       console.log("Called Get DGP Merchant Orders");
@@ -7542,15 +7017,7 @@ class App extends React.Component {
   };
 
   getNamesForMerchantOrders = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DataContractDPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     //START OF NAME RETRIEVAL
 
@@ -7569,9 +7036,9 @@ class App extends React.Component {
     //  console.log("Called Get Names for DGP Orders");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DataContractDPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -7606,15 +7073,7 @@ class App extends React.Component {
   };
 
   getMsgsMerchantOrders = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGPContract: {
-          contractId: this.state.DataContractDGP,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     // This Below is to get unique set of order doc ids
     let arrayOfOrderIds = docArray.map((doc) => {
@@ -7626,10 +7085,6 @@ class App extends React.Component {
     let setOfOrderIds = [...new Set(arrayOfOrderIds)];
 
     arrayOfOrderIds = [...setOfOrderIds];
-
-    // arrayOfOrderIds = arrayOfOrderIds.map((item) =>
-    //   Identifier.from(item)
-    // );
 
     //console.log("Array of order ids", arrayOfOrderIds);
 
@@ -7696,23 +7151,13 @@ class App extends React.Component {
       // isLoadingButtons_WALLET: true, //ADDED TO ENSURE DONT CALL TWICE -> Removed bc separating dgmAddr and DGP Store Creation
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DGPContract: {
-          contractId: this.state.DataContractDGP,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const submitStoreDoc = async () => {
       const { platform } = client;
@@ -7803,23 +7248,13 @@ class App extends React.Component {
       isLoadingStoreYOURSTORE: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DGPContract: {
-          contractId: this.state.DataContractDGP,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const editStoreDocs = async () => {
       const { platform } = client;
@@ -7922,29 +7357,19 @@ class App extends React.Component {
   };
 
   createDGPItem = (itemObject) => {
-    console.log("Called Create DGP Item");
+    //console.log("Called Create DGP Item");
 
     this.setState({
       isLoadingItemsYOURSTORE: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DGPContract: {
-          contractId: this.state.DataContractDGP,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     //Do the docs creations below. mimic dso msg and tags
 
@@ -8034,23 +7459,13 @@ class App extends React.Component {
       isLoadingItemsYOURSTORE: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DGPContract: {
-          contractId: this.state.DataContractDGP,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     //Do the docs creations below. mimic dso msg and tags
 
@@ -8192,15 +7607,8 @@ class App extends React.Component {
       isLoadingOrdersYOURSTORE: true,
       isMyStoreOrdersRefreshReady: false,
     });
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGPContract: {
-          contractId: this.state.DataContractDGP,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       console.log("Called Check For New Orders");
@@ -8261,15 +7669,8 @@ class App extends React.Component {
   //     !this.state.isLoadingWallet &&
   //     !this.state.isLoadingOrdersYOURSTORE
   //   ) {
-  //     const clientOpts = {
-  //       network: this.state.whichNetwork,
-  //       apps: {
-  //         DGPContract: {
-  //           contractId: this.state.DataContractDGP,
-  //         },
-  //       },
-  //     };
-  //     const client = new Dash.Client(clientOpts);
+  //
+  //     const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
   //     const getDocuments = async () => {
   //       console.log("Called Check For New Orders");
@@ -8336,17 +7737,13 @@ class App extends React.Component {
       isLoadingWallet: true,
     });
 
-    const client = new Dash.Client({
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-    });
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const retrieveIdentityIds = async () => {
       const account = await client.getWalletAccount();
@@ -8566,15 +7963,7 @@ class App extends React.Component {
   getYourPosts = (theIdentity) => {
     //console.log("Calling getYourPosts");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DMIOContract: {
-          contractId: this.state.DataContractDMIO,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       return client.platform.documents.get("DMIOContract.dmiopost", {
@@ -8619,15 +8008,7 @@ class App extends React.Component {
   getInitialOffBiz = () => {
     //console.log("Calling getInitialOffBiz");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DMIOContract: {
-          contractId: this.state.DataContractDMIO,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       return client.platform.documents.get("DMIOContract.dmiopost", {
@@ -8663,15 +8044,7 @@ class App extends React.Component {
   };
 
   getInitialOffBizNames = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
     //START OF NAME RETRIEVAL
 
     let ownerarrayOfOwnerIds = docArray.map((doc) => {
@@ -8682,16 +8055,12 @@ class App extends React.Component {
 
     let arrayOfOwnerIds = [...setOfOwnerIds];
 
-    // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-    //   Buffer.from(Identifier.from(item))
-    // );
-
     //console.log("Calling getNamesforDSOmsgs");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -8937,15 +8306,7 @@ class App extends React.Component {
 
     //console.log("Calling getOffRent");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DMIOContract: {
-          contractId: this.state.DataContractDMIO,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       return client.platform.documents.get(
@@ -8980,15 +8341,7 @@ class App extends React.Component {
   };
 
   getOffRentNames = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
     //START OF NAME RETRIEVAL
 
     let ownerarrayOfOwnerIds = docArray.map((doc) => {
@@ -8999,16 +8352,12 @@ class App extends React.Component {
 
     let arrayOfOwnerIds = [...setOfOwnerIds];
 
-    // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-    //   Buffer.from(Identifier.from(item))
-    // );
-
     //console.log("Calling getNamesforDSOmsgs");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -9048,17 +8397,9 @@ class App extends React.Component {
     let queryOffBiz = JSON.parse(JSON.stringify(queryObj));
     queryOffBiz.where[cateIndex].push("offbiz");
 
-    console.log(queryObj);
+    //console.log(queryObj);
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DMIOContract: {
-          contractId: this.state.DataContractDMIO,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       return client.platform.documents.get(
@@ -9100,15 +8441,7 @@ class App extends React.Component {
   };
 
   getOffBizNames = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
     //START OF NAME RETRIEVAL
 
     let ownerarrayOfOwnerIds = docArray.map((doc) => {
@@ -9119,16 +8452,12 @@ class App extends React.Component {
 
     let arrayOfOwnerIds = [...setOfOwnerIds];
 
-    // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-    //   Buffer.from(Identifier.from(item))
-    // );
-
     //console.log("Calling getOffBizNames");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -9169,15 +8498,7 @@ class App extends React.Component {
 
     queryOffOther.where[cateIndex].push("offother");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DMIOContract: {
-          contractId: this.state.DataContractDMIO,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       return client.platform.documents.get(
@@ -9212,15 +8533,7 @@ class App extends React.Component {
   };
 
   getOffOtherNames = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
     //START OF NAME RETRIEVAL
 
     let ownerarrayOfOwnerIds = docArray.map((doc) => {
@@ -9231,16 +8544,16 @@ class App extends React.Component {
 
     let arrayOfOwnerIds = [...setOfOwnerIds];
 
-    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
+    // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+    //   Buffer.from(Identifier.from(item))
+    // );
 
     //console.log("Calling getNamesOffOthers");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -9281,15 +8594,7 @@ class App extends React.Component {
 
     queryOffEvents.where[cateIndex].push("events");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DMIOContract: {
-          contractId: this.state.DataContractDMIO,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       return client.platform.documents.get(
@@ -9324,15 +8629,7 @@ class App extends React.Component {
   };
 
   getOffEventsNames = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
     //START OF NAME RETRIEVAL
 
     let ownerarrayOfOwnerIds = docArray.map((doc) => {
@@ -9343,16 +8640,16 @@ class App extends React.Component {
 
     let arrayOfOwnerIds = [...setOfOwnerIds];
 
-    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
+    // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+    //   Buffer.from(Identifier.from(item))
+    // );
 
     //console.log("Calling getNamesOffEvents");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -9393,15 +8690,7 @@ class App extends React.Component {
 
     queryLookRent.where[cateIndex].push("lookrent");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DMIOContract: {
-          contractId: this.state.DataContractDMIO,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       return client.platform.documents.get(
@@ -9436,15 +8725,7 @@ class App extends React.Component {
   };
 
   getLookRentNames = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
     //START OF NAME RETRIEVAL
 
     let ownerarrayOfOwnerIds = docArray.map((doc) => {
@@ -9455,16 +8736,16 @@ class App extends React.Component {
 
     let arrayOfOwnerIds = [...setOfOwnerIds];
 
-    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
+    // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+    //   Buffer.from(Identifier.from(item))
+    // );
 
     //console.log("Calling LookRentNames");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -9506,15 +8787,7 @@ class App extends React.Component {
 
     queryLookOther.where[cateIndex].push("lookother");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DMIOContract: {
-          contractId: this.state.DataContractDMIO,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       return client.platform.documents.get(
@@ -9549,15 +8822,7 @@ class App extends React.Component {
   };
 
   getLookOtherNames = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
     //START OF NAME RETRIEVAL
 
     let ownerarrayOfOwnerIds = docArray.map((doc) => {
@@ -9568,16 +8833,16 @@ class App extends React.Component {
 
     let arrayOfOwnerIds = [...setOfOwnerIds];
 
-    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
+    // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+    //   Buffer.from(Identifier.from(item))
+    // );
 
     //console.log("Calling getNamesforDSOmsgs");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -9615,29 +8880,19 @@ class App extends React.Component {
   //$$  $$   $$$  $$  $  $$  $$$  $$$  $$  $$
 
   createYourPost = (postObject) => {
-    console.log("Called Create Post");
+    //console.log("Called Create Post");
 
     this.setState({
       isLoadingYourPosts: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DMIOContract: {
-          contractId: this.state.DataContractDMIO,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const submitPostDoc = async () => {
       const { platform } = client;
@@ -9775,29 +9030,19 @@ class App extends React.Component {
   };
 
   editYourPost = (postObject) => {
-    console.log("Called Edit Post");
+    // console.log("Called Edit Post");
 
     this.setState({
       isLoadingYourPosts: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DMIOContract: {
-          contractId: this.state.DataContractDMIO,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const submitPostDoc = async () => {
       const { platform } = client;
@@ -9967,29 +9212,19 @@ class App extends React.Component {
   };
 
   editYourEvent = (postObject) => {
-    console.log("Called Edit Event");
+    //console.log("Called Edit Event");
 
     this.setState({
       isLoadingYourPosts: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DMIOContract: {
-          contractId: this.state.DataContractDMIO,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const submitPostDoc = async () => {
       const { platform } = client;
@@ -10341,11 +9576,12 @@ class App extends React.Component {
   };
 
   searchName = () => {
-    const client = new Dash.Client(this.state.whichNetwork);
+    //const client = new Dash.Client(this.state.whichNetwork);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     let nameToRetrieve = this.state.merchantName;
 
-    console.log(nameToRetrieve);
+    // console.log(nameToRetrieve);
 
     const retrieveName = async () => {
       // Retrieve by full name (e.g., myname.dash)
@@ -10392,18 +9628,11 @@ class App extends React.Component {
 
   getDGPStore = (theIdentity) => {
     //Issue -> there should only be one possible return not a list ->
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGPContract: {
-          contractId: this.state.DataContractDGP,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
-      console.log("Called Get DGP Store");
+      //console.log("Called Get DGP Store");
 
       return client.platform.documents.get("DGPContract.dgpstore", {
         where: [["$ownerId", "==", theIdentity]],
@@ -10441,18 +9670,10 @@ class App extends React.Component {
   };
 
   queryDGMDocumentSHOPPING = (theIdentity) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGMContract: {
-          contractId: this.state.DataContractDGM,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
-      console.log("Querying Merchant's DGM Documents.");
+      //console.log("Querying Merchant's DGM Documents.");
       //console.log(theIdentity);
 
       return client.platform.documents.get("DGMContract.dgmaddress", {
@@ -10497,15 +9718,7 @@ class App extends React.Component {
       });
     }
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGPContract: {
-          contractId: this.state.DataContractDGP,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       console.log("Called Get DGP Items");
@@ -10553,25 +9766,15 @@ class App extends React.Component {
       LoadingOrder: true,
     });
 
-    console.log("Called Submit Order Doc");
+    //console.log("Called Submit Order Doc");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DGPContract: {
-          contractId: this.state.DataContractDGP,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const submitNoteDocument = async () => {
       const { platform } = client;
@@ -10699,17 +9902,13 @@ class App extends React.Component {
       LoadingOrder: true,
     });
 
-    const client = new Dash.Client({
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-    });
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     let theTotal = 0;
     this.state.cartItems.forEach((tuple) => {
@@ -10721,7 +9920,7 @@ class App extends React.Component {
     const payToRecipient = async () => {
       const account = await client.getWalletAccount();
 
-      console.log("sats sent in TX:", theTotal);
+      //console.log("sats sent in TX:", theTotal);
 
       const transaction = account.createTransaction({
         recipient: this.state.dgmDocumentForMerchant[0].address,
@@ -10735,7 +9934,7 @@ class App extends React.Component {
 
     payToRecipient()
       .then((d) => {
-        console.log("Payment TX:\n", d);
+        //console.log("Payment TX:\n", d);
 
         //this.submitDGPOrderDoc(d,orderComment);
 
@@ -10757,25 +9956,15 @@ class App extends React.Component {
   };
 
   submitDGPOrderDoc = (theTXid, theOrderComment) => {
-    console.log("Called Submit DGP Order Doc");
+    //console.log("Called Submit DGP Order Doc");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DGPContract: {
-          contractId: this.state.DataContractDGP,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const submitNoteDocument = async () => {
       const { platform } = client;
@@ -10800,7 +9989,7 @@ class App extends React.Component {
 
       cartItemsForDocCreation = JSON.stringify(cartItemsForDocCreation);
 
-      console.log("cart items for doc creation", cartItemsForDocCreation);
+      //console.log("cart items for doc creation", cartItemsForDocCreation);
 
       // ### ###  ### ###  ### ###   ###   ####
 
@@ -10915,17 +10104,13 @@ class App extends React.Component {
       LoadingOrder: true,
     });
 
-    const client = new Dash.Client({
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-    });
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     let theTotal = 0;
 
@@ -10972,25 +10157,15 @@ class App extends React.Component {
   };
 
   updatePayLaterOrder = (theTXid) => {
-    console.log("Called updatePayLaterOrder");
+    //console.log("Called updatePayLaterOrder");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DGPContract: {
-          contractId: this.state.DataContractDGP,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const editOrderDocument = async () => {
       const { platform } = client;
@@ -11167,29 +10342,19 @@ class App extends React.Component {
   };
 
   handleOrderMessageSubmit = (orderMsgComment) => {
-    console.log("Called Buyer Order Message: ", orderMsgComment);
+    //console.log("Called Buyer Order Message: ", orderMsgComment);
 
     this.setState({
       isLoadingRecentOrders: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DGPContract: {
-          contractId: this.state.DataContractDGP,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const submitMsgDoc = async () => {
       const { platform } = client;
@@ -11292,17 +10457,11 @@ class App extends React.Component {
   //     isLoadingWallet: true,
   //   });
 
-  //   const client = new Dash.Client({
-  //     network: this.state.whichNetwork,
-  //     wallet: {
-  //       mnemonic: this.state.mnemonic,
-  //       adapter: LocalForage.createInstance,
-  //       unsafeOptions: {
-  //         skipSynchronizationBeforeHeight:
-  //           this.state.skipSynchronizationBeforeHeight,
-  //       },
-  //     },
-  //   });
+  //   const client = new Dash.Client(dapiClient(
+  //   this.state.whichNetwork,
+  //   this.state.mnemonic,
+  //   this.state.skipSynchronizationBeforeHeight
+  // ));
 
   //   const retrieveIdentityIds = async () => {
   //     const account = await client.getWalletAccount();
@@ -11350,18 +10509,10 @@ class App extends React.Component {
       isLoadingRecentOrders: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGPContract: {
-          contractId: this.state.DataContractDGP,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
-      console.log("Called Get DGP Recent Orders");
+      //console.log("Called Get DGP Recent Orders");
 
       return client.platform.documents.get("DGPContract.dgporder", {
         where: [["$ownerId", "==", theIdentity]],
@@ -11438,15 +10589,7 @@ class App extends React.Component {
   };
 
   getRecentOrdersNames = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DataContractDPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     let arrayOfToIds = docArray.map((doc) => {
       return doc.toId;
@@ -11456,16 +10599,16 @@ class App extends React.Component {
 
     arrayOfToIds = [...setOfToIds];
 
-    arrayOfToIds = arrayOfToIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
+    // arrayOfToIds = arrayOfToIds.map((item) =>
+    //   Buffer.from(Identifier.from(item))
+    // );
 
-    console.log("Called Get Recent Order Names");
+    //console.log("Called Get Recent Order Names");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DataContractDPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfToIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfToIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -11501,15 +10644,7 @@ class App extends React.Component {
   };
 
   getRecentOrdersStores = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGPContract: {
-          contractId: this.state.DataContractDGP,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
     // This Below is to get unique set of merchant ids
     let arrayOfToIds = docArray.map((doc) => {
       return doc.toId;
@@ -11519,12 +10654,12 @@ class App extends React.Component {
 
     arrayOfToIds = [...setOfToIds];
 
-    arrayOfToIds = arrayOfToIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
+    // arrayOfToIds = arrayOfToIds.map((item) =>
+    //   Buffer.from(Identifier.from(item))
+    // );
 
     const getDocuments = async () => {
-      console.log("Called Get Recent Orders Stores");
+      //console.log("Called Get Recent Orders Stores");
 
       return client.platform.documents.get("DGPContract.dgpstore", {
         where: [["$ownerId", "in", arrayOfToIds]],
@@ -11559,15 +10694,7 @@ class App extends React.Component {
   };
 
   getRecentOrdersDGMAddresses = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGMContract: {
-          contractId: this.state.DataContractDGM,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     // This Below is to get unique set of merchant ids
     let arrayOfToIds = docArray.map((doc) => {
@@ -11578,12 +10705,12 @@ class App extends React.Component {
 
     arrayOfToIds = [...setOfToIds];
 
-    arrayOfToIds = arrayOfToIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
+    // arrayOfToIds = arrayOfToIds.map((item) =>
+    //   Buffer.from(Identifier.from(item))
+    // );
 
     const getDocuments = async () => {
-      console.log("Querying Merchant's DGM Documents.");
+      //console.log("Querying Merchant's DGM Documents.");
 
       return client.platform.documents.get("DGMContract.dgmaddress", {
         where: [["$ownerId", "in", arrayOfToIds]],
@@ -11644,15 +10771,7 @@ class App extends React.Component {
     // });
     // console.log("Array of item ids", arrayOfItemIds);
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGPContract: {
-          contractId: this.state.DataContractDGP,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       console.log("Called Get DGP Order Items");
@@ -11695,15 +10814,7 @@ class App extends React.Component {
 
     //TEST -> Change to createdAT and see what happens ->
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGPContract: {
-          contractId: this.state.DataContractDGP,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     // This Below is to get unique set of order doc ids
     let arrayOfOrderIds = docArray.map((doc) => {
@@ -11790,18 +10901,10 @@ class App extends React.Component {
       isLoadingActive: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGPContract: {
-          contractId: this.state.DataContractDGP,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
-      console.log("Called Get Active Orders");
+      // console.log("Called Get Active Orders");
 
       return client.platform.documents.get("DGPContract.dgporder", {
         where: [["$createdAt", "<=", Date.now()]],
@@ -11860,15 +10963,7 @@ class App extends React.Component {
   };
 
   getActiveNames = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DataContractDPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     let arrayOfToIds = docArray.map((doc) => {
       return doc.toId;
@@ -11878,16 +10973,16 @@ class App extends React.Component {
 
     arrayOfToIds = [...setOfToIds];
 
-    arrayOfToIds = arrayOfToIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
+    // arrayOfToIds = arrayOfToIds.map((item) =>
+    //   Buffer.from(Identifier.from(item))
+    // );
 
     //  console.log("Called Get Names for DGP Merchants");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DataContractDPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfToIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfToIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -11923,15 +11018,7 @@ class App extends React.Component {
   };
 
   getActiveStores = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGPContract: {
-          contractId: this.state.DataContractDGP,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
     // This Below is to get unique set of merchant ids
     let arrayOfToIds = docArray.map((doc) => {
       return doc.toId;
@@ -11941,9 +11028,9 @@ class App extends React.Component {
 
     arrayOfToIds = [...setOfToIds];
 
-    arrayOfToIds = arrayOfToIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
+    // arrayOfToIds = arrayOfToIds.map((item) =>
+    //   Buffer.from(Identifier.from(item))
+    // );
 
     const getDocuments = async () => {
       console.log("Called Get Active Orders Stores");
@@ -11982,15 +11069,7 @@ class App extends React.Component {
   };
 
   getActiveAddresses = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGMContract: {
-          contractId: this.state.DataContractDGM,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     // This Below is to get unique set of merchant ids
     let arrayOfToIds = docArray.map((doc) => {
@@ -12001,9 +11080,9 @@ class App extends React.Component {
 
     arrayOfToIds = [...setOfToIds];
 
-    arrayOfToIds = arrayOfToIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
+    // arrayOfToIds = arrayOfToIds.map((item) =>
+    //   Buffer.from(Identifier.from(item))
+    // );
 
     const getDocuments = async () => {
       console.log("Querying Active DGM Documents.");
@@ -12159,7 +11238,7 @@ class App extends React.Component {
       SearchedNameOffers_EXCHANGE: [],
     });
 
-    const client = new Dash.Client(this.state.whichNetwork);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const retrieveName = async () => {
       // Retrieve by full name (e.g., myname.dash)
@@ -12179,7 +11258,7 @@ class App extends React.Component {
           });
         } else {
           let nameDoc = d.toJSON();
-          console.log("Name retrieved:\n", nameDoc);
+          //console.log("Name retrieved:\n", nameDoc);
 
           this.setState(
             {
@@ -12202,18 +11281,11 @@ class App extends React.Component {
 
   getOffersFromNameSearch = (theIdentity) => {
     //Issue -> there should only be one possible return not a list ->
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        P2PContract: {
-          contractId: this.state.DataContractP2P,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
-      console.log("Called Get P2P offers from NameSearch");
+      //console.log("Called Get P2P offers from NameSearch");
 
       return client.platform.documents.get("P2PContract.offer", {
         where: [["$ownerId", "==", theIdentity]],
@@ -12855,15 +11927,7 @@ class App extends React.Component {
   getYourOffers = (theIdentity) => {
     //console.log("Calling getYourOffers");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        P2PContract: {
-          contractId: this.state.DataContractP2P,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       return client.platform.documents.get("P2PContract.offer", {
@@ -12878,7 +11942,7 @@ class App extends React.Component {
     getDocuments()
       .then((d) => {
         if (d.length === 0) {
-          console.log("There are no Your Offers");
+          //console.log("There are no Your Offers");
 
           this.setState({
             isLoadingYourOffers: false,
@@ -12900,9 +11964,7 @@ class App extends React.Component {
       .catch((e) => console.error("Something went wrong:\n", e))
       .finally(() => client.disconnect());
   };
-  //
-  //CHANGE BELOW -> CONNECT TO QUERY ->
-  //
+
   constructQueryThenSearch_EXCHANGE = () => {
     //IF THE PULLED IS ALREADY DONE DONT PULL AGAIN -> THIS NEED TO CHECK THE PULL STATE BASED ON THE BUTTON
     if (
@@ -12990,15 +12052,7 @@ class App extends React.Component {
 
     //console.log("Calling getOffers");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        P2PContract: {
-          contractId: this.state.DataContractP2P,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       return client.platform.documents.get("P2PContract.offer", queryObj);
@@ -13029,15 +12083,7 @@ class App extends React.Component {
   };
 
   getOffersNames = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
     //START OF NAME RETRIEVAL
 
     let ownerarrayOfOwnerIds = docArray.map((doc) => {
@@ -13048,16 +12094,16 @@ class App extends React.Component {
 
     let arrayOfOwnerIds = [...setOfOwnerIds];
 
-    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
+    // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+    //   Buffer.from(Identifier.from(item))
+    // );
 
     //console.log("Calling getNamesforDSOmsgs");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -13092,29 +12138,19 @@ class App extends React.Component {
   };
 
   createYourOffer = (offerObject) => {
-    console.log("Called Create Offer");
+    //console.log("Called Create Offer");
 
     this.setState({
       isLoadingYourOffers: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        P2PContract: {
-          contractId: this.state.DataContractP2P,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const submitOfferDoc = async () => {
       const { platform } = client;
@@ -13218,23 +12254,13 @@ class App extends React.Component {
       isLoadingYourOffers: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        P2PContract: {
-          contractId: this.state.DataContractP2P,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const submitPostDoc = async () => {
       const { platform } = client;
@@ -13410,23 +12436,13 @@ class App extends React.Component {
       isLoadingYourOffers: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        P2PContract: {
-          contractId: this.state.DataContractP2P,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const deleteNoteDocument = async () => {
       const { platform } = client;
@@ -13458,7 +12474,7 @@ class App extends React.Component {
 
     deleteNoteDocument()
       .then((d) => {
-        console.log("Document deleted:\n", d.toJSON());
+        //console.log("Document deleted:\n", d.toJSON());
 
         let editedOffers = this.state.YourOffers;
 
@@ -13539,11 +12555,11 @@ class App extends React.Component {
       SearchedReviews: [],
     });
 
-    const client = new Dash.Client(this.state.whichNetwork);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const retrieveName = async () => {
       // Retrieve by full name (e.g., myname.dash)
-      console.log(this.state.nameToSearch);
+      //console.log(this.state.nameToSearch);
       return client.platform.names.resolve(`${this.state.nameToSearch}.dash`);
     };
 
@@ -13606,15 +12622,7 @@ class App extends React.Component {
   getSearchReviews = (theIdentity) => {
     //console.log("Calling getSearchReviews");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGRContract: {
-          contractId: this.state.DataContractDGR,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       return client.platform.documents.get("DGRContract.dgrreview", {
@@ -13662,15 +12670,7 @@ class App extends React.Component {
   };
 
   getSearchReviewNames = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
     //START OF NAME RETRIEVAL
 
     let ownerarrayOfOwnerIds = docArray.map((doc) => {
@@ -13687,16 +12687,16 @@ class App extends React.Component {
     });
     // End of Setting Unique reviews
 
-    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
+    // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+    //   Buffer.from(Identifier.from(item))
+    // );
 
     //console.log("Calling getNamesforDSOmsgs");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -13733,15 +12733,7 @@ class App extends React.Component {
   };
 
   getSearchReplies = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGRContract: {
-          contractId: this.state.DataContractDGR,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     // This Below is to get unique set of ByYou review doc ids
     let arrayOfReviewIds = docArray.map((doc) => {
@@ -13815,15 +12807,7 @@ class App extends React.Component {
   getYourReviews = (theIdentity) => {
     //console.log("Calling getYourReviews");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGRContract: {
-          contractId: this.state.DataContractDGR,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       return client.platform.documents.get("DGRContract.dgrreview", {
@@ -13870,15 +12854,7 @@ class App extends React.Component {
   };
 
   getYourReviewNames = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
     //START OF NAME RETRIEVAL
 
     let ownerarrayOfOwnerIds = docArray.map((doc) => {
@@ -13889,16 +12865,16 @@ class App extends React.Component {
 
     let arrayOfOwnerIds = [...setOfOwnerIds];
 
-    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
+    // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+    //   Buffer.from(Identifier.from(item))
+    // );
 
     //console.log("Calling getNamesforDSOmsgs");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -13935,15 +12911,7 @@ class App extends React.Component {
   };
 
   getYourReplies = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGRContract: {
-          contractId: this.state.DataContractDGR,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     // This Below is to get unique set of ByYou review doc ids
     let arrayOfReviewIds = docArray.map((doc) => {
@@ -14024,29 +12992,19 @@ class App extends React.Component {
   };
 
   createReview = (reviewObject) => {
-    console.log("Called Create Review");
+    //console.log("Called Create Review");
 
     this.setState({
       isLoadingReviewsSearch: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DGRContract: {
-          contractId: this.state.DataContractDGR,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const submitReviewDoc = async () => {
       const { platform } = client;
@@ -14091,7 +13049,7 @@ class App extends React.Component {
     submitReviewDoc()
       .then((d) => {
         let returnedDoc = d.toJSON();
-        console.log("Document:\n", returnedDoc);
+        //console.log("Document:\n", returnedDoc);
 
         let review = {
           $ownerId: returnedDoc.$ownerId,
@@ -14129,29 +13087,19 @@ class App extends React.Component {
   };
 
   editReview = (reviewObject) => {
-    console.log("Called Edit Review");
+    //console.log("Called Edit Review");
 
     this.setState({
       isLoadingReviewsSearch: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DGRContract: {
-          contractId: this.state.DataContractDGR,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const submitReviewDoc = async () => {
       const { platform } = client;
@@ -14193,7 +13141,7 @@ class App extends React.Component {
     submitReviewDoc()
       .then((d) => {
         let returnedDoc = d.toJSON();
-        console.log("Edited Review Doc:\n", returnedDoc);
+        //console.log("Edited Review Doc:\n", returnedDoc);
 
         let review = {
           $ownerId: returnedDoc.$ownerId,
@@ -14225,29 +13173,19 @@ class App extends React.Component {
   };
 
   createReply = (replyObject) => {
-    console.log("Called Create Reply");
+    //console.log("Called Create Reply");
 
     this.setState({
       isLoadingYourReviews: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DGRContract: {
-          contractId: this.state.DataContractDGR,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const submitReviewDoc = async () => {
       const { platform } = client;
@@ -14323,23 +13261,13 @@ class App extends React.Component {
       isLoadingYourReviews: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DGRContract: {
-          contractId: this.state.DataContractDGR,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const submitReplyDoc = async () => {
       const { platform } = client;
@@ -14486,7 +13414,7 @@ class App extends React.Component {
       SearchedProofs: [],
     });
 
-    const client = new Dash.Client(this.state.whichNetwork);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const retrieveName = async () => {
       // Retrieve by full name (e.g., myname.dash)
@@ -14498,14 +13426,14 @@ class App extends React.Component {
     retrieveName()
       .then((d) => {
         if (d === null) {
-          console.log("No DPNS Document for this Name.");
+          //console.log("No DPNS Document for this Name.");
           this.setState({
             SearchedNameDoc_POD: "No NameDoc", //Handle if name fails ->
             isLoadingSearch_POD: false,
           });
         } else {
           let nameDoc = d.toJSON();
-          console.log("Name retrieved:\n", nameDoc);
+          // console.log("Name retrieved:\n", nameDoc);
 
           this.searchForProofs(nameDoc.$ownerId);
 
@@ -14529,15 +13457,7 @@ class App extends React.Component {
   searchForProofs = (theIdentity) => {
     //console.log("Calling getSearchProofs");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        PODContract: {
-          contractId: this.state.DataContractPOD,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       return client.platform.documents.get("PODContract.podproof", {
@@ -14592,15 +13512,7 @@ class App extends React.Component {
   getYourProofs = (theIdentity) => {
     //console.log("Calling getYourProofs");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        PODContract: {
-          contractId: this.state.DataContractPOD,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       return client.platform.documents.get("PODContract.podproof", {
@@ -14624,7 +13536,7 @@ class App extends React.Component {
           let docArray = [];
           //console.log("GettingYour Proofs");
           for (const n of d) {
-            console.log("Document:\n", n.toJSON());
+            // console.log("Document:\n", n.toJSON());
             docArray = [...docArray, n.toJSON()];
           }
 
@@ -14641,29 +13553,19 @@ class App extends React.Component {
   //$$  $$   $$$  $$  $  $$  $$$  $$$  $$  $$
 
   createYourProof = (proofObject) => {
-    console.log("Called Create Proof");
+    // console.log("Called Create Proof");
 
     this.setState({
       isLoadingYourProofs: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        PODContract: {
-          contractId: this.state.DataContractPOD,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const submitProofDoc = async () => {
       const { platform } = client;
@@ -14708,7 +13610,7 @@ class App extends React.Component {
     submitProofDoc()
       .then((d) => {
         let returnedDoc = d.toJSON();
-        console.log("Document:\n", returnedDoc);
+        //console.log("Document:\n", returnedDoc);
 
         let proof = {
           $ownerId: returnedDoc.$ownerId,
@@ -14739,29 +13641,19 @@ class App extends React.Component {
   };
 
   deleteYourProof = () => {
-    console.log("Called Delete Proof");
+    //console.log("Called Delete Proof");
 
     this.setState({
       isLoadingYourProofs: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        PODContract: {
-          contractId: this.state.DataContractPOD,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const deleteNoteDocument = async () => {
       const { platform } = client;
@@ -14793,7 +13685,7 @@ class App extends React.Component {
 
     deleteNoteDocument()
       .then((d) => {
-        console.log("Document deleted:\n", d.toJSON());
+        // console.log("Document deleted:\n", d.toJSON());
 
         let editedProofs = this.state.YourProofs;
 
@@ -14908,15 +13800,7 @@ PROOF OF FUNDS FUNCTIONS^^^^
       this.setState({ isLoadingYourRides: true });
     }
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        RADContract: {
-          contractId: this.state.DataContractRAD,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       return client.platform.documents.get("RADContract.rideReq", {
@@ -14958,15 +13842,7 @@ PROOF OF FUNDS FUNCTIONS^^^^
   };
 
   getYourRideReplies = (theDocArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        RADContract: {
-          contractId: this.state.DataContractRAD,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     // This Below is to get unique set of rideReq doc ids
     let arrayOfRideIds = theDocArray.map((doc) => {
@@ -15027,15 +13903,7 @@ PROOF OF FUNDS FUNCTIONS^^^^
   };
 
   getYourRideRepliesNames = (docArray, theDocArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
     //START OF NAME RETRIEVAL
 
     let ownerarrayOfOwnerIds = docArray.map((doc) => {
@@ -15049,9 +13917,9 @@ PROOF OF FUNDS FUNCTIONS^^^^
     //console.log("Calling getNamesforRideReplies");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -15097,15 +13965,7 @@ PROOF OF FUNDS FUNCTIONS^^^^
     yourRideReplies,
     yourRideRepliesNames
   ) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DGMContract: {
-          contractId: this.state.DataContractDGM,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     // This Below is to get unique set of rideReply ownerIds
     let arrayOfOwnerIds = yourRideRepliesNames.map((doc) => {
@@ -15196,23 +14056,13 @@ PROOF OF FUNDS FUNCTIONS^^^^
       isLoadingYourRides: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        RADContract: {
-          contractId: this.state.DataContractRAD,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const submitMsgDoc = async () => {
       const { platform } = client;
@@ -15293,29 +14143,19 @@ PROOF OF FUNDS FUNCTIONS^^^^
   };
 
   createYourRide = (rideObject) => {
-    console.log("Called Create Ride");
+    // console.log("Called Create Ride");
 
     this.setState({
       isLoadingYourRides: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        RADContract: {
-          contractId: this.state.DataContractRAD,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const submitRideDoc = async () => {
       const { platform } = client;
@@ -15450,24 +14290,13 @@ PROOF OF FUNDS FUNCTIONS^^^^
       isLoadingYourRides: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        RADContract: {
-          contractId: this.state.DataContractRAD,
-        },
-      },
-    };
-
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const submitPostDoc = async () => {
       const { platform } = client;
@@ -15550,24 +14379,13 @@ PROOF OF FUNDS FUNCTIONS^^^^
       isLoadingYourRides: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        RADContract: {
-          contractId: this.state.DataContractRAD,
-        },
-      },
-    };
-
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const submitPostDoc = async () => {
       const { platform } = client;
@@ -15721,23 +14539,13 @@ PROOF OF FUNDS FUNCTIONS^^^^
       isLoadingYourRides: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        RADContract: {
-          contractId: this.state.DataContractRAD,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const deleteRideDocument = async () => {
       const { platform } = client;
@@ -15788,17 +14596,13 @@ PROOF OF FUNDS FUNCTIONS^^^^
       isLoadingYourRides: true,
     });
 
-    const client = new Dash.Client({
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-    });
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     // selectedYourRide: this.state.YourRides[index], // rideReq,
     //     selectedYourRideReply: rideReply,
@@ -15840,24 +14644,13 @@ PROOF OF FUNDS FUNCTIONS^^^^
     //   isLoadingYourRides: true,
     // });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        RADContract: {
-          contractId: this.state.DataContractRAD,
-        },
-      },
-    };
-
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const submitRideDoc = async () => {
       const { platform } = client;
@@ -15936,17 +14729,13 @@ PROOF OF FUNDS FUNCTIONS^^^^
       isLoadingWallet: true,
     });
 
-    const client = new Dash.Client({
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-    });
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const retrieveWallet = async () => {
       const account = await client.getWalletAccount();
@@ -16012,17 +14801,9 @@ PROOF OF FUNDS FUNCTIONS^^^^
   };
 
   getInitialDrives = () => {
-    console.log("Calling getInitialDrives");
+    //console.log("Calling getInitialDrives");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        RADContract: {
-          contractId: this.state.DataContractRAD,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       return client.platform.documents.get("RADContract.rideReq", {
@@ -16062,15 +14843,7 @@ PROOF OF FUNDS FUNCTIONS^^^^
   };
 
   getInitialDrivesNames = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
     //START OF NAME RETRIEVAL
 
     let ownerarrayOfOwnerIds = docArray.map((doc) => {
@@ -16084,9 +14857,9 @@ PROOF OF FUNDS FUNCTIONS^^^^
     //console.log("Calling getNamesforDrives");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -16267,15 +15040,7 @@ PROOF OF FUNDS FUNCTIONS^^^^
   getSearchedDrives = (queryObj) => {
     console.log("Calling getSearchedDrives");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        RADContract: {
-          contractId: this.state.DataContractRAD,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       return client.platform.documents.get("RADContract.rideReq", queryObj);
@@ -16313,15 +15078,7 @@ PROOF OF FUNDS FUNCTIONS^^^^
   };
 
   getSearchedDrivesNames = (docArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
     //START OF NAME RETRIEVAL
 
     let ownerarrayOfOwnerIds = docArray.map((doc) => {
@@ -16335,9 +15092,9 @@ PROOF OF FUNDS FUNCTIONS^^^^
     //console.log("Calling getNamesforDrives");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -16379,15 +15136,7 @@ PROOF OF FUNDS FUNCTIONS^^^^
       this.setState({ isLoadingYourDrives: true });
     }
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        RADContract: {
-          contractId: this.state.DataContractRAD,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const getDocuments = async () => {
       //console.log("Called Get Your Drive === Ride Replies");
@@ -16445,15 +15194,7 @@ PROOF OF FUNDS FUNCTIONS^^^^
   getYourDrivesRequests = (theDocArray) => {
     //console.log("Calling getYourDrivesRequests");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        RADContract: {
-          contractId: this.state.DataContractRAD,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     // This Below is to get unique set of rideReq doc ids
     let arrayOfRideIds = theDocArray.map((doc) => {
@@ -16508,15 +15249,7 @@ PROOF OF FUNDS FUNCTIONS^^^^
   };
 
   getYourDriveRequestsNames = (docArray, theDocArray) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.state.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
     //START OF NAME RETRIEVAL
 
     let ownerarrayOfOwnerIds = docArray.map((doc) => {
@@ -16530,9 +15263,9 @@ PROOF OF FUNDS FUNCTIONS^^^^
     //console.log("Calling getNamesforDriveReqs");
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -16578,15 +15311,7 @@ PROOF OF FUNDS FUNCTIONS^^^^
     rideReqDocArray,
     rideReqNameDocArray
   ) => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      apps: {
-        RADContract: {
-          contractId: this.state.DataContractRAD,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     // This Below is to get unique set of rideReq doc ids
     let arrayOfRideIds = rideReqDocArray.map((doc) => {
@@ -16659,8 +15384,6 @@ PROOF OF FUNDS FUNCTIONS^^^^
       .finally(() => client.disconnect());
   };
 
-  //SETTIMEOUT WAY ^^^^
-
   //SETTIMEOUT WAY BELOW
   //FUNCTION TO CHANGE STATE AND ALLOW BUTTON TO BE PRESSED
   allowYourDrivesRefresh = () => {
@@ -16710,23 +15433,13 @@ PROOF OF FUNDS FUNCTIONS^^^^
       isLoadingYourDrives: true,
     });
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        RADContract: {
-          contractId: this.state.DataContractRAD,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const submitMsgDoc = async () => {
       const { platform } = client;
@@ -16823,7 +15536,7 @@ PROOF OF FUNDS FUNCTIONS^^^^
   createAcceptDriveRideReply = () =>
     //rideReplyObject
     {
-      console.log("Called Create RideReply");
+      //console.log("Called Create RideReply");
       this.hideModal();
 
       this.setState({
@@ -16831,23 +15544,13 @@ PROOF OF FUNDS FUNCTIONS^^^^
         isLoadingDriversSearch: true,
       });
 
-      const clientOpts = {
-        network: this.state.whichNetwork,
-        wallet: {
-          mnemonic: this.state.mnemonic,
-          adapter: LocalForage.createInstance,
-          unsafeOptions: {
-            skipSynchronizationBeforeHeight:
-              this.state.skipSynchronizationBeforeHeight,
-          },
-        },
-        apps: {
-          RADContract: {
-            contractId: this.state.DataContractRAD,
-          },
-        },
-      };
-      const client = new Dash.Client(clientOpts);
+      const client = new Dash.Client(
+        dapiClient(
+          this.state.whichNetwork,
+          this.state.mnemonic,
+          this.state.skipSynchronizationBeforeHeight
+        )
+      );
 
       const submitReviewDoc = async () => {
         const { platform } = client;
@@ -16893,7 +15596,7 @@ PROOF OF FUNDS FUNCTIONS^^^^
       submitReviewDoc()
         .then((d) => {
           let returnedDoc = d.toJSON();
-          console.log("Document:\n", returnedDoc);
+          //console.log("Document:\n", returnedDoc);
 
           let rideReply = {
             $ownerId: returnedDoc.$ownerId,
@@ -16952,24 +15655,25 @@ RIDES AND DRIVERS FUNCTIONS^^^^
 
   //TRANSFER FUNCTIONS
 
-  handleFrontendFee = () => {
-    //This should be at the point of display
-    // should verify and return unit for display or no fee
-    if (
-      this.state.validFrontendFee
-      // Number(import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP) > 0 &&
-      // Number(import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP) <= 10000 &&
-      // Number(import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP) !== NaN
-    ) {
-      //Need to add a decimal or comma on the second from last
-      return (this.state.FrontendFee / 100).toFixed(2);
-    } else {
-      return "0"; //"No Frontend Fee";
-    }
-  };
-
-  verifyFrontendFeeAndNetwork = () => {
+  verifyFrontendFeeAndNetworkAndSkipSync = () => {
     // RUN CompDidMount
+
+    //ALREADY SET IN COMPONENT PROPS
+    // whichNetwork: import.meta.env.VITE_NETWORK,
+
+    if (this.state.whichNetwork !== "mainnet") {
+      this.setState(
+        {
+          whichNetwork: "testnet",
+
+          // skipSynchronizationBeforeHeight:
+          //   this.state.skipSynchronizationBeforeHeightTESTNET,
+        },
+        () => this.getDSOEveryoneDocs()
+      );
+    } else {
+      this.getDSOEveryoneDocs();
+    }
 
     let regex = /^[0-9]{1,4}$|^10000$/;
 
@@ -16981,43 +15685,17 @@ RIDES AND DRIVERS FUNCTIONS^^^^
       valid = false;
     }
 
-    let network = "mainnet";
-
-    if (import.meta.env.VITE_NETWORK !== "mainnet") {
-      network = "testnet";
-    }
-
     if (valid) {
-      this.setState(
-        {
-          FrontendFee: import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP,
-          validFrontendFee: true,
-          whichNetwork: network,
-        },
-        () => this.getDSOEveryoneDocs()
-      );
+      this.setState({
+        FrontendFee: import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP,
+        validFrontendFee: true,
+      });
     } else {
-      this.setState(
-        {
-          FrontendFee: 0,
-          validFrontendFee: false,
-          whichNetwork: network,
-        },
-        () => this.getDSOEveryoneDocs()
-      );
+      this.setState({
+        FrontendFee: 0,
+        validFrontendFee: false,
+      });
     }
-    //Verify number between 0 and 10000
-    // if not then 0 OR True false
-    // if (
-    //   Number(import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP) > 0 &&
-    //   Number(import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP) <= 10000 &&
-    //   Number(import.meta.env.VITE_FEE_AMOUNT_AS_PERCENT_OF_A_TOPUP) !== NaN
-    // ) {
-    //   return true;
-    //   //setState({});
-    // } else {
-    //   return false;
-    // }
   };
 
   //https://github.com/dashpay/platform/blob/v1.0-dev/packages/js-dash-sdk/src/SDK/Client/Platform/methods/identities/creditTransfer.ts
@@ -17035,18 +15713,13 @@ RIDES AND DRIVERS FUNCTIONS^^^^
       });
       console.log(this.state.identityInfo.balance);
 
-      const clientOpts = {
-        network: this.state.whichNetwork,
-        wallet: {
-          mnemonic: this.state.mnemonic,
-          adapter: LocalForage.createInstance,
-          unsafeOptions: {
-            skipSynchronizationBeforeHeight:
-              this.state.skipSynchronizationBeforeHeight,
-          },
-        },
-      };
-      const client = new Dash.Client(clientOpts);
+      const client = new Dash.Client(
+        dapiClient(
+          this.state.whichNetwork,
+          this.state.mnemonic,
+          this.state.skipSynchronizationBeforeHeight
+        )
+      );
 
       const identityCreditTransfer = async () => {
         //const identity = this.state.identityRaw; //YourIdentity
@@ -17140,7 +15813,7 @@ RIDES AND DRIVERS FUNCTIONS^^^^
       identityInfo: "",
     });
 
-    const client = new Dash.Client({ network: this.state.whichNetwork });
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
 
     const retrieveIdentity = async () => {
       return client.platform.identities.get(this.state.identity); // Your identity ID
@@ -17172,18 +15845,13 @@ RIDES AND DRIVERS FUNCTIONS^^^^
     });
     console.log(this.state.identityInfo.balance);
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const withdrawCredits = async () => {
       //const identity = this.state.identityRaw; //YourIdentity
@@ -17244,18 +15912,13 @@ RIDES AND DRIVERS FUNCTIONS^^^^
   };
 
   disableIdentityMasterKey = () => {
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: this.state.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.state.skipSynchronizationBeforeHeight,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
 
     const updateIdentityDisableKey = async () => {
       //const identityId = "an identity ID goes here";
@@ -17469,8 +16132,6 @@ RIDES AND DRIVERS FUNCTIONS^^^^
                           this.state.sentGroupInviteSuccess
                         }
                         sendToNameInvite={this.state.sendToNameInvite}
-                        DataContractDGT={this.state.DataContractDGT}
-                        DataContractDPNS={this.state.DataContractDPNS}
                       />
                     </>
                   ) : (
@@ -17580,8 +16241,6 @@ RIDES AND DRIVERS FUNCTIONS^^^^
                     WALLET_ToYouNames={this.state.WALLET_ToYouNames}
                     WALLET_ToYouThreads={this.state.WALLET_ToYouThreads}
                     isLoadingMsgs_WALLET={this.state.isLoadingMsgs_WALLET}
-                    DataContractDGM={this.state.DataContractDGM}
-                    DataContractDPNS={this.state.DataContractDPNS}
                     handleRefresh_WALLET={this.handleRefresh_WALLET}
                     whichPayType={this.state.WALLET_whichPayType}
                     triggerRequestButton={this.triggerRequestButton}
@@ -18196,7 +16855,6 @@ RIDES AND DRIVERS FUNCTIONS^^^^
         this.state.presentModal === "NewSOModal" ? (
           <NewSOModal
             whichNetwork={this.state.whichNetwork}
-            DataContractDPNS={this.state.DataContractDPNS}
             uniqueName={this.state.uniqueName}
             submitDSODocument={this.submitDSODocument}
             isModalShowing={this.state.isModalShowing}
@@ -18211,7 +16869,6 @@ RIDES AND DRIVERS FUNCTIONS^^^^
         this.state.presentModal === "NewDMModal" ? (
           <NewDMModal
             whichNetwork={this.state.whichNetwork}
-            DataContractDPNS={this.state.DataContractDPNS}
             uniqueName={this.state.uniqueName}
             submitDSODocument={this.submitDSODocument}
             isModalShowing={this.state.isModalShowing}
@@ -18226,7 +16883,6 @@ RIDES AND DRIVERS FUNCTIONS^^^^
         this.state.presentModal === "NewThreadModal" ? (
           <NewThreadModal
             whichNetwork={this.state.whichNetwork}
-            DataContractDPNS={this.state.DataContractDPNS}
             uniqueName={this.state.uniqueName}
             submitDSOThread={this.submitDSOThread}
             isModalShowing={this.state.isModalShowing}
@@ -18273,8 +16929,6 @@ RIDES AND DRIVERS FUNCTIONS^^^^
           <JoinGroupModal
             submitCreateGroup={this.submitCreateGroup}
             whichNetwork={this.state.whichNetwork}
-            DataContractDGT={this.state.DataContractDGT}
-            DataContractDPNS={this.state.DataContractDPNS}
             selectedGroup={this.state.selectedGroup}
             isModalShowing={this.state.isModalShowing}
             hideModal={this.hideModal}
@@ -18337,7 +16991,7 @@ RIDES AND DRIVERS FUNCTIONS^^^^
             //This is used to search for DGM address
             amountToSend={this.state.WALLET_amountToSend}
             //messageToSend={this.state.WALLET_messageToSend}
-            DataContractDGM={this.state.DataContractDGM}
+
             whichNetwork={this.state.whichNetwork}
             //sendDashtoName={this.state.sendDashtoName}
             payDashtoRequest={this.payDashtoRequest_WALLET}
@@ -18638,9 +17292,6 @@ RIDES AND DRIVERS FUNCTIONS^^^^
             selectedSearchedPost={this.state.selectedSearchedPost}
             selectedSearchedPostNameDoc={this.state.selectedSearchedPostNameDoc}
             whichNetwork={this.state.whichNetwork}
-            DataContractDGR={this.state.DataContractDGR}
-            DataContractDPNS={this.state.DataContractDPNS}
-            DataContractDGP={this.state.DataContractDGP}
             isLoggedIn={this.state.isLoggedIn}
             isModalShowing={this.state.isModalShowing}
             hideModal={this.hideModal}
@@ -18707,8 +17358,6 @@ RIDES AND DRIVERS FUNCTIONS^^^^
               this.state.selectedSearchedOfferNameDoc
             }
             whichNetwork={this.state.whichNetwork}
-            DataContractDGR={this.state.DataContractDGR}
-            DataContractDPNS={this.state.DataContractDPNS}
             isModalShowing={this.state.isModalShowing}
             hideModal={this.hideModal}
             mode={this.state.mode}

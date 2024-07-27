@@ -22,7 +22,7 @@ import WalletPageFormTabs from "./WalletPageFormTabs";
 import handleDenomDisplay from "../UnitDisplay";
 
 import "./ConnectedWalletPage.css";
-
+import dapiClientNoWallet from "../DapiClientNoWallet";
 import Dash from "dash";
 
 class WalletPage extends React.Component {
@@ -219,7 +219,7 @@ class WalletPage extends React.Component {
   //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&777
 
   searchName = (nameToRetrieve) => {
-    const client = new Dash.Client(this.props.whichNetwork);
+    const client = new Dash.Client(dapiClientNoWallet(this.props.whichNetwork));
 
     const retrieveName = async () => {
       // Retrieve by full name (e.g., myname.dash)
@@ -270,23 +270,23 @@ class WalletPage extends React.Component {
   };
 
   queryDGMDocument = (theNameDoc) => {
-    const clientOpts = {
-      network: this.props.whichNetwork,
-      wallet: {
-        mnemonic: this.props.mnemonic,
-        adapter: LocalForage.createInstance,
-        unsafeOptions: {
-          skipSynchronizationBeforeHeight:
-            this.props.skipSynchronizationBeforeHeight,
-        },
-      },
-      apps: {
-        DGMContract: {
-          contractId: this.props.DataContractDGM,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    // const clientOpts = {
+    //   network: this.props.whichNetwork,
+    //   wallet: {
+    //     mnemonic: this.props.mnemonic,
+    //     adapter: LocalForage.createInstance,
+    //     unsafeOptions: {
+    //       skipSynchronizationBeforeHeight:
+    //         this.props.skipSynchronizationBeforeHeight,
+    //     },
+    //   },
+    //   apps: {
+    //     DGMContract: {
+    //       contractId: this.props.DataContractDGM,
+    //     },
+    //   },
+    // };
+    const client = new Dash.Client(dapiClientNoWallet(this.props.whichNetwork));
 
     const getDocuments = async () => {
       console.log("Querying Receipient's DGM Documents.");

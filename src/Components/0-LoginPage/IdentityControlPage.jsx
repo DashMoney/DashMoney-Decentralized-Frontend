@@ -199,9 +199,11 @@ class IdentityControlPage extends React.Component {
                   <p></p>
                   <Button
                     variant="primary"
-                    onClick={() => this.handleSubmitClick()}
+                    disabled
+                    //onClick={() => this.handleSubmitClick()}
                   >
-                    <b>Break Identity</b>
+                    {/* <b>Break Identity</b> */}
+                    <b>Currently Disabled</b>
                   </Button>
                 </>
               ) : (

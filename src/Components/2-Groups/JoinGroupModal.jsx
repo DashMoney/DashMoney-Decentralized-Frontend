@@ -6,10 +6,11 @@ import CloseButton from "react-bootstrap/CloseButton";
 
 import MemberComponent from "./MemberComponent";
 
+import dapiClientNoWallet from "../DapiClientNoWallet";
+
 import Dash from "dash";
 
 const {
-  Essentials: { Buffer },
   PlatformProtocol: { Identifier },
 } = Dash;
 
@@ -34,16 +35,7 @@ class JoinGroupModal extends React.Component {
   getDGTInvites = () => {
     //console.log(`Calling get invites for ${this.props.selectedGroup}`);
 
-    const clientOpts = {
-      network: this.props.whichNetwork,
-      apps: {
-        DGTContract: {
-          //changed tutorialContract TO DashGetTogetherContract
-          contractId: this.props.DataContractDGT, // Your contract ID
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.props.whichNetwork));
 
     //DGTInvites Query ->
     const getInvites = async () => {
@@ -59,7 +51,7 @@ class JoinGroupModal extends React.Component {
     getInvites()
       .then((d) => {
         if (d.length === 0) {
-          console.log("There are no invites.");
+          //  console.log("There are no invites.");
           this.setState({
             LoadingMembers: false,
           });
@@ -97,26 +89,18 @@ class JoinGroupModal extends React.Component {
     });
     //***** */
 
-    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
+    // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+    //   Buffer.from(Identifier.from(item))
+    // );
 
     //console.log("Calling getNamesforDGTInvites");
 
-    const clientOpts = {
-      network: this.props.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.props.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.props.whichNetwork));
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 

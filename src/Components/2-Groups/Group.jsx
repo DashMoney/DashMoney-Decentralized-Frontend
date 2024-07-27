@@ -26,10 +26,11 @@ import GroupMsg from "./GroupMsg";
 // import GroupBottomNav from "../GroupBottomNav/GroupBottomNav";
 import "../../App.css";
 
+import dapiClientNoWallet from "../DapiClientNoWallet";
+
 import Dash from "dash";
 
 const {
-  Essentials: { Buffer },
   PlatformProtocol: { Identifier },
 } = Dash;
 
@@ -92,18 +93,9 @@ class Group extends React.Component {
   //Bring in the full one ? -> no date thing is needed here
 
   getDGTMessages = () => {
-    console.log(`Calling get messages for ${this.props.selectedGroup}`);
+    //console.log(`Calling get messages for ${this.props.selectedGroup}`);
 
-    const clientOpts = {
-      network: this.props.whichNetwork,
-      apps: {
-        DGTContract: {
-          //changed tutorialContract TO DashGetTogetherContract
-          contractId: this.props.DataContractDGT, // Your contract ID
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.props.whichNetwork));
 
     const getMessages = async () => {
       return client.platform.documents.get("DGTContract.dgtmsg", {
@@ -148,24 +140,16 @@ class Group extends React.Component {
 
     let arrayOfOwnerIds = [...setOfOwnerIds];
 
-    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
+    // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+    //   Buffer.from(Identifier.from(item))
+    // );
 
-    const clientOpts = {
-      network: this.props.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.props.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.props.whichNetwork));
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 
@@ -229,18 +213,9 @@ class Group extends React.Component {
   };
 
   getDGTInvites = () => {
-    console.log(`Calling get invites for ${this.props.selectedGroup}`);
+    // console.log(`Calling get invites for ${this.props.selectedGroup}`);
 
-    const clientOpts = {
-      network: this.props.whichNetwork,
-      apps: {
-        DGTContract: {
-          //changed tutorialContract TO DashGetTogetherContract
-          contractId: this.props.DataContractDGT, // Your contract ID
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.props.whichNetwork));
 
     //DGTInvites Query ->
     const getInvites = async () => {
@@ -300,20 +275,12 @@ class Group extends React.Component {
 
     // console.log("Calling getNamesforDGTInvites");
 
-    const clientOpts = {
-      network: this.props.whichNetwork,
-      apps: {
-        DPNS: {
-          contractId: this.props.DataContractDPNS,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.props.whichNetwork));
 
     const getNameDocuments = async () => {
-      return client.platform.documents.get("DPNS.domain", {
-        where: [["records.dashUniqueIdentityId", "in", arrayOfOwnerIds]],
-        orderBy: [["records.dashUniqueIdentityId", "asc"]],
+      return client.platform.documents.get("DPNSContract.domain", {
+        where: [["records.identity", "in", arrayOfOwnerIds]],
+        orderBy: [["records.identity", "asc"]],
       });
     };
 

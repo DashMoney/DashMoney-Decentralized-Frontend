@@ -5,6 +5,8 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import CloseButton from "react-bootstrap/CloseButton";
 
+import dapiClientNoWallet from "../DapiClientNoWallet";
+
 import Dash from "dash";
 
 class NewThreadModal extends React.Component {
@@ -224,18 +226,12 @@ class NewThreadModal extends React.Component {
 
         // console.log("Calling getDPNSDocsforNewThreadModal");
 
-        const clientOpts = {
-          network: this.props.whichNetwork,
-          apps: {
-            DPNS: {
-              contractId: this.props.DataContractDPNS,
-            },
-          },
-        };
-        const client = new Dash.Client(clientOpts);
+        const client = new Dash.Client(
+          dapiClientNoWallet(this.props.whichNetwork)
+        );
 
         const getNameDocuments = async () => {
-          return client.platform.documents.get("DPNS.domain", {
+          return client.platform.documents.get("DPNSContract.domain", {
             where: [
               ["normalizedParentDomainName", "==", "dash"],
               // Return all matching names from the provided array

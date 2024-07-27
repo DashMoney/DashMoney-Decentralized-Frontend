@@ -8,6 +8,8 @@ import handleDenomDisplay from "../UnitDisplay";
 
 import "./ConfirmPaymentModal.css";
 
+import dapiClientNoWallet from "../DapiClientNoWallet";
+
 import Dash from "dash";
 
 class PayRequestModal extends React.Component {
@@ -78,19 +80,10 @@ class PayRequestModal extends React.Component {
   };
 
   queryDGMDocument = (rqstrID) => {
-    const clientOpts = {
-      network: this.props.whichNetwork,
-
-      apps: {
-        DGMContract: {
-          contractId: this.props.DataContractDGM,
-        },
-      },
-    };
-    const client = new Dash.Client(clientOpts);
+    const client = new Dash.Client(dapiClientNoWallet(this.props.whichNetwork));
 
     const getDocuments = async () => {
-      console.log("Querying Receipient's DGM Documents.");
+      // console.log("Querying Receipient's DGM Documents.");
 
       return client.platform.documents.get("DGMContract.dgmaddress", {
         where: [["$ownerId", "==", rqstrID]],

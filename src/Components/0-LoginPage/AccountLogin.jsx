@@ -313,7 +313,7 @@ class AccountLogin extends React.Component {
                                 <b>Go to Dapps</b>
                               </Button>
                             </div>
-                            <h6 style={{ textAlign: "center" }}>
+                            {/* <h6 style={{ textAlign: "center" }}>
                               <b>OR</b>
                             </h6>
 
@@ -331,7 +331,7 @@ class AccountLogin extends React.Component {
                               >
                                 <b>Purchase Alias</b>
                               </Button>
-                            </div>
+                            </div> */}
                           </>
                         ) : (
                           <>
@@ -371,7 +371,7 @@ class AccountLogin extends React.Component {
                                 <b>Go to Dapps</b>
                               </Button>
                             </div>
-                            <h6 style={{ textAlign: "center" }}>
+                            {/* <h6 style={{ textAlign: "center" }}>
                               <b>OR</b>
                             </h6>
                             <div className="d-grid gap-2">
@@ -383,7 +383,7 @@ class AccountLogin extends React.Component {
                               >
                                 <b>Purchase Alias</b>
                               </Button>
-                            </div>
+                            </div>*/}
                           </>
                         )}
                       </>
@@ -435,7 +435,7 @@ class AccountLogin extends React.Component {
 
           {/* %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% */}
 
-          <div className="positionButton">
+          {/* <div className="positionButton">
             <Button
               variant={buttonColor}
               onClick={() => {
@@ -444,9 +444,9 @@ class AccountLogin extends React.Component {
             >
               <h3>More about name/alias</h3>
             </Button>
-          </div>
+          </div> */}
 
-          {this.state.extraInfo ? (
+          {/* {this.state.extraInfo ? (
             <>
               <p></p>
               <div className="indentStuff">
@@ -484,7 +484,7 @@ class AccountLogin extends React.Component {
             </>
           ) : (
             <></>
-          )}
+          )} */}
 
           {this.props.identityInfo !== "" &&
           this.props.identity !== "no identity" ? (

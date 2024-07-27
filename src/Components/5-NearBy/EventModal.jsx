@@ -102,31 +102,26 @@ class EventModal extends React.Component {
             </h5>
           </div>
           <p></p>
-          <div className="cardTitle">
+          <h4 style={{ color: "#008de4" }}>
+            {this.props.selectedSearchedEvent.group}
+          </h4>
+          {/* <div className="cardTitle">
             <h4
               style={{ color: "#008de4" }}
               onClick={() =>
                 this.handleNameClick(
                   this.props.selectedSearchedEventNameDoc.label
+                  
                 )
               }
             >
               {this.props.selectedSearchedEventNameDoc.label}
             </h4>
 
-            {/* <span onClick={() => this.handleNameClick()}>
-    {this.props.tuple[0]}
-  </span> */}
             <span>{this.state.copiedName ? <span>✅</span> : <></>}</span>
 
-            {/* <span className="textsmaller">
-              {this.formatDate(
-                this.props.selectedSearchedEvent.$createdAt,
-                today,
-                yesterday
-              )}
-            </span> */}
-          </div>
+            
+          </div> */}
 
           <div style={{ marginTop: "1rem", marginBottom: "1.6rem" }}>
             <JoinEventComponent
@@ -203,6 +198,9 @@ class EventModal extends React.Component {
           ) : (
             <></>
           )}
+          <p className="textsmaller" style={{ textAlign: "right" }}>
+            Created by: {this.props.selectedSearchedEventNameDoc.label}
+          </p>
         </Modal.Body>
       </Modal>
     );

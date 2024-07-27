@@ -1725,17 +1725,6 @@ class App extends React.Component {
       identityInfo: "",
     });
 
-    // const clientOpts = {
-    //   network: this.state.whichNetwork,
-    //   wallet: {
-    //     mnemonic: this.state.mnemonic,
-    //     adapter: LocalForage.createInstance,
-    //     unsafeOptions: {
-    //       skipSynchronizationBeforeHeight:
-    //         this.state.skipSynchronizationBeforeHeight,
-    //     },
-    //   },
-    // };
     const client = new Dash.Client(
       dapiClient(
         this.state.whichNetwork,
@@ -1748,20 +1737,24 @@ class App extends React.Component {
       const identityId = this.state.identity; // Your identity ID
       const topUpAmount = numOfCredits; // Number of duffs ie 1000
 
-      await client.platform.identities.topUp(identityId, topUpAmount);
-      return client.platform.identities.get(identityId);
+      // await client.platform.identities.topUp(identityId, topUpAmount);
+      // return client.platform.identities.get(identityId);
+      return client.platform.identities.topUp(identityId, topUpAmount);
     };
 
     topupIdentity()
       .then((d) => {
-        console.log("Identity credit balance: ", d.balance);
+        //console.log("Identity credit balance: ", d.balance);
         //Just manually add the topup amount
-        this.setState({
-          identityInfo: d.toJSON(),
-          identityRaw: d,
-          isLoadingIdInfo: false,
-          accountBalance: this.state.accountBalance - 1000000,
-        });
+        this.setState(
+          {
+            identityInfo: "", //d.toJSON(),
+            //identityRaw: d,
+            isLoadingIdInfo: false,
+            accountBalance: this.state.accountBalance - 1000000,
+          },
+          () => this.updateIdentityInfo()
+        );
       })
       .catch((e) => {
         console.error("Something went wrong:\n", e);

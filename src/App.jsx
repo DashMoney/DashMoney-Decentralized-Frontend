@@ -1552,8 +1552,8 @@ class App extends React.Component {
 
   getNamefromIdentity = (theIdentity) => {
     console.log(theIdentity);
-    //const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
-    const client = new Dash.Client({ network: "testnet" });
+    const client = new Dash.Client(dapiClientNoWallet(this.state.whichNetwork));
+    //const client = new Dash.Client({ network: "testnet" });
 
     const retrieveNameByRecord = async () => {
       // Retrieve by a name's identity ID

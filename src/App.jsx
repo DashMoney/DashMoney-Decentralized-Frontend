@@ -2436,9 +2436,9 @@ class App extends React.Component {
 
     let arrayOfOwnerIds = [...setOfOwnerIds];
 
-    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
+    // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+    //   Buffer.from(Identifier.from(item))
+    // );
 
     //console.log("Calling getNamesforDSOmsgs");
 
@@ -2553,9 +2553,9 @@ class App extends React.Component {
 
     arrayOfOwnerIds = [...setOfOwnerIds];
 
-    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
+    // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+    //   Buffer.from(Identifier.from(item))
+    // );
 
     //console.log("Called Get FromTags Threads Names");
 
@@ -3101,9 +3101,9 @@ class App extends React.Component {
 
     let arrayOfOwnerIds = [...setOfOwnerIds];
 
-    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
+    // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+    //   Buffer.from(Identifier.from(item))
+    // );
 
     //console.log("Calling getNamesforDSOmsgs");
 
@@ -3230,9 +3230,9 @@ class App extends React.Component {
 
     arrayOfOwnerIds = [...setOfOwnerIds];
 
-    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
+    // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+    //   Buffer.from(Identifier.from(item))
+    // );
 
     //console.log("Called Get Everyone Threads Names");
 
@@ -3611,9 +3611,9 @@ class App extends React.Component {
 
     let arrayOfOwnerIds = [...setOfOwnerIds];
 
-    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
+    // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+    //   Buffer.from(Identifier.from(item))
+    // );
 
     //console.log("Calling getNamesforDSOmsgs");
 
@@ -3758,9 +3758,9 @@ class App extends React.Component {
 
     arrayOfOwnerIds = [...setOfOwnerIds];
 
-    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
+    // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+    //   Buffer.from(Identifier.from(item))
+    // );
 
     //console.log("Called Get ByYouDMThreads Names");
 

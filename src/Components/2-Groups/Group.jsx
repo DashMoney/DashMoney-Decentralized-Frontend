@@ -269,9 +269,9 @@ class Group extends React.Component {
     });
     //***** */
 
-    arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
-      Buffer.from(Identifier.from(item))
-    );
+    // arrayOfOwnerIds = arrayOfOwnerIds.map((item) =>
+    //   Buffer.from(Identifier.from(item))
+    // );
 
     // console.log("Calling getNamesforDGTInvites");
 

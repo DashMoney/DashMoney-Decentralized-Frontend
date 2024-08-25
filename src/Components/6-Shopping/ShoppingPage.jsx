@@ -311,6 +311,7 @@ class ShoppingPage extends React.Component {
         {this.props.whichTabSHOPPING === "Your Orders" ? (
           <>
             <YourOrders
+            whichNetwork={this.props.whichNetwork}
               isLoadingWallet={this.props.isLoadingWallet}
               isLoadingRecentOrders={this.props.isLoadingRecentOrders}
               LoadingOrder={this.props.LoadingOrder}

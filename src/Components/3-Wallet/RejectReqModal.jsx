@@ -133,7 +133,7 @@ class RejectReqModal extends React.Component {
           </Modal.Header>
           <Modal.Body>
             {/* <h6>
-              Pay <b>{handleDenomDisplay(this.props.amountToSend)}</b> to{" "}
+              Pay <b>{handleDenomDisplay(this.props.whichNetwork,this.props.amountToSend)}</b> to{" "}
               <b>{this.props.requestPmtNameDoc.label}</b>?
             </h6> */}
             <div
@@ -152,7 +152,10 @@ class RejectReqModal extends React.Component {
                 </b>{" "}
                 requests{" "}
                 <b style={{ color: "#008de4" }}>
-                  {handleDenomDisplay(this.props.amountToSend)}
+                  {handleDenomDisplay(
+                    this.props.whichNetwork,
+                    this.props.amountToSend
+                  )}
                 </b>
               </h5>
             </div>

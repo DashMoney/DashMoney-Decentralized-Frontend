@@ -677,6 +677,7 @@ class PostModal extends React.Component {
               {this.props.selectedSearchedPost.dgp && !this.state.LoadingDGP ? (
                 <>
                   <DGPView
+                    whichNetwork={this.props.whichNetwork}
                     merchantStore={this.state.merchantStore}
                     merchantItems={this.state.merchantItems}
                     mode={this.props.mode}

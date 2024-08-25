@@ -115,7 +115,13 @@ class PayDriverModal extends React.Component {
                 <b>Current Balance</b>
 
                 <h4 style={{ color: "#008de4" }}>
-                  <b>{handleDenomDisplay(this.props.accountBalance, 1)}</b>
+                  <b>
+                    {handleDenomDisplay(
+                      this.props.whichNetwork,
+                      this.props.accountBalance,
+                      1
+                    )}
+                  </b>
                 </h4>
               </div>
 
@@ -139,7 +145,10 @@ class PayDriverModal extends React.Component {
                 {this.props.selectedYourRideReplyNameDoc.label}
               </b>{" "}
               <b style={{ color: "#008de4" }}>
-                {handleDenomDisplay(this.props.selectedYourRide.amt)}
+                {handleDenomDisplay(
+                  this.props.whichNetwork,
+                  this.props.selectedYourRide.amt
+                )}
               </b>{" "}
               for the ride.
             </h5>

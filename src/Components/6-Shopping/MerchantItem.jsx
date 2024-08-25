@@ -15,7 +15,7 @@ class MerchantItem extends React.Component {
       } else {
         return (
           <span style={{ color: "#008de4" }}>
-            {handleDenomDisplay(this.props.item.price)}
+            {handleDenomDisplay(this.props.whichNetwork, this.props.item.price)}
           </span>
         );
       }

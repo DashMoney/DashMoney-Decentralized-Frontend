@@ -456,7 +456,12 @@ class WalletPage extends React.Component {
                   <div>
                     <b>Wallet Balance</b>
                     <h4 style={{ color: "#008de4" }}>
-                      <b>{handleDenomDisplay(this.props.accountBalance)}</b>
+                      <b>
+                        {handleDenomDisplay(
+                          this.props.whichNetwork,
+                          this.props.accountBalance
+                        )}
+                      </b>
                     </h4>
                   </div>
 
@@ -489,7 +494,7 @@ class WalletPage extends React.Component {
               {/* <div className="indentStuff">
                 <b>Wallet Balance</b>
                 <h4 style={{ color: "#008de4" }}>
-                  <b>{handleDenomDisplay(this.props.accountBalance)}</b>
+                  <b>{handleDenomDisplay(this.props.whichNetwork,this.props.accountBalance)}</b>
                 </h4>
               </div>
               <p></p> */}
@@ -556,7 +561,10 @@ class WalletPage extends React.Component {
                         <p>
                           You have successfully sent{" "}
                           <b>
-                            {handleDenomDisplay(this.props.WALLET_amountToSend)}
+                            {handleDenomDisplay(
+                              this.props.whichNetwork,
+                              this.props.WALLET_amountToSend
+                            )}
                           </b>{" "}
                           to{" "}
                           <b>
@@ -959,7 +967,10 @@ class WalletPage extends React.Component {
                         <p>
                           You have successfully sent{" "}
                           <b>
-                            {handleDenomDisplay(this.props.WALLET_amountToSend)}
+                            {handleDenomDisplay(
+                              this.props.whichNetwork,
+                              this.props.WALLET_amountToSend
+                            )}
                           </b>{" "}
                           to{" "}
                           <b>
@@ -995,7 +1006,10 @@ class WalletPage extends React.Component {
                         <p>
                           You have successfully sent{" "}
                           <b>
-                            {handleDenomDisplay(this.props.WALLET_amountToSend)}
+                            {handleDenomDisplay(
+                              this.props.whichNetwork,
+                              this.props.WALLET_amountToSend
+                            )}
                           </b>{" "}
                           to{" "}
                           <b>
@@ -1089,7 +1103,10 @@ class WalletPage extends React.Component {
                         <p>
                           You have successfully requested{" "}
                           <b>
-                            {handleDenomDisplay(this.props.WALLET_amountToSend)}
+                            {handleDenomDisplay(
+                              this.props.whichNetwork,
+                              this.props.WALLET_amountToSend
+                            )}
                           </b>{" "}
                           from <b>{this.props.WALLET_sendToName} !</b>
                         </p>
@@ -1195,6 +1212,7 @@ class WalletPage extends React.Component {
         {this.props.isModalShowing &&
         this.props.presentModal === "ConfirmPaymentModal" ? (
           <ConfirmPaymentModal
+            whichNetwork={this.props.whichNetwork}
             sendToName={this.props.WALLET_sendToName}
             amountToSend={this.props.WALLET_amountToSend}
             messageToSend={this.props.WALLET_messageToSend}
@@ -1212,6 +1230,7 @@ class WalletPage extends React.Component {
         {this.props.isModalShowing &&
         this.props.presentModal === "ConfirmRequestModal" ? (
           <ConfirmRequestModal
+            whichNetwork={this.props.whichNetwork}
             //sendToName={this.props.WALLET_sendToName}
             requestPmtNameDoc={this.props.WALLET_requestPmtNameDoc}
             amountToSend={this.props.WALLET_amountToSend}

@@ -86,6 +86,16 @@ class CreateNewWalletModal extends React.Component {
             <p>
               <b>You will need to save the 12 word mnemonic!</b>{" "}
             </p>
+            {this.props.whichNetwork === "testnet" ? (
+              <>
+                {" "}
+                <p style={{ color: "yellow" }}>
+                  <b>This site is currently operating on testnet!</b>
+                </p>
+              </>
+            ) : (
+              <></>
+            )}
             <Alert variant="primary">
               <Alert.Heading>Mnemonic(12 words):</Alert.Heading>
               <p>{this.state.response.mnemonic}</p>

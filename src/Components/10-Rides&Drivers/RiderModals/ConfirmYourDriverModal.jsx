@@ -82,7 +82,7 @@ class ConfirmYourDriverModal extends React.Component {
           </Modal.Header>
           <Modal.Body>
             {/* <h6>
-              Pay <b>{handleDenomDisplay(this.props.amountToSend)}</b> to{" "}
+              Pay <b>{handleDenomDisplay(this.props.whichNetwork,this.props.amountToSend)}</b> to{" "}
               <b>{this.props.requestPmtNameDoc.label}</b>?
             </h6> */}
             <div
@@ -98,14 +98,17 @@ class ConfirmYourDriverModal extends React.Component {
                 </b>{" "}
                 requests{" "}
                 <b style={{ color: "#008de4" }}>
-                  {handleDenomDisplay(this.props.amountToSend)}
+                  {handleDenomDisplay(this.props.whichNetwork,this.props.amountToSend)}
                 </b>
               </h5> */}
               <h5>
                 Confirm to pay{" "}
                 <b style={{ color: "#008de4" }}>{nameDocToPass.label}</b>{" "}
                 <b style={{ color: "#008de4" }}>
-                  {handleDenomDisplay(this.props.selectedYourRideReply.amt)}
+                  {handleDenomDisplay(
+                    this.props.whichNetwork,
+                    this.props.selectedYourRideReply.amt
+                  )}
                 </b>{" "}
                 as your driver.
               </h5>

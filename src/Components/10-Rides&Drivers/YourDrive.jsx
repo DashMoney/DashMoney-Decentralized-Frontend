@@ -214,7 +214,7 @@ class YourDrive extends React.Component {
 
     priceUnit = (rideRequest.amt / rideRequest.timeEst) * 30;
 
-    priceUnitDisplay = handleDenomDisplay(priceUnit);
+    priceUnitDisplay = handleDenomDisplay(this.props.whichNetwork, priceUnit);
     //per half hour.. //bc per minute is small and could be kD..
 
     let paymentSchedule = "";
@@ -431,7 +431,13 @@ class YourDrive extends React.Component {
 
                 <h5 style={{ marginTop: ".2rem", textAlign: "center" }}>
                   {" "}
-                  Pays <b>{handleDenomDisplay(rideRequest.amt)}</b>
+                  Pays{" "}
+                  <b>
+                    {handleDenomDisplay(
+                      this.props.whichNetwork,
+                      rideRequest.amt
+                    )}
+                  </b>
                 </h5>
 
                 <p style={{ textAlign: "center", marginBottom: ".2rem" }}>

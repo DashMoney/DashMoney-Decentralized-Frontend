@@ -75,6 +75,7 @@ class MyStore extends React.Component {
       //console.log(item);
       return (
         <MyStoreItem
+        whichNetwork={this.props.whichNetwork}
           key={index}
           mode={this.props.mode}
           index={index}

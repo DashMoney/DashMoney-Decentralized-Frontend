@@ -153,7 +153,7 @@ class GroupsPage extends React.Component {
                         <Alert.Heading>Payment Successful!</Alert.Heading>
                         You have successfully sent{" "}
                         <b>
-                          {handleDenomDisplay(
+                          {handleDenomDisplay(this.props.whichNetwork,
                             this.props.WALLET_amountToSend
                           )}
                         </b>{" "}

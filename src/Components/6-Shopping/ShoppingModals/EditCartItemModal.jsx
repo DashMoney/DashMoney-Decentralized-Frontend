@@ -118,6 +118,7 @@ class EditCartItemModal extends React.Component {
               <h5 className="PriceRight" style={{ color: "#008de4" }}>
                 <b>
                   {handleDenomDisplay(
+                    this.props.whichNetwork,
                     this.props.cartItems[this.props.selectedCartItemIndex][0]
                       .price
                   )}

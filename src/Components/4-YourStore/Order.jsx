@@ -82,7 +82,7 @@ class Order extends React.Component {
 
     return (
       <h4 className="indentMembers" style={{ color: "#008de4" }}>
-        <b>{handleDenomDisplay(theTotal)}</b>
+        <b>{handleDenomDisplay(this.props.whichNetwork, theTotal)}</b>
       </h4>
     );
   };

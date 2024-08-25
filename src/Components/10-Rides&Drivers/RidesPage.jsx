@@ -41,7 +41,11 @@ class RidesPage extends React.Component {
                       <b>Wallet Balance</b>
                       <h4 style={{ color: "#008de4" }}>
                         <b>
-                          {handleDenomDisplay(this.props.accountBalance, 1)}
+                          {handleDenomDisplay(
+                            this.props.whichNetwork,
+                            this.props.accountBalance,
+                            1
+                          )}
                         </b>
                       </h4>
                     </div>
@@ -66,6 +70,7 @@ class RidesPage extends React.Component {
             </Button>
           </div>
           <YourRides
+            whichNetwork={this.props.whichNetwork}
             YourRides={this.props.YourRides}
             YourRideReplies={this.props.YourRideReplies}
             YourRideReplyNames={this.props.YourRideReplyNames}

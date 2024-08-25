@@ -20,6 +20,7 @@ class YourDrives extends React.Component {
       //
       return (
         <YourDrive
+          whichNetwork={this.props.whichNetwork}
           key={index}
           uniqueName={this.props.uniqueName}
           identity={this.props.identity}

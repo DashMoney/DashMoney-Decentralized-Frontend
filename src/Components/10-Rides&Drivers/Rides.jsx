@@ -19,6 +19,7 @@ class Rides extends React.Component {
         <Ride
           key={index}
           mode={this.props.mode}
+          whichNetwork={this.props.whichNetwork}
           index={index}
           ride={ride}
           identity={this.props.identity}

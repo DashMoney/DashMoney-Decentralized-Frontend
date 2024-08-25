@@ -720,7 +720,10 @@ class CreateRideModal extends React.Component {
     let priceUnitDisplay;
     if (this.state.validtimeEst && this.state.validAmt) {
       priceUnit = (this.state.amtInput / this.state.timeEstInput) * 30;
-      priceUnitDisplay = handleDenomDisplay((priceUnit * 100000000).toFixed(0));
+      priceUnitDisplay = handleDenomDisplay(
+        this.props.whichNetwork,
+        (priceUnit * 100000000).toFixed(0)
+      );
       //per half hour.. //bc per minute is small and could be kD..
     }
 

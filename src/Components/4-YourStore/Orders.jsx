@@ -93,7 +93,7 @@ class Orders extends React.Component {
 
     return (
       <h4 className="indentMembers" style={{ color: "#008de4" }}>
-        <b>{handleDenomDisplay(theTotal)}</b>
+        <b>{handleDenomDisplay(this.props.whichNetwork, theTotal)}</b>
       </h4>
     );
   };
@@ -185,20 +185,26 @@ class Orders extends React.Component {
             <div className="cardTitle" key={index}>
               <b>{item[0].name}</b>
               <b>{item[1]}</b>
-              <b>{handleDenomDisplay(item[0].price, item[1])}</b>
+              <b>
+                {handleDenomDisplay(
+                  this.props.whichNetwork,
+                  item[0].price,
+                  item[1]
+                )}
+              </b>
             </div>
           );
 
           // return <Row key={index}>
           //   <Col xs={5} md={4}><b>{item[0].name}</b> </Col>
           //   <Col xs={1} md={4}><b>{item[1]}</b> </Col>
-          //   <Col xs={5} md={4}><b>{handleDenomDisplay(item[0].price, item[1])}</b></Col>
+          //   <Col xs={5} md={4}><b>{handleDenomDisplay(this.props.whichNetwork,item[0].price, item[1])}</b></Col>
           //   </Row>
 
           //  return <div key={index} className="cardTitle">
           // <h5>{item[0].name}</h5>
           // <h5>{item[1]}</h5>
-          // <h5><b>{handleDenomDisplay(item[0].price, item[1])}</b></h5>
+          // <h5><b>{handleDenomDisplay(this.props.whichNetwork,item[0].price, item[1])}</b></h5>
           // </div>
         });
 
@@ -217,6 +223,7 @@ class Orders extends React.Component {
 
         return (
           <Order
+          whichNetwork={this.props.whichNetwork}
             key={index}
             mode={this.props.mode}
             identity={this.props.identity}
@@ -270,7 +277,13 @@ class Orders extends React.Component {
                   <div>
                     <b>Wallet Balance</b>
                     <h4 style={{ color: "#008de4" }}>
-                      <b>{handleDenomDisplay(this.props.accountBalance, 1)}</b>
+                      <b>
+                        {handleDenomDisplay(
+                          this.props.whichNetwork,
+                          this.props.accountBalance,
+                          1
+                        )}
+                      </b>
                     </h4>
                   </div>
                   <Button

@@ -66,6 +66,7 @@ class YourStorePage extends React.Component {
               <>
                 {!this.props.isLoadingStoreYOURSTORE ? (
                   <MyStore
+                    whichNetwork={this.props.whichNetwork}
                     identityInfo={this.props.identityInfo}
                     uniqueName={this.props.uniqueName}
                     LoadingStore={this.props.isLoadingStoreYOURSTORE}
@@ -101,6 +102,7 @@ class YourStorePage extends React.Component {
                 {!this.props.isLoadingStoreYOURSTORE &&
                 !this.props.isLoadingOrdersYOURSTORE ? (
                   <Orders
+                    whichNetwork={this.props.whichNetwork}
                     isLoadingWallet={this.props.isLoadingWallet}
                     LoadingStore={this.props.isLoadingStoreYOURSTORE}
                     LoadingItems={this.props.isLoadingItemsYOURSTORE}

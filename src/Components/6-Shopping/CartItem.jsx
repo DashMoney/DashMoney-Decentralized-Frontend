@@ -9,7 +9,7 @@ class CartItem extends React.Component {
       //Removed ^^ Number()
       return "Tracking Only";
     } else {
-      return handleDenomDisplay(duffs);
+      return handleDenomDisplay(this.props.whichNetwork, duffs);
     }
   };
 

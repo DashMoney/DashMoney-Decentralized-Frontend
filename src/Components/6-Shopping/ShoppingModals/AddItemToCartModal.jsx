@@ -24,7 +24,6 @@ class AddItemToCartModal extends React.Component {
       itemQuantity: this.state.itemQuantity + input,
     });
   };
-  
 
   handleSubmitClick = () => {
     if (this.state.itemQuantity > 0) {
@@ -108,7 +107,12 @@ class AddItemToCartModal extends React.Component {
 
             {this.state.itemQuantity > 0 ? (
               <h5 className="PriceRight" style={{ color: "#008de4" }}>
-                <b>{handleDenomDisplay(this.props.selectedItem.price)}</b>
+                <b>
+                  {handleDenomDisplay(
+                    this.props.whichNetwork,
+                    this.props.selectedItem.price
+                  )}
+                </b>
               </h5>
             ) : (
               <p></p>

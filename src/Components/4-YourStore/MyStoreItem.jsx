@@ -21,7 +21,11 @@ class MyStoreItem extends React.Component {
           </span>
         );
       } else {
-        return <span style={{ color: "#008de4" }}>{handleDenomDisplay(this.props.item.price)}</span>;
+        return (
+          <span style={{ color: "#008de4" }}>
+            {handleDenomDisplay(this.props.whichNetwork, this.props.item.price)}
+          </span>
+        );
       }
     } else {
       return <span style={{ color: "#008de4" }}>Unavailable</span>;

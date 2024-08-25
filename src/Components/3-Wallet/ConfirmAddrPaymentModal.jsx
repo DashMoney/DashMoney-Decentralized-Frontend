@@ -56,7 +56,10 @@ class ConfirmAddrPaymentModal extends React.Component {
             <p>
               Send{" "}
               <b>
-                {handleDenomDisplay(this.props.amountToSend)}
+                {handleDenomDisplay(
+                  this.props.whichNetwork,
+                  this.props.amountToSend
+                )}
               </b>{" "}
               to <b>{this.props.sendToAddress}</b>?
             </p>

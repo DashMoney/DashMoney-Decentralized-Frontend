@@ -98,7 +98,7 @@ class YourOrders extends React.Component {
 
     return (
       <h4 className="indentMembers" style={{ color: "#008de4" }}>
-        <b>{handleDenomDisplay(theTotal)}</b>
+        <b>{handleDenomDisplay(this.props.whichNetwork, theTotal)}</b>
       </h4>
     );
   };
@@ -226,7 +226,11 @@ class YourOrders extends React.Component {
               <b>{item[0].name}</b>
               <b>{item[1]}</b>
               <b style={{ color: "#008de4" }}>
-                {handleDenomDisplay(item[0].price, item[1])}
+                {handleDenomDisplay(
+                  this.props.whichNetwork,
+                  item[0].price,
+                  item[1]
+                )}
               </b>
             </div>
           );
@@ -234,7 +238,7 @@ class YourOrders extends React.Component {
           // return <Row key={index}>
           // <Col xs={6} md={4}><h5>{item[0].name}</h5> </Col>
           // <Col xs={1} md={4}><h5>{item[1]}</h5> </Col>
-          // <Col xs={5} md={4}><h5><b>{handleDenomDisplay(item[0].price, item[1])}</b></h5></Col>
+          // <Col xs={5} md={4}><h5><b>{handleDenomDisplay(this.props.whichNetwork,item[0].price, item[1])}</b></h5></Col>
           // </Row>
         });
 
@@ -452,7 +456,13 @@ class YourOrders extends React.Component {
                   <div>
                     <b>Wallet Balance</b>
                     <h4 style={{ color: "#008de4" }}>
-                      <b>{handleDenomDisplay(this.props.accountBalance, 1)}</b>
+                      <b>
+                        {handleDenomDisplay(
+                          this.props.whichNetwork,
+                          this.props.accountBalance,
+                          1
+                        )}
+                      </b>
                     </h4>
                   </div>
                   <Button

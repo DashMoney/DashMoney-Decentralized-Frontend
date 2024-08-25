@@ -49,8 +49,14 @@ class ConfirmPaymentModal extends React.Component {
           </Modal.Header>
           <Modal.Body>
             <h6>
-              Send <b>{handleDenomDisplay(this.props.amountToSend)}</b> to{" "}
-              <b>{this.props.sendToName}</b>?
+              Send{" "}
+              <b>
+                {handleDenomDisplay(
+                  this.props.whichNetwork,
+                  this.props.amountToSend
+                )}
+              </b>{" "}
+              to <b>{this.props.sendToName}</b>?
             </h6>
             <h6>
               Message:

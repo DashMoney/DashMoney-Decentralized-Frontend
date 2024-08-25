@@ -50,8 +50,14 @@ class ConfirmRequestModal extends React.Component {
           </Modal.Header>
           <Modal.Body>
             <h6>
-              Request <b>{handleDenomDisplay(this.props.amountToSend)}</b> from{" "}
-              <b>{this.props.requestPmtNameDoc.label}</b>?
+              Request{" "}
+              <b>
+                {handleDenomDisplay(
+                  this.props.whichNetwork,
+                  this.props.amountToSend
+                )}
+              </b>{" "}
+              from <b>{this.props.requestPmtNameDoc.label}</b>?
             </h6>
             <h6>
               Message:

@@ -108,7 +108,10 @@ class RideConfirmComponent extends React.Component {
               Confirm to pay{" "}
               <b style={{ color: "#008de4" }}>{nameDocToPass.label}</b>{" "}
               <b style={{ color: "#008de4" }}>
-                {handleDenomDisplay(this.props.driverReply.amt)}
+                {handleDenomDisplay(
+                  this.props.whichNetwork,
+                  this.props.driverReply.amt
+                )}
               </b>{" "}
               as your driver.
             </h5>

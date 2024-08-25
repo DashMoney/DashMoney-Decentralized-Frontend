@@ -369,7 +369,10 @@ class SentRequestMsgs extends React.Component {
               >
                 You requested{" "}
                 <b style={{ color: "#008de4" }}>
-                  {handleDenomDisplay(this.props.tuple[1].amt)}
+                  {handleDenomDisplay(
+                    this.props.whichNetwork,
+                    this.props.tuple[1].amt
+                  )}
                 </b>{" "}
                 from <b style={{ color: "#008de4" }}>{this.props.tuple[0]}</b>
               </h5>
@@ -381,7 +384,10 @@ class SentRequestMsgs extends React.Component {
                 <b style={{ color: "#008de4" }}>{this.props.tuple[0]}</b>{" "}
                 requests{" "}
                 <b style={{ color: "#008de4" }}>
-                  {handleDenomDisplay(this.props.tuple[1].amt)}
+                  {handleDenomDisplay(
+                    this.props.whichNetwork,
+                    this.props.tuple[1].amt
+                  )}
                 </b>
               </h5>
             )}

@@ -89,6 +89,7 @@ class DriversPage extends React.Component {
 
               <Rides
                 isLoginComplete={this.props.isLoginComplete}
+                whichNetwork={this.props.whichNetwork}
                 identity={this.props.identity}
                 uniqueName={this.props.uniqueName}
                 SearchedDrives={this.props.SearchedDrives}
@@ -132,7 +133,11 @@ class DriversPage extends React.Component {
                           <b>Wallet Balance</b>
                           <h4 style={{ color: "#008de4" }}>
                             <b>
-                              {handleDenomDisplay(this.props.accountBalance, 1)}
+                              {handleDenomDisplay(
+                                this.props.whichNetwork,
+                                this.props.accountBalance,
+                                1
+                              )}
                             </b>
                           </h4>
                         </div>
@@ -149,6 +154,7 @@ class DriversPage extends React.Component {
               </div>
 
               <YourDrives
+                whichNetwork={this.props.whichNetwork}
                 uniqueName={this.props.uniqueName}
                 identity={this.props.identity}
                 mode={this.props.mode}

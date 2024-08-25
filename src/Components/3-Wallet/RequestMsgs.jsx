@@ -179,7 +179,10 @@ class RequestMsgs extends React.Component {
               <b style={{ color: "#008de4" }}>{this.props.tuple[0].label}</b>{" "}
               requests{" "}
               <b style={{ color: "#008de4" }}>
-                {handleDenomDisplay(this.props.tuple[1].amt)}
+                {handleDenomDisplay(
+                  this.props.whichNetwork,
+                  this.props.tuple[1].amt
+                )}
               </b>
             </h5>
           </div>

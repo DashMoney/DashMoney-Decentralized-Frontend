@@ -3867,7 +3867,7 @@ class App extends React.Component {
     });
   };
   //BELOW should not require the names, but can I still use the same state?
-  //Which invites do I need.. just the ones that I sent my self and not invites from others or that I sent to others.. yeah I think separating is best.
+  //Which invites do I need.. just the ones that I sent my self and not invites from others or that I sent to others.
 
   getDGTInvitesForEvents = () => {
     if (!this.state.isLoadingGroupEvents) {
@@ -3885,7 +3885,7 @@ class App extends React.Component {
       return client.platform.documents.get("DGTContract.dgtinvite", {
         where: [
           ["toId", "==", this.state.identity],
-          //["$createdAt", "<=", Date.now()],
+          ["$createdAt", "<=", Date.now()],
         ],
         orderBy: [["$createdAt", "desc"]],
       });
@@ -16013,6 +16013,7 @@ RIDES AND DRIVERS FUNCTIONS^^^^
                     <>
                       <AccountLogin
                         isLoginComplete={isLoginComplete}
+                        whichNetwork={this.state.whichNetwork}
                         mnemonic={this.state.mnemonic}
                         handleAccountRetry={this.handleAccountRetry}
                         showModal={this.showModal}
@@ -16248,6 +16249,7 @@ RIDES AND DRIVERS FUNCTIONS^^^^
                 <>
                   <YourStorePage
                     isLoginComplete={isLoginComplete}
+                    whichNetwork={this.state.whichNetwork}
                     identity={this.state.identity}
                     identityInfo={this.state.identityInfo}
                     uniqueName={this.state.uniqueName}
@@ -16524,6 +16526,7 @@ RIDES AND DRIVERS FUNCTIONS^^^^
                 <>
                   <RidesPage
                     isLoginComplete={isLoginComplete}
+                    whichNetwork={this.state.whichNetwork}
                     identityInfo={this.state.identityInfo}
                     identity={this.state.identity}
                     uniqueName={this.state.uniqueName}
@@ -16557,6 +16560,7 @@ RIDES AND DRIVERS FUNCTIONS^^^^
                 <>
                   <DriversPage
                     isLoginComplete={isLoginComplete}
+                    whichNetwork={this.state.whichNetwork}
                     InitialPullDrivers={this.state.InitialPullDrivers}
                     pullInitialTriggerDRIVERS={this.pullInitialTriggerDRIVERS}
                     OnPageLoadDRIVERS={this.state.OnPageLoadDRIVERS}
@@ -16774,6 +16778,7 @@ RIDES AND DRIVERS FUNCTIONS^^^^
             accountBalance={this.state.accountBalance}
             isLoadingWallet={this.state.isLoadingWallet}
             isModalShowing={this.state.isModalShowing}
+            whichNetwork={this.state.whichNetwork}
             hideModal={this.hideModal}
             mode={this.state.mode}
             doTopUpIdentity={this.doTopUpIdentity}
@@ -16938,6 +16943,7 @@ RIDES AND DRIVERS FUNCTIONS^^^^
         {this.state.isModalShowing &&
         this.state.presentModal === "ConfirmAddrPaymentModal" ? (
           <ConfirmAddrPaymentModal
+            whichNetwork={this.state.whichNetwork}
             sendToAddress={this.state.WALLET_sendToAddress}
             amountToSend={this.state.WALLET_amountToSend}
             sendDashtoAddress={this.sendDashtoAddress_WALLET}
@@ -17159,6 +17165,7 @@ RIDES AND DRIVERS FUNCTIONS^^^^
         {this.state.isModalShowing &&
         this.state.presentModal === "AddItemToCartModal" ? (
           <AddItemToCartModal
+            whichNetwork={this.state.whichNetwork}
             isModalShowing={this.state.isModalShowing}
             selectedItem={this.state.selectedItemSHOPPING}
             addToCart={this.addToCart}
@@ -17171,6 +17178,7 @@ RIDES AND DRIVERS FUNCTIONS^^^^
         {this.state.isModalShowing &&
         this.state.presentModal === "EditCartItemModal" ? (
           <EditCartItemModal
+            whichNetwork={this.state.whichNetwork}
             isModalShowing={this.state.isModalShowing}
             selectedCartItemIndex={this.state.selectedCartItemIndex}
             cartItems={this.state.cartItems}
@@ -17184,6 +17192,7 @@ RIDES AND DRIVERS FUNCTIONS^^^^
         {this.state.isModalShowing &&
         this.state.presentModal === "PlaceOrderModal" ? (
           <PlaceOrderModal
+            whichNetwork={this.state.whichNetwork}
             isLoadingWallet={this.state.isLoadingWallet}
             accountBalance={this.state.accountBalance}
             store={this.state.merchantStore[0]} //ADDED FOR PAYLATER
@@ -17201,6 +17210,7 @@ RIDES AND DRIVERS FUNCTIONS^^^^
         {this.state.isModalShowing &&
         this.state.presentModal === "PayLaterPaymentModal" ? (
           <PayLaterPaymentModal
+            whichNetwork={this.state.whichNetwork}
             isLoadingWallet={this.state.isLoadingWallet}
             accountBalance={this.state.accountBalance}
             payLaterOrderSHOPPING={this.state.payLaterOrderSHOPPING}
@@ -17476,6 +17486,7 @@ RIDES AND DRIVERS FUNCTIONS^^^^
         {this.state.isModalShowing &&
         this.state.presentModal === "CreateRideModal" ? (
           <CreateRideModal
+            whichNetwork={this.state.whichNetwork}
             accountBalance={this.state.accountBalance}
             isLoadingWallet={this.state.isLoadingWallet}
             isModalShowing={this.state.isModalShowing}
@@ -17490,6 +17501,7 @@ RIDES AND DRIVERS FUNCTIONS^^^^
         {this.state.isModalShowing &&
         this.state.presentModal === "ConfirmYourDriverModal" ? (
           <ConfirmYourDriverModal
+            whichNetwork={this.state.whichNetwork}
             isModalShowing={this.state.isModalShowing}
             editConfirmYourDriver={this.editConfirmYourDriver}
             selectedYourRide={this.state.selectedYourRide}
@@ -17530,6 +17542,7 @@ RIDES AND DRIVERS FUNCTIONS^^^^
         {this.state.isModalShowing &&
         this.state.presentModal === "EditRideModal" ? (
           <EditRideModal
+            whichNetwork={this.state.whichNetwork}
             accountBalance={this.state.accountBalance}
             isLoadingWallet={this.state.isLoadingWallet}
             selectedYourRide={this.state.selectedYourRide}
@@ -17544,6 +17557,7 @@ RIDES AND DRIVERS FUNCTIONS^^^^
         {this.state.isModalShowing &&
         this.state.presentModal === "DeleteRideModal" ? (
           <DeleteRideModal
+            whichNetwork={this.state.whichNetwork}
             ride={this.state.selectedYourRide}
             uniqueName={this.state.uniqueName}
             deleteYourRide={this.deleteYourRide}
@@ -17574,6 +17588,7 @@ RIDES AND DRIVERS FUNCTIONS^^^^
         {this.state.isModalShowing &&
         this.state.presentModal === "PayDriverModal" ? (
           <PayDriverModal
+            whichNetwork={this.state.whichNetwork}
             accountBalance={this.state.accountBalance}
             isLoadingWallet={this.state.isLoadingWallet}
             selectedYourRide={this.state.selectedYourRide}
@@ -17599,6 +17614,7 @@ RIDES AND DRIVERS FUNCTIONS^^^^
         {this.state.isModalShowing &&
         this.state.presentModal === "AcceptDriveModal" ? (
           <AcceptDriveModal
+            whichNetwork={this.state.whichNetwork}
             isModalShowing={this.state.isModalShowing}
             createAcceptDriveRideReply={this.createAcceptDriveRideReply}
             selectedSearchedDrive={this.state.selectedSearchedDrive}

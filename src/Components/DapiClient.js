@@ -19,31 +19,31 @@ export default function dapiClient(
         contractId: "GWRSAVFMjXx8HpQFaNJMqBV7MBgMK4br5UESsB4S31Ec",
       },
       DSOContract: {
-        contractId: "Dc9k4BvVS9tC4oxkPk4EhvjBgvcEwKwfyi44svR4wKZ6",
+        contractId: "4kVVrhTJusgrTw4WadjcgQyj9pEiWr3Ee1iad6KG5e9i",
       },
       DGTContract: {
-        contractId: "GnFsHUGBwEsr8ZgMNuLZ5uKM2mhXxvNb1zZZGCCquEpm",
+        contractId: "41AYM5iPkok24Vm6eKTEJR7HvcSyhrmYnfBFPvpvr7WV",
       },
       DGMContract: {
-        contractId: "253AmQmQH3ptoRfMmaeJMguuUDynSBZUoNQ28pusdhx2",
+        contractId: "CJKuFw9JTBG3WPXdWpWpVF77PVphEkwvqi1zAesCDmzi",
       },
       DGPContract: {
-        contractId: "7RVXDR8sqymhtGh1H2oM1bYDoriZVynT5gr6tPByXwh1",
+        contractId: "2BbBXHgwNRxFm9u7TqbfYV4ct1cAERGkqd4x7qHHzcP7",
       },
       DMIOContract: {
-        contractId: "DzFbV7qLzRw7jhnYkrurnm1R57GWb8cmTuSXG148E7Nc",
+        contractId: "DftSJ4QDatQo4YNgWdRmYvg4fg2sMsyHSxmanvAKSjRr",
       },
       P2PContract: {
-        contractId: "Dzn1rVJ3RNWFGPYdKkhGci18Yg9mwAHrJiUuX1urNahC",
+        contractId: "4fykPmcie9iMZpy7VJC2oU6Rjvt7gqr3ttobJUtd8BVL",
       },
       DGRContract: {
-        contractId: "EKmLRnb5P5a9hU5HUkdwqXhLAo9Vm8TV92HwN57YvjQE",
+        contractId: "HLu6Q3RDpGF5dJSmJjuszRfx9nkdwV2DYoURx3jyXWv6",
       },
       PODContract: {
-        contractId: "BcSnoTXMRcGjSQoyfxje2V5uVD19kk41KF2tyex4Vnoj",
+        contractId: "3tyrgqV4SQ91Nd8wt9RvwWLfHraSFLgaYXmB54zX2kdw",
       },
       RADContract: {
-        contractId: "FG3Tce9LyfPnEKRfQugoPnntRoA78Vvs4GtViEvUACcB",
+        contractId: "3pRLCdjZx67Y48tFr7W7daLG5p5299XVfHzSbhPQyUjL",
       },
     },
   };

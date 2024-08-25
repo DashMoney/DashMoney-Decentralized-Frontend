@@ -49,7 +49,7 @@ class FindMerchant extends React.Component {
 
     return (
       <h4 className="indentMembers" style={{ color: "#008de4" }}>
-        <b>{handleDenomDisplay(theTotal)}</b>
+        <b>{handleDenomDisplay(this.props.whichNetwork, theTotal)}</b>
       </h4>
     );
   };
@@ -116,6 +116,7 @@ class FindMerchant extends React.Component {
       //console.log(item);
       return (
         <MerchantItem
+        whichNetwork={this.props.whichNetwork}
           handleAddToCartModal={this.props.handleAddToCartModal}
           key={index}
           mode={this.props.mode}
@@ -130,6 +131,7 @@ class FindMerchant extends React.Component {
       //console.log(item);
       return (
         <CartItem
+        whichNetwork={this.props.whichNetwork}
           handleEditItemModal={this.props.handleEditItemModal}
           key={index}
           mode={this.props.mode}

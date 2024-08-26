@@ -139,6 +139,9 @@ class Post extends React.Component {
             ) : (
               <></>
             )}
+            <p className="textsmaller" style={{ textAlign: "center" }}>
+              ** Tap to Preview **
+            </p>
           </Card.Body>
         </Card>
       </>

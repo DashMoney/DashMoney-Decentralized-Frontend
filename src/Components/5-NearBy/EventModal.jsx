@@ -198,6 +198,7 @@ class EventModal extends React.Component {
           ) : (
             <></>
           )}
+          
           <p className="textsmaller" style={{ textAlign: "right" }}>
             Created by: {this.props.selectedSearchedEventNameDoc.label}
           </p>

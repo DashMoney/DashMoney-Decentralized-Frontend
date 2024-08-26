@@ -103,7 +103,10 @@ class Event extends React.Component {
             ) : (
               <></>
             )}
-            <p className="textsmaller" style={{ textAlign: "right" }}>
+            <p className="textsmaller" style={{ textAlign: "center" }}>
+              ** Tap to Join **
+            </p>
+            <p className="textsmallest" style={{ textAlign: "right" }}>
               Created by: {nameDocToPass.label} on{" "}
               {this.formatDate(this.props.event.$createdAt)}
             </p>

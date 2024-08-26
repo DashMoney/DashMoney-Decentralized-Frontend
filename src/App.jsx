@@ -5921,8 +5921,6 @@ class App extends React.Component {
   };
   //
   //3 BELOW FOR PAYMENT REQUESTS**
-  //BELOW -> RECONNECT <- ? ->
-  //
 
   requestDashfromName_WALLET = () => {
     //console.log("Called Submit Request Pmt Doc");
@@ -6055,6 +6053,7 @@ class App extends React.Component {
       isLoadingButtons_WALLET: true,
       isLoadingWallet: true,
       isLoadingForm_WALLET: true,
+      isLoadingMsgs_WALLET: true,
       WALLET_messageToSend: "MSGFORpaidthr",
     });
 
@@ -6105,6 +6104,7 @@ class App extends React.Component {
           isLoadingRefresh_WALLET: false,
           isLoadingWallet: false,
           isLoadingButtons_WALLET: false,
+          isLoadingMsgs_WALLET: false,
           isLoadingForm_WALLET: false,
           WALLET_sendFailure: true,
         });
@@ -6241,6 +6241,7 @@ class App extends React.Component {
     this.setState({
       isLoadingRefresh_WALLET: true,
       isLoadingWallet: true,
+
       isLoadingButtons_WALLET: true,
       isLoadingForm_WALLET: true,
       isLoadingMsgs_WALLET: true,

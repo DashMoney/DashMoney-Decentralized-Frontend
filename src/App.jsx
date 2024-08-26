@@ -766,7 +766,7 @@ class App extends React.Component {
       //^^ Doesn't need names because they are only your replies.. -> yes
 
       SearchedNameDoc: {
-        $ownerId: "JAdeE9whiXXdxzSrz7Rd1i8aHC3XFh5AvuV7cpxcYYmN",
+        $ownerId: "JAdeE9whiXXdxzSrz7Rd1i8aHC3XFh5AvuV7cpxcFAKE",
         label: "BurgerJoint",
       },
 
@@ -989,6 +989,7 @@ class App extends React.Component {
       //InitialWhyMoney: true,
 
       skipSynchronizationBeforeHeight: 1029000,
+      //mainnetHeight: 2128000,
       //mostRecentBlockHeight: 1029000,
 
       //skipSynchronizationBeforeHeightTESTNET: 1069200,

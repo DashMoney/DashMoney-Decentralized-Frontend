@@ -17,7 +17,9 @@ class AddOrEditReviewButton extends React.Component {
     return (
       <>
         {this.props.SearchedNameDoc !== "No NameDoc" &&
-        this.props.SearchedNameDoc.preorderSalt !== undefined &&
+        // this.props.SearchedNameDoc.preorderSalt !== undefined &&
+        this.props.SearchedNameDoc.$ownerId !==
+          "JAdeE9whiXXdxzSrz7Rd1i8aHC3XFh5AvuV7cpxcFAKE" &&
         !this.props.isLoadingReviewsSearch &&
         this.props.identity !== this.props.SearchedNameDoc.$ownerId &&
         this.props.identity !== "" ? (

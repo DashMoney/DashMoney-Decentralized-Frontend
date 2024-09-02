@@ -55,10 +55,16 @@ class SendFundsModal extends React.Component {
           </Modal.Header>
 
           <Modal.Body>
-            <p>
-              Use your <b>Wallet Address</b> and one of the Faucets below to
-              send tDash (Testnet Dash) to your Wallet.
-            </p>
+            {this.props.whichNetwork === "testnet" ? (
+              <p>
+                Use your <b>Wallet Address</b> and one of the Faucets below to
+                send tDash (Testnet Dash) to your Wallet.
+              </p>
+            ) : (
+              <p>
+                Use your <b>Wallet Address</b> and send Dash to your Wallet
+              </p>
+            )}
 
             <Alert variant="primary">
               <Alert.Heading>Wallet Address:</Alert.Heading>

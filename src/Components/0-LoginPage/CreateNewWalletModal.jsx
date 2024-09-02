@@ -19,16 +19,36 @@ class CreateNewWalletModal extends React.Component {
   }
 
   createWallet = async () => {
-    const clientOpts = {
-      network: this.props.whichNetwork,
-      wallet: {
-        mnemonic: null, // this indicates that we want a new wallet to be generated
-        // if you want to get a new address for an existing wallet
-        // replace 'null' with an existing wallet mnemonic
-        offlineMode: true, // this indicates we don't want to sync the chain
-        // it can only be used when the mnemonic is set to 'null'
-      },
-    };
+    let clientOpts = {};
+    if (this.props.whichNetwork === "mainnet") {
+      clientOpts = {
+        network: this.props.whichNetwork,
+        dapiAddresses: [
+          //'149.28.241.190:443',
+          "134.255.182.186:443",
+          "185.198.234.25:443",
+        ],
+        wallet: {
+          mnemonic: null, // this indicates that we want a new wallet to be generated
+          // if you want to get a new address for an existing wallet
+          // replace 'null' with an existing wallet mnemonic
+          offlineMode: true, // this indicates we don't want to sync the chain
+          // it can only be used when the mnemonic is set to 'null'
+        },
+      };
+    } else {
+      clientOpts = {
+        network: this.props.whichNetwork,
+
+        wallet: {
+          mnemonic: null, // this indicates that we want a new wallet to be generated
+          // if you want to get a new address for an existing wallet
+          // replace 'null' with an existing wallet mnemonic
+          offlineMode: true, // this indicates we don't want to sync the chain
+          // it can only be used when the mnemonic is set to 'null'
+        },
+      };
+    }
 
     const client = new Dash.Client(clientOpts);
     const account = await client.getWalletAccount();

@@ -978,7 +978,6 @@ class App extends React.Component {
       WALLET_addresses: [],
       WALLET_addressesNames: [],
 
-      //mostRecentLogin: false,
       platformLogin: false,
 
       //LocalForageKeys: [],
@@ -989,10 +988,9 @@ class App extends React.Component {
       //InitialWhyMoney: true,
 
       skipSynchronizationBeforeHeight: 1029000,
-      //mainnetHeight: 2128000,
-      //mostRecentBlockHeight: 1029000,
 
-      //skipSynchronizationBeforeHeightTESTNET: 1069200,
+      //skipSynchronizationBeforeHeightMAINNET: 2130000,
+      //skipSynchronizationBeforeHeightTESTNET: 1029000,
 
       expandedTopNav: false,
     };
@@ -1187,13 +1185,30 @@ class App extends React.Component {
   checkPlatformOnlyLogin = (theMnemonic) => {
     console.log("Called Check Platform Login");
 
-    const clientOpts = {
-      network: this.state.whichNetwork,
-      wallet: {
-        mnemonic: theMnemonic,
-        offlineMode: true,
-      },
-    };
+    let clientOpts = {};
+    if (this.state.whichNetwork === "mainnet") {
+      clientOpts = {
+        network: this.state.whichNetwork,
+        dapiAddresses: [
+          //'149.28.241.190:443',
+          "134.255.182.186:443",
+          "185.198.234.25:443",
+        ],
+        wallet: {
+          mnemonic: theMnemonic,
+          offlineMode: true,
+        },
+      };
+    } else {
+      clientOpts = {
+        network: this.state.whichNetwork,
+
+        wallet: {
+          mnemonic: theMnemonic,
+          offlineMode: true,
+        },
+      };
+    }
 
     const client = new Dash.Client(clientOpts);
 

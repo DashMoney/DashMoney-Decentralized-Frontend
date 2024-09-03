@@ -151,6 +151,16 @@ class CreateNewWalletModal extends React.Component {
               </Button>
               {this.state.copiedAddress ? <span>Copied!</span> : <></>}
             </Alert>
+
+            <p>
+              Use your <b>Address</b> and send some Dash to your account to be
+              able to use Dash Platform!
+            </p>
+
+            <h6 style={{ textAlign: "center" }}>
+              (<b>0.03 Dash</b> should be sufficient and is the wallet minimum
+              for Identity Registration.)
+            </h6>
             {/* <Alert variant="warning">
         When this window closes, all this info with go with it
           
@@ -158,10 +168,6 @@ class CreateNewWalletModal extends React.Component {
             {this.props.whichNetwork === "testnet" ? (
               <>
                 {" "}
-                <p>
-                  Use your <b>Address</b> and send some Dash to your account to
-                  be able to use Dash Platform!
-                </p>
                 <h5>Dash Testnet Faucets:</h5>
                 <ul>
                   <li>

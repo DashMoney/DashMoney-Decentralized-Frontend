@@ -90,7 +90,7 @@ class AccountLogin extends React.Component {
                       !this.props.isLoadingWallet &&
                       this.props.identity === "no identity" &&
                       //this.props.accountBalance === 0 ? (
-                      this.props.accountBalance < 2500000 ? (
+                      this.props.accountBalance < 3000000 ? (
                         <>
                           <Button
                             style={{ marginRight: "1rem" }}
@@ -112,11 +112,12 @@ class AccountLogin extends React.Component {
               !this.props.isLoadingWallet &&
               this.props.identity === "no identity" &&
               // this.props.accountBalance === 0 ? (
-              this.props.accountBalance < 2500000 ? (
+              this.props.accountBalance < 3000000 ? (
                 <>
-                  <p>
+                  <p style={{ textAlign: "center" }}>
                     There are insufficient funds in your wallet. (
-                    <b>0.025 Dash</b> is sufficient for Identity Registration)
+                    <b>0.03 Dash</b> should be sufficient for Identity
+                    Registration)
                   </p>
 
                   <div className="d-grid gap-2">
@@ -137,7 +138,7 @@ class AccountLogin extends React.Component {
 
               {!this.props.isLoadingIdentity &&
               this.props.identity === "no identity" &&
-              this.props.accountBalance >= 2500000 ? (
+              this.props.accountBalance >= 3000000 ? (
                 // this.props.accountBalance !== 0
                 <>
                   <div className="d-grid gap-2">

@@ -1721,7 +1721,7 @@ class App extends React.Component {
           uniqueName: "no name", //This sets up the next step
           isLoadingIdentity: false,
           isLoadingIdInfo: false,
-          accountBalance: this.state.accountBalance - 1000000,
+          accountBalance: this.state.accountBalance - 1400000,
         });
       })
       .catch((e) => {

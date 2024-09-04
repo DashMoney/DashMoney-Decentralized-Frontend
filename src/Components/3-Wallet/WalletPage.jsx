@@ -171,10 +171,11 @@ class WalletPage extends React.Component {
 
     let valid = regex.test(numberInput);
 
-    let result = this.props.accountBalance - numberInput * 100000000;
+    //let result = this.props.accountBalance - numberInput * 100000000;
     //console.log(result);
 
-    if (result >= 0 && valid && numberInput > 0) {
+    //if (result >= 0 && valid && numberInput > 0) {
+    if (valid && numberInput > 0) {
       this.setState({
         amountToSend: numberInput,
         numberQuantity: true,
@@ -403,6 +404,16 @@ class WalletPage extends React.Component {
         "(Optional) Without message, receipient will not know who sent payment.";
     } else {
       formMessagePlaceholder = "(Optional)";
+    }
+
+    let exceedsWalletAmt = false;
+    if (this.props.whichPayType === "Pay") {
+      let result =
+        this.props.accountBalance - this.state.amountToSend * 100000000;
+      // console.log(result);
+      if (result <= 0 && this.state.amountToSend > 0) {
+        exceedsWalletAmt = true;
+      }
     }
 
     return (
@@ -779,7 +790,8 @@ class WalletPage extends React.Component {
                         {this.props.whichPayType === "Pay" ? (
                           <>
                             {(this.state.nameFormat || this.state.addrFormat) &&
-                            this.state.numberQuantity ? ( //&&
+                            this.state.numberQuantity &&
+                            !exceedsWalletAmt ? ( //&&
                               //!this.props.isLoadingForm_WALLET
                               <>
                                 <p> </p>
@@ -788,9 +800,29 @@ class WalletPage extends React.Component {
                                 </Button>
                               </>
                             ) : (
-                              <Button disabled variant="primary" type="submit">
-                                Send Dash
-                              </Button>
+                              <>
+                                {exceedsWalletAmt ? (
+                                  <>
+                                    <p
+                                      style={{
+                                        color: "red",
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      Insufficient Wallet Funds
+                                    </p>
+                                  </>
+                                ) : (
+                                  <></>
+                                )}
+                                <Button
+                                  disabled
+                                  variant="primary"
+                                  type="submit"
+                                >
+                                  Send Dash
+                                </Button>
+                              </>
                             )}
                           </>
                         ) : (

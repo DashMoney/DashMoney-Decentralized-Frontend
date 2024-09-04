@@ -90,6 +90,7 @@ class PaymentsMsgs extends React.Component {
       threadsToDisplay = threadDocs.map((thr, index) => {
         return (
           <Threads
+            whichNetwork={this.props.whichNetwork}
             key={index}
             mode={this.props.mode}
             index={index}

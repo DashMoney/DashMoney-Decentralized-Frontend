@@ -640,6 +640,7 @@ class WalletPage extends React.Component {
                     //isLoadingMsgs_WALLET={this.props.isLoadingMsgs_WALLET}
                   /> */}
                     <PaymentsTabNEW
+                      whichNetwork={this.props.whichNetwork}
                       mode={this.props.mode}
                       identity={this.props.identity}
                       uniqueName={this.props.uniqueName}
@@ -1206,6 +1207,7 @@ class WalletPage extends React.Component {
             ) : (
               <>
                 <PaymentRequestsComp
+                  whichNetwork={this.props.whichNetwork}
                   //DO I NEED ALL OF THESE? ->
                   mode={this.props.mode}
                   identity={this.props.identity}

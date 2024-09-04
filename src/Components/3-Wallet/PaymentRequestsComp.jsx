@@ -149,6 +149,7 @@ class PaymentRequestsComp extends React.Component {
     let tuples = sortedTuples.map((tuple, index) => {
       return (
         <RequestMsgs
+          whichNetwork={this.props.whichNetwork}
           key={index}
           mode={this.props.mode}
           index={index}

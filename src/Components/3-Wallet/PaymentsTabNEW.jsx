@@ -260,6 +260,7 @@ class PaymentsTabNEW extends React.Component {
       if (tuple[2] === "req") {
         return (
           <SentRequestMsgs
+            whichNetwork={this.props.whichNetwork}
             key={index}
             mode={this.props.mode}
             index={index}
@@ -278,6 +279,7 @@ class PaymentsTabNEW extends React.Component {
       } else {
         return (
           <PaymentsMsgs
+            whichNetwork={this.props.whichNetwork}
             key={index}
             mode={this.props.mode}
             index={index}

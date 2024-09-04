@@ -22,6 +22,7 @@ class YourRides extends React.Component {
       //console.log(item);
       return (
         <YourRide
+          whichNetwork={this.props.whichNetwork}
           today={today}
           yesterday={yesterday}
           key={index}

@@ -667,7 +667,7 @@ class App extends React.Component {
           //toUHandle:"",
           exRate: "2856",
           instruction:
-            "***This is just a test offer.***\n\n     Please don't send me anything!",
+            "***This is just an example offer/placeholder.***\n\n     Please don't send anything!",
           minAmt: "100",
           maxAmt: "10000",
           active: true,
@@ -1714,15 +1714,18 @@ class App extends React.Component {
       .then((d) => {
         console.log("Registered Identity:\n", d.toJSON());
         let idInfo = d.toJSON();
-        this.setState({
-          identity: idInfo.id,
-          identityInfo: idInfo,
-          identityRaw: d,
-          uniqueName: "no name", //This sets up the next step
-          isLoadingIdentity: false,
-          isLoadingIdInfo: false,
-          accountBalance: this.state.accountBalance - 1400000,
-        });
+        this.setState(
+          {
+            identity: idInfo.id,
+            identityInfo: idInfo,
+            identityRaw: d,
+            uniqueName: "no name", //This sets up the next step
+            isLoadingIdentity: false,
+            isLoadingIdInfo: false,
+            //accountBalance: this.state.accountBalance - 1400000
+          },
+          () => this.getWalletAfterIdentityRegister()
+        );
       })
       .catch((e) => {
         console.error("Something went wrong:\n", e);
@@ -1730,6 +1733,49 @@ class App extends React.Component {
           isLoadingIdentity: false,
           isLoadingIdInfo: false,
           identityError: true,
+        });
+      })
+      .finally(() => client.disconnect());
+  };
+
+  getWalletAfterIdentityRegister = () => {
+    this.setState({
+      isLoadingWallet: true,
+    });
+
+    const client = new Dash.Client(
+      dapiClient(
+        this.state.whichNetwork,
+        this.state.mnemonic,
+        this.state.skipSynchronizationBeforeHeight
+      )
+    );
+
+    const retrieveWallet = async () => {
+      const account = await client.getWalletAccount();
+
+      this.setState({
+        accountBalance: account.getTotalBalance(),
+        accountHistory: account.getTransactionHistory(),
+      });
+
+      return true;
+    };
+
+    retrieveWallet()
+      .then((d) => {
+        console.log("Wallet Reloaded:\n", d);
+        this.setState({
+          isLoadingWallet: false,
+        });
+      })
+      .catch((e) => {
+        console.error(
+          "Something went wrong reloading WalletAfterIdentityRegister:\n",
+          e
+        );
+        this.setState({
+          isLoadingWallet: false,
         });
       })
       .finally(() => client.disconnect());

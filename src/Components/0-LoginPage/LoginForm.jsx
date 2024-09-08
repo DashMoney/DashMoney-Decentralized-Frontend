@@ -84,8 +84,8 @@ class LoginForm extends React.Component {
               Platform -Splawik21
             </b> */}
             <b>
-              Interact, Chat, and Explore with Dash's Web3 Dapps, powered by
-              Dash's Decentralized Platform!
+              Interact, Chat, and Explore with Dapps powered by Dash's
+              Decentralized Platform!
             </b>
           </p>
         </div>

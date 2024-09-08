@@ -8,7 +8,7 @@ export default function dapiClient(
   if (theNetwork === "mainnet") {
     //console.log("mainnet dapiClient");
     //select random number from 1-19 and then add 2 or three to thedapiAddress? 0-18
-    let x = Math.floor(Math.random() * 16);
+    let x = Math.floor(Math.random() * 15);
     let dapiAddrs = [
       "198.7.115.43:443",
       "149.28.241.190:443",
@@ -20,7 +20,7 @@ export default function dapiClient(
       "185.192.96.70:443",
       "37.27.83.17:443",
       "70.34.206.123:443",
-      "51.83.191.208:443",
+      //"51.83.191.208:443",
       "185.166.217.154:443",
       "108.160.135.149:443",
       "188.245.90.255:443",

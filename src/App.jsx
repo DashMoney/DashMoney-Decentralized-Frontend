@@ -5078,8 +5078,14 @@ class App extends React.Component {
       //console.log("Called Get RefreshByYou Threads");
 
       return client.platform.documents.get("DGMContract.dgmthr", {
-        where: [["msgId", "in", arrayOfMsgIds]], // check msgId ->
-        orderBy: [["msgId", "asc"]],
+        where: [
+          ["msgId", "in", arrayOfMsgIds],
+          ["$createdAt", "<=", Date.now()],
+        ],
+        orderBy: [
+          ["msgId", "asc"],
+          ["$createdAt", "desc"],
+        ],
       });
     };
 
@@ -5246,8 +5252,14 @@ class App extends React.Component {
       //console.log("Called Get RefreshByYou Threads");
 
       return client.platform.documents.get("DGMContract.dgmthr", {
-        where: [["msgId", "in", arrayOfMsgIds]], // check msgId ->
-        orderBy: [["msgId", "asc"]],
+        where: [
+          ["msgId", "in", arrayOfMsgIds],
+          ["$createdAt", "<=", Date.now()],
+        ],
+        orderBy: [
+          ["msgId", "asc"],
+          ["$createdAt", "desc"],
+        ],
       });
     };
 
@@ -5572,8 +5584,16 @@ class App extends React.Component {
       //console.log("Called Get ByYou Threads");
 
       return client.platform.documents.get("DGMContract.dgmthr", {
-        where: [["msgId", "in", arrayOfMsgIds]], // check msgId ->
-        orderBy: [["msgId", "asc"]],
+        where: [
+          ["msgId", "in", arrayOfMsgIds],
+          ["$createdAt", "<=", Date.now()],
+        ],
+        orderBy: [
+          ["msgId", "asc"],
+          ["$createdAt", "desc"],
+        ],
+        //],
+        //  orderBy: [["msgId", "asc"]],
       });
     };
 
@@ -5738,8 +5758,14 @@ class App extends React.Component {
       //console.log("Called Get ByYou Threads");
 
       return client.platform.documents.get("DGMContract.dgmthr", {
-        where: [["msgId", "in", arrayOfMsgIds]], // check msgId ->
-        orderBy: [["msgId", "asc"]],
+        where: [
+          ["msgId", "in", arrayOfMsgIds],
+          ["$createdAt", "<=", Date.now()],
+        ],
+        orderBy: [
+          ["msgId", "asc"],
+          ["$createdAt", "desc"],
+        ],
       });
     };
 

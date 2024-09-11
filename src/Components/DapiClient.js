@@ -81,7 +81,7 @@ export default function dapiClient(
     };
   } else {
     //THIS IS TESTNET PATH
-    console.log("testnet dapiClient");
+    //console.log("testnet dapiClient");
     return {
       network: theNetwork,
       // dapiAddresses: [

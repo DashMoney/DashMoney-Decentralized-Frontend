@@ -69,7 +69,7 @@ export default function dapiClientNoWallet(theNetwork) {
     };
   } else {
     //THIS IS TESTNET PATH
-    console.log("testnet dapiClient");
+    //console.log("testnet dapiClient");
     return {
       network: theNetwork,
       // dapiAddresses: [

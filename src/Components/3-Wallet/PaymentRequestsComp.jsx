@@ -159,7 +159,7 @@ class PaymentRequestsComp extends React.Component {
           identity={this.props.identity}
           uniqueName={this.props.uniqueName}
           //showModal={this.props.showModal}
-          handleThread={this.props.handleThread}
+          handleThread_WALLET={this.props.handleThread_WALLET}
           showPayRequestModal={this.props.showPayRequestModal}
           showRejectReplyReqModal={this.props.showRejectReplyReqModal}
           //payRequest
@@ -179,10 +179,8 @@ class PaymentRequestsComp extends React.Component {
           <></>
         )}
 
-        <div>
-          <p></p>
-          {tuples}
-        </div>
+        <p></p>
+        {tuples}
       </>
     );
   }

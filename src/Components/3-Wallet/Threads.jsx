@@ -82,7 +82,7 @@ class Threads extends React.Component {
     return (
       // <Card id="thread" key={this.props.index} bg={cardBkg} text={cardText}>
       //   <Card.Body>
-      <>
+      <div index={this.props.index} key={this.props.index}>
         {this.props.thr.msg === "" || this.props.thr.msg === undefined ? (
           <></>
         ) : (
@@ -94,7 +94,7 @@ class Threads extends React.Component {
             <Card.Title className="cardTitle">
               {this.handleName(this.props.thr)}
 
-              <span>{this.state.copiedName ? <span>✅</span> : <></>}</span>
+              {this.state.copiedName ? <span>✅</span> : <></>}
 
               <span className="textsmaller">
                 {this.formatDate(
@@ -116,7 +116,7 @@ class Threads extends React.Component {
             </Card.Text>
           </>
         )}
-      </>
+      </div>
     );
   }
 }

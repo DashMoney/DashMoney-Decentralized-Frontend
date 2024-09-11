@@ -37,6 +37,7 @@ class SimplifiedTXs extends React.Component {
 
       //AND WITH HANDLE NO ORDERS IN FUTURE ->
     ) {
+      //console.log(tx);
       return "";
     } else {
       //ELSE 1

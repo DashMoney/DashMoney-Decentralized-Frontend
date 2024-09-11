@@ -629,7 +629,7 @@ class WalletPage extends React.Component {
                     presentModal={this.state.presentModal}
                     accountHistory={this.props.accountHistory}
                     accountBalance={this.props.accountBalance}
-                    handleThread={this.props.handleThread_WALLET}
+                    handleThread_WALLET={this.props.handleThread_WALLET}
                     ByYouMsgs={this.props.WALLET_ByYouMsgs}
                     ByYouNames={this.props.WALLET_ByYouNames}
                     ByYouThreads={this.props.WALLET_ByYouThreads}
@@ -1219,7 +1219,7 @@ class WalletPage extends React.Component {
                   accountBalance={this.props.accountBalance}
                   showPayRequestModal={this.props.showPayRequestModal}
                   showRejectReplyReqModal={this.props.showRejectReplyReqModal}
-                  handleThread={this.props.handleThread_WALLET}
+                  handleThread_WALLET={this.props.handleThread_WALLET}
                   ByYouMsgs={this.props.WALLET_ByYouMsgs}
                   ByYouNames={this.props.WALLET_ByYouNames}
                   ByYouThreads={this.props.WALLET_ByYouThreads}

@@ -92,18 +92,20 @@ class RequestMsgs extends React.Component {
       threadsToDisplay = threadDocs.map((thr, index) => {
         return (
           <Threads
+            whichNetwork={this.props.whichNetwork}
             key={index}
             mode={this.props.mode}
             index={index}
             thr={thr}
             //msg = {this.props.tuple[1]}//need the tuple bc has the name
-            tuple={this.props.tuple}
+            tuple={[this.props.tuple[0].label, this.props.tuple[1]]}
             today={this.props.today}
             yesterday={this.props.yesterday}
             identity={this.props.identity}
             uniqueName={this.props.uniqueName}
             // showModal={this.props.showModal}
-            handleThread={this.props.handleThread}
+
+            handleThread={this.props.handleThread_WALLET}
 
             //ThreadsNames={this.props.ForYouThreadsNames}
             //Change ^^ to
@@ -236,6 +238,7 @@ class RequestMsgs extends React.Component {
             </Button>
           </div>
           {/* </Card.Text> */}
+
           <p></p>
           {threadsToDisplay}
         </Card.Body>

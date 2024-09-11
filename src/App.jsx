@@ -165,7 +165,7 @@ class App extends React.Component {
       isLoadingWallet: true, //For wallet for topup
 
       isIdentityControlShowing: false,
-
+      identityRegisterCount: 0,
       identityError: false,
       idInfoError: false,
       nameError: false,
@@ -1438,6 +1438,7 @@ class App extends React.Component {
         accountHistory: account.getTransactionHistory(),
         //walletId: account.walletId,
       });
+      // console.log("Wallet History: ", account.getTransactionHistory());
 
       return account.identities.getIdentityIds();
     };
@@ -1730,6 +1731,7 @@ class App extends React.Component {
       .catch((e) => {
         console.error("Something went wrong:\n", e);
         this.setState({
+          identityRegisterCount: this.state.identityRegisterCount + 1,
           isLoadingIdentity: false,
           isLoadingIdInfo: false,
           identityError: true,
@@ -16094,6 +16096,7 @@ RIDES AND DRIVERS FUNCTIONS^^^^
                         accountBalance={this.state.accountBalance}
                         mode={this.state.mode}
                         showIdentityControlPage={this.showIdentityControlPage}
+                        identityRegisterCount={this.state.identityRegisterCount}
                       />
                     </>
                   ) : (
